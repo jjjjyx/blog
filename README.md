@@ -10,10 +10,15 @@
 
 ## 链接  
   ~~酱酱酱酱油鲜的博客 [www.mbdoge.cn](http://www.mbdoge.cn)~~
+
 ![doge抱小鱼](client/public/img/doge/a5b3f9fdfc03924596a233d28094a4c27c1e2551.jpg)
 
-## **Change log**
-##### v 1.0.0 (2016年11月4日)
+## Change log
+
+##### 2016年11月5日
+  * 部署至开发服务器
+
+##### 2016年11月4日
   * 创建项目
   * 项目初始化
   * 描述文档
