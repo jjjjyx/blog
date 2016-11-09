@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js">
+<html class="zh-CN">
 
 <head>
     <meta charset="utf-8">
@@ -31,35 +31,43 @@
 </head>
 
 <body id="app">
-    <nav class="am-g am-g-fixed blog-fixed blog-nav">
-        <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only blog-button" data-am-collapse="{target: '#blog-collapse'}"><span class="am-sr-only">导航切换</span> <span class="am-icon-bars"></span></button>
+    <nav class="navbar navbar-fixed-top navbar-inverse" >
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".nav-right">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Brand</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right nav-right collapse navbar-collapse"  role="navigation">
+                <li class="active"><a href="#">首页</a></li>
+                <li><a href="#">作品展示</a></li>
+                <li><a href="#">技术文档</a></li>
+                <li><a href="#">留言</a></li>
+                <li style="margin-right:15px;"><a href="#">关于</a></li>
 
-        <div class="am-collapse am-topbar-collapse" id="blog-collapse">
-            <ul class="am-nav am-nav-pills am-topbar-nav">
-                <li class="am-active"><a href="lw-index.html">首页</a></li>
-                <li class="am-dropdown" data-am-dropdown="">
-                    <a class="am-dropdown-toggle" data-am-dropdown-toggle="" href="javascript:;">
-          首页布局 <span class="am-icon-caret-down"></span>
-        </a>
-                    <ul class="am-dropdown-content">
-                        <li><a href="lw-index.html">1. blog-index-standard</a></li>
-                        <li><a href="lw-index-nosidebar.html">2. blog-index-nosidebar</a></li>
-                        <li><a href="lw-index-center.html">3. blog-index-layout</a></li>
-                        <li><a href="lw-index-noslider.html">4. blog-index-noslider</a></li>
-                    </ul>
-                </li>
-                <li><a href="lw-article.html">标准文章</a></li>
-                <li><a href="lw-img.html">图片库</a></li>
-                <li><a href="lw-article-fullwidth.html">全宽页面</a></li>
-                <li><a href="lw-timeline.html">存档</a></li>
+                <li><a href="#">投稿</a></li>
+                <li><a href="#">登录</a></li>
+                <li><a href="#">搜索</a></li>
             </ul>
-            <form class="am-topbar-form am-topbar-right am-form-inline" role="search">
-                <div class="am-form-group">
-                    <input type="text" class="am-form-field am-input-sm" placeholder="搜索">
-                </div>
-            </form>
         </div>
+        <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
     </nav>
+    <div class="container" id="main">
+        <div class="row">
+            <div class="col-md-8">
+            </div>
+            <div class="col-md-4">
+            </div>
+        </div>
+    </div>
+
     <script src="client/dist/main.js"></script>
 </body>
 

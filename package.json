@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cd ./client/ && webpack  --config=webpack.config.js -p && cd ../ && node app.js",
-    "dev": "cd ./client/ && webpack --watch --config=webpack.config.js -d"    
+    "dev": "cd ./client/ && webpack --watch --config=webpack.config.js -d"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
   "dependencies": {
     "animate.css": "^3.5.1",
     "body-parser": "^1.15.2",
+    "bootstrap": "^3.3.7",
     "cookie-parser": "^1.4.3",
     "express": "^4.14.0",
     "jquery": "^2.2.3",

@@ -1,7 +1,11 @@
 import "lodash"
 
-import "amazeui/dist/js/amazeui.min.js"
-import "amazeui/dist/css/amazeui.min.css"
+import "bootstrap/dist/js/bootstrap.min.js"
+import "bootstrap/dist/css/bootstrap.min.css"
+
+// CSS
+
+import "../css/import.less";
 
 import Vue from "vue"
 import VueResource from "vue-resource"
