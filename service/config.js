@@ -4,5 +4,5 @@ module.exports={
     DB_USER:'blog',
     DB_PASS:'123',
     DB_PRE:'',
-    APP_PORT:'8888'
+    APP_PORT:'3000'
 };

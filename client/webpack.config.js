@@ -59,8 +59,14 @@ module.exports = {
             },
             // 加载字体
             {
-                test: /\.(eot|svg|ttf|woff|woff2)$/,
-                loader: 'url-loader?limit=65000&name=fonts/[name]_[hash].[ext]'
+                test: /\.(woff|woff2|svg|eot|ttf)\??.*$/,
+                loader: 'url-loader?name=fonts/[name]_[hash].[ext]'
+                // loader:'file'
+                // loader: 'url',
+                // query: {
+                //     limit: 10000,
+                //     name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+                // }
             },
             // jquery fix
             {test: require.resolve('jquery'), loader: 'expose?$'}
@@ -86,7 +92,7 @@ module.exports = {
         extensions: ['', '.js', '.vue'],
         // 别名，可以直接使用别名来代表设定的路径以及其他
         alias: {
-            jquery: '/node_modules/jquery/dist/jquery'
+            jquery: 'jquery/dist/jquery.js'
         },
         // modulesDirectories: ["node_modules"],
     },
