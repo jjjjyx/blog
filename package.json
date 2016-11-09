@@ -4,7 +4,9 @@
   "description": "个人博客，前端技术，nodejs",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd ./client/ && webpack  --config=webpack.config.js -p && cd ../ && node app.js",
+    "dev": "cd ./client/ && webpack --watch --config=webpack.config.js -d"    
   },
   "repository": {
     "type": "git",
