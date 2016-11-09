@@ -7,32 +7,32 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 import "../css/import.less";
 
-import Vue from "vue"
-import VueResource from "vue-resource"
+// import Vue from "vue"
+// import VueResource from "vue-resource"
 
-Vue.use(VueResource);
-Vue.config.debug = true;
-Vue.http.options.emulateJSON = true;
+// Vue.use(VueResource);
+// Vue.config.debug = true;
+// Vue.http.options.emulateJSON = true;
 
 
-var App = Vue.extend({
-    el(){
-        return "#app"
-    },
-    data(){
-        return {
-            name:'hello world'
-        }
-    },
-    ready() {
-        console.log("asdsa")
-    },
-    vuex: {
-
-    },
-    watch:{
-
-    }
-});
+// var App = Vue.extend({
+//     el(){
+//         return "#app"
+//     },
+//     data(){
+//         return {
+//             name:'hello world'
+//         }
+//     },
+//     ready() {
+//         console.log("asdsa")
+//     },
+//     vuex: {
+//
+//     },
+//     watch:{
+//
+//     }
+// });
 
 var app = new App();

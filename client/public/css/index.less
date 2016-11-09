@@ -2,10 +2,32 @@
     padding-top: 50px;
     padding-bottom: 20px;
 }
-
 //
-.row{
-    &>div{
-
+.row {
+    & > div {
+        color: #ccc;
+        height: 100%;
+        text-align: center;
+        vertical-align: middle;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
+    & > div:first-child {
+        border-right: 1px solid #eee;
+    }
+}
+#main {
+    .row {
+        margin-top: 20px;
+    }
+}
+.img-paly {
+    height: 338px;
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #EEE;
+    background: #FAFAFA;
+    z-index: 10;
 }
