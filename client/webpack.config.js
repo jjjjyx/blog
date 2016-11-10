@@ -16,14 +16,6 @@ module.exports = {
         // 公共文件生成的地址
         publicPath: '/dist/'
     },
-    // // 服务器配置相关，自动刷新!
-    // devServer: {
-    //     historyApiFallback: true,
-    //     hot: false,
-    //     inline: true,
-    //     grogress: true,
-    //     headers: { 'Access-Control-Allow-Origin': '*' },
-    // },
     module: {
         // 加载器
         loaders: [
@@ -61,12 +53,6 @@ module.exports = {
             {
                 test: /\.(woff|woff2|svg|eot|ttf)\??.*$/,
                 loader: 'url-loader?name=fonts/[name]_[hash].[ext]'
-                // loader:'file'
-                // loader: 'url',
-                // query: {
-                //     limit: 10000,
-                //     name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
-                // }
             },
             // jquery fix
             {test: require.resolve('jquery'), loader: 'expose?$'}

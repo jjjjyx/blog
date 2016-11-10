@@ -9,7 +9,7 @@ app.set('view engine', 'html');
 // 静态文件配置
 app.use('/client/dist', express.static(path.join(__dirname, 'client/dist')));
 
-global.C=require("./service/config");
+global.C=require("./config/config");
 // console.log(app.get('env'))
 app.get('/', function (req, res) {
   res.render('index');

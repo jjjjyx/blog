@@ -1,4 +1,3 @@
-import "lodash"
 
 import "bootstrap/dist/js/bootstrap.min.js"
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -35,4 +34,4 @@ import "../css/import.less";
 //     }
 // });
 
-var app = new App();
+// var app = new App();
