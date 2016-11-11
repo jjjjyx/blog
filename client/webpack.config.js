@@ -1,20 +1,20 @@
-
-var path         = require('path');
-var webpack      = require("webpack");
+var path = require('path');
+var webpack = require("webpack");
 var autoprefixer = require('autoprefixer');
-// var values = require('postcss-modules-values')
+var glob = require('glob');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
+    // var values = require('postcss-modules-values')
 
 module.exports = {
-    entry: {
-        "main": "./public/js/index",
-    },
+    entry: getEntry('./public/js/*.js'),
     output: {
         // 文件地址
         path: path.join(__dirname, './dist'),
         // [name]这里是webpack提供的根据路口文件自动生成的名字
-        filename: "[name].js",
+        filename: "static/js/[name].js",
         // 公共文件生成的地址
-        publicPath: '/dist/'
+        // publicPath: ''
     },
     module: {
         // 加载器
@@ -43,7 +43,7 @@ module.exports = {
                 loader: "style!css!postcss!less?sourceMap",
                 include: path.join(__dirname, './public/css'),
             },
-            // 图片转化，小于8K自动转化为base64的编码
+            // 图片转化，自动转化为base64的编码
             {
                 test: /\.(png|jpg|gif)$/,
                 loader: 'url-loader?limit=8192',
@@ -55,7 +55,10 @@ module.exports = {
                 loader: 'url-loader?name=fonts/[name]_[hash].[ext]'
             },
             // jquery fix
-            {test: require.resolve('jquery'), loader: 'expose?$'}
+            {
+                test: require.resolve('jquery'),
+                loader: 'expose?$'
+            }
         ]
     },
     vue: {
@@ -92,6 +95,15 @@ module.exports = {
             'jQuery': "jquery",
             "window.jQuery": "jquery"
         }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: function (module, count) {
+                // any required modules inside node_modules are extracted to vendor
+                return module.resource && /\.(js|css)$/.test(module.resource) && module.resource.indexOf( path.join(__dirname, '../node_modules')) === 0
+
+            }
+        })
+        //new ExtractTextPlugin("static/css/[name].css'")
     ],
     // 开启source-map，webpack有多种source-map，在官网文档可以查到
     // 这个选项会使文件增大不少
@@ -99,13 +111,33 @@ module.exports = {
     cache: true,
 }
 
+var entries = getEntry('./public/js/*.js');
+
+Object.keys(entries).forEach(function (name) {
+    // 每个页面生成一个entry，如果需要HotUpdate，在这里修改entry
+    module.exports.entry[name] = entries[name];
+
+    // 每个页面生成一个html
+    var plugin = new HtmlWebpackPlugin({
+        // 生成出来的html文件名
+        filename: name + '.html',
+        // 每个html的模版，这里多个页面使用同一个模版
+        template: './view/' + name + '.html',
+        // 自动将引用插入html
+        inject: true,
+        // 每个html引用的js模块，也可以在这里加上vendor等公用模块
+        chunks: [name, 'vendor']
+    });
+    module.exports.plugins.push(plugin);
+})
+
 if (process.env.NODE_ENV === 'production') {
     module.exports.devtool = '#source-map';
     // http://vue-loader.vuejs.org/en/workflow/production.html
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: '"production"'
+                NODE_ENV: 'production'
             }
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
@@ -115,4 +147,18 @@ if (process.env.NODE_ENV === 'production') {
             }
         })
     ])
+}
+
+
+function getEntry(globPath) {
+    var entries = {},
+        basename; //, tmp, pathname;
+
+    glob.sync(globPath).forEach(function (entry) {
+        basename = path.basename(entry, path.extname(entry));
+        // tmp = entry.split('/').splice(-3);
+        // pathname = tmp.splice(0, 1) + '/' + basename; // 正确输出js和html的路径
+        entries[basename] = entry;
+    });
+    return entries;
 }

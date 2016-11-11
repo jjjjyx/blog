@@ -2,12 +2,12 @@ var express = require('express');
 var path = require('path');
 var app = express();
 
-app.set('views', path.join(__dirname, 'client/view'));
+app.set('views', path.join(__dirname, 'client/dist'));
 app.engine("html",require("ejs").__express); // or   app.engine("html",require("ejs").renderFile);
 app.set('view engine', 'html');
 
 // 静态文件配置
-app.use('/client/dist', express.static(path.join(__dirname, 'client/dist')));
+app.use('/static', express.static(path.join(__dirname, 'client/dist/static')));
 
 global.C=require("./config/config");
 // console.log(app.get('env'))
