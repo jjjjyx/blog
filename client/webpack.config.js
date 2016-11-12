@@ -6,6 +6,8 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
     // var values = require('postcss-modules-values')
 
+// var extractLESS = new ExtractTextPlugin('static/css/[name].less');
+
 module.exports = {
     entry: getEntry('./public/js/*.js'),
     output: {
@@ -34,13 +36,15 @@ module.exports = {
             // 编译css并自动添加css前缀
             {
                 test: /\.css$/,
-                loader: 'style!css!postcss-loader',
+                loader: 'style!css',
+                //  loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader'),
                 // include: path.join(__dirname, './src/css'),
             },
             // 自动编译 less 文件
             {
                 test: /\.less$/,
-                loader: "style!css!postcss!less?sourceMap",
+                // loader: "style!css!postcss!less?sourceMap",
+                loader:ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader!less-loader'),
                 include: path.join(__dirname, './public/css'),
             },
             // 图片转化，自动转化为base64的编码
@@ -100,9 +104,9 @@ module.exports = {
             minChunks: function (module, count) {
                 // any required modules inside node_modules are extracted to vendor
                 return module.resource && /\.(js|css)$/.test(module.resource) && module.resource.indexOf( path.join(__dirname, '../node_modules')) === 0
-
             }
-        })
+        }),
+        new ExtractTextPlugin('static/css/[name].css')
         //new ExtractTextPlugin("static/css/[name].css'")
     ],
     // 开启source-map，webpack有多种source-map，在官网文档可以查到

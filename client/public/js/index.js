@@ -4,7 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css"
 
 // CSS
 
-import "../css/import.less";
+import "../css/index.less";
 
 // import Vue from "vue"
 // import VueResource from "vue-resource"
