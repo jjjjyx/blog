@@ -1,0 +1,40 @@
+// store,
+// vuex: {
+//     getters: {
+//         user: state => state.user
+//     },
+//     actions: {
+//         userSetInfo,
+//         success,
+//         error
+//     }
+// }
+
+const state = {
+    user:null
+}
+
+const getters = {
+    // checkoutStatus: state => state.checkoutStatus
+}
+
+// actions
+const actions = {
+    userSetInfo ({ commit, state },user){
+        commit("USER_SET_INFO",user);
+    },
+
+}
+const mutations = {
+    USER_SET_INFO (state,user) {
+        user.validateTime = +new Date();
+        state.user = user;
+    },
+}
+
+export default {
+    state,
+    getters,
+    actions,
+    mutations
+}

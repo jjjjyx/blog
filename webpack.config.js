@@ -7,12 +7,11 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
     // var values = require('postcss-modules-values')
 
 // var extractLESS = new ExtractTextPlugin('static/css/[name].less');
-
 module.exports = {
-    entry: getEntry('./public/js/*.js'),
+    entry: ['./client/public/main.js'],
     output: {
         // 文件地址
-        path: path.join(__dirname, './dist'),
+        path: path.join(__dirname, './client/dist'),
         // [name]这里是webpack提供的根据路口文件自动生成的名字
         filename: "static/js/[name].js",
         // 公共文件生成的地址
@@ -25,13 +24,13 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue',
-                include: path.join(__dirname, './view'),
+                include: path.join(__dirname, './client/public/view'),
             },
             // 转化ES6的语法
             {
                 test: /\.js$/,
                 loader: 'babel',
-                include: path.join(__dirname, './public'),
+                include: path.join(__dirname, './client/public'),
             },
             // 编译css并自动添加css前缀
             {
@@ -44,14 +43,14 @@ module.exports = {
             {
                 test: /\.less$/,
                 // loader: "style!css!postcss!less?sourceMap",
-                loader:ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader!less-loader'),
-                include: path.join(__dirname, './public/css'),
+                loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader!less-loader'),
+                include: path.join(__dirname, './client/public/css'),
             },
             // 图片转化，自动转化为base64的编码
             {
                 test: /\.(png|jpg|gif)$/,
                 loader: 'url-loader?limit=8192',
-                include: path.join(__dirname, './public/img'),
+                include: path.join(__dirname, './client/public/img'),
             },
             // 加载字体
             {
@@ -103,37 +102,26 @@ module.exports = {
             name: 'vendor',
             minChunks: function (module, count) {
                 // any required modules inside node_modules are extracted to vendor
-                return module.resource && /\.(js|css)$/.test(module.resource) && module.resource.indexOf( path.join(__dirname, '../node_modules')) === 0
+                return module.resource && /\.(js|css)$/.test(module.resource) && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0
             }
         }),
-        new ExtractTextPlugin('static/css/[name].css')
-        //new ExtractTextPlugin("static/css/[name].css'")
+        new ExtractTextPlugin('static/css/[name].css'),
+        new HtmlWebpackPlugin({
+            // 生成出来的html文件名
+            filename: 'index.html',
+            // 每个html的模版，这里多个页面使用同一个模版
+            template: './client/view/index.html',
+            // 自动将引用插入html
+            inject: true,
+            // 每个html引用的js模块，也可以在这里加上vendor等公用模块
+            chunks: ['main', 'vendor']
+        })
     ],
     // 开启source-map，webpack有多种source-map，在官网文档可以查到
     // 这个选项会使文件增大不少
     devtool: '#eval-source-map',
     cache: true,
 }
-
-var entries = getEntry('./public/js/*.js');
-
-Object.keys(entries).forEach(function (name) {
-    // 每个页面生成一个entry，如果需要HotUpdate，在这里修改entry
-    module.exports.entry[name] = entries[name];
-
-    // 每个页面生成一个html
-    var plugin = new HtmlWebpackPlugin({
-        // 生成出来的html文件名
-        filename: name + '.html',
-        // 每个html的模版，这里多个页面使用同一个模版
-        template: './view/' + name + '.html',
-        // 自动将引用插入html
-        inject: true,
-        // 每个html引用的js模块，也可以在这里加上vendor等公用模块
-        chunks: [name, 'vendor']
-    });
-    module.exports.plugins.push(plugin);
-})
 
 if (process.env.NODE_ENV === 'production') {
     module.exports.devtool = '#source-map';
@@ -151,18 +139,4 @@ if (process.env.NODE_ENV === 'production') {
             }
         })
     ])
-}
-
-
-function getEntry(globPath) {
-    var entries = {},
-        basename; //, tmp, pathname;
-
-    glob.sync(globPath).forEach(function (entry) {
-        basename = path.basename(entry, path.extname(entry));
-        // tmp = entry.split('/').splice(-3);
-        // pathname = tmp.splice(0, 1) + '/' + basename; // 正确输出js和html的路径
-        entries[basename] = entry;
-    });
-    return entries;
 }

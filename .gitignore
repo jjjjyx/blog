@@ -28,3 +28,5 @@ node_modules
 client/dist
 
 sftp-config.json
+
+private.js
