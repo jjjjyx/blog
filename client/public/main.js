@@ -41,7 +41,7 @@ import Test from "./view/test.vue"
 import NotFoundComponent from "./view/404.vue"
 
 var router = new VueRouter({
-    // mode: 'history',
+    mode: 'history',
     routes: [{
             path: "/",
             component: Index,

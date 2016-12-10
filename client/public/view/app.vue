@@ -13,11 +13,11 @@
                 <a class="navbar-brand" href="#">Brand</a>
             </div>
             <ul class="nav navbar-nav navbar-right nav-right collapse navbar-collapse"  role="navigation">
-                <li class="active"><a href="#">首页</a></li>
+                <li class="active"><router-link to="/" exact>首页</router-link></li>
                 <li><a href="#">作品展示</a></li>
                 <li><a href="#">技术文档</a></li>
                 <li><a href="#">留言</a></li>
-                <li style="margin-right:15px;"><a href="#">关于</a></li>
+                <li style="margin-right:15px;"><router-link to="/_test">关于</router-link></li>
 
                 <li><a href="#">投稿</a></li>
                 <li><a href="#">登录</a></li>
