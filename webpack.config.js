@@ -3,7 +3,7 @@ var webpack = require("webpack");
 var autoprefixer = require('autoprefixer');
 var glob = require('glob');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin')
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
     // var values = require('postcss-modules-values')
 
 // var extractLESS = new ExtractTextPlugin('static/css/[name].less');
@@ -130,12 +130,12 @@ module.exports = {
 }
 
 if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = '#source-map';
+    module.exports.devtool = '#cheap-module-source-map';
     // http://vue-loader.vuejs.org/en/workflow/production.html
     module.exports.plugins = (module.exports.plugins || []).concat([
         new webpack.DefinePlugin({
             'process.env': {
-                NODE_ENV: 'production'
+                NODE_ENV: '"production"'
             }
         }),
         new webpack.optimize.OccurenceOrderPlugin(),
