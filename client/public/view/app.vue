@@ -1,6 +1,6 @@
 <template>
 <div id="app">
-    <nav class="navbar navbar-fixed-top navbar-inverse" >
+    <nav class="navbar navbar-fixed-top" >
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
@@ -10,12 +10,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Brand</a>
+                <a class="navbar-brand" href="#">
+                    <img alt="Brand" src="../img/logo.png">
+                </a>
             </div>
             <ul class="nav navbar-nav navbar-right nav-right collapse navbar-collapse"  role="navigation">
                 <li class="active"><router-link to="/" exact>首页</router-link></li>
                 <li><a href="#">作品展示</a></li>
-                <li><a href="#">技术文档</a></li>
+                <li><a href="#">发现</a></li>
                 <li><a href="#">留言</a></li>
                 <li style="margin-right:15px;"><router-link to="/_test">关于</router-link></li>
 
