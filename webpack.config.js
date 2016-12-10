@@ -33,17 +33,17 @@ module.exports = {
                 include: path.join(__dirname, './client/public'),
             },
             // 编译css并自动添加css前缀
+            // {
+            //     test: /\.css$/,
+            //     loader: 'style!css!postcss-loader',
+            //     include: path.join(__dirname, './client/public/view'),
+            // },
+            // 编译css并自动添加css前缀
             {
                 test: /\.css$/,
                 // loader: 'style!css',
                 loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader'),
-                include: path.join(__dirname, './node_modules'),
-            },
-            // 编译css并自动添加css前缀
-            {
-                test: /\.css$/,
-                loader: 'style!css',
-                include: path.join(__dirname, './client/public/view'),
+                // include: path.join(__dirname, './node_modules'),
             },
             // 自动编译 less 文件
             {
@@ -92,7 +92,6 @@ module.exports = {
         alias: {
             jquery: 'jquery/dist/jquery.js'
         },
-        // modulesDirectories: ["node_modules"],
     },
     plugins: [
         // new webpack.DllReferencePlugin({
@@ -111,7 +110,9 @@ module.exports = {
                 return module.resource && /\.(js|css)$/.test(module.resource) && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0
             }
         }),
-        new ExtractTextPlugin('static/css/[name].css'),
+        new ExtractTextPlugin('static/css/[name].css',{
+            allChunks:true
+        }),
         new HtmlWebpackPlugin({
             // 生成出来的html文件名
             filename: 'index.html',
