@@ -35,9 +35,15 @@ module.exports = {
             // 编译css并自动添加css前缀
             {
                 test: /\.css$/,
+                // loader: 'style!css',
+                loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader'),
+                include: path.join(__dirname, './node_modules'),
+            },
+            // 编译css并自动添加css前缀
+            {
+                test: /\.css$/,
                 loader: 'style!css',
-                //  loader: ExtractTextPlugin.extract('style-loader','css-loader!postcss-loader'),
-                // include: path.join(__dirname, './src/css'),
+                include: path.join(__dirname, './client/public/view'),
             },
             // 自动编译 less 文件
             {

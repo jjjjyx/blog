@@ -5,6 +5,96 @@ html {
     min-height: 500px;
     font-family: Arial,"Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
 }
+
+a {
+    color: @logoColor;
+    outline: none;
+}
+.navbar-fixed-top {
+    top: 0;
+    border-width: 0px !important;
+}
+.footer {
+    background: #202020;
+    padding: 35px 0 0;
+    width: 100%;
+    border-top: 1px solid #373a3c;
+    color: rgba(236, 235, 231, 0.5);
+    .widget {
+        padding: 0px 30px;
+    }
+    .widget .title{
+        color: #ffffff;
+        border-bottom: 1px solid @mainTitleColor;
+    }
+    .widget .recent-post .recent-single-post {
+        border-bottom: 1px dashed @mainTitleColor;
+        .post-title{
+            color: @mainTitleSubColor;
+            &:hover {
+                color: @logoColor;
+                text-decoration: none;
+            }
+        }
+        .date {
+            color: @mainFontColor;
+        }
+    }
+    ul>li {
+        margin-bottom: 4px;
+    }
+    ul>li>a {
+        color:@mainFontColor;
+        border-bottom: dotted 1px @mainFontColor;
+        &:hover{
+            text-decoration: none;
+            border-bottom: solid 1px @mainFontColor;
+        }
+    }
+}
+.copyright {
+    background: #111;
+    font-size: 13px;
+    text-align: center;
+    color: @mainFontColor;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    border-top: 1px solid @mainTitleColor;
+    a {
+        color: @mainTitleSubColor;
+    }
+    span {
+        margin: 0 .5em;
+    }
+}
+.widget{
+    margin-bottom: 35px;
+    .title {
+        margin-top: 0;
+        padding-bottom: 7px;
+        border-bottom: 1px solid #ebebeb;
+        margin-bottom: 21px;
+        position: relative;
+        &::after {
+            content: "";
+            width: 90px;
+            height: 1px;
+            background: @logoColor;
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+        }
+    }
+    .recent-post .recent-single-post {
+        border-bottom: 1px dashed #ebebeb;
+        padding-bottom: 14px;
+        margin-bottom: 14px;
+        .post-title {
+            color: @mainTitleSubColor;
+            transition: all 0.2s ease;
+        }
+    }
+}
 //
 // /* Reset the container */
 // .container {

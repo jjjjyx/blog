@@ -4,7 +4,7 @@ import "bootstrap/dist/js/bootstrap.min.js"
 import "bootstrap/dist/css/bootstrap.min.css"
 
 // CSS
-import "./css/index.less";
+import "./css/import.less";
 
 // animate
 import "animate.css/animate.min.css"

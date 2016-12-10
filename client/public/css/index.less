@@ -11,25 +11,32 @@
             height: 50px;
         }
     }
+    .nav.navbar-nav a{
+        color: @mainTitleColor;
+        &:hover{
+            color: @logoColor;
+        }
+    }
 }
 //
-.row {
-    & > div {
-        color: #ccc;
-        height: 100%;
-        text-align: center;
-        vertical-align: middle;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    & > div:first-child {
-        border-right: 1px solid #eee;
-    }
-}
+
 #main {
     .row {
         margin-top: 20px;
+    }
+    .row {
+        & > div {
+            color: #ccc;
+            height: 100%;
+            text-align: center;
+            vertical-align: middle;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        & > div:first-child {
+            border-right: 1px solid #eee;
+        }
     }
 }
 .img-paly {
