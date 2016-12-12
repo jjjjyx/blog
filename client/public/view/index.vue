@@ -12,7 +12,7 @@
         </div>
     </div>
     <!-- 推广 -->
-    <div class="row ">
+    <div class="row img-paly">
         <div class="col-md-8" >
             --推广--
         </div>
@@ -22,7 +22,7 @@
     </div>
 
     <!-- 最新文章 -->
-    <div class="row ">
+    <div class="row img-paly">
         <div class="col-md-8" >
             最新文章
         </div>

@@ -87,12 +87,18 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm-12">
-                    <span>Copyright ©2016 Powered  <a href="www.mbdoge.cn">mbdoge.cn</a> </span> |
+                    <span>Copyright ©2016 Powered  <a href="http://www.mbdoge.cn">mbdoge.cn</a> </span> |
                     <span>By 酱酱酱酱油鲜的 个人博客 Version 1.0.1</span> |
                     <span>Licensed under MIT license.</span>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="gotop" id="gotop" >
+        <transition name="rotate" enter-active-class="animated rollIn" leave-active-class="animated zoomOutRight">
+            <a href="#top" title="回到顶部" class="icon-btn fa fa-arrow-up" id="amz-go-top" @click="goTop" v-if="gotop"></a>
+        </transition >
+        <a href="javascript:;" title="不知道为什么就想放个代码符合在这里" class="icon-faq icon-btn fa fa-code"></a>
     </div>
 </div>
 </template>
@@ -103,13 +109,15 @@ import store from "../store/index";
 export default {
     data: () => {
         return {
-
+            gotop:false
         }
     },
     store,
-    computed: mapGetters([
-        'user'
-    ]),
+    computed: {
+        ...mapGetters([
+            'user'
+        ]),
+    },
     components: {
     },
     methods: {
@@ -119,10 +127,16 @@ export default {
         logout() {
             // this.userSignout();
             // this.$router.replace('/user/login');
+        },
+        goTop (e) {
+            e.preventDefault();
+            $("html, body").animate({scrollTop: 0}, 500,'swing');
         }
     },
     mounted: function () {
-
+        $(document).scroll(() => {
+            this.gotop = $(document).scrollTop() > 10;
+        });
     }
 }
 </script>
