@@ -34,6 +34,7 @@
     "jquery": "^2.2.3",
     "lodash": "^4.16.6",
     "multer": "^1.2.0",
+    "mysql": "^2.12.0",
     "objectid-js": "^1.0.2-patch1",
     "vue": "^2.1.4",
     "vue-resource": "^0.7.0",
