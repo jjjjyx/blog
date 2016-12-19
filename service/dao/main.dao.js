@@ -1,5 +1,4 @@
 "use strict";
-
 import mysql from "mysql";
 
 let connection = mysql.createConnection({

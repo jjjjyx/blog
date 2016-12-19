@@ -1,4 +1,4 @@
-# 我的个人博客[![Wercker](https://img.shields.io/wercker/ci/wercker/docs.svg)]() [![npm](https://img.shields.io/npm/v/npm.svg)]()
+# 我的个人博客[![Wercker](https://img.shields.io/wercker/ci/wercker/docs.svg)]() [![npm (scoped)](https://img.shields.io/npm/v/@cycle/core.svg)]()
   欢迎来到酱酱酱酱油鲜技术博客，在这里可以看到网站前端和后端的技术，以及JAVA技术的分享，个人经验经验。
 
   个人博客采用node.js+Express+Amaze UI，可将自己每日生活中发生的事情记录下来。表达个人思想：它可依照个人自由意志去撰写内容，传达个人的自由思想。分享个人心情：把生活中的不满、郁闷或愤怒宣泄到博客上。
