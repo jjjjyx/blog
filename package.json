@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack  --config=webpack.config.js -pd && cd ../ && node app.js",
+    "start": "node app.js",
     "dev": "webpack-dev-server --inline --hot --port 3879",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -w -r 0"
   },
@@ -31,6 +31,7 @@
     "cookie-parser": "^1.4.3",
     "ejs": "^2.5.2",
     "express": "^4.14.0",
+    "http-server": "^0.9.0",
     "jquery": "^2.2.3",
     "lodash": "^4.16.6",
     "multer": "^1.2.0",

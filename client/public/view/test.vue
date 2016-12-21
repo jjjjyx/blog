@@ -1,55 +1,30 @@
 <style>
 
-.list-item {
-    display: inline-block;
-    margin-right: 10px;
+.test-reg{
+    width: 500px;
+    margin: auto;
 }
-
-.list-enter-active,
-.list-leave-active {
-    transition: all 1s;
-}
-
-.list-enter,
-.list-leave-active {
-    opacity: 0;
-    transform: translateY(30px);
-}
-
-.test_tttt {}
-
-.test_tttt>div.htable {
-    position: relative;
-    overflow: hidden;
-    height: 400px;
-    width: 800px;
-}
-
-.test-ul,
-.test-ul>li {
-    display: inline-block;
-    margin-right: 5px;
-}
-
 </style>
 
 <template>
 
 <div class="test_tttt">
+    <form role="form" class="test-reg" @submit.prevent>
+  <div class="form-group">
+    <label for="exampleInputEmail1">账号</label>
+    <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+  </div>
+  <div class="form-group">
+    <label for="exampleInputPassword1">密码</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+  </div>
+   <div class="form-group">
+     <label for="exampleInputPassword2">确认密码</label>
+     <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password">
+   </div>
+  <button type="button" class="btn btn-default">Submit</button>
+</form>
     <button class="ui red button">test info 通知</button>
-    <!-- <button class="ui orange button">Orange</button>
-    <button class="ui yellow button">Yellow</button>
-    <button class="ui olive button">Olive</button>
-    <button class="ui green button">Green</button>
-    <button class="ui teal button">Teal</button>
-    <button class="ui blue button">Blue</button>
-    <button class="ui violet button">Violet</button>
-    <button class="ui purple button">Purple</button>
-    <button class="ui pink button">Pink</button>
-    <button class="ui brown button">Brown</button>
-    <button class="ui grey button">Grey</button>
-    <button class="ui black button">Black</button> -->
-
 
 </div>
 

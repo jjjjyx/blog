@@ -1,8 +1,20 @@
-module.exports = {
-    DB_HOST: 'localhost',
-    DB_NAME: 'blog',
-    DB_USER: 'blog',
-    DB_PASS: '123',
-    DB_PRE: '',
-    APP_PORT: '3000'
+'use strict';
+
+
+let db = {
+    host: '127.0.0.1',
+    user: '',
+    password: '',
+    database: '',
+    connectionLimit: 10,
+    supportBigNumbers: true
 };
+try {
+
+    let pri = require("../private.js");
+
+    db = pri.db || db;
+    console.log(pri.db,db)
+} catch (e) {}
+
+exports.db = db;
