@@ -40,3 +40,6 @@ client/public/img/logoquan14696215588.PNG
 client/favicon.png
 
 kfavicon.png
+/service/test/*
+
+!/service/test/*.js

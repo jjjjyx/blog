@@ -23,20 +23,17 @@
     .row {
         margin-top: 20px;
     }
-    .row {
-        & > div {
-            color: #ccc;
-            height: 100%;
-            text-align: center;
-            vertical-align: middle;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        & > div:first-child {
-            border-right: 1px solid #eee;
-        }
-    }
+    // .row {
+    //     & > div {
+    //         color: #ccc;
+    //         height: 100%;
+    //         text-align: center;
+    //         vertical-align: middle;
+    //         display: flex;
+    //         align-items: center;
+    //         justify-content: center;
+    //     }
+    // }
 }
 #carousel-example-generic {
     width: 100%;
@@ -113,12 +110,63 @@
         background-image: none;
     }
 }
-.img-paly {
-    height: 338px;
-    margin: 0;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid #EEE;
-    background: #FAFAFA;
-    z-index: 10;
+// .img-paly {
+//     height: 338px;
+//     margin: 0;
+//     overflow: hidden;
+//     position: relative;
+//     border: 1px solid #EEE;
+//     background: #FAFAFA;
+//     z-index: 10;
+// }
+
+
+.sidebar .part{
+    padding-left: 30px;
+    margin-bottom: 50px;
+    .title {
+        position: relative;
+        font-size: 16px;
+        font-size: 1.6rem;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #E5E5E5;
+        margin-bottom: 20px;
+    }
+    .title h3 {
+        font-size: 16px;
+        margin: 0;
+        padding: 0;
+        line-height: 24px;
+    }
+    .title .num {
+        color: @logoColor;
+        margin-right: 5px;
+        font-weight: bold;
+    }
+    .title .r {
+        position: absolute;
+        right: 0;
+        top: 1px;
+        font-size: 12px;
+        height: 24px;
+        line-height: 25px;
+        padding: 0 10px;
+        border-radius: 40px;
+    }
+    .hot {
+        list-style: decimal;
+        margin-left: 20px;
+        font-size: 14px;
+    }
+    .hot li {
+        line-height: 24px;
+        margin-bottom: 20px;
+    }
+    .hot a {
+        display: inline-block;
+        color: #333;
+        font-size: 14px;
+        line-height: 1.4;
+        vertical-align: text-top;
+    }
 }
