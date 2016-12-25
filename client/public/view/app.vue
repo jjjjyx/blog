@@ -1,34 +1,53 @@
 <template>
 <div id="app">
-    <nav class="navbar navbar-fixed-top" >
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".nav-right">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">
-                    <img alt="Brand" src="../img/logo.png">
-                </a>
+    <nav class="navbar navbar-default bootsnav navbar-fixed-top">
+        <!-- Start Top Search -->
+        <div class="top-search" :class="{active:isSearchShow}">
+            <div class="container">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                    <input type="text" class="form-control" placeholder="Search">
+                    <span class="input-group-addon close-search" @click="isSearchShow = false"><i class="fa fa-times"></i></span>
+                </div>
             </div>
-            <ul class="nav navbar-nav navbar-right nav-right collapse navbar-collapse"  role="navigation">
-                <li class="active"><router-link to="/" exact>首页</router-link></li>
-                <li><a href="#">作品展示</a></li>
-                <li><a href="#">发现</a></li>
-                <li><a href="#">留言</a></li>
-                <li style="margin-right:15px;"><router-link to="/_test">关于</router-link></li>
-
-                <li><a href="#">投稿</a></li>
-                <li><a href="#">登录</a></li>
-                <li><a href="#">搜索</a></li>
-            </ul>
         </div>
-        <!-- /.navbar-collapse -->
+        <!-- End Top Search -->
+
+        <div class="container">
+            <!-- Start Atribute Navigation -->
+            <div class="attr-nav">
+                <ul>
+                    <li class="search"><a href="#" @click="isSearchShow = !isSearchShow"><i class="fa fa-search"></i></a></li>
+                </ul>
+            </div>
+            <!-- End Atribute Navigation -->
+
+            <!-- Start Header Navigation -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
+                    <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand" href="#brand"><img src="../img/logo.png" class="logo" alt=""></a>
+            </div>
+            <!-- End Header Navigation -->
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#">首页</a></li>
+                    <li><a href="#">归档</a></li>
+                    <li><a href="#">发现</a></li>
+                    <li><a href="#">关于我</a></li>
+                    <li><a href="#">作品</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div>
     </nav>
+    <!-- #masthead -->
+    <div class="blank"></div>
+
     <router-view></router-view>
+    
     <footer class="footer">
         <div class="container">
             <div class="row">
@@ -96,7 +115,7 @@
     </div>
     <div class="gotop" id="gotop" >
         <transition name="rotate" enter-active-class="animated rollIn" leave-active-class="animated zoomOutRight">
-            <a href="#top" title="回到顶部" class="icon-btn fa fa-arrow-up" id="amz-go-top" @click="goTop" v-if="gotop"></a>
+            <a href="#top" title="回到顶部" class="icon-btn fa fa-arrow-up" id="amz-go-top" @click="goTop" v-show="isGoTopShow"></a>
         </transition >
         <a href="javascript:;" title="不知道为什么就想放个代码符合在这里" class="icon-faq icon-btn fa fa-code"></a>
     </div>
@@ -109,7 +128,8 @@ import store from "../store/index";
 export default {
     data: () => {
         return {
-            gotop:false
+            isGoTopShow:false,
+            isSearchShow:false
         }
     },
     store,
@@ -134,8 +154,26 @@ export default {
         }
     },
     mounted: function () {
+        let h1 = 0;
+        let h2 = 25;
+        let ss = $(document).scrollTop();
         $(document).scroll(() => {
-            this.gotop = $(document).scrollTop() > 10;
+            let s = $(document).scrollTop();
+
+            this.isGoTopShow = s > 10;
+    		if(s== h1){
+    			$('.bootsnav').removeClass('yya');
+    		}if(s > h1){
+    			$('.bootsnav').addClass('yya');
+    		}if(s > h2){
+    			$('.bootsnav').addClass('gizle');
+    			if(s > ss){
+    				$('.bootsnav').removeClass('sabit');
+    			}else{
+    				$('.bootsnav').addClass('sabit');
+    			}
+    			ss = s;
+    		}
         });
     }
 }

@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 
 .test-reg{
     width: 500px;

@@ -1,24 +1,44 @@
 #app {
-    padding-top: 50px;
-    .navbar{
+    // padding-top: 50px;
+    .navbar {
+        transition: all .4s ease;
         background-color: #FFF;
         box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     }
-    .navbar-header .navbar-brand{
+
+    .navbar-header .navbar-brand {
         padding: 0;
-        &>img {
+
+        & > img {
             height: 50px;
         }
     }
-    .nav.navbar-nav a{
+
+    .attr-nav a i,
+    .nav.navbar-nav a {
         color: @mainTitleColor;
-        &:hover{
+
+        &:hover {
             color: @logoColor;
         }
     }
 }
-//
 
+.yya {
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.gizle {
+    top: -50px;
+}
+
+.sabit {
+    top: 0;
+    z-index: 9999;
+}
+//
 #main {
     .row {
         margin-top: 20px;
@@ -35,12 +55,15 @@
     //     }
     // }
 }
+
 #carousel-example-generic {
     width: 100%;
-    .carousel-inner>.item>img {
+
+    .carousel-inner > .item > img {
         width: 100%;
     }
-    .acarousel-control{
+
+    .acarousel-control {
         position: absolute;
         left: 0;
         top: 120px;
@@ -48,39 +71,44 @@
         width: 50px;
         font-size: 30px;
         color: #fff;
-        opacity: .5;
+        opacity: 0.5;
         line-height: 50px;
         transition-duration: 0.3s;
+
         &.right {
             right: 0;
             left: auto;
         }
-        &:hover{
+
+        &:hover {
             background-color: rgba(0, 0, 0, 0.6);
         }
-        &:hover,&:focus {
+
+        &:focus,
+        &:hover {
             text-decoration: none;
             outline: 0;
-            opacity: .9;
+            opacity: 0.9;
         }
-
     }
-    .carousel-indicators{
+
+    .carousel-indicators {
         position: absolute;
         right: 5px;
         bottom: 5px;
         overflow: hidden;
-        padding: 0px 5px;
+        padding: 0 5px;
         width: auto;
         left: auto;
         margin: 0;
         z-index: 5;
         list-style-type: none;
+
         li {
             cursor: pointer;
             width: 12px;
             height: 12px;
-            margin: 2px 2px;
+            margin: 2px;
             display: inline-block;
             border: 1px solid #fff;
             border-radius: 50%;
@@ -90,12 +118,13 @@
             // }
         }
     }
+
     .item .acarousel-caption {
         position: absolute;
         color: #fff;
         padding-left: 10px;
-        left: 0px;
-        bottom: 0px;
+        left: 0;
+        bottom: 0;
         width: 100%;
         display: block;
         height: 35px;
@@ -106,7 +135,8 @@
     // &:hover .acarousel-control {
     //     opacity: 1;
     // }
-    .carousel-control.left,.carousel-control.right{
+    .carousel-control.left,
+    .carousel-control.right {
         background-image: none;
     }
 }
@@ -120,10 +150,10 @@
 //     z-index: 10;
 // }
 
-
-.sidebar .part{
+.sidebar .part {
     padding-left: 30px;
     margin-bottom: 50px;
+
     .title {
         position: relative;
         font-size: 16px;
@@ -132,17 +162,20 @@
         border-bottom: 1px solid #E5E5E5;
         margin-bottom: 20px;
     }
+
     .title h3 {
         font-size: 16px;
         margin: 0;
         padding: 0;
         line-height: 24px;
     }
+
     .title .num {
         color: @logoColor;
         margin-right: 5px;
         font-weight: bold;
     }
+
     .title .r {
         position: absolute;
         right: 0;
@@ -153,15 +186,18 @@
         padding: 0 10px;
         border-radius: 40px;
     }
+
     .hot {
         list-style: decimal;
         margin-left: 20px;
         font-size: 14px;
     }
+
     .hot li {
         line-height: 24px;
         margin-bottom: 20px;
     }
+
     .hot a {
         display: inline-block;
         color: #333;
