@@ -288,6 +288,46 @@ nav.navbar.bootsnav ul.nav ul.dropdown-menu > li > a{
     -webkit-appearance: none;
 }
 
+#app {
+    // padding-top: 50px;
+    .navbar {
+        transition: all .4s ease;
+        background-color: #FFF;
+        box-shadow: 0 0 0 1px rgba(0,0,0,.1);
+    }
+
+    .navbar-header .navbar-brand {
+        padding: 0;
+
+        & > img {
+            height: 50px;
+        }
+    }
+
+    .attr-nav a i,
+    .nav.navbar-nav a {
+        color: @mainTitleColor;
+
+        &:hover {
+            color: @logoColor;
+        }
+    }
+}
+
+.yya {
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.gizle {
+    top: -50px;
+}
+
+.sabit {
+    top: 0;
+    z-index: 9999;
+}
 
 @keyframes btn-pudding {
     12%,15% {

@@ -26,6 +26,7 @@ build/Release
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
 client/dist
+client/home
 
 sftp-config.json
 
@@ -38,7 +39,9 @@ client/public/img/logoquan14746110164.psd
 client/public/img/logoquan14696215588.PNG
 
 client/favicon.png
-
+*.bak
+/doc/view
+/client/public/tmp
 kfavicon.png
 /service/test/*
 

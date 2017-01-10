@@ -7,15 +7,13 @@ import {mutations} from "./mutations.js";
 import * as getters from "./getters";
 // import * as actions from "./actions";
 
-import notify from "./modules/notify";
+// import notify from "./modules/notify";
 
 Vue.use(Vuex);
 
 
 const state = {
     // 全局
-    sock: false,
-
     count:0
 }
 export default new Vuex.Store({
@@ -24,6 +22,6 @@ export default new Vuex.Store({
     getters,
     mutations,
     modules:{
-        notify
+        // notify
     }
 })
