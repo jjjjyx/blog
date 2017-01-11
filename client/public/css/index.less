@@ -1,120 +1,88 @@
+@charset "UTF-8";
 
-//
-#main {
+
+.index-content{
+
+    width: 980px;
+    margin-left: auto;
+    margin-right: auto;
     .row {
         margin-top: 20px;
     }
-    // .row {
-    //     & > div {
-    //         color: #ccc;
-    //         height: 100%;
-    //         text-align: center;
-    //         vertical-align: middle;
-    //         display: flex;
-    //         align-items: center;
-    //         justify-content: center;
-    //     }
-    // }
-}
-
-#carousel-example-generic {
-    width: 100%;
-
-    .carousel-inner > .item > img {
-        width: 100%;
-    }
-
-    .acarousel-control {
-        position: absolute;
-        left: 0;
-        top: 120px;
-        height: 50px;
-        width: 50px;
-        font-size: 30px;
-        color: #fff;
-        opacity: 0.5;
-        line-height: 50px;
-        transition-duration: 0.3s;
-
-        &.right {
-            right: 0;
-            left: auto;
+    .articles {
+        width: 640px;
+        .j-title {
+            font-size: 1.6rem;
+            margin-bottom: 0;
         }
-
-        &:hover {
-            background-color: rgba(0, 0, 0, 0.6);
+        .load-more {
+            margin-bottom: 70px;
+            margin-top: 0;
+            padding-top: 50px;
+            border-top: 1px #f2f2f2 solid;
         }
-
-        &:focus,
-        &:hover {
-            text-decoration: none;
-            outline: 0;
-            opacity: 0.9;
+        .load-more .btn {
+            color: #909090;
+            border-color: #D8D8D8;
+            background-color: white;
+            border-radius: 40px;
+            -webkit-appearance: none;
+            &:hover{
+                border-color: #b2b2b2;
+                color: #666666;
+            }
         }
     }
+    .sidebar {
+        width: 310px;
+    }
+    .load-more {
+        text-align: center;
+        margin-top: 50px;
 
-    .carousel-indicators {
-        position: absolute;
-        right: 5px;
-        bottom: 5px;
-        overflow: hidden;
-        padding: 0 5px;
-        width: auto;
-        left: auto;
-        margin: 0;
-        z-index: 5;
-        list-style-type: none;
+    }
 
-        li {
-            cursor: pointer;
-            width: 12px;
-            height: 12px;
-            margin: 2px;
+    .j-title {
+        font-size: 1.6rem;
+        padding-bottom: 9px;
+        border-bottom: 1px solid #E5E5E5;
+        margin-bottom: 25px;
+        h3 {
             display: inline-block;
-            border: 1px solid #fff;
-            border-radius: 50%;
-            // &:hover{
-            //     width: 15px;
-            //     height: 15px;
-            // }
+            cursor: pointer;
+        }
+        h3.active {
+            color: @logoColor;
+        }
+        .gapline {
+            font-size: 1.6rem;
+            color: #D8D8D8;
+            margin: 0 12px;
         }
     }
-
-    .item .acarousel-caption {
-        position: absolute;
-        color: #fff;
-        padding-left: 10px;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        display: block;
-        height: 35px;
-        line-height: 35px;
-        text-align: left;
-        background-color: rgba(0, 0, 0, 0.6);
-    }
-    // &:hover .acarousel-control {
-    //     opacity: 1;
-    // }
-    .carousel-control.left,
-    .carousel-control.right {
-        background-image: none;
+    h3 {
+        font-size: 1.6rem;
     }
 }
-// .img-paly {
-//     height: 338px;
-//     margin: 0;
-//     overflow: hidden;
-//     position: relative;
-//     border: 1px solid #EEE;
-//     background: #FAFAFA;
-//     z-index: 10;
-// }
 
 .sidebar .part {
     padding-left: 30px;
     margin-bottom: 50px;
-
+    .tag {
+        display: inline-block;
+        padding: 4px 10px 3px 10px;
+        border: 1px solid #f2f2f2;
+        color: #808080;
+        font-size: 14px;
+        font-size: 1.4rem;
+        border-radius: 2px;
+        margin: 0 7px 10px 0;
+        &:hover {
+            color: @logoColor;
+            border-color: @logoColor;
+            background-color: rgba(34, 187, 149, 0.05);
+        }
+    }
     .title {
         position: relative;
         font-size: 16px;

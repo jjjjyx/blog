@@ -18,10 +18,16 @@ a {
     color: @logoColor;
     outline: none;
     text-decoration: none;
+    transition:color 0.2s ease-out,border 0.2s ease-out,opacity 0.2s ease-out;
+    &:active, &:hover {
+        outline: 0;
+        text-decoration: none;
+    }
 }
 ol, ul {
     padding: 0;
     margin: 0;
+    list-style: none;
 }
 * {
     outline: none;
@@ -287,7 +293,9 @@ nav.navbar.bootsnav ul.nav ul.dropdown-menu > li > a{
     color: white;
     -webkit-appearance: none;
 }
-
+.btn-bordered{
+    border: 1px solid;
+}
 #app {
     // padding-top: 50px;
     .navbar {
@@ -366,4 +374,20 @@ nav.navbar.bootsnav ul.nav ul.dropdown-menu > li > a{
     0% {
         transform: scale(1.2, 0.8)
     }
+}
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: #B9B9B9;
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #B9B9B9;
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #35B995;
 }
