@@ -14,8 +14,8 @@
         background-attachment: fixed;
         background-size: cover;
         z-index: -1;
-        background-image: url("http://oht47c0d0.bkt.clouddn.com/17-1-11/68047650-file_1484139558576_16d08.png");
-        filter: blur(2px);
+        background-image: url("http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png");
+        filter: blur(0px);
     }
     .slant-left {
         background: #fff;
@@ -104,7 +104,7 @@
         <div class="row">
             <div class="col-md-9 articles">
                 <div class="j-title">
-                    <h3 class="active">推荐阅读</h3>
+                    <h3 class="active">最新文章</h3>
                     <!-- <span class="gapline">|</span> -->
                 </div>
                 <div class="recommend-post">
@@ -146,8 +146,8 @@
 
 import {mapGetters, mapActions} from 'vuex'
 import store from "./store/index";
-import BlobHeader from "../components/head.vue";
-import BlobFooter from "../components/bottom.vue";
+import BlobHeader from "./components/head.vue";
+import BlobFooter from "./components/bottom.vue";
 
 // import Head from "../components/head";
 

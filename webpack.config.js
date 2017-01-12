@@ -5,7 +5,7 @@ var glob = require('glob');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 // var values = require('postcss-modules-values')
-var entries = getEntry('./client/src/*/*.js'); // 获得入口 js 文件
+var entries = getEntry('./client/src/**/*.js'); // 获得入口 js 文件
 var chunks = Object.keys(entries);
 console.log('entries:',entries)
 console.log('chunks:',chunks)
@@ -112,11 +112,11 @@ module.exports = {
         //     context: path.join(__dirname, "src"),
         //     manifest: require("./dist/vendors-manifest.json")
         // }),
-        new webpack.ProvidePlugin({
-            $: "jquery",
-            'jQuery': "jquery",
-            "window.jQuery": "jquery"
-        }),
+        // new webpack.ProvidePlugin({
+        //     $: "jquery",
+        //     'jQuery': "jquery",
+        //     "window.jQuery": "jquery"
+        // }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             chunks: chunks,  // chunks是需要提取的模块
@@ -127,7 +127,7 @@ module.exports = {
             //     return module.resource && /\.(js|css)$/.test(module.resource) && module.resource.indexOf(path.join(__dirname, './node_modules')) === 0
             // }
         }),
-        new ExtractTextPlugin('css/[name].css', {
+        new ExtractTextPlugin('[name].css', {
             allChunks: true
         }),
         // new HtmlWebpackPlugin({
@@ -148,7 +148,7 @@ module.exports = {
 }
 // var prod = process.env.NODE_ENV === 'production';
 
-var pages = getEntry('./client/src/*/*.html');
+var pages = getEntry('./client/src/**/*.html');
 console.log("pages:",pages)
 for (var pathname in pages) {
   // 配置生成的 html 文件，定义路径等
@@ -176,13 +176,35 @@ function getEntry(globPath) {
         basename, tmp, pathname;
 
     glob.sync(globPath).forEach(function (entry) {
-
-        basename = path.basename(entry, path.extname(entry));
-        tmp = entry.split('/').splice(-2);
-
-        pathname = tmp.splice(0, 1) + '/' + basename; // 正确输出 js 和 html 的路径
-        entries[pathname] = entry;
+        if(entry.indexOf("store")<0){
+            basename = path.basename(entry, path.extname(entry));
+            let tmp = entry.split('/');
+            if(tmp.length==4){
+                pathname = basename; // 正确输出 js 和 html 的路径
+            }else{
+                pathname = tmp.splice(-2).splice(0, 1) + '/' + basename; // 正确输出 js 和 html 的路径
+            }
+            entries[pathname] = entry;
+        }
     });
     // console.log(entries)
     return entries;
+}
+
+if (process.env.NODE_ENV === 'production') {
+    module.exports.devtool = '#cheap-module-source-map';
+    // http://vue-loader.vuejs.org/en/workflow/production.html
+    module.exports.plugins = (module.exports.plugins || []).concat([
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"production"'
+            }
+        }),
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                warnings: false
+            }
+        })
+    ])
 }
