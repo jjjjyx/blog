@@ -52,7 +52,7 @@
         width: 120px;
         height: auto;
         border-radius: 50%;
-        border: 3px solid rgba(255, 255, 255, 0.3);
+        border: 5px solid rgba(255, 255, 255, 0.3);
 
     }
     .focusinfo .avatar-p {
@@ -101,25 +101,25 @@
         </div>
     </div>
     <div class="index-content clearfix">
-        <div class="row">
-            <div class="col-md-9 articles">
+        <div class="am-g">
+            <div class="am-u-md-9 articles">
                 <div class="j-title">
                     <h3 class="active">最新文章</h3>
                     <!-- <span class="gapline">|</span> -->
                 </div>
                 <div class="recommend-post">
                     <ul class="j-article-list">
-                        <li>1</li>
+                        <li>党说：先搞后台管理</li>
                         <li>1</li>
                         <li>1</li>
                         <li>1</li>
                     </ul>
                     <p class="load-more">
-                        <button class="btn gray btn-bordered">加载更多</button>
+                        <button class="am-btn am-round gray btn-bordered am-btn-sm">加载更多</button>
                     </p>
                 </div>
             </div>
-            <div class="col-md-3 sidebar">
+            <div class="am-u-md-3 sidebar">
                 <div class="part">
                     <div class="j-title">
                         <h3 class="">标签</h3>

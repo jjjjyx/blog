@@ -14,13 +14,13 @@ try {
     API_SERVER = pri.default.API_SERVER || API_SERVER;
 } catch (e) {}
 
-$.ajaxSetup({
-    dataType: "json",
-    timeout: REQUEST_TIMEOUT,
-    xhrFields: {
-        withCredentials: true
-    }
-});
+// $.ajaxSetup({
+//     dataType: "json",
+//     timeout: REQUEST_TIMEOUT,
+//     xhrFields: {
+//         withCredentials: true
+//     }
+// });
 
 export function xxx(username, password) {
     return new Promise((resolve, reject) => {

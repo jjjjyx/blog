@@ -8,14 +8,15 @@ html {
     -webkit-font-smoothing: antialiased;
             font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    // font-size: 10px;
+
+}
+body {
+    font-size: 1.4rem;
 }
 
-// @media (min-width: 1400px){
-//     .container {
-//         width: 1370px;
-//     }
-// }
 a {
+    font-size: 1.4rem;
     color: @logoColor;
     outline: none;
     text-decoration: none;
@@ -32,16 +33,54 @@ ol, ul {
 }
 * {
     outline: none;
+    // font-size: 1.4rem;
+}
+.h1, .h2, .h3, h1, h2, h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.1;
+    color: inherit;
 }
 .navbar-fixed-top {
     top: 0;
     border-width: 0px !important;
 }
+.am-with-topbar-fixed-top {
+    padding: 0;
+}
+.am-topbar {
+    margin-bottom: 0;
+    border-width: 0px;
+}
+.am-topbar-right {
+    margin-right: 0;
+}
+.am-container{
+    max-width: 1165px;
+}
 
-
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+.list-inline {
+    padding-left: 0;
+    margin-left: -5px;
+    list-style: none;
+}
+.list-inline>li {
+    display: inline-block;
+    padding-right: 5px;
+    padding-left: 5px;
+}
 /* Navbar
 =================================*/
-nav.navbar.bootsnav{
+header.am-topbar.bootsnav{
     margin-bottom: 0;
     border-radius: 0px;
     background-color: #fff;
@@ -49,20 +88,27 @@ nav.navbar.bootsnav{
     z-index: 9;
 }
 
-nav.navbar.bootsnav ul.nav > li > a{
+header.am-topbar.bootsnav ul.am-nav > li > a{
     color: #6f6f6f;
     background-color: transparent !important;
 }
 
-nav.navbar.bootsnav ul.nav li.megamenu-fw > a:hover,
-nav.navbar.bootsnav ul.nav li.megamenu-fw > a:focus,
-nav.navbar.bootsnav ul.nav li.active > a:hover,
-nav.navbar.bootsnav ul.nav li.active > a:focus,
-nav.navbar.bootsnav ul.nav li.active > a{
+header.am-topbar.bootsnav ul.am-nav li.megamenu-fw > a:hover,
+header.am-topbar.bootsnav ul.am-nav li.megamenu-fw > a:focus,
+header.am-topbar.bootsnav ul.am-nav li.active > a:hover,
+header.am-topbar.bootsnav ul.am-nav li.active > a:focus,
+header.am-topbar.bootsnav ul.am-nav li.active > a{
     background-color: transparent;
 }
-
-nav.navbar.bootsnav .navbar-toggle{
+@media only screen and (min-width: 641px) {
+    .am-topbar-nav>li>a:after{
+        bottom: 0px;
+    }
+    .am-topbar-nav>li>a:hover:after {
+        border-bottom-color: @logoColor;
+    }
+}
+header.am-topbar.bootsnav .am-topbar-toggle{
     background-color: #fff !important;
     border: none;
     padding: 0;
@@ -71,12 +117,12 @@ nav.navbar.bootsnav .navbar-toggle{
     top: 5px;
 }
 
-nav.navbar.bootsnav ul.nav .dropdown-menu .dropdown-menu{
+header.am-topbar.bootsnav ul.am-nav .dropdown-menu .dropdown-menu{
     top: 0;
     left: 100%;
 }
 
-nav.navbar.bootsnav ul.nav ul.dropdown-menu > li > a{
+header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
     white-space:normal;
 }
 
@@ -182,6 +228,7 @@ nav.navbar.bootsnav ul.nav ul.dropdown-menu > li > a{
         }
         .date {
             color: @mainFontColor;
+            font-size: 1.2rem;
         }
     }
     ul>li {
@@ -299,13 +346,13 @@ nav.navbar.bootsnav ul.nav ul.dropdown-menu > li > a{
 }
 #app {
     // padding-top: 50px;
-    .navbar {
+    .am-navbar {
         transition: all .4s ease;
         background-color: #FFF;
         box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     }
 
-    .navbar-header .navbar-brand {
+    .am-topbar-brand {
         padding: 0;
 
         & > img {
@@ -314,9 +361,9 @@ nav.navbar.bootsnav ul.nav ul.dropdown-menu > li > a{
     }
 
     .attr-nav a i,
-    .nav.navbar-nav a {
+    .am-nav.am-topbar-nav a {
         color: @mainTitleColor;
-
+        font-size: 1.4rem;
         &:hover {
             color: @logoColor;
         }

@@ -1,8 +1,8 @@
 <template>
     <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-4">
+        <div class="am-container">
+            <div class="am-g">
+                <div class="am-u-sm-4">
                     <div class="widget">
                         <h4 class="title">最新文章</h4>
                         <div class="content recent-post">
@@ -21,7 +21,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="am-u-sm-4">
                     <div class="widget">
                         <h4 class="title">友情链接</h4>
                         <ul class="content recent-post list-unstyled">
@@ -33,7 +33,7 @@
                         </ul>
                     </div>
                 </div>
-                <div class="col-sm-4">
+                <div class="am-u-sm-4">
                     <div class="widget">
                         <h4 class="title">用到的技术</h4>
                         <ul class="content recent-post list-unstyled list-inline">
