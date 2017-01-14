@@ -14,7 +14,8 @@ Vue.use(Vuex);
 
 const state = {
     // 全局
-    count:0
+    count:0,
+    // skiner:''
 }
 export default new Vuex.Store({
     // actions,
