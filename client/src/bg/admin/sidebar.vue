@@ -1,11 +1,11 @@
 <template>
     <!-- 侧边导航栏 -->
-    <div class="left-sidebar">
+    <div class="left-sidebar" :class="{active:activeSidebar}">
         <!-- 用户信息 -->
         <div class="tpl-sidebar-user-panel">
             <div class="tpl-user-panel-slide-toggleable">
                 <div class="tpl-user-panel-profile-picture">
-                    <img src="assets/img/user04.png" alt="">
+                    <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" alt="">
                 </div>
                 <span class="user-panel-logged-in-text">
           <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
@@ -89,7 +89,9 @@
 <script>
 export default {
     data: function() {
-        return {}
+        return {
+            activeSidebar:false,
+        }
     },
     components: {},
     computed: {
@@ -99,7 +101,8 @@ export default {
 
     },
     mounted: function() {
-        console.log("sidebar");
+        // console.log("sidebar");
+        this.activeSidebar = ($(window).width() < 1024);
     }
 }
 </script>

@@ -8,9 +8,9 @@ Vue.config.errorHandler = function (err, vm) {
     console.log(err, vm);
 }
 
-import "./static/app.less";
+import "../static/app.less";
 
-import store from "../store/index.js"
+import store from "../../store/index.js"
 
 // 入口
 import App from "./app.vue";

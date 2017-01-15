@@ -14,19 +14,33 @@ try {
     API_SERVER = pri.default.API_SERVER || API_SERVER;
 } catch (e) {}
 
-// $.ajaxSetup({
-//     dataType: "json",
-//     timeout: REQUEST_TIMEOUT,
-//     xhrFields: {
-//         withCredentials: true
-//     }
-// });
-
-export function xxx(username, password) {
+$.ajaxSetup({
+    dataType: "json",
+    timeout: REQUEST_TIMEOUT,
+    xhrFields: {
+        withCredentials: true
+    }
+});
+export function login(username, password) {
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/xx`, {
+        $.post(`${API_SERVER}/api/user/login`, {
             username,
             password
+        }).done((data) => {
+            resolve([data.code, data.data]);
+        }).fail((data) => {
+            reject([data.code, data.data]);
+        });
+    });
+}
+
+export function getUserInfo() {
+    return new Promise((resolve, reject) => {
+        var token = cookie.get('access_token')
+        $.ajax(`${API_SERVER}/api/verify`,{
+            headers:{
+                Authorization:'Bearer ' + token
+            }
         }).done((data) => {
             resolve([data.code, data]);
         }).fail((data) => {

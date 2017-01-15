@@ -28,9 +28,9 @@
                                 <div class="widget-fluctuation-period-text">
                                     ￥61746.45
                                     <button class="widget-fluctuation-tpl-btn">
-                    <i class="am-icon-calendar"></i>
-                    更多月份
-                  </button>
+                                        <i class="am-icon-calendar"></i>
+                                        更多月份
+                                      </button>
                                 </div>
                             </div>
                             <div class="am-fr am-cf">

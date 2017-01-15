@@ -1,10 +1,10 @@
 <template>
-    <div class="am-g tpl-g theme-white">
+    <div class="am-g tpl-g " :class="skiner">
         <!-- 头部 -->
         <header>
             <!-- logo -->
             <div class="am-fl tpl-header-logo">
-                <a href="javascript:;"><img src="../../public/img/logo.png" alt=""></a>
+                <a href="javascript:;"><img src="../../../public/img/logo.png" alt=""></a>
             </div>
             <!-- 右侧内容 -->
             <div class="tpl-header-fluid">
@@ -25,7 +25,7 @@
                     <ul>
                         <!-- 欢迎语 -->
                         <li class="am-text-sm tpl-header-navbar-welcome">
-                            <a href="javascript:;">欢迎你, <span>Amaze UI</span> </a>
+                            <a href="javascript:;">欢迎你, <span>admin</span> </a>
                         </li>
 
                         <!-- 新邮件 -->
@@ -39,7 +39,7 @@
                                 <li class="tpl-dropdown-menu-messages">
                                     <a href="javascript:;" class="tpl-dropdown-menu-messages-item am-cf">
                                         <div class="menu-messages-ico">
-                                            <img src="assets/img/user04.png" alt="">
+                                            <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" alt="">
                                         </div>
                                         <div class="menu-messages-time">
                                             3小时前
@@ -91,29 +91,64 @@
                                 </li>
                             </ul>
                         </li>
+                        <!-- 用户设置 -->
+                        <li class="am-dropdown" data-am-dropdown>
+                            <a href="javascript:;" class="am-dropdown-toggle" data-am-dropdown-toggle>
+                                <i class="am-icon-cog"></i>
+                            </a>
 
+                            <!-- 弹出列表 -->
+                            <ul class="am-dropdown-content tpl-dropdown-content user-setting">
+                                <li class="tpl-dropdown-menu-notifications">
+                                    <a href="javascript:;" class="tpl-dropdown-menu-notifications-item am-cf">
+                                        <div class="tpl-dropdown-menu-notifications-title">
+                                            <i class="am-icon-bell-o"></i>
+                                            <span> 个人资料</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="tpl-dropdown-menu-notifications">
+                                    <a href="/1901/user/!changePass" class="tpl-dropdown-menu-notifications-item am-cf">
+                                        <div class="tpl-dropdown-menu-notifications-title">
+                                            <i class="am-icon-cog"></i>
+                                            <span> 修改密码</span>
+                                        </div>
+                                    </a>
+                                </li>
+
+                                <li class="tpl-dropdown-menu-notifications">
+                                    <a href="javascript:;" class="tpl-dropdown-menu-notifications-item am-cf"  onclick="signOut()">
+                                        <div class="tpl-dropdown-menu-notifications-title">
+                                            <i class="am-icon-sign-out"></i>
+                                            <span> 退出</span>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         <!-- 退出 -->
                         <li class="am-text-sm">
                             <a href="javascript:;">
                                 <span class="am-icon-sign-out"></span> 退出
                             </a>
                         </li>
+
                     </ul>
                 </div>
             </div>
 
         </header>
         <!-- 风格切换 -->
-        <div class="tpl-skiner">
-            <div class="tpl-skiner-toggle am-icon-cog">
+        <div class="tpl-skiner" :class="{active:selectSkiner}">
+            <div class="tpl-skiner-toggle am-icon-cog" @click="selectSkiner = !selectSkiner">
             </div>
             <div class="tpl-skiner-content">
                 <div class="tpl-skiner-content-title">
                     选择主题
                 </div>
                 <div class="tpl-skiner-content-bar">
-                    <span class="skiner-color skiner-white" data-color="theme-white"></span>
-                    <span class="skiner-color skiner-black" data-color="theme-black"></span>
+                    <span class="skiner-color skiner-white" @click="setTheme('theme-white')"></span>
+                    <span class="skiner-color skiner-black" @click="setTheme('theme-black')"></span>
                 </div>
             </div>
         </div>
@@ -124,10 +159,13 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import Sidebar from "./sidebar";
-import store from "../store/index";
+import store from "../../store/index";
 export default {
     data: function() {
-        return {}
+        return {
+            skiner:'theme-white',
+            selectSkiner:false,
+        }
     },
     store,
     components: {
@@ -137,10 +175,15 @@ export default {
 
     },
     methods: {
-
+        setTheme (theme){
+            this.skiner = theme;
+            // cookie.set
+            // storageSave('SelcetColor',theme)
+            localStorage.setItem('selectSkiner', theme);
+        }
     },
     mounted: function() {
-        console.log(111);
+        this.skiner = localStorage.getItem('selectSkiner')||this.skiner;
     }
 }
 </script>

@@ -132,6 +132,14 @@ ul.tpl-dropdown-content {
 }
 
 ul.tpl-dropdown-content {
+
+    &.user-setting {
+        width: auto;
+        padding: 5px 0;
+        .tpl-dropdown-menu-notifications-time,.tpl-dropdown-menu-messages {
+            padding: 10px 20px;
+        }
+    }
     .tpl-dropdown-menu-notifications {}
 
     .tpl-dropdown-menu-notifications-title {
@@ -149,7 +157,7 @@ ul.tpl-dropdown-content {
         margin-left: 10px;
     }
 
-    .tpl-dropdown-menu-notifications:last-child .tpl-dropdown-menu-notifications-item {
+    &:not(.user-setting) .tpl-dropdown-menu-notifications:last-child .tpl-dropdown-menu-notifications-item {
         text-align: center;
         border: none;
         font-size: 12px;
@@ -338,13 +346,15 @@ ul.tpl-dropdown-content {
     padding: 28px 22px 22px;
 }
 
-.tpl-user-panel-slide-toggleable {}
+.tpl-user-panel-slide-toggleable {
+    text-align: center;
+}
 
 .tpl-user-panel-profile-picture {
     border-radius: 50%;
     width: 82px;
     height: 82px;
-    margin-bottom: 10px;
+    margin: 0 auto 10px;
     overflow: hidden;
 
     img {
