@@ -17,10 +17,9 @@ var authenticate = function (req, res, next) {
             code: -1,
             msg: "请输入账号密码",
         }
-        next();
+        return next();
         // return res.status(401).json({code:-1,msg:"请输入账号"});
     }
-
     process.nextTick(() =>{
         // console.log(username,password)
         userDao.getUserByLoginName(username,(err,user)=>{
@@ -52,6 +51,7 @@ module.exports = function () {
     var router = new Router();
 
     router.route("/verify").get(function (req, res, next) {
+        console.log(11111);
         return res.status(200).json(undefined);
     });
 

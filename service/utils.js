@@ -20,6 +20,19 @@ client.on('connect', function () {
     debug("Redis successfully connected");
 });
 
+module.exports.fetch = function (headers) {
+    if (headers && headers.authorization) {
+        var authorization = headers.authorization;
+        var part = authorization.split(' ');
+        if (part.length === 2) {
+            return part[1];
+        } else {
+            return null;
+        }
+    } else {
+        return null;
+    }
+};
 
 module.exports.create = function (user, req, res, next) {
 
@@ -80,5 +93,68 @@ module.exports.create = function (user, req, res, next) {
     });
 
     return data;
+
+};
+module.exports.retrieve = function (id, done) {
+
+    debug("Calling retrieve for token: %s", id);
+
+    if (_.isNull(id)) {
+        return done(new Error("token_invalid"), {
+            "message": "Invalid token"
+        });
+    }
+
+    client.get(id, function (err, reply) {
+        if (err) {
+            return done(err, {
+                "message": err
+            });
+        }
+
+        if (_.isNull(reply)) {
+            return done(new Error("token_invalid"), {
+                "message": "Token doesn't exists, are you sure it hasn't expired or been revoked?"
+            });
+        } else {
+            var data = JSON.parse(reply);
+            debug("User data fetched from redis store for user: %s", data.user_login);
+
+            if (_.isEqual(data.token, id)) {
+                return done(null, data);
+            } else {
+                return done(new Error("token_doesnt_exist"), {
+                    "message": "Token doesn't exists, login into the system so it can generate new token."
+                });
+            }
+
+        }
+
+    });
+
+};
+module.exports.middleware = function () {
+
+    var func = function (req, res, next) {
+
+        var token = exports.fetch(req.headers);
+        console.log(token,1)
+        exports.retrieve(token, function (err, data) {
+
+            if (err) {
+                req.user = undefined;
+                // next(new UnauthorizedAccessError("invalid_token", data))
+                return res.status(401).json(data);
+            } else {
+                req.user = _.merge(req.user, data);
+                next();
+            }
+
+        });
+    };
+
+    func.unless = require("express-unless");
+
+    return func;
 
 };

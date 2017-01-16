@@ -37,7 +37,9 @@ export function login(username, password) {
 export function getUserInfo() {
     return new Promise((resolve, reject) => {
         var token = cookie.get('access_token')
-        $.ajax(`${API_SERVER}/api/verify`,{
+        console.log(token)
+        $.ajax(`${API_SERVER}/api/user/verify`,{
+            type:"POST",
             headers:{
                 Authorization:'Bearer ' + token
             }
