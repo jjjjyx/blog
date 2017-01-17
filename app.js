@@ -3,6 +3,7 @@ let express = require('express');
 let path = require('path');
 let bodyParser = require('body-parser');
 let app = express();
+let cookieParser = require('cookie-parser')
 
 debug("Starting application");
 
@@ -13,13 +14,15 @@ let utils = require("./service/utils");
 global.C = config;
 
 app.use(bodyParser());
+app.use(cookieParser());
 app.use(require('compression')());
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3879');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Max-Age', 1000);
+    res.setHeader('Access-Control-Allow-Headers', '*');//X-Requested-With,content-type,Authorization,Set-Cookie
     res.setHeader('Access-Control-Allow-Credentials', true);
-    // res.setHeader("X-Powered-By", 'jyx@rpgame.net');
+    res.setHeader("X-Powered-By", 'test');
     // res.setHeader("Server", 'jjjjyx');
     res.setHeader("Content-Type", "application/json;charset=utf-8");
     next();
@@ -28,9 +31,17 @@ app.use(function (req, res, next) {
 app.use('/', express.static(path.join(__dirname, 'client/home')));
 // We are going to protect /api routes with JWT
 var jwtCheck = expressJwt({
-    secret: global.C.secret
+    secret: global.C.secret,
+    getToken:function(req){
+        // console.log(111111);
+        return req.cookies.u
+    }
 });
 jwtCheck.unless = unless;
+// app.use(function(req,res,next){
+//     // res.cookie("test", {account: 'userName', hash: 'hash', last: 'lastTime'}, {maxAge: 60000*60*24*5,httpOnly:true});
+//     next()
+// });
 app.use(jwtCheck.unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'

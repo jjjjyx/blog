@@ -36,14 +36,7 @@ export function login(username, password) {
 
 export function getUserInfo() {
     return new Promise((resolve, reject) => {
-        var token = cookie.get('access_token')
-        console.log(token)
-        $.ajax(`${API_SERVER}/api/user/verify`,{
-            type:"POST",
-            headers:{
-                Authorization:'Bearer ' + token
-            }
-        }).done((data) => {
+        $.post(`${API_SERVER}/api/user/verify`).done((data) => {
             resolve([data.code, data]);
         }).fail((data) => {
             reject([data.code, data]);

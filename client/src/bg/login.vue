@@ -23,13 +23,13 @@ export default {
     methods: {
         async login() {
             let [code,data] = await login(this.username,this.password)
-            console.log(data);
-            cookie.set("access_token",data.token)
+            // cookie.set("access_token",data.token)
+            // cookie.set("access_token",data.token,+new Date(Date.now()+1000*60*60*24*7),"/","localhost:3878")
 
         },
         async verify() {
             let s = await getUserInfo()
-            console.log(s);
+            // console.log(s);
         }
     },
     mounted: function() {

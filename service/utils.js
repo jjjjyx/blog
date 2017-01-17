@@ -84,6 +84,7 @@ module.exports.create = function (user, req, res, next) {
                         msg: "Token generated",
                         data: data
                     }
+                    res.cookie("u", data.token, {maxAge: 60000*60*24*5,httpOnly:true});
                     next(); // we have succeeded
                 } else {
                     return next(new Error('Expiration not set on redis'));
@@ -138,9 +139,8 @@ module.exports.retrieve = function (id, done) {
 module.exports.middleware = function () {
 
     var func = function (req, res, next) {
-
-        var token = exports.fetch(req.headers);
-
+        var token = req.cookies.u;
+        // console.log("u",token);
         exports.retrieve(token, function (err, data) {
 
             if (err) {
