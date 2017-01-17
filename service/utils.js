@@ -43,21 +43,23 @@ module.exports.create = function (user, req, res, next) {
     }
 
     var data = {
-        id  : user.id,
-        user_login:user.user_login,
-        user_nickname:user.user_nickname,
-        user_email:user.user_email,
-        user_url:user.user_url,
-        user_registered:user.user_registered,
-        user_status :user.user_status,
-        display_name:user.display_name,
+        id: user.id,
+        user_login: user.user_login,
+        user_nickname: user.user_nickname,
+        user_email: user.user_email,
+        user_url: user.user_url,
+        user_registered: user.user_registered,
+        user_status: user.user_status,
+        display_name: user.display_name,
         token: jsonwebtoken.sign({
             _id: user._id,
-            user_login:user.user_login,
-            user_email:user.user_email,
-            user_status :user.user_status,
-            display_name:user.display_name,
-        }, C.secret, {expiresIn:"7d"})
+            user_login: user.user_login,
+            user_email: user.user_email,
+            user_status: user.user_status,
+            display_name: user.display_name,
+        }, C.secret, {
+            expiresIn: "7d"
+        })
     };
 
     var decoded = jsonwebtoken.decode(data.token);
@@ -78,9 +80,9 @@ module.exports.create = function (user, req, res, next) {
                 }
                 if (reply) {
                     res.map = {
-                        code:0,
-                        msg:"Token generated",
-                        data:data
+                        code: 0,
+                        msg: "Token generated",
+                        data: data
                     }
                     next(); // we have succeeded
                 } else {
@@ -138,7 +140,7 @@ module.exports.middleware = function () {
     var func = function (req, res, next) {
 
         var token = exports.fetch(req.headers);
-        console.log(token,1)
+
         exports.retrieve(token, function (err, data) {
 
             if (err) {

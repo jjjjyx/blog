@@ -51,24 +51,19 @@ module.exports = function () {
     var router = new Router();
 
     router.route("/verify").get(function (req, res, next) {
-        console.log(11111);
         return res.status(200).json(undefined);
     });
 
     router.route("/logout").get(function (req, res, next) {
-        // if (utils.expire(req.headers)) {
-        //     delete req.user;
-        //     return res.status(200).json({
-        //         "message": "User has been successfully logged out"
-        //     });
-        // } else {
-        //
-        //     // return next(new UnauthorizedAccessError("401"));
-        // }
+        if (utils.expire(req.headers)) {
+            delete req.user;
+            return res.status(200).json({"msg": "User has been successfully logged out"});
+        } else {
+            return res.status(401).json({"msg": "UnauthorizedAccessError"});
+        }
     });
 
     router.route("/login").post(authenticate, function (req, res, next) {
-        // console.log(res.map,222);
         return res.status(200).json(res.map);
     });
 
