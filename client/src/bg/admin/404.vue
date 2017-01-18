@@ -1,7 +1,8 @@
 <template>
     <div id="">
         这是一个 404 页面
-        
+
+        a
     </div>
 </template>
 <script>
