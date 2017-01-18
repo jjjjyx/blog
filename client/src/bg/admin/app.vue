@@ -25,7 +25,7 @@
                     <ul>
                         <!-- 欢迎语 -->
                         <li class="am-text-sm tpl-header-navbar-welcome">
-                            <a href="javascript:;">欢迎您, <span>{{user.display_name}}</span> </a>
+                            <a href="javascript:;">欢迎您, <span>{{user&user.display_name}}</span> </a>
                         </li>
 
                         <!-- 新邮件 -->
