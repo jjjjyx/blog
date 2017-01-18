@@ -8,7 +8,7 @@ let
     config = require("./config.js"),
     jsonwebtoken = require("jsonwebtoken"),
     TOKEN_EXPIRATION = 60,
-    TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60;
+    TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5;
 // UnauthorizedAccessError = require(path.join(__dirname, 'errors', 'UnauthorizedAccessError.js'));
 
 
@@ -58,7 +58,7 @@ module.exports.create = function (user, req, res, next) {
             user_status: user.user_status,
             display_name: user.display_name,
         }, C.secret, {
-            expiresIn: "7d"
+            expiresIn: "5d"
         })
     };
 
@@ -136,6 +136,21 @@ module.exports.retrieve = function (id, done) {
     });
 
 };
+
+module.exports.expire = function (req) {
+
+    var token = req.cookies.u;
+
+    debug("Expiring token: %s", token);
+
+    if (token !== null) {
+        client.expire(token, 0);
+    }
+
+    return token !== null;
+
+};
+
 module.exports.middleware = function () {
 
     var func = function (req, res, next) {

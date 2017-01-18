@@ -12,13 +12,30 @@ import "../static/app.less";
 
 import store from "../../store/index.js"
 
+import {userGetInfo} from "../../../public/js/netapi";
+
 // 入口
 import App from "./app.vue";
 
 import Index from "./index.vue";
 
 import NotFoundComponent from "./404.vue"
-
+// console.log(store.getters.user)
+async function isLogIn() {
+    let is_login = false;
+    // 判段用户实例是否存在或者过期
+    if (store.getters.user === null || +new Date() - store.getters.user.validateTime > 60 * 60 * 1000) {
+        let [code, userdata] = await userGetInfo();
+        if (code === 0) {
+            console.log(userdata);
+            store.commit("USER_SET_INFO", userdata);
+            is_login = true;
+        }
+    } else {
+        is_login = true;
+    }
+    return is_login;
+}
 
 var router = new VueRouter({
     // mode: "history",
@@ -33,25 +50,13 @@ var router = new VueRouter({
     ]
 })
 router.beforeEach(async function (to, from, next) {
-    // console.log("浏览: " + to.path);
-    // let auth = await isLogIn();
-    // // 页面是否支持未登陆访问
-    // if (to.matched.some(record => record.meta.notRequiresAuth)) {
-    //     // 如果已登陆
-    //     if (auth) {
-    //         next("/")
-    //     }
-    // } else {
-    //     if (!auth) {
-    //         next({
-    //             path: "/user/login",
-    //             query: {
-    //                 redirect: to.fullPath,
-    //                 time: +new Date()
-    //             }
-    //         })
-    //     }
-    // }
+    console.log("浏览: " + to.path);
+    let auth = await isLogIn();
+    if (!auth) {
+        alert("尚未登录!")
+        return window.location.href="/";
+    }else
+        $("#preloader").fadeOut(1000,()=>$("#preloader").remove());
     next();
 });
 

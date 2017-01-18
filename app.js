@@ -20,7 +20,7 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3879');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Max-Age', 1000);
-    res.setHeader('Access-Control-Allow-Headers', '*');//X-Requested-With,content-type,Authorization,Set-Cookie
+    res.setHeader('Access-Control-Allow-Headers', '*'); //X-Requested-With,content-type,Authorization,Set-Cookie
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader("X-Powered-By", 'test');
     // res.setHeader("Server", 'jjjjyx');
@@ -32,8 +32,7 @@ app.use('/', express.static(path.join(__dirname, 'client/home')));
 // We are going to protect /api routes with JWT
 var jwtCheck = expressJwt({
     secret: global.C.secret,
-    getToken:function(req){
-        // console.log(111111);
+    getToken: function (req) {
         return req.cookies.u
     }
 });
@@ -55,6 +54,9 @@ app.use("/api/user", require(path.join(__dirname, "service/router", "user.js"))(
 /*错误处理器*/
 app.use(function (err, req, res, next) {
     console.log(err.message);
+    if (err.name === 'UnauthorizedError') {
+        return res.status(200).send({code:401,msg:'invalid token...'});
+    }
     return res.status(500).json({
         code: 500,
         msg: err.message

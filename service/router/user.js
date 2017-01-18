@@ -50,12 +50,19 @@ module.exports = function () {
 
     var router = new Router();
 
-    router.route("/verify").all(function (req, res, next) {
-        return res.status(200).json(undefined);
+    router.route("/auth").all(function (req, res, next) {
+        let user = req.user;
+        delete user.token;
+        delete user.id;
+        return res.status(200).json({
+            code:0,
+            data:user
+        });
     });
 
     router.route("/logout").get(function (req, res, next) {
-        if (utils.expire(req.headers)) {
+        if (utils.expire(req)) {
+            res.clearCookie('u');
             delete req.user;
             return res.status(200).json({"msg": "User has been successfully logged out"});
         } else {

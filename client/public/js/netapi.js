@@ -28,18 +28,28 @@ export function login(username, password) {
             password
         }).done((data) => {
             resolve([data.code, data.data]);
-        }).fail((data) => {
-            reject([data.code, data.data]);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
         });
     });
 }
 
-export function getUserInfo() {
+export function logOut() {
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/user/verify`).done((data) => {
-            resolve([data.code, data]);
-        }).fail((data) => {
-            reject([data.code, data]);
+        $.get(`${API_SERVER}/api/user/logout`).done((data) => {
+            resolve([data.code, data.data]);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+
+export function userGetInfo() {
+    return new Promise((resolve, reject) => {
+        $.get(`${API_SERVER}/api/user/auth`).done((data) => {
+            resolve([data.code, data.data]);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
         });
     });
 }
