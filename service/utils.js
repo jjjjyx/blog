@@ -111,13 +111,15 @@ module.exports.retrieve = function (id, done) {
     client.get(id, function (err, reply) {
         if (err) {
             return done(err, {
+                code:200,
                 "message": err
             });
         }
 
         if (_.isNull(reply)) {
             return done(new Error("token_invalid"), {
-                "message": "Token doesn't exists, are you sure it hasn't expired or been revoked?"
+                code:200,
+                "msg": "Token doesn't exists, are you sure it hasn't expired or been revoked?"
             });
         } else {
             var data = JSON.parse(reply);
@@ -127,7 +129,8 @@ module.exports.retrieve = function (id, done) {
                 return done(null, data);
             } else {
                 return done(new Error("token_doesnt_exist"), {
-                    "message": "Token doesn't exists, login into the system so it can generate new token."
+                    code:200,
+                    "msg": "Token doesn't exists, login into the system so it can generate new token."
                 });
             }
 
@@ -161,7 +164,7 @@ module.exports.middleware = function () {
             if (err) {
                 req.user = undefined;
                 // next(new UnauthorizedAccessError("invalid_token", data))
-                return res.status(401).json(data);
+                return res.status(200).json(data);
             } else {
                 req.user = _.merge(req.user, data);
                 next();

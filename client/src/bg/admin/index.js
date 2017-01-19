@@ -19,6 +19,9 @@ import App from "./app.vue";
 
 import Index from "./index.vue";
 
+import PostM from "./post/post.vue";
+import AddPost from "./post/add.vue";
+
 import NotFoundComponent from "./404.vue"
 // console.log(store.getters.user)
 async function isLogIn() {
@@ -42,16 +45,40 @@ var router = new VueRouter({
     routes: [{
             path: "/",
             component: Index,
+            meta:{
+                name:'首页',
+                description:'也没什么好说的',
+            }
+        },
+        {
+            path:"/post",
+            component:PostM,
+            meta:{
+                name:'文章管理',
+                description:'管理文章发布状态',
+            }
+        },
+        {
+            path:"/post/add",
+            component:AddPost,
+            meta:{
+                name:'添加文章',
+                description:'撰写文章',
+            }
         },
         {
             path: "*",
             component: NotFoundComponent
-        }
+        },
+
     ]
 })
 router.beforeEach(async function (to, from, next) {
     console.log("浏览: " + to.path);
-    let auth = await isLogIn();
+    let auth ;
+    try{
+        auth = await isLogIn();
+    }catch (e) {}
     if (!auth) {
         alert("尚未登录!")
         return window.location.href="/";

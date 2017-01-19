@@ -15,7 +15,8 @@ Vue.use(Vuex);
 const state = {
     // 全局
     count:0,
-    // skiner:''
+    // skiner:'',
+    isSidebarShow:false,
 }
 export default new Vuex.Store({
     // actions,

@@ -7,10 +7,25 @@ ul {
     margin: 0;
 }
 
+a {
+    cursor: pointer;
+}
+
 
 header {
     z-index: 1200;
     position: relative;
+}
+.am-badge {
+    // color: rgba(0,0,0,.6);
+    >i.close, >i.delete{
+        cursor: pointer;
+        transition: background .1s ease;
+        opacity: .5;
+        &:hover{
+            opacity: 1;
+        }
+    }
 }
 #preloader {
     opacity: 1;
@@ -403,8 +418,8 @@ ul.tpl-dropdown-content {
             padding-left: 0;
         }
     }
-
     .sidebar-nav-link-logo {
+        margin-left: 10px;
         margin-right: 8px;
         width: 20px;
         font-size: 16px;
@@ -560,7 +575,7 @@ ul.tpl-dropdown-content {
 
 .widget-head {
     width: 100%;
-    padding: 15px;
+    padding:10px 15px;
 }
 
 .widget-title {
@@ -796,11 +811,7 @@ ul.tpl-dropdown-content {
 }
 
 .theme-white {
-    .sidebar-nav-sub {
-        .sidebar-nav-link-logo {
-            margin-left: 10px;
-        }
-    }
+
 
     .tpl-header-search-box:active .tpl-error-title,
     .tpl-header-search-box:hover {
@@ -981,7 +992,6 @@ ul.tpl-dropdown-content {
     .tpl-form-border-form input[type=week]:focus,
     .tpl-form-border-form select:focus,
     .tpl-form-border-form textarea:focus {
-        -webkit-box-shadow: none;
         box-shadow: none;
     }
 
@@ -1012,19 +1022,12 @@ ul.tpl-dropdown-content {
         background-image: none;
         border: 1px solid #c2cad8;
         border-radius: 4px;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
         box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-        -webkit-transition: border-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
-        -o-transition: border-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
         transition: border-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
         background: 0 0;
         border: 0;
         border: 1px solid #c2cad8;
-        -webkit-border-radius: 0;
-        -moz-border-radius: 0;
-        -ms-border-radius: 0;
         text-indent: 0.5em;
-        -o-border-radius: 0;
         border-radius: 0;
         color: #555;
         box-shadow: none;
@@ -1054,7 +1057,7 @@ ul.tpl-dropdown-content {
 
     .tpl-form-border-form .am-form-label {
         padding-top: 5px;
-        font-size: 16px;
+        font-size: 14px;
         color: #888;
         font-weight: inherit;
         text-align: right;
@@ -1086,7 +1089,6 @@ ul.tpl-dropdown-content {
     .tpl-form-line-form input[type=week]:focus,
     .tpl-form-line-form select:focus,
     .tpl-form-line-form textarea:focus {
-        -webkit-box-shadow: none;
         box-shadow: none;
     }
 
@@ -1305,7 +1307,7 @@ ul.tpl-dropdown-content {
     }
 
     .widget {
-        padding: 10px 20px 13px;
+        // padding: 10px 20px 13px;
         background-color: #fff;
         border-radius: 4px;
         color: #838FA1;

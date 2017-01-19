@@ -25,7 +25,7 @@
                     <ul>
                         <!-- 欢迎语 -->
                         <li class="am-text-sm tpl-header-navbar-welcome">
-                            <a href="javascript:;">欢迎您, <span>{{user&user.display_name}}</span> </a>
+                            <a href="javascript:;">欢迎您, <span>{{user&&user.display_name}}</span> </a>
                         </li>
 
                         <!-- 新邮件 -->
@@ -153,7 +153,23 @@
             </div>
         </div>
         <Sidebar></Sidebar>
-        <router-view></router-view>
+        <!-- 内容区域 -->
+        <div class="tpl-content-wrapper">
+            <div class="container-fluid am-cf">
+                <div class="row">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 首页 /<small>首页</small></div>
+                        <p class="page-header-description">也没什么说的</p>
+                    </div>
+                    <div class="am-u-lg-3 tpl-index-settings-button">
+                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>
+                    </div>
+                </div>
+
+            </div>
+            <router-view></router-view>
+        </div>
+
     </div>
 </template>
 <script>

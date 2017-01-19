@@ -4,5 +4,7 @@
 // import sockapi from '../netsock'
 
 export const mutations = {
-
+    toggleSidebar(state,v){
+        state.isSidebarShow = !!v;
+    }
 }
