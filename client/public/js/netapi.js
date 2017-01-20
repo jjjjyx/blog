@@ -28,7 +28,8 @@ export function login(username, password) {
             password
         }).done((data) => {
             resolve([data.code, data.data]);
-        }).fail(({responseJSON}) => {
+        }).fail(({responseJSON={code:401}}) => {
+
             reject([responseJSON.code, responseJSON]);
         });
     });

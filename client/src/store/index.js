@@ -17,6 +17,7 @@ const state = {
     count:0,
     // skiner:'',
     isSidebarShow:false,
+    contentHeight:'auto',
 }
 export default new Vuex.Store({
     // actions,

@@ -3,7 +3,7 @@
 <template>
 
 <!-- 侧边导航栏 -->
-<div class="left-sidebar" :class="{active:isSidebarShow}">
+<div class="left-sidebar" :class="{active:isSidebarShow}" :style="autoHeight">
     <!-- 用户信息 -->
     <div class="tpl-sidebar-user-panel">
         <div class="tpl-user-panel-slide-toggleable">
@@ -55,14 +55,13 @@
                         <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 标签管理
                     </a>
                 </li>
+                <li class="sidebar-nav-link">
+                    <a href="javascript:;">
+                        <i class="am-icon-angle-right sidebar-nav-link-logo"></i> 回收站
+                    </a>
+                </li>
             </ul>
         </li>
-        <li class="sidebar-nav-link">
-            <a href="javascript:;">
-                <i class="am-icon-file-text-o sidebar-nav-link-logo"></i> 草稿箱
-            </a>
-        </li>
-
         <li class="sidebar-nav-link">
             <a href="javascript:;">
                 <i class="am-icon-upload sidebar-nav-link-logo"></i> 上传管理
@@ -71,11 +70,6 @@
         <li class="sidebar-nav-link">
             <a href="javascript:;">
                 <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 留言
-            </a>
-        </li>
-        <li class="sidebar-nav-link">
-            <a href="javascript:;">
-                <i class="am-icon-trash sidebar-nav-link-logo"></i> 回收站
             </a>
         </li>
         <li class="sidebar-nav-heading">other<span class="sidebar-nav-heading-info"> 其他</span></li>
@@ -115,7 +109,9 @@ export default {
     computed: {
         ...mapGetters([
             'user',
-            'isSidebarShow'
+            'isSidebarShow',
+            'autoHeight',
+            // 'headerBarHeight'
         ])
     },
     methods: {

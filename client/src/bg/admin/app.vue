@@ -154,7 +154,7 @@
         </div>
         <Sidebar></Sidebar>
         <!-- 内容区域 -->
-        <div class="tpl-content-wrapper">
+        <div class="tpl-content-wrapper" :style="autoHeight">
             <div class="container-fluid am-cf">
                 <div class="row">
                     <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
@@ -173,7 +173,7 @@
     </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions,mapMutations } from 'vuex'
 import Sidebar from "./sidebar";
 import store from "../../store/index";
 export default {
@@ -189,10 +189,14 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'user'
+            'user',
+            'autoHeight'
         ])
     },
     methods: {
+        ...mapMutations([
+            'setContentHeight'
+        ]),
         setTheme (theme){
             this.skiner = theme;
             // cookie.set
@@ -202,6 +206,10 @@ export default {
     },
     mounted: function() {
         this.skiner = localStorage.getItem('selectSkiner')||this.skiner;
+        let headersHeight = 56;
+        let setH = ()=> this.setContentHeight($(window).height()-headersHeight);
+        setH();
+        $(window).resize(setH);
     }
 }
 </script>
