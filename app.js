@@ -49,7 +49,9 @@ app.use(utils.middleware().unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
 }));
+app.use("/api", require(path.join(__dirname, "service/router", "term.js"))());
 app.use("/api/user", require(path.join(__dirname, "service/router", "user.js"))());
+
 
 /*错误处理器*/
 app.use(function (err, req, res, next) {

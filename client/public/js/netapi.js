@@ -54,3 +54,21 @@ export function userGetInfo() {
         });
     });
 }
+export function getAllTerm(){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/getAllTerm`).done((data) => {
+            resolve([data.code, data.data]);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+export function addTerm(params){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/addTerm`,params).done((data) => {
+            resolve([data.code, data.data]);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}

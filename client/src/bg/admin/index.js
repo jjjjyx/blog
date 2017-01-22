@@ -20,7 +20,9 @@ import App from "./app.vue";
 import Index from "./index.vue";
 
 import PostM from "./post/post.vue";
-import AddPost from "./post/add.vue";
+import AddTerm from "./post/add-term.vue";
+import AddPost from "./post/add-post.vue";
+import PostEdit from "./post/post-edit.vue";
 
 import NotFoundComponent from "./404.vue"
 // console.log(store.getters.user)
@@ -51,20 +53,49 @@ var router = new VueRouter({
             }
         },
         {
-            path:"/post",
+            path:"/post/management",
             component:PostM,
             meta:{
                 name:'文章管理',
                 description:'管理文章发布状态',
-            }
+            },
+
         },
         {
-            path:"/post/add",
-            component:AddPost,
+            path:"/tag",
+            component:AddTerm,
             meta:{
                 name:'添加文章',
                 description:'撰写文章',
-            }
+            },
+            children:[
+                // {
+                //     path:'',
+                //     component:AddPost,
+                // },
+                {
+                    path:':term_id',
+                    components:{
+                        default:AddPost,
+                        rightW:PostEdit
+                    },
+                },
+                {
+                    path:':term_id/post/:id',
+                    components:{
+                        default:AddPost,
+                        rightW:PostEdit
+                    },
+                },
+                {
+                    path:':term_id/post',
+                    components:{
+                        default:AddPost,
+                        rightW:PostEdit
+                    },
+                }
+            ],
+
         },
         {
             path: "*",
