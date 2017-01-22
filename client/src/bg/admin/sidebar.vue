@@ -3,7 +3,7 @@
 <template>
 
 <!-- 侧边导航栏 -->
-<div class="left-sidebar" :class="{active:isSidebarShow}" :style="autoHeight">
+<div class="left-sidebar" >
     <!-- 用户信息 -->
     <div class="tpl-sidebar-user-panel">
         <div class="tpl-user-panel-slide-toggleable">
@@ -139,7 +139,6 @@ export default {
     },
     mounted: function() {
         // console.log("sidebar");
-
         $('.sidebar-nav-sub-title').on('click', function() {
             $(this).toggleClass("active").siblings('.sidebar-nav-sub').slideToggle(80)
                 .end()
@@ -147,7 +146,10 @@ export default {
         })
         // this.autoLeftNav();
         $(window).resize(()=> {
-            this.toggleSidebar(($(window).width() < 1024))
+            if($(window).width() < 1024){
+                this.toggleSidebar(true);
+            }
+
         });
 
     }

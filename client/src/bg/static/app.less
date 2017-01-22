@@ -1,8 +1,7 @@
 @charset "UTF-8";
 body, html{
     // height: 100%;
-    // overflow: hidden;
-    max-height: auto;
+    overflow: hidden;
 }
 li,
 ul {
@@ -504,8 +503,8 @@ ul.tpl-dropdown-content {
     margin-left: 240px;
     z-index: 1103;
     border-bottom-left-radius: 3px;
-    overflow-y: auto;
-    overflow-x: hidden;
+    // overflow-y: auto;
+    // overflow-x: hidden;
 
     &.xs-active {
         margin-left: 240px;
@@ -2324,9 +2323,10 @@ ul.tpl-dropdown-content {
     .tpl-index-settings-button {
         display: none;
     }
-
-
-
+    .left-sidebar{
+        top:112px;
+        z-index: 1104
+    }
     .tpl-content-wrapper {
         margin-left: 0;
     }
