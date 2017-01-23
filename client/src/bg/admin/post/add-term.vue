@@ -4,20 +4,32 @@
         <div class="left-sidebar add-post" >
             <div class="new-tags ">
                 <a class="am-badge am-badge-success am-round" @click="showAddTag"><i class="am-icon-plus"></i> 添加新分类</a>
-                <!-- <transition name="custom-classes-transition" enter-active-class="animated slide in" leave-active-class="animated slide out" > -->
-                    <form class="new-tags-form am-form">
-                        <input type="text" placeholder="请输入分类名称" class="am-padding-xs" v-model="newTerm.name"/>
-                        <button type="button" class="am-btn am-btn-danger am-btn-xs" @click="add">新建</button>
-                        <a class="am-btn am-btn-link am-btn-xs" @click="showAddTag">取消</a>
-                    </form>
-                <!-- </transition> -->
+                <form class="new-tags-form am-form">
+                    <input type="text" placeholder="请输入分类名称" class="am-padding-xs" v-model="newTerm.name"/>
+                    <button type="button" class="am-btn am-btn-danger am-btn-xs" @click="add">新建</button>
+                    <a class="am-btn am-btn-link am-btn-xs" @click="showAddTag">取消</a>
+                </form>
             </div>
             <ul class="sidebar-nav">
-                <li class="sidebar-nav-link" v-for="(item,index) in termList">
-                    <a href="javascript:;" class="sidebar-nav-sub-title" :class="{active:active =='first'?(index==0):(item.term_id==active)}">
-                        <i class="am-icon-tag sidebar-nav-link-logo"></i> {{item.name}}
-                        <span class="am-icon-cog am-fr am-margin-right-sm sidebar-nav-sub-ico" v-if="active =='first'?(index==0):(item.term_id==active)"></span>
+                <li class="sidebar-nav-link curr" v-for="(item,index) in termList">
+                    <a href="javascript:;" class="sidebar-nav-sub-title" :class="{active:isActiveId == item.term_id}" @click="toggleDown($event,item)">
+                        <i class="am-icon-tag sidebar-nav-link-logo"></i>
+                        <span v-if="!item.editName">{{item.name}}</span>
+                        <input v-else type="text" :value="item.name" @click.stop ref="editName" @blur="confirm" @keyup.enter="confirm"/>
+                        <span class="am-icon-cog am-fr am-margin-right-sm sidebar-nav-sub-ico" v-if="isActiveId == item.term_id"></span>
                     </a>
+                    <ul class="sidebar-nav sidebar-nav-sub" v-if="isActiveId == item.term_id">
+                        <li class="sidebar-nav-link">
+                            <a href="javascript:;" @click="editTagName(item)">
+                                <span class="am-icon-edit sidebar-nav-link-logo" ></span> 修改名称
+                            </a>
+                        </li>
+                        <li class="sidebar-nav-link">
+                            <a href="javascript:;" @click="">
+                                <span class="am-icon-trash-o sidebar-nav-link-logo"></span> 删除分类
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
@@ -117,16 +129,18 @@
 // import
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 //
-import {getAllTerm,addTerm} from "../../../../public/js/netapi.js";
+import {getAllTerm,addTerm,editTermName} from "../../../../public/js/netapi.js";
 export default {
     data: function() {
         return {
             isShowNewTage: false,
+            isActiveId :0,
             termList:[],
-            active:'first',
             newTerm:{
                 name:''
-            }
+            },
+            showTermMenu:false,
+            displayInput:false
         }
     },
     components: {},
@@ -150,24 +164,97 @@ export default {
             $('.new-tags-form ').slideToggle(500);
             this.newTermName = '';
         },
-        add () {
-            addTerm(this.newTerm);
+        async add() {
+            if(!this.verification(this.newTerm)) return;
+            let data = await addTerm(this.newTerm);
+            if(data.code == 0) {
+                let o = {
+                    id: data.data.insertId,
+                    isActive: false,
+                    editName: false
+                }
+                this.termList.splice(0, 0, Object.assign(o,this.newTerm));
+                layer.alert(data.msg);
+            }
+        },
+        toggleDown(e,item){
+            if(item.term_id == this.$route.params.term_id){
+                item.editName = false;
+                $(e.target).closest('a.sidebar-nav-sub-title').toggleClass("active").siblings('.sidebar-nav-sub').slideToggle(500)
+                    .end().find('.sidebar-nav-sub-ico').toggleClass('sidebar-nav-sub-ico-rotate');
+            }else{
+                this.$router.push({ path: `/tag/${item.term_id}`})
+            }
+        },
+        editTagName(item){
+            item.editName=true;
+            this.$nextTick(()=>{
+                this.$refs.editName[0].focus();
+                this.$refs.editName[0].select()
+            });
+        },
+        verification(name){
+            let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
+            let result = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(name);
+            layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
+            return result;
+        },
+        confirm(){
+            if(!this.displayInput){
+                if(!this.verification(this.$refs.editName[0].value)) return;
+                this.displayInput = true;
+                layer.confirm(`修改分类名称->[${this.$refs.editName[0].value}]？`, {
+                    btn: ['确定','取消'] //按钮
+                }, ()=>{
+                    editTermName({
+                        term_id:this.isActiveId,
+                        name:this.$refs.editName[0].value
+                    })
+                    this.displayInput = false;
+                }, ()=>{
+                    this.displayInput = false;
+                });
+
+            }
+        },
+        async fetchData () {
+            let data = await getAllTerm();
+            if(data.code == 0){
+                // let active = this.$route.params.term_id||data.data[0].term_id;
+                data.data.forEach((item,index)=>{
+                    // item.isActive = item.term_id == this.$route.params.term_id;
+                    item.editName = false;
+                    // if(item.term_id == this.$route.params.term_id){
+                    //
+                    // }
+                });
+                if(data.data.some((item)=>item.term_id == this.$route.params.term_id)){
+                    this.isActiveId = this.$route.params.term_id;
+                }else{
+                    this.isActiveId = data.data[0].term_id;
+                }
+                this.termList = data.data;
+            }
         }
         // action(){
 
         // }
     },
-    mounted: async function() {
+    watch: {
+    // 如果路由有变化，会再次执行该方法
+        '$route':function(){
+            if(this.termList.some((item)=>item.term_id == this.$route.params.term_id)){
+                this.isActiveId = this.$route.params.term_id;
+            }else{
+                this.isActiveId = data.data[0].term_id;
+            }
+        }
+    },
+    mounted: function() {
         // console.log(this.$route.params.id)
         this.toggleSidebar(true);
-        let [code,list] = await getAllTerm();
-        // console.log(s);
-        if(code ==0){
-            this.termList = list;
-            this.active = this.$route.params.term_id||this.active;
-        }else{
+        this.fetchData();
 
-        }
 
     }
 }

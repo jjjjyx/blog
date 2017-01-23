@@ -15,6 +15,7 @@ class TermDao {
                 return;
             }
             connection.query(sql, (err, result,fields) => {
+                connection.release();
                 if (err || !result.length) {
                     callback(true);
                     return;
@@ -32,8 +33,7 @@ class TermDao {
                 return;
             }
             connection.query(sql, [name,slug,term_group],(err, result) => {
-                console.log(result,err.code,err)
-
+                connection.release();
                 if (err) {
                     if(err.code=='ER_DUP_ENTRY'){
                         return callback(true,"分类已存在")

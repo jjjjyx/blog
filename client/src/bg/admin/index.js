@@ -31,8 +31,8 @@ async function isLogIn() {
     // 判段用户实例是否存在或者过期
     if (store.getters.user === null || +new Date() - store.getters.user.validateTime > 60 * 60 * 1000) {
         let [code, userdata] = await userGetInfo();
+        console.log(code,userdata);
         if (code === 0) {
-            console.log(userdata);
             store.commit("USER_SET_INFO", userdata);
             is_login = true;
         }
@@ -69,10 +69,13 @@ var router = new VueRouter({
                 description:'撰写文章',
             },
             children:[
-                // {
-                //     path:'',
-                //     component:AddPost,
-                // },
+                {
+                    path:'',
+                    components:{
+                        default:AddPost,
+                        rightW:PostEdit
+                    },
+                },
                 {
                     path:':term_id',
                     components:{
@@ -112,7 +115,7 @@ router.beforeEach(async function (to, from, next) {
     }catch (e) {}
     if (!auth) {
         alert("尚未登录!")
-        return window.location.href="/";
+        // return window.location.href="/";
     }else
         $("#preloader").fadeOut(1000,()=>$("#preloader").remove());
     next();

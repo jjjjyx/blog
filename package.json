@@ -44,6 +44,7 @@
     "morgan": "^1.7.0",
     "multer": "^1.2.0",
     "mysql": "^2.12.0",
+    "node-validator": "^0.1.26",
     "objectid-js": "^1.0.2-patch1",
     "redis": "^2.6.4",
     "simplemde": "^1.11.2",

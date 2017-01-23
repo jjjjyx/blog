@@ -30,9 +30,9 @@ class UserDao {
                 return;
             }
             connection.query(sql, [username], (err, result) => {
+                connection.release();
                 if (err || !result.length) {
                     callback(true);
-                    return;
                 }else{
                     callback(false, new UserBean(result[0]));
                 }
