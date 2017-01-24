@@ -4,7 +4,9 @@
         <header>
             <!-- logo -->
             <div class="am-fl tpl-header-logo">
-                <a href="javascript:;"><img src="../../../public/img/logo.png" alt=""></a>
+                <router-link to="/" active-class='active' exact>
+                    <img src="../../../public/img/logo.png" alt="首页" title="返回首页">
+                </router-link>
             </div>
             <!-- 右侧内容 -->
             <div class="tpl-header-fluid">

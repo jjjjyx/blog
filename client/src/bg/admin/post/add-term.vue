@@ -12,7 +12,7 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-nav-link curr" v-for="(item,index) in termList">
-                    <div class="" :class="{'sidebar-nav-sub-title active':isActiveId == item.term_id}" @click="toggleDown($event,item)">
+                    <div class="am-text-truncate" :class="{'sidebar-nav-sub-title active':isActiveId == item.term_id}" @click="toggleDown($event,item)">
                         <i class="am-icon-tag sidebar-nav-link-logo"></i>
                         <span v-if="!item.editName">{{item.name}}</span>
                         <input v-else type="text" :value="item.name" @click.stop ref="editName" @blur="confirm(item)"  style="color:#868E8E;" maxlength="10"/>
@@ -70,6 +70,9 @@
                 transform: scaleY(0);
       }
     }
+    .row {
+        margin-right: -20px;
+    }
     .left-sidebar {
         width: @leftWidth;
         top: 1px;
@@ -81,12 +84,17 @@
         height: 100%;
         position: absolute;
         background-color: #fff;
+
         left: @leftWidth+1;
         top: 1px;
     }
     .theme-black {
         .left-sidebar {
             border-left: 1px solid #3a4144;
+        }
+        .middle-warpper {
+            background-color: #3a4144;
+            border-right: 1px solid #282d2f;
         }
     }
     .slide.in {
