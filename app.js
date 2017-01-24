@@ -3,7 +3,10 @@ let express = require('express');
 let path = require('path');
 let bodyParser = require('body-parser');
 let app = express();
-let cookieParser = require('cookie-parser')
+let cookieParser = require('cookie-parser'),
+    expressValidator = require('express-validator');
+
+
 
 debug("Starting application");
 
@@ -14,6 +17,14 @@ let utils = require("./service/utils");
 global.C = config;
 
 app.use(bodyParser());
+app.use(expressValidator({
+    customValidators:{
+        isTermname(value){
+            console.log(value);
+            return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(value)
+        }
+    }
+}));
 app.use(cookieParser());
 app.use(require('compression')());
 app.use(function (req, res, next) {

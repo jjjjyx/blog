@@ -18,7 +18,7 @@ let errorHandler = function({status,responseJSON}){
     let data ={code:status};
     switch (status) {
         case 400:
-            data.msg = responseJSON.errors[0].message;
+            data.msg = responseJSON.msg;
             layer.alert(data.msg , {
                 closeBtn: 0
             });
@@ -102,6 +102,15 @@ export function addTerm(params){
 export function editTermName(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/editTerm`,params).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+export function deleteTerm(term_id){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/deleteTerm`,{term_id}).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);

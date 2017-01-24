@@ -45,6 +45,23 @@ class TermDao {
             })
         });
     }
+    edit ({term_id,name},callback){
+        let sql = "UPDATE `j_terms` SET `name`=? WHERE `term_id`= ?";
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(sql, [name,term_id],(err, result) => {
+                connection.release();
+                if (err) {
+                    return callback(true);
+                }else{
+                    callback(false, result);
+                }
+            })
+        });
+    }
 }
 
 class TermsBean {

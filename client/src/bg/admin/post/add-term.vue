@@ -5,19 +5,20 @@
             <div class="new-tags ">
                 <a class="am-badge am-badge-success am-round" @click="showAddTag"><i class="am-icon-plus"></i> 添加新分类</a>
                 <form class="new-tags-form am-form">
-                    <input type="text" placeholder="请输入分类名称" class="am-padding-xs" v-model="newTerm.name"/>
+                    <input type="text" placeholder="请输入分类名称" class="am-padding-xs" v-model="newTerm.name" maxlength="10"/>
                     <button type="button" class="am-btn am-btn-danger am-btn-xs" @click="add">新建</button>
                     <a class="am-btn am-btn-link am-btn-xs" @click="showAddTag">取消</a>
                 </form>
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-nav-link curr" v-for="(item,index) in termList">
-                    <a href="javascript:;" class="sidebar-nav-sub-title" :class="{active:isActiveId == item.term_id}" @click="toggleDown($event,item)">
+                    <div class="" :class="{'sidebar-nav-sub-title active':isActiveId == item.term_id}" @click="toggleDown($event,item)">
                         <i class="am-icon-tag sidebar-nav-link-logo"></i>
                         <span v-if="!item.editName">{{item.name}}</span>
-                        <input v-else type="text" :value="item.name" @click.stop ref="editName" @blur="confirm" @keyup.enter="confirm"/>
+                        <input v-else type="text" :value="item.name" @click.stop ref="editName" @blur="confirm(item)"  style="color:#868E8E;" maxlength="10"/>
+                        <!-- @keyup.enter="confirm(item)" -->
                         <span class="am-icon-cog am-fr am-margin-right-sm sidebar-nav-sub-ico" v-if="isActiveId == item.term_id"></span>
-                    </a>
+                    </div>
                     <ul class="sidebar-nav sidebar-nav-sub" v-if="isActiveId == item.term_id">
                         <li class="sidebar-nav-link">
                             <a href="javascript:;" @click="editTagName(item)">
@@ -25,7 +26,7 @@
                             </a>
                         </li>
                         <li class="sidebar-nav-link">
-                            <a href="javascript:;" @click="">
+                            <a href="javascript:;" @click="confirmDelete">
                                 <span class="am-icon-trash-o sidebar-nav-link-logo"></span> 删除分类
                             </a>
                         </li>
@@ -165,22 +166,22 @@ export default {
             this.newTermName = '';
         },
         async add() {
-            if(!this.verification(this.newTerm)) return;
+            // if(!this.verification(this.newTerm.name)) return;
             let data = await addTerm(this.newTerm);
             if(data.code == 0) {
                 let o = {
-                    id: data.data.insertId,
+                    term_id: data.data.insertId,
                     isActive: false,
                     editName: false
                 }
                 this.termList.splice(0, 0, Object.assign(o,this.newTerm));
-                layer.alert(data.msg);
             }
+            layer.alert(data.msg);
         },
         toggleDown(e,item){
             if(item.term_id == this.$route.params.term_id){
                 item.editName = false;
-                $(e.target).closest('a.sidebar-nav-sub-title').toggleClass("active").siblings('.sidebar-nav-sub').slideToggle(500)
+                $(e.target).closest('.sidebar-nav-sub-title').toggleClass("active").siblings('.sidebar-nav-sub').slideToggle(500)
                     .end().find('.sidebar-nav-sub-ico').toggleClass('sidebar-nav-sub-ico-rotate');
             }else{
                 this.$router.push({ path: `/tag/${item.term_id}`})
@@ -195,27 +196,46 @@ export default {
         },
         verification(name){
             let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
-            let result = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(name);
+            let result = reg.test(name);
             layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
             return result;
         },
-        confirm(){
+        async confirm(item){
             if(!this.displayInput){
-                if(!this.verification(this.$refs.editName[0].value)) return;
                 this.displayInput = true;
-                layer.confirm(`修改分类名称->[${this.$refs.editName[0].value}]？`, {
-                    btn: ['确定','取消'] //按钮
-                }, ()=>{
-                    editTermName({
-                        term_id:this.isActiveId,
-                        name:this.$refs.editName[0].value
-                    })
-                    this.displayInput = false;
-                }, ()=>{
-                    this.displayInput = false;
-                });
+                if(!this.verification(this.$refs.editName[0].value)){this.displayInput = false; return;}
+                // layer.confirm(`修改分类名称->[${this.$refs.editName[0].value}]？`, {
+                //     btn: ['确定','取消'] //按钮
+                // }, async function(){
+                let s = await editTermName({
+                    term_id:this.isActiveId * 1,
+                    name:this.$refs.editName[0].value
+                })
+
+                if(s.code == 0) {
+                    item.editName = false;
+                    item.name = this.$refs.editName[0].value
+                }
+                layer.alert(s.msg);
+
+                this.displayInput = false;
+                // }, ()=>{
+                //     this.displayInput = false;
+                // });
 
             }
+        },
+        confirmDelete(){
+            layer.confirm(`删除分类会将分类下所有文章移动到回收站`, {
+                btn: ['确定','取消'] //按钮
+            }, async function(){
+                let s = await deleteTerm({
+                    term_id:this.isActiveId * 1,
+                });
+
+            }, ()=>{
+                this.displayInput = false;
+            });
         },
         async fetchData () {
             let data = await getAllTerm();
