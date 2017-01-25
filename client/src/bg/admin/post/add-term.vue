@@ -14,8 +14,8 @@
                 <li class="sidebar-nav-link curr" v-for="(item,index) in termList">
                     <div class="am-text-truncate" :class="{'sidebar-nav-sub-title active':isActiveId == item.term_id}" @click="toggleDown($event,item)">
                         <i class="am-icon-tag sidebar-nav-link-logo"></i>
-                        <span v-if="!item.editName">{{item.name}}</span>
-                        <input v-else type="text" :value="item.name" @click.stop ref="editName" @blur="confirm(item)"  style="color:#868E8E;" maxlength="10"/>
+                        <span >{{item.name}}</span>
+                        <!-- <input v-else type="text" :value="item.name" @click.stop ref="editName" @blur="confirm(item)" @keyup.esc="item.editName = false" style="color:#868E8E;" maxlength="10"/> -->
                         <!-- @keyup.enter="confirm(item)" -->
                         <span class="am-icon-cog am-fr am-margin-right-sm sidebar-nav-sub-ico" v-if="isActiveId == item.term_id"></span>
                     </div>
@@ -26,7 +26,7 @@
                             </a>
                         </li>
                         <li class="sidebar-nav-link">
-                            <a href="javascript:;" @click="confirmDelete">
+                            <a href="javascript:;" @click="confirmDelete(index)">
                                 <span class="am-icon-trash-o sidebar-nav-link-logo"></span> 删除分类
                             </a>
                         </li>
@@ -34,14 +34,20 @@
                 </li>
             </ul>
         </div>
-        <!-- <div class="middle-warpper">
-            222
-        </div>
-        <div class="right-warpper">
-            33
-        </div> -->
         <router-view class="middle-warpper" ></router-view>
         <router-view class="right-warpper" name="rightW"></router-view>
+    </div>
+    <div class="am-modal am-modal-prompt" tabindex="-1" id="my-prompt">
+      <div class="am-modal-dialog">
+        <div class="am-modal-hd">修改分类名称</div>
+        <div class="am-modal-bd">
+          <input type="text" class="am-modal-prompt-input" :value="activeName" ref="editName">
+        </div>
+        <div class="am-modal-footer">
+          <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+          <span class="am-modal-btn" data-am-modal-confirm>提交</span>
+        </div>
+      </div>
     </div>
 </div>
 </template>
@@ -52,22 +58,20 @@
       0% {
           height: 0;
           opacity: 0;
-        //   transform: scaleY(0);
       }
       100% {
         opacity: 1;
         height: auto;
-        // transform: scaleY(1);
       }
     }
     @keyframes slideOutY {
       0% {
         opacity: 1;
-                transform: scaleY(1);
+        transform: scaleY(1);
       }
       100% {
         opacity: 0;
-                transform: scaleY(0);
+        transform: scaleY(0);
       }
     }
     .row {
@@ -138,7 +142,7 @@
 // import
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 //
-import {getAllTerm,addTerm,editTermName} from "../../../../public/js/netapi.js";
+import {getAllTerm,addTerm,editTermName,deleteTerm} from "../../../../public/js/netapi.js";
 export default {
     data: function() {
         return {
@@ -149,7 +153,8 @@ export default {
                 name:''
             },
             showTermMenu:false,
-            displayInput:false
+            displayInput:false,
+            activeName:''
         }
     },
     components: {},
@@ -189,7 +194,7 @@ export default {
         toggleDown(e,item){
             if(item.term_id == this.$route.params.term_id){
                 item.editName = false;
-                $(e.target).closest('.sidebar-nav-sub-title').toggleClass("active").siblings('.sidebar-nav-sub').slideToggle(500)
+                $(e.target).closest('.sidebar-nav-sub-title').siblings('.sidebar-nav-sub').slideToggle(500)
                     .end().find('.sidebar-nav-sub-ico').toggleClass('sidebar-nav-sub-ico-rotate');
             }else{
                 this.$router.push({ path: `/tag/${item.term_id}`})
@@ -197,9 +202,29 @@ export default {
         },
         editTagName(item){
             item.editName=true;
+            let self = this;
+            $('#my-prompt').modal({
+              relatedTarget: this,
+              onConfirm: async function(e) {
+                  if(!self.verification(e.data)) return;
+                  let s = await editTermName({
+                      term_id:self.isActiveId * 1,
+                      name:e.data
+                  })
+                  if(s.code == 0) {
+                      item.editName = false;
+                      item.name = e.data;
+                  }
+                  layer.alert(s.msg);
+              },
+              onCancel: function(e) {
+                // alert('不想说!');
+              },
+              dimmer:false,
+            });
             this.$nextTick(()=>{
-                this.$refs.editName[0].focus();
-                this.$refs.editName[0].select()
+                this.$refs.editName.focus();
+                this.$refs.editName.select()
             });
         },
         verification(name){
@@ -208,39 +233,17 @@ export default {
             layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
             return result;
         },
-        async confirm(item){
-            if(!this.displayInput){
-                this.displayInput = true;
-                if(!this.verification(this.$refs.editName[0].value)){this.displayInput = false; return;}
-                // layer.confirm(`修改分类名称->[${this.$refs.editName[0].value}]？`, {
-                //     btn: ['确定','取消'] //按钮
-                // }, async function(){
-                let s = await editTermName({
-                    term_id:this.isActiveId * 1,
-                    name:this.$refs.editName[0].value
-                })
-
-                if(s.code == 0) {
-                    item.editName = false;
-                    item.name = this.$refs.editName[0].value
-                }
-                layer.alert(s.msg);
-
-                this.displayInput = false;
-                // }, ()=>{
-                //     this.displayInput = false;
-                // });
-
-            }
-        },
-        confirmDelete(){
+        confirmDelete(index){
+            let self = this;
             layer.confirm(`删除分类会将分类下所有文章移动到回收站`, {
                 btn: ['确定','取消'] //按钮
             }, async function(){
-                let s = await deleteTerm({
-                    term_id:this.isActiveId * 1,
-                });
-
+                let s = await deleteTerm(self.isActiveId * 1);
+                 if(s.code == 0) {
+                     self.$router.replace({ path: `/tag/`})
+                     self.termList.splice(index,1);
+                 }
+                 layer.alert(s.msg);
             }, ()=>{
                 this.displayInput = false;
             });
@@ -250,16 +253,15 @@ export default {
             if(data.code == 0){
                 // let active = this.$route.params.term_id||data.data[0].term_id;
                 data.data.forEach((item,index)=>{
-                    // item.isActive = item.term_id == this.$route.params.term_id;
+
                     item.editName = false;
-                    // if(item.term_id == this.$route.params.term_id){
-                    //
-                    // }
                 });
-                if(data.data.some((item)=>item.term_id == this.$route.params.term_id)){
+                console.log(this.$route.params.term_id);
+                if(this.$route.params.term_id && data.data.some((item)=>item.term_id == this.$route.params.term_id)){
                     this.isActiveId = this.$route.params.term_id;
                 }else{
                     this.isActiveId = data.data[0].term_id;
+                    this.$router.replace({ path: `/tag/`})
                 }
                 this.termList = data.data;
             }
@@ -271,10 +273,12 @@ export default {
     watch: {
     // 如果路由有变化，会再次执行该方法
         '$route':function(){
+            console.log(1,111);
             if(this.termList.some((item)=>item.term_id == this.$route.params.term_id)){
                 this.isActiveId = this.$route.params.term_id;
             }else{
-                this.isActiveId = data.data[0].term_id;
+                this.isActiveId = this.termList[0].term_id;
+                // this.$router.push({ path: '/tag'})
             }
         }
     },

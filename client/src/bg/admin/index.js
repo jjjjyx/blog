@@ -13,6 +13,7 @@ import "../static/app.less";
 import store from "../../store/index.js"
 
 import {userGetInfo} from "../../../public/js/netapi";
+import "../../../public/js/vue.api";
 
 // 入口
 import App from "./app.vue";

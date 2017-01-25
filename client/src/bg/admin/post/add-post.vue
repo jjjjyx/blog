@@ -1,9 +1,9 @@
 <template>
     <div >
         <div class="new-post ">
-            <a href="javascript:;" class="am-text-xs am-padding am-block am-link-muted ">
+            <a href="javascript:;" class="am-text-xs am-padding am-block am-link-muted " @click="addPost" v-disabled="!addPostBtnDisabled" :class="{'am-disabled':addPostBtnDisabled}">
                 <i class="am-icon-edit am-text-lg"></i> <span style="vertical-align: text-bottom;">新建文章</span>
-                <span class="typing_loader"></span>
+                <span class="typing_loader" v-show="addPostBtnDisabled"></span>
             </a>
         </div>
         <ul class="am-list post-list">
@@ -32,6 +32,30 @@
         </ul>
     </div>
 </template>
+<script>
+export default {
+    data: function() {
+        return {
+            addPostBtnDisabled:false,
+        }
+    },
+    components: {},
+    computed: {
+
+    },
+    methods: {
+        addPost(){
+            if(!this.addPostBtnDisabled){
+                this.addPostBtnDisabled = true;
+                setTimeout(()=>this.addPostBtnDisabled = false,2000)
+            }
+        }
+    },
+    mounted: function() {
+        $('.post-opt').dropdown();
+    }
+}
+</script>
 <style lang="less" scoped>
     .post-list {
         li.item {
@@ -181,21 +205,3 @@
       }
 }
 </style>
-<script>
-export default {
-    data: function() {
-        return {}
-    },
-    components: {},
-    computed: {
-
-    },
-    methods: {
-
-    },
-    mounted: function() {
-        // console.log(111,222);
-        $('.post-opt').dropdown();
-    }
-}
-</script>

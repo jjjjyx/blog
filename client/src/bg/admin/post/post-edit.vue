@@ -19,7 +19,6 @@
             box-shadow: none;
             outline: none;
             -webkit-appearance: none;
-
         }
     }
 </style>

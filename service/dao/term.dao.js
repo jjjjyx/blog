@@ -5,6 +5,10 @@ let db = require("./database");
 // `name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '分类名',
 // `slug` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '缩略名',
 // `term_group` bigint(10) DEFAULT '0' COMMENT '组',
+
+//insert into j_term_taxonomy(term_id,taxonomy,description,count) select term_id,'category' as taxonomy,'分类' as description,0 as count from j_terms
+
+
 class TermDao {
     loadAll (callback){
         let sql = "select * from j_terms;";
@@ -55,12 +59,28 @@ class TermDao {
             connection.query(sql, [name,term_id],(err, result) => {
                 connection.release();
                 if (err) {
+                    if(err.code=='ER_DUP_ENTRY'){
+                        return callback(true,"分类已存在")
+                    }
                     return callback(true);
                 }else{
                     callback(false, result);
                 }
             })
         });
+    }
+    delete (term_id,callback){
+        let sql = [
+            {
+                sql:"DELETE FROM `j_terms` WHERE `term_id`=?",
+                params:[term_id]
+            },
+            // {
+            //     sql:"DELETE FROM `j_terms` WHERE `term_id`=?";
+            //     params:[term_id]
+            // }
+        ]
+        db.execTrans(sql,callback);
     }
 }
 
