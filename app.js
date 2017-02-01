@@ -39,7 +39,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/', express.static(path.join(__dirname, 'client/home')));
+// app.use('/', express.static(path.join(__dirname, 'client/home')));
 // We are going to protect /api routes with JWT
 var jwtCheck = expressJwt({
     secret: global.C.secret,
