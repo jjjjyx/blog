@@ -144,8 +144,8 @@
 
 <script>
 
-// import {mapGetters, mapActions} from 'vuex'
-// import store from "../store/index";
+import {mapGetters, mapActions} from 'vuex'
+import store from "../store/index";
 import BlobHeader from "../components/head.vue";
 import BlobFooter from "../components/bottom.vue";
 

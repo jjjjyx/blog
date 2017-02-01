@@ -116,7 +116,7 @@ router.beforeEach(async function (to, from, next) {
     }catch (e) {}
     if (!auth) {
         alert("尚未登录!")
-        // return window.location.href="/";
+        return window.location.href="/";
     }else
         $("#preloader").fadeOut(1000,()=>$("#preloader").remove());
     next();

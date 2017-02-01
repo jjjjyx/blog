@@ -24,7 +24,7 @@ let errorHandler = function({status,responseJSON}){
             });
             break;
         case 401:
-            alert("尚未登录");
+            alert("尚未登录!");
             window.location.href="/";
             break;
         case 500:

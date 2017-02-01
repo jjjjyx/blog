@@ -130,7 +130,7 @@ CREATE TABLE `j_posts` (
   `post_content` longtext COLLATE utf8_bin COMMENT '正文',
   `post_title` text COLLATE utf8_bin COMMENT '标题',
   `post_excerpt` text COLLATE utf8_bin COMMENT '摘录',
-  `post_status` varchar(20) COLLATE utf8_bin DEFAULT 'publish' COMMENT '文章状态（publish/auto-draft/inherit等）',
+  `post_status` varchar(20) CHARACTER SET utf8 DEFAULT 'publish' COMMENT '文章状态（publish/auto-draft/inherit/trash/delete等）',
   `comment_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT '评论状态（open/closed）',
   `ping_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT 'PING状态（open/closed）',
   `post_password` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '文章密码',
@@ -176,8 +176,8 @@ CREATE TABLE `j_term_relationships` (
   `term_order` int(11) DEFAULT NULL COMMENT '排序',
   `term_taxonomy_id` bigint(20) unsigned NOT NULL COMMENT '对应分类方法ID',
   PRIMARY KEY (`object_id`,`term_taxonomy_id`),
-  KEY `term_taxonomy_id` (`term_taxonomy_id`),
-  CONSTRAINT `fk_j_term_relationships` FOREIGN KEY (`term_taxonomy_id`) REFERENCES `j_term_taxonomy` (`term_taxonomy_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_ j_term_relationships_idx` (`term_taxonomy_id`),
+  CONSTRAINT `fk_ j_term_relationships` FOREIGN KEY (`term_taxonomy_id`) REFERENCES `j_term_taxonomy` (`term_taxonomy_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个文章、链接和对应分类的关系';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -198,7 +198,7 @@ DROP TABLE IF EXISTS `j_term_taxonomy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `j_term_taxonomy` (
-  `term_taxonomy_id` bigint(20) unsigned NOT NULL,
+  `term_taxonomy_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `term_id` bigint(20) unsigned DEFAULT NULL,
   `taxonomy` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '分类方法(category/post_tag)',
   `description` longtext CHARACTER SET utf8 COMMENT '说明',
@@ -208,7 +208,7 @@ CREATE TABLE `j_term_taxonomy` (
   UNIQUE KEY `term_id_taxonomy` (`term_id`,`taxonomy`),
   KEY `taxonomy` (`taxonomy`),
   CONSTRAINT `fk_j_term_taxonomy` FOREIGN KEY (`term_id`) REFERENCES `j_terms` (`term_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签所对应的分类';
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签所对应的分类';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -217,6 +217,7 @@ CREATE TABLE `j_term_taxonomy` (
 
 LOCK TABLES `j_term_taxonomy` WRITE;
 /*!40000 ALTER TABLE `j_term_taxonomy` DISABLE KEYS */;
+INSERT INTO `j_term_taxonomy` VALUES (19,11,'category','分类',NULL,0),(20,12,'category','分类',NULL,0),(21,13,'category','分类',NULL,0),(22,14,'category','分类',NULL,0),(23,15,'category','分类',NULL,0),(24,16,'category','分类',NULL,0),(25,17,'category','分类',NULL,0),(26,18,'category','分类',NULL,0),(27,19,'category','分类',NULL,0),(28,20,'category','分类',NULL,0),(29,21,'category','分类',NULL,0);
 /*!40000 ALTER TABLE `j_term_taxonomy` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -234,8 +235,9 @@ CREATE TABLE `j_terms` (
   `term_group` bigint(10) DEFAULT '0' COMMENT '组',
   PRIMARY KEY (`term_id`),
   UNIQUE KEY `slug` (`slug`),
+  UNIQUE KEY `name_UNIQUE` (`name`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -244,6 +246,7 @@ CREATE TABLE `j_terms` (
 
 LOCK TABLES `j_terms` WRITE;
 /*!40000 ALTER TABLE `j_terms` DISABLE KEYS */;
+INSERT INTO `j_terms` VALUES (11,'java',NULL,0),(12,'javascript',NULL,0),(13,'html',NULL,0),(14,'css',NULL,0),(15,'vue',NULL,0),(16,'javaweb',NULL,0),(17,'jquery',NULL,0),(18,'git',NULL,0),(19,'mac',NULL,0),(20,'sql',NULL,0),(21,'nodejs',NULL,0);
 /*!40000 ALTER TABLE `j_terms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -296,7 +299,7 @@ CREATE TABLE `j_users` (
   UNIQUE KEY `user_login_UNIQUE` (`user_login`),
   KEY `user_login_key` (`user_login`),
   KEY `user_nickname` (`user_nickname`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='这个用户表其实用户不多，\n只有超级管理员用户，有此账号就能管理博客后台';
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='这个用户表其实用户不多，\n只有超级管理员用户，有此账号就能管理博客后台';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -305,6 +308,7 @@ CREATE TABLE `j_users` (
 
 LOCK TABLES `j_users` WRITE;
 /*!40000 ALTER TABLE `j_users` DISABLE KEYS */;
+INSERT INTO `j_users` VALUES (1,'jyx','$2a$10$99suXIoD.koRh.BT0HE9RO/IfGCP7V3nE7A2pspY1iv5r/Ub/E66i','jjjjyx','jyx@rpgame.net','www.mbdoge.cn',NULL,NULL,1,'管理员');
 /*!40000 ALTER TABLE `j_users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -317,4 +321,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-01-13 23:56:31
+-- Dump completed on 2017-02-01 18:44:26
