@@ -9,14 +9,16 @@ let db = {
     connectionLimit: 10,
     supportBigNumbers: true
 };
+let allowOrigin = "http://localhost:3879";
 try {
 
     let pri = require("../private.js");
-    console.log("private load")
-    db = pri.db || db;
 
+    db = pri.db || db;
+    allowOrigin = pri.allowOrigin;
 } catch (e) {}
 
 exports.db = db;
 exports.APP_PORT = 3878;
 exports.secret = "$2a$10$5A/Wb/EnCwdS2Yxdk0ouGe4beJn7ZTpPD9ofzMdaLc45EgIZwURg6"
+exports.allowOrigin = allowOrigin;

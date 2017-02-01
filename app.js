@@ -28,7 +28,7 @@ app.use(expressValidator({
 app.use(cookieParser());
 app.use(require('compression')());
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3879');
+    res.setHeader('Access-Control-Allow-Origin', C.allowOrigin);
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Max-Age', 1000);
     res.setHeader('Access-Control-Allow-Headers', '*'); //X-Requested-With,content-type,Authorization,Set-Cookie
