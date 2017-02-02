@@ -100,7 +100,6 @@ export default {
             return this.tagList.filter((item)=>item.select).length != this.tagList.length;
         },
         select(){
-
             return this.tagList.filter((item)=>item.select)
         }
     },

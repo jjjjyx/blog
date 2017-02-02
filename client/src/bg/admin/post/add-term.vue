@@ -74,13 +74,12 @@
         transform: scaleY(0);
       }
     }
-    .row {
-        margin-right: -20px;
-    }
+
     .left-sidebar {
         width: @leftWidth;
         top: 1px;
         border-left: 1px solid #e9ecf3;
+        z-index: 100;
     }
     .middle-warpper {
         transition: all 0.4s ease-in-out;
@@ -111,8 +110,8 @@
     }
     .right-warpper {
         position: relative;;
-        margin-left: @leftWidth+@middleWidth+2-10;
-        margin-top: -20px;
+        margin-left: @leftWidth+@middleWidth+2;
+        // margin-top: -20px;
 
     }
     .new-tags {
@@ -273,7 +272,6 @@ export default {
     watch: {
     // 如果路由有变化，会再次执行该方法
         '$route':function(){
-            console.log(1,111);
             if(this.termList.some((item)=>item.term_id == this.$route.params.term_id)){
                 this.isActiveId = this.$route.params.term_id;
             }else{
@@ -286,8 +284,10 @@ export default {
         // console.log(this.$route.params.id)
         this.toggleSidebar(true);
         this.fetchData();
-
-
+    },
+    beforeRouteLeave(to,from,next){
+        this.toggleSidebar(false);
+        next();
     }
 }
 </script>
