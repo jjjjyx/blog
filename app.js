@@ -20,7 +20,7 @@ app.use(bodyParser());
 app.use(expressValidator({
     customValidators:{
         isTermname(value){
-            console.log(value);
+            // console.log(value);
             return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(value)
         }
     }

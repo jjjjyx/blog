@@ -23,7 +23,6 @@ let getAllTerm = function (req, res, next) {
     })
 }
 let addTerm = function (req, res, next) {
-
     req.checkBody('name','请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！').notEmpty().isTermname();
     req.sanitizeBody('name');
     req.getValidationResult().then(function(result) {
@@ -34,7 +33,34 @@ let addTerm = function (req, res, next) {
             };
             return res.status(400).json(res.map);
         }else{
-            termDao.add({name:req.body.name}, (err, data) => {
+            termDao.add({name:req.body.name,taxonomy:'category',description:'分类'}, (err, data) => {
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.data = data;
+                    map.msg = "新建成功";
+                }
+                res.map = map;
+                next();
+            });
+        }
+    });
+}
+let addTag = function (req, res, next) {
+    req.checkBody('name','请提交正确的标签名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！').notEmpty().isTermname();
+    req.sanitizeBody('name');
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(res.map);
+        }else{
+            termDao.add({name:req.body.name,taxonomy:'tag',description:'标签'}, (err, data) => {
                 let map = {};
                 if (err) {
                     map.code = -1;
@@ -118,17 +144,19 @@ module.exports = function () {
     router.route("/getAllTerm").post(getAllTerm, function (req, res, next) {
         return res.status(200).json(res.map);
     });
-
     router.route("/addTerm").post(addTerm, function (req, res, next) {
         return res.status(200).json(res.map);
     });
-
+    router.route("/addTag").post(addTag, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
     router.route("/editTerm").post(editTerm, function (req, res, next) {
         return res.status(200).json(res.map);
     });
     router.route("/deleteTerm").post(deleteTerm, function (req, res, next) {
         return res.status(200).json(res.map);
     });
+
 
 
     router.unless = require("express-unless");

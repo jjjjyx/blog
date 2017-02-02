@@ -7,7 +7,7 @@
             <!-- <input class="am-text-truncate"/> -->
             <a class="am-badge am-badge-default am-radius am-margin-left-xs" v-for="s in select">{{s.label}} <i class="am-icon-remove delete" @click.stop="s.select = false"></i></a>
             <!-- <a class="am-badge am-badge-primary am-radius">Free</a> -->
-            <input class="input-tag" autocomplete="off" tabindex="0" type="text" ref="inputtag" v-model="text" placeholder="点击此处添加标签">
+            <input class="input-tag" autocomplete="off" tabindex="0" type="text" ref="inputtag" v-model="text" placeholder="点击此处添加标签" @keyup.enter="addTag">
             <!-- <span class="sizer" ref="sizer">{{text}}</span> -->
         </div>
         <div class="am-btn-toolbar post-nav">
@@ -15,33 +15,9 @@
                 <button type="button" class="am-btn am-btn-link" title="标签" @click="showAddTag" :class="{active:isAddTagShow}"><i class="am-icon-tags"></i></button>
                 <button type="button" class="am-btn am-btn-link" title="属性"><i class="am-icon-info-circle"></i></button>
                 <button type="button" class="am-btn am-btn-link" title="附件"><i class="am-icon-paperclip fa-flip-horizontal"></i> <span>0</span></button>
-                <!-- <button type="button" class="am-btn am-btn-default"><i class="am-icon-tags"></i></button> -->
             </div>
-            <!-- <div class="am-btn-group am-btn-group-xs">1</div> -->
-            <!-- <div class="am-btn-group am-btn-group-xs">2</div> -->
         </div>
         <div class="am-btn-toolbar post-toolbar">
-            <!-- <div class="am-btn-group am-btn-group-sm">
-                <button type="button" class="am-btn am-btn-default am-radius" title="加粗"><i class="am-icon-bold"></i></button>
-                <button type="button" class="am-btn am-btn-default" title="斜体"><i class="am-icon-italic"></i></button>
-                <button type="button" class="am-btn am-btn-default" title="删除线"><i class="am-icon-strikethrough"></i></button>
-                <button type="button" class="am-btn am-btn-default am-radius" title="标题"><i class="am-icon-header"></i></button>
-            </div>
-            <div class="am-btn-group am-btn-group-sm">
-                <button type="button" class="am-btn am-btn-default am-radius" title="引用"><i class="am-icon-quote-left"></i></button>
-                <button type="button" class="am-btn am-btn-default" title="无须列表"><i class="am-icon-list-ul"></i></button>
-                <button type="button" class="am-btn am-btn-default am-radius" title="有序列表"><i class="am-icon-list-ol"></i></button>
-            </div>
-            <div class="am-btn-group am-btn-group-sm">
-                <button type="button" class="am-btn am-btn-default am-radius" title="链接"><i class="am-icon-chain"></i></button>
-                <button type="button" class="am-btn am-btn-default am-radius" title="图片"><i class="am-icon-image"></i></button>
-            </div>
-            <div class="am-btn-group am-btn-group-sm" >
-                <button type="button" class="am-btn am-btn-default am-radius" title="预览"><i class="am-icon-eye"></i></button>
-                <button type="button" class="am-btn am-btn-default" title=""><i class="am-icon-columns"></i></button>
-                <button type="button" class="am-btn am-btn-default am-radius" title="斜体"><i class="am-icon-arrows-alt"></i></button>
-            </div> -->
-
             <div class="am-btn-group am-btn-group-sm" v-for="item in toolbarList">
                 <button type="button" class="am-btn am-btn-default am-radius" :class="{'am-active':i.active}" :title="i.title" v-for="i in item" @click="toolbarBtnClick(i)"><i :class="i.className"></i></button>
             </div>
@@ -141,6 +117,7 @@
 import Simplemde from "simplemde/dist/simplemde.min.js";
 import "simplemde/dist/simplemde.min.css";
 import { mapGetters, mapActions,mapMutations } from 'vuex'
+import * as api from "../../../../public/js/netapi.js";
 export default {
     data: function() {
         return {
@@ -371,10 +348,20 @@ export default {
         toolbarBtnClick(i){
             // this.simple[i.action]();
             if(typeof this.simple[i.action] === "function"){
-                console.log(this.simple[i.action])
+                // console.log(this.simple[i.action])
                 this.simple[i.action](this.simple);
             }else{
                 window.open(i.action, "_blank");
+            }
+        },
+        async addTag(){
+            // console.log(this.text,api);
+            let data =  await api.addTag({
+                name:this.text
+            })
+            console.log(data);
+            if(data.code==0){
+
             }
         }
     },

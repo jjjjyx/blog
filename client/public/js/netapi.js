@@ -99,6 +99,15 @@ export function addTerm(params){
         });
     });
 }
+export function addTag(params){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/addTag`,params).done((data) => {
+            resolve(data);
+        }).fail(({status,responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
 export function editTermName(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/editTerm`,params).done((data) => {
