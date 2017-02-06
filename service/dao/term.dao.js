@@ -11,7 +11,22 @@ let db = require("./database");
 
 class TermDao {
     loadAll (callback){
-        return this.loadByTaxonomy('category',callback);
+        let sql = "select * from j_terms";
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(sql, (err, result,fields) => {
+                connection.release();
+                if (err || !result.length) {
+                    callback(true);
+                    return;
+                }else{
+                    callback(false, result);
+                }
+            })
+        });
     }
     loadByTaxonomy(taxonomy,callback){
         let sql = "select * from j_terms where taxonomy = ?;";
@@ -20,7 +35,7 @@ class TermDao {
                 callback(true);
                 return;
             }
-            connection.query(sql, (err, result,fields) => {
+            connection.query(sql,[taxonomy], (err, result,fields) => {
                 connection.release();
                 if (err || !result.length) {
                     callback(true);

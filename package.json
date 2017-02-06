@@ -41,6 +41,7 @@
     "http-server": "^0.9.0",
     "jquery": "^2.2.3",
     "jsonwebtoken": "^7.2.1",
+    "keyboardjs": "^2.3.3",
     "lodash": "^4.16.6",
     "morgan": "^1.7.0",
     "multer": "^1.2.0",

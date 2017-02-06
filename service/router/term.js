@@ -8,6 +8,15 @@ let debug = require('debug')('app:routes:term' + process.pid),
 
 // let nameReg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
 let getAllTerm = function (req, res, next) {
+    // req.checkBody('name','0').notEmpty().isTermname();
+    // let taxonomy = "category";
+    // switch (req.body.taxonomy) {
+    //     case '1':
+    //         taxonomy = 'tag';
+    //         break;
+    //     default:
+    // }
+    // console.log(taxonomy,req.body.taxonomy)
     termDao.loadAll((err, list) => {
         let map = {};
         if (err) {
@@ -31,7 +40,7 @@ let addTerm = function (req, res, next) {
                 code: 1,
                 msg: result.array()[0].msg
             };
-            return res.status(400).json(res.map);
+            return res.status(400).json(map);
         }else{
             termDao.add({name:req.body.name,taxonomy:'category',description:'分类'}, (err, data) => {
                 let map = {};
@@ -58,7 +67,7 @@ let addTag = function (req, res, next) {
                 code: 1,
                 msg: result.array()[0].msg
             };
-            return res.status(400).json(res.map);
+            return res.status(400).json(map);
         }else{
             termDao.add({name:req.body.name,taxonomy:'tag',description:'标签'}, (err, data) => {
                 let map = {};
@@ -89,7 +98,7 @@ let editTerm = function (req, res, next) {
                 code: 1,
                 msg: result.array()[0].msg
             };
-            return res.status(400).json(res.map);
+            return res.status(400).json(map);
         }else{
             let name = req.body.name,
                 term_id = req.body.term_id;

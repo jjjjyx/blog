@@ -7,7 +7,7 @@ import {mutations} from "./mutations.js";
 import * as getters from "./getters";
 // import * as actions from "./actions";
 import account from "./modules/account";
-// import notify from "./modules/notify";
+import term from "./modules/term";
 
 Vue.use(Vuex);
 
@@ -25,7 +25,8 @@ export default new Vuex.Store({
     getters,
     mutations,
     modules:{
-        account
+        account,
+        term
         // notify
     }
 })

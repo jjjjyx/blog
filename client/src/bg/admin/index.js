@@ -3,6 +3,8 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 
+import keyboardJS from "keyboardjs"
+
 Vue.use(VueRouter);
 Vue.config.errorHandler = function (err, vm) {
     console.log(err, vm);
@@ -68,6 +70,7 @@ var router = new VueRouter({
             meta:{
                 name:'添加文章',
                 description:'撰写文章',
+                keyContext: "tag"
             },
             children:[
                 {
@@ -109,7 +112,7 @@ var router = new VueRouter({
     ]
 })
 router.beforeEach(async function (to, from, next) {
-    console.log("浏览: " + to.path);
+    // console.log("浏览: " + to.path);
     let auth ;
     try{
         auth = await isLogIn();
@@ -123,15 +126,14 @@ router.beforeEach(async function (to, from, next) {
 });
 
 router.afterEach(function (to) {
-    console.log("成功浏览到: " + to.path);
+    // console.log("成功浏览到: " + to.path);
     let context ="default";
     for(let i =0,l=to.matched.length;i<l;i++){
         context = to.matched[i].meta.keyContext ||context;
     }
-    // keyboardJS.setContext(context);
+    keyboardJS.setContext(context);
     // NProgress.done();
 })
-
 const app = new Vue({
     router,
     render: h => h(App)

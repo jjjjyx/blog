@@ -3,13 +3,23 @@
         <input class="title am-text-truncate" :value="title"/>
         <div class="post-tags-bar am-text-xs" ref="posttags">
             <span>标签</span>
-            <i class="am-icon-plus am-margin-right-xs"></i>
+            <div class="am-dropdown tag-drop" data-am-dropdown>
+              <!-- <button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle>下拉列表 <span class="am-icon-caret-down"></span></button> -->
+              <i class="am-icon-plus am-margin-right-xs am-dropdown-toggle"  data-am-dropdown-toggle></i>
+              <div class="am-dropdown-content am-text-xs">
+                  <h3 class="am-margin-0">复选框</h3>
+                  <label class="am-checkbox" v-for="item in tagList">
+                      <input type="checkbox" :value="item" data-am-ucheck v-model="selectTag"> {{item.name}}
+                  </label>
+              </div>
+            </div>
             <!-- <input class="am-text-truncate"/> -->
-            <a class="am-badge am-badge-default am-radius am-margin-left-xs" v-for="s in select">{{s.label}} <i class="am-icon-remove delete" @click.stop="s.select = false"></i></a>
+            <a class="am-badge am-badge-default am-radius am-margin-left-xs" v-for="(s,index) in selectTag">{{s.name}} <i class="am-icon-remove delete" @click.stop="deleteSelectTag(index)"></i></a>
             <!-- <a class="am-badge am-badge-primary am-radius">Free</a> -->
             <input class="input-tag" autocomplete="off" tabindex="0" type="text" ref="inputtag" v-model="text" placeholder="点击此处添加标签" @keyup.enter="addTag">
             <!-- <span class="sizer" ref="sizer">{{text}}</span> -->
         </div>
+        <span class="saving-notice">已保存</span>
         <div class="am-btn-toolbar post-nav">
             <div class="am-btn-group am-btn-group-sm">
                 <button type="button" class="am-btn am-btn-link" title="标签" @click="showAddTag" :class="{active:isAddTagShow}"><i class="am-icon-tags"></i></button>
@@ -53,6 +63,9 @@
             background-color: #fff;
             cursor: default;
             color: #868E8E;
+            .am-icon-plus {
+                cursor: pointer;
+            }
             .am-badge {
                 user-select: none;
                 display: inline-block;
@@ -85,6 +98,16 @@
             position: relative;
             overflow: auto;
         }
+        .saving-notice {
+            position: absolute;
+            top: 0;
+            right: 7px;
+            z-index: 1140;
+        }
+    }
+    .saving-notice {
+        font-size: 1.1rem;
+        line-height: 20px;
     }
     .post-toolbar {
         padding: 0 20px;
@@ -118,183 +141,100 @@ import Simplemde from "simplemde/dist/simplemde.min.js";
 import "simplemde/dist/simplemde.min.css";
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 import * as api from "../../../../public/js/netapi.js";
+// import keyboardJS from "keyboardjs"
+import key from "../../../../public/js/key.js";
+
+
 export default {
     data: function() {
         return {
             title:'无标题文章',
             tagList:[
-                {label:'node',select:false},
-                {label:'java',select:false},
-                {label:'mysql',select:false},
-                {label:'redis',select:false},
-                {label:'网络安全',select:false},
-                {label:'javascript',select:false},
-                {label:'css',select:false},
-                {label:'html',select:false},
-                {label:'前端',select:false},
+
             ],
+            selectTag:[],
             isAddTagShow:false,
             text:'',
             toolbar:{
-            	"bold": {
-            		name: "bold",
-            		action: "toggleBold",
-            		className: "am-icon-bold",
-            		title: "Bold",
-            		default: true,
-                    active:false,
-            	},
-            	"italic": {
-            		name: "italic",
-            		action: "toggleItalic",
-            		className: "am-icon-italic",
-            		title: "Italic",
-            		default: true,
-                    active:false,
-            	},
-            	"strikethrough": {
-            		name: "strikethrough",
-            		action: "toggleStrikethrough",
-            		className: "am-icon-strikethrough",
-            		title: "Strikethrough",
-                    active:false,
-            	},
-            	"heading": {
-            		name: "heading",
-            		action: "toggleHeadingSmaller",
-            		className: "am-icon-header",
-            		title: "Heading",
-            		default: true,
-                    active:false,
-            	},
-            	"separator-1": {
-            		name: "separator-1"
-            	},
-            	"code": {
-            		name: "code",
-            		action: "toggleCodeBlock",
-            		className: "am-icon-code",
-            		title: "Code",
-                    active:false,
-            	},
-            	"quote": {
-            		name: "quote",
-            		action: "toggleBlockquote",
-            		className: "am-icon-quote-left",
-            		title: "Quote",
-            		default: true,
-                    active:false,
-            	},
-            	"unordered-list": {
-            		name: "unordered-list",
-            		action: "toggleUnorderedList",
-            		className: "am-icon-list-ul",
-            		title: "Generic List",
-            		default: true,
-                    active:false,
-            	},
-            	"ordered-list": {
-            		name: "ordered-list",
-            		action: "toggleOrderedList",
-            		className: "am-icon-list-ol",
-            		title: "Numbered List",
-            		default: true,
-                    active:false,
-            	},
-            	"clean-block": {
-            		name: "clean-block",
-            		action: "cleanBlock",
-            		className: "am-icon-eraser fa-clean-block",
-            		title: "Clean block",
-                    active:false,
-            	},
-            	"separator-2": {
-            		name: "separator-2"
-            	},
-            	"link": {
-            		name: "link",
-            		action: "drawLink",
-            		className: "am-icon-link",
-            		title: "Create Link",
-            		default: true,
-                    active:false,
-            	},
-            	"image": {
-            		name: "image",
-            		action: "drawImage",
-            		className: "am-icon-picture-o",
-            		title: "Insert Image",
-            		default: true,
-                    active:false,
-            	},
-            	"table": {
-            		name: "table",
-            		action: "drawTable",
-            		className: "am-icon-table",
-            		title: "Insert Table",
-                    active:false,
-            	},
-            	"horizontal-rule": {
-            		name: "horizontal-rule",
-            		action: "drawHorizontalRule",
-            		className: "am-icon-minus",
-            		title: "Insert Horizontal Line",
-                    active:false,
-            	},
-            	"separator-3": {
-            		name: "separator-3"
-            	},
-            	"preview": {
-            		name: "preview",
-            		action: "togglePreview",
-            		className: "am-icon-eye no-disable",
-            		title: "Toggle Preview",
-            		default: true,
-                    active:false,
-            	},
-            	"side-by-side": {
-            		name: "side-by-side",
-            		action: "toggleSideBySide",
-            		className: "am-icon-columns no-disable no-mobile",
-            		title: "Toggle Side by Side",
-            		default: true,
-                    active:false,
-            	},
-            	"fullscreen": {
-            		name: "fullscreen",
-            		action: "toggleFullScreen",
-            		className: "am-icon-arrows-alt no-disable no-mobile",
-            		title: "Toggle Fullscreen",
-            		default: true,
-                    active:false,
-            	},
-            	"separator-4": {
-            		name: "separator-4"
-            	},
-            	"guide": {
-            		name: "guide",
-            		action: "https://simplemde.com/markdown-guide",
-            		className: "am-icon-question-circle",
-            		title: "Markdown Guide",
-            		default: true,
-                    active:false,
-            	},
-            	// "separator-5": {
-            	// 	name: "separator-5"
-            	// },
-            	// "undo": {
-            	// 	name: "undo",
-            	// 	action: "undo",
-            	// 	className: "am-icon-undo no-disable",
-            	// 	title: "Undo",
+                "bold": {
+                    name: "bold",action: "toggleBold",className: "am-icon-bold",title: "Bold",default: true,active:false,
+                },
+                "italic": {
+                    name: "italic",action: "toggleItalic",className: "am-icon-italic",title: "Italic",default: true,active:false,
+                },
+                "strikethrough": {
+                    name: "strikethrough",action: "toggleStrikethrough",className: "am-icon-strikethrough",title: "Strikethrough",active:false,
+                },
+                "heading": {
+                    name: "heading",action: "toggleHeadingSmaller",className: "am-icon-header",title: "Heading",default: true,active:false,
+                },
+                "separator-1": {
+                    name: "separator-1"
+                },
+                "code": {
+                    name: "code",action: "toggleCodeBlock",className: "am-icon-code",title: "Code",active:false,
+                },
+                "quote": {
+                    name: "quote",action: "toggleBlockquote",className: "am-icon-quote-left",title: "Quote",default: true,active:false,
+                },
+                "unordered-list": {
+                    name: "unordered-list",action: "toggleUnorderedList",className: "am-icon-list-ul",title: "Generic List",default: true,active:false,
+                },
+                "ordered-list": {
+                    name: "ordered-list",action: "toggleOrderedList",className: "am-icon-list-ol",title: "Numbered List",default: true,active:false,
+                },
+                "clean-block": {
+                    name: "clean-block",action: "cleanBlock",className: "am-icon-eraser fa-clean-block",title: "Clean block",active:false,
+                },
+                "separator-2": {
+                    name: "separator-2"
+                },
+                "link": {
+                    name: "link",action: "drawLink",className: "am-icon-link",title: "Create Link",default: true,active:false,
+                },
+                "image": {
+                    name: "image",action: "drawImage",className: "am-icon-picture-o",title: "Insert Image",default: true,active:false,
+                },
+                "table": {
+                    name: "table",action: "drawTable",className: "am-icon-table",title: "Insert Table",active:false,
+                },
+                "horizontal-rule": {
+                    name: "horizontal-rule",action: "drawHorizontalRule",className: "am-icon-minus",title: "Insert Horizontal Line",active:false,
+                },
+                "separator-3": {
+                    name: "separator-3"
+                },
+                "preview": {
+                    name: "preview",action: "togglePreview",className: "am-icon-eye no-disable",title: "Toggle Preview",default: true,active:false,
+                },
+                "side-by-side": {
+                    name: "side-by-side",action: "toggleSideBySide",className: "am-icon-columns no-disable no-mobile",title: "Toggle Side by Side",default: true,active:false,
+                },
+                "fullscreen": {
+                    name: "fullscreen",action: "toggleFullScreen",className: "am-icon-arrows-alt no-disable no-mobile",title: "Toggle Fullscreen",default: true,active:false,
+                },
+                "separator-4": {
+                    name: "separator-4"
+                },
+                "guide": {
+                    name: "guide",action: "https://simplemde.com/markdown-guide",className: "am-icon-question-circle",title: "Markdown Guide",default: true,active:false,
+                },
+                // "separator-5": {
+                // 	name: "separator-5"
+                // },
+                // "undo": {
+                // 	name: "undo",
+                // 	action: "undo",
+                // 	className: "am-icon-undo no-disable",
+                // 	title: "Undo",
                 //
-            	// },
-            	// "redo": {
-            	// 	name: "redo",
-            	// 	action: "redo",
-            	// 	className: "am-icon-repeat no-disable",
-            	// 	title: "Redo"
-            	// }
+                // },
+                // "redo": {
+                // 	name: "redo",
+                // 	action: "redo",
+                // 	className: "am-icon-repeat no-disable",
+                // 	title: "Redo"
+                // }
             },
             simple:null,
         }
@@ -356,14 +296,32 @@ export default {
         },
         async addTag(){
             // console.log(this.text,api);
+            if(!this.verification(this.text)) return;
             let data =  await api.addTag({
                 name:this.text
             })
-            console.log(data);
+            // console.log(data);
             if(data.code==0){
-
+                let o  = {
+                    term_id:data.data.insertId,
+                    name:this.text
+                }
+                this.tagList.push(o)
+                this.selectTag.push(o)
+                this.text = "";
+            }else{
+                layer.alert(data.msg)
             }
-        }
+        },
+        deleteSelectTag(index){
+            this.selectTag.splice(index,1);
+        },
+        verification(name){
+            let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
+            let result = reg.test(name);
+            layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
+            return result;
+        },
     },
     watch:{
         // text(value){
@@ -376,7 +334,7 @@ export default {
         //     }
         // }
     },
-    mounted: function() {
+    mounted:async function() {
         // console.log("404");
         this.simple = new Simplemde({
     		element: document.getElementById("post-content"),
@@ -397,6 +355,18 @@ export default {
 				}
     		}
     	});
+        let data = await api.getAllTerm(1);
+        if(data.code==0){
+            this.tagList = data.data;
+        }
+        key.bind('tag',{
+            keys:['ctrl+s'],
+            oncall:(e)=>{
+                e.preventDefault();
+                console.log("保存");
+            },
+        })
+        $('.tag-drop').dropdown();
     }
 }
 </script>

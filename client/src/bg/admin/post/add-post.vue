@@ -33,6 +33,7 @@
     </div>
 </template>
 <script>
+import * as api from "../../../../public/js/netapi.js";
 export default {
     data: function() {
         return {
@@ -44,11 +45,22 @@ export default {
 
     },
     methods: {
-        addPost(){
+        async addPost(){
             if(!this.addPostBtnDisabled){
                 this.addPostBtnDisabled = true;
-                setTimeout(()=>this.addPostBtnDisabled = false,2000)
+                let data = await api.addPost({
+                    post_title:'无标题文章',
+                    term_id:11
+                });
+
+                // setTimeout(()=>this.addPostBtnDisabled = false,2000)
             }
+        }
+    },
+    watch: {
+    // 如果路由有变化，会再次执行该方法
+        '$route':function(){
+            // console.log(1111);
         }
     },
     mounted: function() {

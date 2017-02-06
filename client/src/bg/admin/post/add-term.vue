@@ -11,26 +11,19 @@
                 </form>
             </div>
             <ul class="sidebar-nav">
-                <li class="sidebar-nav-link curr" v-for="(item,index) in termList">
-                    <div class="am-text-truncate" :class="{'sidebar-nav-sub-title active':isActiveId == item.term_id}" @click="toggleDown($event,item)">
-                        <i class="am-icon-tag sidebar-nav-link-logo"></i>
-                        <span >{{item.name}}</span>
-                        <!-- <input v-else type="text" :value="item.name" @click.stop ref="editName" @blur="confirm(item)" @keyup.esc="item.editName = false" style="color:#868E8E;" maxlength="10"/> -->
-                        <!-- @keyup.enter="confirm(item)" -->
-                        <span class="am-icon-cog am-fr am-margin-right-sm sidebar-nav-sub-ico" v-if="isActiveId == item.term_id"></span>
+                <li class="sidebar-nav-link curr" v-for="(item,index) in categoryList" :class="{'active':isActiveId == item.term_id}" @click="toggleDown($event,item)">
+                    <div class=" am-cf" :class="{'sidebar-nav-sub-title active':isActiveId == item.term_id}" >
+                        <i class="am-icon-tag sidebar-nav-link-logo am-fl"></i>
+                        <span class="am-text-truncate category-name am-fl">{{item.name}}</span>
+                        <div class="am-dropdown sidebar-nav-sub-ico am-fr am-margin-right-sm" data-am-dropdown v-if="isActiveId == item.term_id">
+                          <i class="am-icon-cog am-dropdown-toggle"  data-am-dropdown-toggle></i>
+                          <ul class="am-dropdown-content am-text-xs">
+                            <li><a >修改名称</a></li>
+                            <li><a >删除分类</a></li>
+                          </ul>
+                        </div>
                     </div>
-                    <ul class="sidebar-nav sidebar-nav-sub" v-if="isActiveId == item.term_id">
-                        <li class="sidebar-nav-link">
-                            <a href="javascript:;" @click="editTagName(item)">
-                                <span class="am-icon-edit sidebar-nav-link-logo" ></span> 修改名称
-                            </a>
-                        </li>
-                        <li class="sidebar-nav-link">
-                            <a href="javascript:;" @click="confirmDelete(index)">
-                                <span class="am-icon-trash-o sidebar-nav-link-logo"></span> 删除分类
-                            </a>
-                        </li>
-                    </ul>
+
                 </li>
             </ul>
         </div>
@@ -74,7 +67,10 @@
         transform: scaleY(0);
       }
     }
-
+    .category-name {
+        display: block;
+        width: 100px;
+    }
     .left-sidebar {
         width: @leftWidth;
         top: 1px;
@@ -146,7 +142,7 @@ export default {
     data: function() {
         return {
             isShowNewTage: false,
-            isActiveId :0,
+            // isActiveId :0,
             termList:[],
             newTerm:{
                 name:''
@@ -158,27 +154,25 @@ export default {
     },
     components: {},
     computed: {
-        // ...mapGetters
-        // active(){
-        //
-        //     if(this.termList.length){
-        //         console.log(this.$route.params.id , this.termList[0].term_id,222);
-        //         return (this.$route.params.id || this.termList[0].term_id)
-        //     }else{
-        //         return false;
-        //     }
-        // }
+        ...mapGetters([
+            'categoryList',
+            'isActiveId'
+        ]),
     },
     methods: {
         ...mapMutations([
-            'toggleSidebar'
+            'toggleSidebar',
+            'setTerm'
+        ]),
+        ...mapActions([
+            'setActiveId'
         ]),
         showAddTag(){
             $('.new-tags-form ').slideToggle(500);
             this.newTermName = '';
         },
         async add() {
-            // if(!this.verification(this.newTerm.name)) return;
+            if(!this.verification(this.newTerm.name)) return;
             let data = await addTerm(this.newTerm);
             if(data.code == 0) {
                 let o = {
@@ -191,12 +185,11 @@ export default {
             layer.alert(data.msg);
         },
         toggleDown(e,item){
-            if(item.term_id == this.$route.params.term_id){
-                item.editName = false;
-                $(e.target).closest('.sidebar-nav-sub-title').siblings('.sidebar-nav-sub').slideToggle(500)
-                    .end().find('.sidebar-nav-sub-ico').toggleClass('sidebar-nav-sub-ico-rotate');
-            }else{
+            if(item.term_id != this.isActiveId){
                 this.$router.push({ path: `/tag/${item.term_id}`})
+                // item.editName = false;
+                // $(e.target).closest('.sidebar-nav-sub-title').siblings('.sidebar-nav-sub').slideToggle(500)
+                    // .end().find('.sidebar-nav-sub-ico').toggleClass('sidebar-nav-sub-ico-rotate');
             }
         },
         editTagName(item){
@@ -247,24 +240,6 @@ export default {
                 this.displayInput = false;
             });
         },
-        async fetchData () {
-            let data = await getAllTerm();
-            if(data.code == 0){
-                // let active = this.$route.params.term_id||data.data[0].term_id;
-                data.data.forEach((item,index)=>{
-
-                    item.editName = false;
-                });
-                console.log(this.$route.params.term_id);
-                if(this.$route.params.term_id && data.data.some((item)=>item.term_id == this.$route.params.term_id)){
-                    this.isActiveId = this.$route.params.term_id;
-                }else{
-                    this.isActiveId = data.data[0].term_id;
-                    this.$router.replace({ path: `/tag/`})
-                }
-                this.termList = data.data;
-            }
-        }
         // action(){
 
         // }
@@ -272,22 +247,31 @@ export default {
     watch: {
     // 如果路由有变化，会再次执行该方法
         '$route':function(){
-            if(this.termList.some((item)=>item.term_id == this.$route.params.term_id)){
-                this.isActiveId = this.$route.params.term_id;
-            }else{
-                this.isActiveId = this.termList[0].term_id;
-                // this.$router.push({ path: '/tag'})
-            }
+            this.setActiveId(this.$route.params.term_id)
         }
     },
     mounted: function() {
-        // console.log(this.$route.params.id)
         this.toggleSidebar(true);
-        this.fetchData();
+        // this.$nextTick(()=>);
+        setTimeout(()=>$('[data-am-dropdown]').dropdown(),500)
     },
     beforeRouteLeave(to,from,next){
         this.toggleSidebar(false);
         next();
+    },
+    async beforeRouteEnter(to, from, next){
+        // console.log(222)
+        let data = await getAllTerm();
+        if(data.code == 0){
+            next((vm)=>{
+                vm.setTerm(data.data)
+                vm.setActiveId(to.params.term_id)
+            });
+        }else{
+            next(false)
+        }
+
+
     }
 }
 </script>

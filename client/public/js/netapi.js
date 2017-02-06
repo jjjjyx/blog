@@ -81,9 +81,9 @@ export function userGetInfo() {
         });
     });
 }
-export function getAllTerm(){
+export function getAllTerm(taxonomy){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/getAllTerm`).done((data) => {
+        $.post(`${API_SERVER}/api/getAllTerm`,{taxonomy}).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
@@ -120,6 +120,16 @@ export function editTermName(params){
 export function deleteTerm(term_id){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/deleteTerm`,{term_id}).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+
+export function addPost(params){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/newpost`,params).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
