@@ -10,10 +10,6 @@ let newpost = function(req, res, next){
     req.checkBody('term_id','未提交所属分类').notEmpty().isInt();
     req.sanitizeBody('post_title');
     req.sanitizeBody('term_id');
-    let term_id = req.body.term_id;
-    let post_title = req.body.post_title;
-    console.log(req.user,term_id,post_title);
-
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
             let map = {
@@ -22,29 +18,45 @@ let newpost = function(req, res, next){
             };
             return res.status(400).json(map);
         }else{
-            // termDao.add({name:req.body.name,taxonomy:'category',description:'分类'}, (err, data) => {
-            //     let map = {};
-            //     if (err) {
-            //         map.code = -1;
-            //         map.msg = data || "发生未知错误，刷新后重试";
-            //     } else {
-            //         map.code = 0;
-            //         map.data = data;
-            //         map.msg = "新建成功";
-            //     }
-            //     res.map = map;
-            //     next();
-            // });
+
+            let term_id = req.body.term_id;
+            let post_title = req.body.post_title;
+            postDao.save({post_author:req.user.id,post_title,term_id},(err, data)=>{
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.data = data;
+                    map.msg = "新建成功";
+                }
+                res.map = map;
+                next();
+            })
         }
     });
-    // postDao.save({post_title,term_id},()=>{
-    //
-    // })
 }
-
+let posts = function(req, res, next){
+    postDao.getPosts((err, data)=>{
+        let map = {};
+        if (err) {
+            map.code = -1;
+            map.msg = data || "发生未知错误，刷新后重试";
+        } else {
+            map.code = 0;
+            map.data = data;
+            map.msg = "success";
+        }
+        res.map = map;
+        next();
+    });
+}
 module.exports = function () {
     let router = new Router();
-
+    router.route("/posts").post(posts, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
     router.route("/newpost").post(newpost, function (req, res, next) {
         return res.status(200).json(res.map);
     });

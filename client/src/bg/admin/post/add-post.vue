@@ -6,16 +6,15 @@
                 <span class="typing_loader" v-show="addPostBtnDisabled"></span>
             </a>
         </div>
-        <ul class="am-list post-list">
-            <li class="active item">
+        <ul class="am-list post-list" v-if="list.length">
+            <li class="active item" v-for="item in list" @click="pathappend(item)">
                 <i class="am-icon-file"></i>
                 <a class="post-title am-text-truncate">
-                    无标题
+                    {{item.post_title}}
                 </a>
                 <p class="abbreviate am-text-truncate">爱上当看见爱上快乐到家了asdaskdhasdkhash</p>
                 <p class="wordage am-text-xs">字数：0</p>
-                <div class="am-dropdown post-opt" data-am-dropdown>
-                  <!-- <button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle>下拉列表 <span class="am-icon-caret-down"></span></button> -->
+                <div class="am-dropdown post-opt" data-am-dropdown v-if="isActivePostId==item.id">
                   <i class="am-icon-cog am-dropdown-toggle"  data-am-dropdown-toggle></i>
                   <ul class="am-dropdown-content am-text-xs">
                     <li><a >直接发布</a></li>
@@ -28,11 +27,11 @@
                   </ul>
                 </div>
             </li>
-            <li class="item">1</li>
         </ul>
     </div>
 </template>
 <script>
+import { mapGetters, mapActions,mapMutations } from 'vuex'
 import * as api from "../../../../public/js/netapi.js";
 export default {
     data: function() {
@@ -42,7 +41,15 @@ export default {
     },
     components: {},
     computed: {
-
+        ...mapGetters([
+            'isActiveId',
+            'postsList',
+            'isActivePostId'
+        ]),
+        list(){
+            // console.log(this.postsList.filter((item)=>item.term_id==this.isActiveId))
+            return this.postsList.filter((item)=>item.term_id==this.isActiveId)
+        }
     },
     methods: {
         async addPost(){
@@ -50,21 +57,50 @@ export default {
                 this.addPostBtnDisabled = true;
                 let data = await api.addPost({
                     post_title:'无标题文章',
-                    term_id:11
+                    term_id:this.isActiveId
                 });
+                this.addPostBtnDisabled = false;
+                if(data.code){
 
+                }
                 // setTimeout(()=>this.addPostBtnDisabled = false,2000)
             }
-        }
+        },
+        pathappend(item){
+            // console.log(this.$route)
+            if(item.id != this.isActivePostId){
+                this.$router.push({ path: `/tag/${this.isActiveId}/post/${item.id}`})
+            }
+        },
+        ...mapMutations([
+            'setPosts'
+        ]),
+        ...mapActions([
+            'setActivePostId'
+        ])
     },
     watch: {
-    // 如果路由有变化，会再次执行该方法
+        // 如果路由有变化，会再次执行该方法
         '$route':function(){
-            // console.log(1111);
+            console.log(12312)
+            this.setActivePostId(this.$route.params.id)
+
+            setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
         }
     },
-    mounted: function() {
+    mounted:async function() {
+        // console.log("====")
+        let data = await api.posts();
+        if(data.code==0){
+            // this.postsList = data.data;
+            this.setPosts(data.data);
+            console.log(this.$route.params.id);
+            this.setActivePostId(this.$route.params.id)
+        }else{
+            layer.alert('发生异常，请刷新后重试');
+        }
         $('.post-opt').dropdown();
+
     }
 }
 </script>

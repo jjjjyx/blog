@@ -149,9 +149,6 @@ export default {
     data: function() {
         return {
             title:'无标题文章',
-            tagList:[
-
-            ],
             selectTag:[],
             isAddTagShow:false,
             text:'',
@@ -258,7 +255,8 @@ export default {
             }
         },
         ...mapGetters([
-            'contentHeight'
+            'contentHeight',
+            'tagList'
         ]),
         toolbarList(){
             let arr = [];
@@ -355,10 +353,6 @@ export default {
 				}
     		}
     	});
-        let data = await api.getAllTerm(1);
-        if(data.code==0){
-            this.tagList = data.data;
-        }
         key.bind('tag',{
             keys:['ctrl+s'],
             oncall:(e)=>{

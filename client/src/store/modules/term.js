@@ -7,22 +7,13 @@ const state = {
 
 const getters = {
     termList: state => state.termList,
-    categoryList: state => state.termList.filter((item)=>item.taxonomy == 'category'),
-    tagList: state => state.termList.filter((item)=>item.taxonomy == 'tag'),
+    categoryList: state => state.termList.filter((item)=> item.taxonomy == 'category'),
+    tagList: state => state.termList.filter((item)=> item.taxonomy == 'tag'),
     isActiveId: state => state.isActiveId
 }
 
 // actions
 const actions = {
-    // userSetInfo ({ commit, state },user){
-    //     commit("USER_SET_INFO",user);
-    // },
-    // async userSignout ({ commit, state }) {
-    //     let [code, data] = await api.userSignout()
-    //     if (code == 0) {
-    //         commit("USER_SIGNOUT");
-    //     }
-    // }
     setActiveId({ commit, state,getters },id){
         if(getters.categoryList.some((item)=>item.taxonomy=='category' && item.term_id == id)){
             commit('SET_ACTIVEID',id);
@@ -36,9 +27,12 @@ const mutations = {
     setTerm (state,list){
         state.termList = list;
     },
-    addTerm (state,obj) {
+    addTerm (state,obj,index) {
         if(obj.hasOwnProperty('term_id')&&obj.hasOwnProperty('name')&&obj.hasOwnProperty('taxonomy'))
-            termList.push(obj)
+            if(index==0||index){
+                state.termList.splice(index,0,obj)
+            }else
+                state.termList.push(obj)
     },
     deleteTerm (state,id) {
         let index = state.termList.findIndex((item)=>item.term_id==id)

@@ -136,3 +136,12 @@ export function addPost(params){
         });
     });
 }
+export function posts(){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/posts`).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}

@@ -32,12 +32,78 @@ let db = require("./database");
 //   CONSTRAINT `fk_ j_posts` FOREIGN KEY (`post_parent`) REFERENCES `j_posts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
 //   CONSTRAINT `fk_j_users` FOREIGN KEY (`post_author`) REFERENCES `j_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 // ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+   // id
+   // post_author
+   // post_date
+   // post_content
+   // post_title
+   // post_excerpt
+   // post_status
+   // comment_status
+   // ping_status
+   // post_password
+   // post_name
+   // to_ping
+   // pinged
+   // post_modified
+   // post_content_filtered
+   // post_parent
+   // guid
+   // menu_order
+   // post_type
+   // post_mime_type
+   // comment_count
+   // term_id
 class PostDao {
     getPostListByTermId(term_id,callback){
 
     }
-    save({term_id,post_title,post_author,post_status,post_name},callback){
-
+    getPosts(callback){
+        let sql = "select id,post_author,post_date,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,post_modified,post_content_filtered,post_parent,menu_order,post_type,post_mime_type,comment_count,term_id from j_posts";
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(sql,(err, result)=>{
+                if (err) {
+                    callback(true);
+                }else{
+                    callback(false, result);
+                }
+                connection.release();
+            })
+        });
+    }
+    save({post_author,term_id,post_title,post_content,post_status,post_name},callback){
+        console.log(term_id,post_title,post_author,post_status,post_name)
+        let sql ="INSERT INTO `myblog`.`j_posts` (`post_author`, `post_date`, `post_content`, `post_title`, `term_id`,`post_name`,`post_status`) VALUES (?, ?, ?, ?, ?, ?, ?);"
+        let s = "SELECT taxonomy FROM j_terms where term_id=?;"
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(s,[term_id],(err, result)=>{
+                if (err) {
+                    callback(true);
+                }else{
+                    // console.log(result);
+                    if(result.length==1&&result[0].taxonomy=='category'){
+                        connection.query(sql, [post_author,new Date(),post_content,post_title,term_id,post_name,post_status],(err2, result2) => {
+                            console.log(err2)
+                            if (err2) {
+                                callback(true);
+                            }else{
+                                callback(false, result2);
+                            }
+                        })
+                    }
+                }
+                connection.release();
+            })
+        });
     }
 }
 

@@ -15,11 +15,11 @@
                     <div class=" am-cf" :class="{'sidebar-nav-sub-title active':isActiveId == item.term_id}" >
                         <i class="am-icon-tag sidebar-nav-link-logo am-fl"></i>
                         <span class="am-text-truncate category-name am-fl">{{item.name}}</span>
-                        <div class="am-dropdown sidebar-nav-sub-ico am-fr am-margin-right-sm" data-am-dropdown v-if="isActiveId == item.term_id">
+                        <div class="am-dropdown sidebar-nav-sub-ico am-fr am-margin-right-sm" data-am-dropdown v-if="isActiveId == item.term_id" :class="{'am-dropdown-up':index==categoryList.length-1}">
                           <i class="am-icon-cog am-dropdown-toggle"  data-am-dropdown-toggle></i>
                           <ul class="am-dropdown-content am-text-xs">
-                            <li><a >修改名称</a></li>
-                            <li><a >删除分类</a></li>
+                            <li><a @click="editTagName(item)">修改名称</a></li>
+                            <li><a @click="confirmDelete(item)">删除分类</a></li>
                           </ul>
                         </div>
                     </div>
@@ -38,7 +38,7 @@
         </div>
         <div class="am-modal-footer">
           <span class="am-modal-btn" data-am-modal-cancel>取消</span>
-          <span class="am-modal-btn" data-am-modal-confirm>提交</span>
+          <span class="am-modal-btn" @click="onConfirm">提交</span>
         </div>
       </div>
     </div>
@@ -141,14 +141,10 @@ import {getAllTerm,addTerm,editTermName,deleteTerm} from "../../../../public/js/
 export default {
     data: function() {
         return {
-            isShowNewTage: false,
-            // isActiveId :0,
             termList:[],
             newTerm:{
                 name:''
             },
-            showTermMenu:false,
-            displayInput:false,
             activeName:''
         }
     },
@@ -162,7 +158,9 @@ export default {
     methods: {
         ...mapMutations([
             'toggleSidebar',
-            'setTerm'
+            'setTerm',
+            'addTerm',
+            'deleteTerm'
         ]),
         ...mapActions([
             'setActiveId'
@@ -177,47 +175,47 @@ export default {
             if(data.code == 0) {
                 let o = {
                     term_id: data.data.insertId,
-                    isActive: false,
-                    editName: false
+                    taxonomy:'category',
                 }
-                this.termList.splice(0, 0, Object.assign(o,this.newTerm));
+                // this.termList.splice(0, 0, Object.assign(o,this.newTerm));
+                this.addTerm(Object.assign(o,this.newTerm),0)
+                layer.alert(data.msg);
+            }else{
+                layer.alert(data.msg);
             }
-            layer.alert(data.msg);
+
         },
         toggleDown(e,item){
             if(item.term_id != this.isActiveId){
                 this.$router.push({ path: `/tag/${item.term_id}`})
-                // item.editName = false;
-                // $(e.target).closest('.sidebar-nav-sub-title').siblings('.sidebar-nav-sub').slideToggle(500)
-                    // .end().find('.sidebar-nav-sub-ico').toggleClass('sidebar-nav-sub-ico-rotate');
             }
         },
         editTagName(item){
-            item.editName=true;
             let self = this;
+            this.tmepitem = item;
+            this.activeName = item.name
             $('#my-prompt').modal({
               relatedTarget: this,
-              onConfirm: async function(e) {
-                  if(!self.verification(e.data)) return;
-                  let s = await editTermName({
-                      term_id:self.isActiveId * 1,
-                      name:e.data
-                  })
-                  if(s.code == 0) {
-                      item.editName = false;
-                      item.name = e.data;
-                  }
-                  layer.alert(s.msg);
-              },
               onCancel: function(e) {
                 // alert('不想说!');
               },
-              dimmer:false,
+              dimmer:true,
             });
             this.$nextTick(()=>{
                 this.$refs.editName.focus();
                 this.$refs.editName.select()
             });
+        },
+        onConfirm: async function(e) {
+            if(!this.verification(this.$refs.editName.value)) return;
+            let s = await editTermName({
+                term_id:this.isActiveId,
+                name:this.$refs.editName.value
+            })
+            if(s.code == 0) {
+                this.tmepitem.name = this.$refs.editName.value;
+            }
+            layer.alert(s.msg);
         },
         verification(name){
             let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
@@ -225,19 +223,18 @@ export default {
             layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
             return result;
         },
-        confirmDelete(index){
+        confirmDelete(item){
             let self = this;
             layer.confirm(`删除分类会将分类下所有文章移动到回收站`, {
                 btn: ['确定','取消'] //按钮
             }, async function(){
-                let s = await deleteTerm(self.isActiveId * 1);
+                let s = await deleteTerm(self.isActiveId);
                  if(s.code == 0) {
                      self.$router.replace({ path: `/tag/`})
-                     self.termList.splice(index,1);
+                     self.deleteTerm(item.term_id);
                  }
                  layer.alert(s.msg);
             }, ()=>{
-                this.displayInput = false;
             });
         },
         // action(){
@@ -247,20 +244,20 @@ export default {
     watch: {
     // 如果路由有变化，会再次执行该方法
         '$route':function(){
+            // console.log("asdasd")
             this.setActiveId(this.$route.params.term_id)
+            setTimeout(()=>$('.add-post [data-am-dropdown]').dropdown(),500)
         }
     },
     mounted: function() {
         this.toggleSidebar(true);
-        // this.$nextTick(()=>);
-        setTimeout(()=>$('[data-am-dropdown]').dropdown(),500)
+        setTimeout(()=>$('.add-post [data-am-dropdown]').dropdown(),500)
     },
     beforeRouteLeave(to,from,next){
         this.toggleSidebar(false);
         next();
     },
     async beforeRouteEnter(to, from, next){
-        // console.log(222)
         let data = await getAllTerm();
         if(data.code == 0){
             next((vm)=>{
@@ -270,8 +267,6 @@ export default {
         }else{
             next(false)
         }
-
-
     }
 }
 </script>
