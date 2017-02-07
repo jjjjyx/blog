@@ -10,7 +10,7 @@ let newpost = function(req, res, next){
     req.checkBody('term_id','未提交所属分类').notEmpty().isInt();
     // req.checkBody('seq_in_nb','未提交所属分类').notEmpty().isInt();
 
-    req.sanitizeBody('post_title');
+    req.sanitizeBody('post_title').trim();
     req.sanitizeBody('term_id');
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
@@ -55,7 +55,7 @@ let posts = function(req, res, next){
     });
 }
 let del = function(req, res, next){
-    req.checkBody('id','未提交id').notEmpty().isInt();
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
             let map = {
@@ -79,6 +79,87 @@ let del = function(req, res, next){
         }
     });
 }
+let move = function(req, res, next){
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    req.checkBody('targat','请提交正确的id').notEmpty().isInt();
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(map);
+        }else{
+            postDao.move(req.body.id,req.body.targat,(err, data)=>{
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.msg = "删除成功";
+                }
+                res.map = map;
+                next();
+            })
+        }
+    });
+}
+let content = function(req, res, next){
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(map);
+        }else{
+            postDao.getPostContentById(req.body.id,(err, data)=>{
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    // map.code = 0;
+                    // map.data = data;
+                    // map.msg = "删除成功";
+                    map = data[0];
+                }
+                res.map = map;
+                next();
+            })
+        }
+    });
+}
+let save = function(req, res, next){
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    // console.log(req.body);
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(map);
+        }else{
+            postDao.update(req.body.id,req.body,(err, data)=>{
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.data = data;
+                    map.msg = "保存成功";
+                    // map = data[0];
+                }
+                res.map = map;
+                next();
+            })
+        }
+    });
+}
 module.exports = function () {
     let router = new Router();
     router.route("/posts").post(posts, function (req, res, next) {
@@ -88,6 +169,15 @@ module.exports = function () {
         return res.status(200).json(res.map);
     });
     router.route("/delPost").post(del, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/movePost").post(move, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/content").post(content, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/save").post(save, function (req, res, next) {
         return res.status(200).json(res.map);
     });
 

@@ -130,12 +130,12 @@ CREATE TABLE `j_posts` (
   `post_content` longtext COLLATE utf8_bin COMMENT '正文',
   `post_title` text COLLATE utf8_bin COMMENT '标题',
   `post_excerpt` text COLLATE utf8_bin COMMENT '摘录',
-  `post_status` varchar(20) CHARACTER SET utf8 DEFAULT 'publish' COMMENT '文章状态（publish/auto-draft/inherit/trash/delete等）',
+  `post_status` varchar(20) COLLATE utf8_bin DEFAULT 'auto-draft' COMMENT '文章状态（publish/auto-draft/inherit/trash/delete等）',
   `comment_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT '评论状态（open/closed）',
   `ping_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT 'PING状态（open/closed）',
   `post_password` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '文章密码',
   `post_name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '文章缩略名',
-  `to_ping` text COLLATE utf8_bin COMMENT '未知',
+  `term_id` bigint(20) unsigned NOT NULL COMMENT '所属分类',
   `pinged` text COLLATE utf8_bin COMMENT '已经PING过的链接',
   `post_modified` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   `post_content_filtered` text COLLATE utf8_bin COMMENT '未知\n内容 过滤',
@@ -145,14 +145,15 @@ CREATE TABLE `j_posts` (
   `post_type` varchar(20) COLLATE utf8_bin DEFAULT 'post' COMMENT '文章类型（post/page等）',
   `post_mime_type` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT 'MIME类型',
   `comment_count` bigint(20) DEFAULT '0' COMMENT '评论总数',
+  `seq_in_nb` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `post_name` (`post_name`),
   KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`id`),
-  KEY `post_parent` (`post_parent`),
   KEY `post_author` (`post_author`),
-  CONSTRAINT `fk_ j_posts` FOREIGN KEY (`post_parent`) REFERENCES `j_posts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  KEY `fk_j_terms_idx` (`term_id`),
+  CONSTRAINT `fk_j_terms` FOREIGN KEY (`term_id`) REFERENCES `j_terms` (`term_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_j_users` FOREIGN KEY (`post_author`) REFERENCES `j_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,6 +162,7 @@ CREATE TABLE `j_posts` (
 
 LOCK TABLES `j_posts` WRITE;
 /*!40000 ALTER TABLE `j_posts` DISABLE KEYS */;
+INSERT INTO `j_posts` VALUES (44,1,'2017-02-07 13:22:41',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 05:22:41',NULL,0,NULL,0,'post',NULL,0,-3),(46,1,'2017-02-07 14:14:03',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:03',NULL,0,NULL,0,'post',NULL,0,-5),(47,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:03',NULL,0,NULL,0,'post',NULL,0,-6),(48,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:03',NULL,0,NULL,0,'post',NULL,0,-7),(49,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:03',NULL,0,NULL,0,'post',NULL,0,-8),(50,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-9),(51,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-10),(52,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-11),(53,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-12),(54,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-13),(55,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-14),(56,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-15),(57,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-16),(58,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-17),(59,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-18),(60,1,'2017-02-07 14:14:06',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-19),(61,1,'2017-02-07 14:14:06',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-20);
 /*!40000 ALTER TABLE `j_posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,10 +176,12 @@ DROP TABLE IF EXISTS `j_term_relationships`;
 CREATE TABLE `j_term_relationships` (
   `object_id` bigint(20) unsigned NOT NULL COMMENT '对应文章ID/链接ID',
   `term_order` int(11) DEFAULT NULL COMMENT '排序',
-  `term_taxonomy_id` bigint(20) unsigned NOT NULL COMMENT '对应分类方法ID',
-  PRIMARY KEY (`object_id`,`term_taxonomy_id`),
-  KEY `fk_ j_term_relationships_idx` (`term_taxonomy_id`),
-  CONSTRAINT `fk_ j_term_relationships` FOREIGN KEY (`term_taxonomy_id`) REFERENCES `j_term_taxonomy` (`term_taxonomy_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  `term_id` bigint(20) unsigned NOT NULL COMMENT '对应分类方法ID',
+  PRIMARY KEY (`object_id`,`term_id`),
+  KEY `objid` (`object_id`),
+  KEY `pk_j_term_idx` (`term_id`),
+  CONSTRAINT `pk_j_post` FOREIGN KEY (`object_id`) REFERENCES `j_posts` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `pk_j_term` FOREIGN KEY (`term_id`) REFERENCES `j_terms` (`term_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个文章、链接和对应分类的关系';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -188,37 +192,6 @@ CREATE TABLE `j_term_relationships` (
 LOCK TABLES `j_term_relationships` WRITE;
 /*!40000 ALTER TABLE `j_term_relationships` DISABLE KEYS */;
 /*!40000 ALTER TABLE `j_term_relationships` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `j_term_taxonomy`
---
-
-DROP TABLE IF EXISTS `j_term_taxonomy`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `j_term_taxonomy` (
-  `term_taxonomy_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `term_id` bigint(20) unsigned DEFAULT NULL,
-  `taxonomy` varchar(32) CHARACTER SET utf8 DEFAULT NULL COMMENT '分类方法(category/post_tag)',
-  `description` longtext CHARACTER SET utf8 COMMENT '说明',
-  `parent` bigint(20) unsigned DEFAULT NULL COMMENT '所属父分类方法ID',
-  `count` bigint(20) DEFAULT '0' COMMENT '文章数统计',
-  PRIMARY KEY (`term_taxonomy_id`),
-  UNIQUE KEY `term_id_taxonomy` (`term_id`,`taxonomy`),
-  KEY `taxonomy` (`taxonomy`),
-  CONSTRAINT `fk_j_term_taxonomy` FOREIGN KEY (`term_id`) REFERENCES `j_terms` (`term_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签所对应的分类';
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `j_term_taxonomy`
---
-
-LOCK TABLES `j_term_taxonomy` WRITE;
-/*!40000 ALTER TABLE `j_term_taxonomy` DISABLE KEYS */;
-INSERT INTO `j_term_taxonomy` VALUES (19,11,'category','分类',NULL,0),(20,12,'category','分类',NULL,0),(21,13,'category','分类',NULL,0),(22,14,'category','分类',NULL,0),(23,15,'category','分类',NULL,0),(24,16,'category','分类',NULL,0),(25,17,'category','分类',NULL,0),(26,18,'category','分类',NULL,0),(27,19,'category','分类',NULL,0),(28,20,'category','分类',NULL,0),(29,21,'category','分类',NULL,0);
-/*!40000 ALTER TABLE `j_term_taxonomy` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -233,11 +206,14 @@ CREATE TABLE `j_terms` (
   `name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '分类名',
   `slug` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '缩略名',
   `term_group` bigint(10) DEFAULT '0' COMMENT '组',
+  `taxonomy` varchar(32) COLLATE utf8_bin DEFAULT NULL,
+  `parent` bigint(20) unsigned DEFAULT NULL COMMENT '所属父分类方法ID',
+  `count` bigint(20) DEFAULT NULL COMMENT '文章数统计',
+  `description` longtext COLLATE utf8_bin COMMENT '说明\n',
   PRIMARY KEY (`term_id`),
-  UNIQUE KEY `slug` (`slug`),
-  UNIQUE KEY `name_UNIQUE` (`name`),
+  UNIQUE KEY `term_name` (`name`,`taxonomy`),
   KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签';
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,7 +222,7 @@ CREATE TABLE `j_terms` (
 
 LOCK TABLES `j_terms` WRITE;
 /*!40000 ALTER TABLE `j_terms` DISABLE KEYS */;
-INSERT INTO `j_terms` VALUES (11,'java',NULL,0),(12,'javascript',NULL,0),(13,'html',NULL,0),(14,'css',NULL,0),(15,'vue',NULL,0),(16,'javaweb',NULL,0),(17,'jquery',NULL,0),(18,'git',NULL,0),(19,'mac',NULL,0),(20,'sql',NULL,0),(21,'nodejs',NULL,0);
+INSERT INTO `j_terms` VALUES (11,'java',NULL,0,'category',NULL,0,'分类'),(12,'javascript',NULL,0,'category',NULL,0,'分类'),(13,'html',NULL,0,'category',NULL,0,'分类'),(14,'css',NULL,0,'category',NULL,0,'分类'),(15,'asd',NULL,0,'category',NULL,0,'分类'),(16,'javaweb',NULL,0,'category',NULL,0,'分类'),(17,'jquery',NULL,0,'category',NULL,0,'分类'),(18,'git',NULL,0,'category',NULL,0,'分类'),(19,'mac',NULL,0,'category',NULL,0,'分类'),(20,'sql',NULL,0,'category',NULL,0,'分类'),(21,'nodejs',NULL,0,'category',NULL,0,'分类'),(22,'asd',NULL,NULL,'tag',NULL,0,'标签'),(23,'asdj',NULL,NULL,'tag',NULL,0,'标签'),(24,'kkk',NULL,NULL,'tag',NULL,0,'标签'),(26,'asdss',NULL,NULL,'tag',NULL,0,'标签'),(39,'obkdd',NULL,NULL,'category',NULL,0,'分类'),(40,'test',NULL,NULL,'category',NULL,0,'分类'),(41,'test2',NULL,NULL,'category',NULL,0,'分类'),(43,'test22',NULL,NULL,'category',NULL,0,'分类'),(44,'test222',NULL,NULL,'category',NULL,0,'分类'),(45,'testsss',NULL,NULL,'category',NULL,0,'分类'),(46,'testsssss',NULL,NULL,'category',NULL,0,'分类'),(47,'tttttss',NULL,NULL,'category',NULL,0,'分类');
 /*!40000 ALTER TABLE `j_terms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,4 +297,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-01 18:44:26
+-- Dump completed on 2017-02-07 14:21:42

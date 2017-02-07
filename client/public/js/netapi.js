@@ -154,3 +154,21 @@ export function delPost(id){
         });
     });
 }
+export function postContent(id){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/post/content`,{id}).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+export function savePost(params){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/post/save`,params).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}

@@ -29,13 +29,13 @@ class TermDao {
         });
     }
     loadByTaxonomy(taxonomy,callback){
-        let sql = "select * from j_terms where taxonomy = ?;";
+        let sql = "select * from j_terms where taxonomy = :taxonomy;";
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
                 return;
             }
-            connection.query(sql,[taxonomy], (err, result,fields) => {
+            connection.query(sql,{taxonomy}, (err, result,fields) => {
                 connection.release();
                 if (err || !result.length) {
                     callback(true);
@@ -47,14 +47,14 @@ class TermDao {
         });
     }
     add ({name,slug,term_group,taxonomy,description},callback){
-        let sql = "INSERT INTO `j_terms` (`name`, `slug`, `term_group`,`taxonomy`,`description`,`count`) VALUES (?, ?, ?, ?, ?, 0)";
+        let sql = "INSERT INTO `j_terms` (`name`, `slug`, `term_group`,`taxonomy`,`description`,`count`) VALUES (:name, :slug, :term_group, :taxonomy, :description, 0)";
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
                 return;
             }
 
-            connection.query(sql, [name,slug,term_group,taxonomy,description],(err, result) => {
+            connection.query(sql, {name,slug,term_group,taxonomy,description},(err, result) => {
                 connection.release();
                 console.log(err);
                 if (err) {
@@ -69,13 +69,13 @@ class TermDao {
         });
     }
     edit ({term_id,name},callback){
-        let sql = "UPDATE `j_terms` SET `name`=? WHERE `term_id`= ?";
+        let sql = "UPDATE `j_terms` SET `name`=:name WHERE `term_id`= :term_id";
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
                 return;
             }
-            connection.query(sql, [name,term_id],(err, result) => {
+            connection.query(sql, {name,term_id},(err, result) => {
                 connection.release();
                 if (err) {
                     if(err.code=='ER_DUP_ENTRY'){
@@ -91,8 +91,8 @@ class TermDao {
     delete (term_id,callback){
         let sql = [
             {
-                sql:"DELETE FROM `j_terms` WHERE `term_id`=?",
-                params:[term_id]
+                sql:"DELETE FROM `j_terms` WHERE `term_id`=:term_id",
+                params:{term_id}
             },
             // {
             //     sql:"DELETE FROM `j_terms` WHERE `term_id`=?";

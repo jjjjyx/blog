@@ -5,8 +5,18 @@ let mysql = require("mysql");
 var async = require("async");
 
 let config = require("../config");
-console.log(config.db);
+// console.log(config.db);
 
+config.db.queryFormat =function (query, values) {
+    if (!values) return query;
+    return query.replace(/\:(\w+)|\?/g, function (txt, key) {
+        console.log(txt,key)
+        if (values.hasOwnProperty(key)) {
+            return this.escape(values[key]);
+        }
+        return txt;
+    }.bind(this));
+}
 var pool = mysql.createPool(config.db);
 
 exports.pool = pool;

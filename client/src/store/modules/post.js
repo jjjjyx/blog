@@ -2,12 +2,12 @@
 // import api from "../../../public/js/netapi";
 const state = {
     postsList:[],
-    isActivePostId:0
+    currentPost:{}
 }
 
 const getters = {
     postsList:state => state.postsList,
-    isActivePostId:state => state.isActivePostId
+    currentPost:state => state.currentPost,
 }
 
 // actions
@@ -15,12 +15,18 @@ const actions = {
     setActivePostId({ commit, state, getters },id){
         let currList = state.postsList.filter((item)=>item.term_id == getters.isActiveId);
         if(currList.length){
-            if(state.postsList.some((item)=>item.id == id)){
-                commit('SET_ACTIVE_POSTID',id);
+            let r = state.postsList.find((item)=>item.id == id);
+            if(r){
+                commit('SET_CURRENT_POSTID',r);
             }else{
-                commit('SET_ACTIVE_POSTID',currList[0].id);
+                commit('SET_CURRENT_POSTID',currList[0]);
             }
+        }else{
+            commit('SET_CURRENT_POSTID',{});
         }
+    },
+    setCurrendPostConetent({ commit},content){
+        commit("SET_CURRENDPOST_CONETENT",content)
     }
 
 }
@@ -38,8 +44,11 @@ const mutations = {
         let index = state.postsList.findIndex((item)=>item.id===id)
         state.postsList.splice(index,1)
     },
-    SET_ACTIVE_POSTID(state,id){
-        state.isActivePostId = id
+    SET_CURRENDPOST_CONETENT(state,content){
+        state.currentPost.post_content=content;
+    },
+    SET_CURRENT_POSTID(state,id){
+        state.currentPost = id
     }
 }
 

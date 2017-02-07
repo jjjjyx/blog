@@ -187,8 +187,6 @@ export default {
             }else{
                 layer.alert(data.msg);
             }
-
-
         },
         toggleDown(e,item){
             if(item.term_id != this.isActiveId){
@@ -219,8 +217,9 @@ export default {
             })
             if(s.code == 0) {
                 this.tmepitem.name = this.$refs.editName.value;
-            }
-            layer.alert(s.msg);
+                layer.closeAll();
+            }else
+                layer.alert(s.msg);
         },
         verification(name){
             let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
@@ -238,8 +237,9 @@ export default {
                  if(s.code == 0) {
                      self.$router.replace({ path: `/tag/`})
                      self.deleteTerm(item.term_id);
-                 }
-                 layer.alert(s.msg);
+                     layer.closeAll();
+                 }else
+                    layer.alert(s.msg);
             }, ()=>{
             });
         },

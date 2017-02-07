@@ -1,6 +1,6 @@
 <template>
     <form class="post-form markdown">
-        <input class="title am-text-truncate" :value="title"/>
+        <input class="title am-text-truncate" v-model="currentPost.post_title" @input="change" @blur="blur"/>
         <div class="post-tags-bar am-text-xs" ref="posttags">
             <span>标签</span>
             <div class="am-dropdown tag-drop" data-am-dropdown>
@@ -19,7 +19,7 @@
             <input class="input-tag" autocomplete="off" tabindex="0" type="text" ref="inputtag" v-model="text" placeholder="点击此处添加标签" @keyup.enter="addTag">
             <!-- <span class="sizer" ref="sizer">{{text}}</span> -->
         </div>
-        <span class="saving-notice">已保存</span>
+        <span class="saving-notice">{{saveStatus}}</span>
         <div class="am-btn-toolbar post-nav">
             <div class="am-btn-group am-btn-group-sm">
                 <button type="button" class="am-btn am-btn-link" title="标签" @click="showAddTag" :class="{active:isAddTagShow}"><i class="am-icon-tags"></i></button>
@@ -31,13 +31,211 @@
             <div class="am-btn-group am-btn-group-sm" v-for="item in toolbarList">
                 <button type="button" class="am-btn am-btn-default am-radius" :class="{'am-active':i.active}" :title="i.title" v-for="i in item" @click="toolbarBtnClick(i)"><i :class="i.className"></i></button>
             </div>
-
         </div>
         <div class="post-content" :style="postContent">
             <textarea id="post-content"></textarea>
         </div>
     </form>
 </template>
+
+<script>
+import Simplemde from "simplemde/dist/simplemde.min.js";
+import "simplemde/dist/simplemde.min.css";
+import { mapGetters, mapActions,mapMutations } from 'vuex'
+import * as api from "../../../../public/js/netapi.js";
+// import keyboardJS from "keyboardjs"
+import key from "../../../../public/js/key.js";
+
+export default {
+    data: function() {
+        return {
+            // title:'无标题文章',
+            saveStatus:"已保存",
+            selectTag:[],
+            isAddTagShow:false,
+            text:'',
+            toolbar:{
+                "bold": {name: "bold",action: "toggleBold",className: "am-icon-bold",title: "Bold",default: true,active:false,},
+                "italic": {name: "italic",action: "toggleItalic",className: "am-icon-italic",title: "Italic",default: true,active:false,},
+                "strikethrough": {name: "strikethrough",action: "toggleStrikethrough",className: "am-icon-strikethrough",title: "Strikethrough",active:false,},
+                "heading": {name: "heading",action: "toggleHeadingSmaller",className: "am-icon-header",title: "Heading",default: true,active:false,},
+                "separator-1": {name: "separator-1"},
+                "code": {name: "code",action: "toggleCodeBlock",className: "am-icon-code",title: "Code",active:false,},
+                "quote": {name: "quote",action: "toggleBlockquote",className: "am-icon-quote-left",title: "Quote",default: true,active:false,},
+                "unordered-list": {name: "unordered-list",action: "toggleUnorderedList",className: "am-icon-list-ul",title: "Generic List",default: true,active:false,},
+                "ordered-list": {name: "ordered-list",action: "toggleOrderedList",className: "am-icon-list-ol",title: "Numbered List",default: true,active:false,},
+                "clean-block": {name: "clean-block",action: "cleanBlock",className: "am-icon-eraser fa-clean-block",title: "Clean block",active:false,},
+                "separator-2": {name: "separator-2"},
+                "link": {name: "link",action: "drawLink",className: "am-icon-link",title: "Create Link",default: true,active:false,},
+                "image": {name: "image",action: "drawImage",className: "am-icon-picture-o",title: "Insert Image",default: true,active:false,},
+                "table": {name: "table",action: "drawTable",className: "am-icon-table",title: "Insert Table",active:false,},
+                "horizontal-rule": {name: "horizontal-rule",action: "drawHorizontalRule",className: "am-icon-minus",title: "Insert Horizontal Line",active:false,},
+                "separator-3": {name: "separator-3"},
+                "preview": {name: "preview",action: "togglePreview",className: "am-icon-eye no-disable",title: "Toggle Preview",default: true,active:false,},
+                "side-by-side": {name: "side-by-side",action: "toggleSideBySide",className: "am-icon-columns no-disable no-mobile",title: "Toggle Side by Side",default: true,active:false,},
+                "fullscreen": {name: "fullscreen",action: "toggleFullScreen",className: "am-icon-arrows-alt no-disable no-mobile",title: "Toggle Fullscreen",default: true,active:false,},
+                "separator-4": {name: "separator-4"},
+                "guide": {name: "guide",action: "https://simplemde.com/markdown-guide",className: "am-icon-question-circle",title: "Markdown Guide",default: true,active:false,},
+                // "separator-5": {name: "separator-5"},
+                // "undo": {name: "undo",action: "undo",className: "am-icon-undo no-disable",title: "Undo",},
+                // "redo": {name: "redo",action: "redo",className: "am-icon-repeat no-disable",title: "Redo"}
+                },
+            simple:null,
+        }
+    },
+    components: {},
+    computed: {
+        selectNum(){
+            return this.tagList.filter((item)=>item.select).length != this.tagList.length;
+        },
+        select(){
+            return this.tagList.filter((item)=>item.select)
+        },
+        postContent(){
+            let height = this.contentHeight;
+            height -= 82;
+            if(this.isAddTagShow){
+                height -= 25;
+            }
+            return {
+                height:`${height}px`
+            }
+        },
+        ...mapGetters([
+            'contentHeight',
+            'tagList',
+            'currentPost'
+        ]),
+        toolbarList(){
+            let arr = [];
+            let temp = [];
+            for(var key in this.toolbar) {
+                if(key.indexOf("separator-") != -1) {
+					arr.push(temp);
+                    temp = [];
+                    continue;
+				}
+                temp.push(this.toolbar[key]);
+            }
+            arr.push(temp);
+            return arr;
+        }
+    },
+    methods: {
+        ...mapMutations([
+        ]),
+        ...mapActions([
+            'setCurrendPostConetent'
+        ]),
+        showAddTag(){
+            this.isAddTagShow = !this.isAddTagShow;
+            $(this.$refs.posttags).slideToggle(200);
+            // if(this.isAddTagShow){
+            //     this.$nextTick(()=>{
+                    this.$refs.inputtag.focus();
+            //     })
+            // }
+        },
+        toolbarBtnClick(i){
+            // this.simple[i.action]();
+            if(typeof this.simple[i.action] === "function"){
+                // console.log(this.simple[i.action])
+                this.simple[i.action](this.simple);
+            }else{
+                window.open(i.action, "_blank");
+            }
+        },
+        async addTag(){
+            // console.log(this.text,api);
+            if(!this.verification(this.text)) return;
+            let data =  await api.addTag({
+                name:this.text
+            })
+            // console.log(data);
+            if(data.code==0){
+                let o  = {
+                    term_id:data.data.insertId,
+                    name:this.text
+                }
+                this.tagList.push(o)
+                this.selectTag.push(o)
+                this.text = "";
+            }else{
+                layer.alert(data.msg)
+            }
+        },
+        deleteSelectTag(index){
+            this.selectTag.splice(index,1);
+        },
+        verification(name){
+            let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
+            let result = reg.test(name);
+            if(!result)
+                layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
+            return result;
+        },
+        change(){
+            this.enabledTitle = true;
+        },
+        blur(){
+            if(this.enabledTitle){
+                this.enabledTitle = false;
+                this.saveCurrPost();
+            }
+        },
+        async saveCurrPost(){
+            let value = this.simple.value();
+            this.setCurrendPostConetent(value)
+            // this.currentPost.post_content = ;
+            // console.log(this.currentPost);
+            let data = api.savePost(this.currentPost);
+            console.log(data);
+        },
+    },
+    watch:{
+        // '$route':'fetchData'
+    },
+    mounted:async function() {
+        // console.log("404");
+        // console.log(this.currentPost.id,2222,_.isEmpty({}))
+        this.simple = new Simplemde({
+    		element: document.getElementById("post-content"),
+            status: true,
+            spellChecker:false,
+            autoDownloadFontAwesome:false,
+            // lineNumbers:true,
+            toolbar: false//['heading-smaller','heading-bigger','horizontal-rule','clean-block'],
+            // status: ["autosave", "lines", "words", "cursor"],
+    	});
+        this.simple.codemirror.on("cursorActivity",()=>{
+    		var stat = this.simple.getState(this.simple);
+            // console.log(stat);
+    		for(var key in this.toolbar) {
+				if(stat[key]) {
+					this.toolbar[key].active = true;
+				} else if(key != "fullscreen" && key != "side-by-side") {
+					this.toolbar[key].active = false;
+				}
+    		}
+    	});
+        let _time = null;
+        this.simple.codemirror.on("changes",(e,a)=>{
+            if(_time)
+                clearTimeout(_time);
+            _time = setTimeout(this.saveCurrPost,1200);
+            // console.log(1111,e,a);
+        });
+        key.bind('tag',{
+            keys:['ctrl+s'],
+            oncall:(e)=>{
+                e.preventDefault();
+                console.log("保存");
+            },
+        })
+        $('.tag-drop').dropdown();
+    }
+}
+</script>
 <style lang="less" scoped>
     .post-form {
         height: 100%;
@@ -136,232 +334,3 @@
         }
     }
 </style>
-<script>
-import Simplemde from "simplemde/dist/simplemde.min.js";
-import "simplemde/dist/simplemde.min.css";
-import { mapGetters, mapActions,mapMutations } from 'vuex'
-import * as api from "../../../../public/js/netapi.js";
-// import keyboardJS from "keyboardjs"
-import key from "../../../../public/js/key.js";
-
-
-export default {
-    data: function() {
-        return {
-            title:'无标题文章',
-            selectTag:[],
-            isAddTagShow:false,
-            text:'',
-            toolbar:{
-                "bold": {
-                    name: "bold",action: "toggleBold",className: "am-icon-bold",title: "Bold",default: true,active:false,
-                },
-                "italic": {
-                    name: "italic",action: "toggleItalic",className: "am-icon-italic",title: "Italic",default: true,active:false,
-                },
-                "strikethrough": {
-                    name: "strikethrough",action: "toggleStrikethrough",className: "am-icon-strikethrough",title: "Strikethrough",active:false,
-                },
-                "heading": {
-                    name: "heading",action: "toggleHeadingSmaller",className: "am-icon-header",title: "Heading",default: true,active:false,
-                },
-                "separator-1": {
-                    name: "separator-1"
-                },
-                "code": {
-                    name: "code",action: "toggleCodeBlock",className: "am-icon-code",title: "Code",active:false,
-                },
-                "quote": {
-                    name: "quote",action: "toggleBlockquote",className: "am-icon-quote-left",title: "Quote",default: true,active:false,
-                },
-                "unordered-list": {
-                    name: "unordered-list",action: "toggleUnorderedList",className: "am-icon-list-ul",title: "Generic List",default: true,active:false,
-                },
-                "ordered-list": {
-                    name: "ordered-list",action: "toggleOrderedList",className: "am-icon-list-ol",title: "Numbered List",default: true,active:false,
-                },
-                "clean-block": {
-                    name: "clean-block",action: "cleanBlock",className: "am-icon-eraser fa-clean-block",title: "Clean block",active:false,
-                },
-                "separator-2": {
-                    name: "separator-2"
-                },
-                "link": {
-                    name: "link",action: "drawLink",className: "am-icon-link",title: "Create Link",default: true,active:false,
-                },
-                "image": {
-                    name: "image",action: "drawImage",className: "am-icon-picture-o",title: "Insert Image",default: true,active:false,
-                },
-                "table": {
-                    name: "table",action: "drawTable",className: "am-icon-table",title: "Insert Table",active:false,
-                },
-                "horizontal-rule": {
-                    name: "horizontal-rule",action: "drawHorizontalRule",className: "am-icon-minus",title: "Insert Horizontal Line",active:false,
-                },
-                "separator-3": {
-                    name: "separator-3"
-                },
-                "preview": {
-                    name: "preview",action: "togglePreview",className: "am-icon-eye no-disable",title: "Toggle Preview",default: true,active:false,
-                },
-                "side-by-side": {
-                    name: "side-by-side",action: "toggleSideBySide",className: "am-icon-columns no-disable no-mobile",title: "Toggle Side by Side",default: true,active:false,
-                },
-                "fullscreen": {
-                    name: "fullscreen",action: "toggleFullScreen",className: "am-icon-arrows-alt no-disable no-mobile",title: "Toggle Fullscreen",default: true,active:false,
-                },
-                "separator-4": {
-                    name: "separator-4"
-                },
-                "guide": {
-                    name: "guide",action: "https://simplemde.com/markdown-guide",className: "am-icon-question-circle",title: "Markdown Guide",default: true,active:false,
-                },
-                // "separator-5": {
-                // 	name: "separator-5"
-                // },
-                // "undo": {
-                // 	name: "undo",
-                // 	action: "undo",
-                // 	className: "am-icon-undo no-disable",
-                // 	title: "Undo",
-                //
-                // },
-                // "redo": {
-                // 	name: "redo",
-                // 	action: "redo",
-                // 	className: "am-icon-repeat no-disable",
-                // 	title: "Redo"
-                // }
-            },
-            simple:null,
-        }
-    },
-    components: {},
-    computed: {
-        selectNum(){
-            return this.tagList.filter((item)=>item.select).length != this.tagList.length;
-        },
-        select(){
-            return this.tagList.filter((item)=>item.select)
-        },
-        postContent(){
-            let height = this.contentHeight;
-            height -= 82;
-            if(this.isAddTagShow){
-                height -= 25;
-            }
-            return {
-                height:`${height}px`
-            }
-        },
-        ...mapGetters([
-            'contentHeight',
-            'tagList'
-        ]),
-        toolbarList(){
-            let arr = [];
-            let temp = [];
-            for(var key in this.toolbar) {
-                if(key.indexOf("separator-") != -1) {
-					arr.push(temp);
-                    temp = [];
-                    continue;
-				}
-                temp.push(this.toolbar[key]);
-            }
-            arr.push(temp);
-            return arr;
-        }
-    },
-    methods: {
-        showAddTag(){
-            this.isAddTagShow = !this.isAddTagShow;
-            $(this.$refs.posttags).slideToggle(200);
-            // if(this.isAddTagShow){
-            //     this.$nextTick(()=>{
-                    this.$refs.inputtag.focus();
-            //     })
-            // }
-        },
-        toolbarBtnClick(i){
-            // this.simple[i.action]();
-            if(typeof this.simple[i.action] === "function"){
-                // console.log(this.simple[i.action])
-                this.simple[i.action](this.simple);
-            }else{
-                window.open(i.action, "_blank");
-            }
-        },
-        async addTag(){
-            // console.log(this.text,api);
-            if(!this.verification(this.text)) return;
-            let data =  await api.addTag({
-                name:this.text
-            })
-            // console.log(data);
-            if(data.code==0){
-                let o  = {
-                    term_id:data.data.insertId,
-                    name:this.text
-                }
-                this.tagList.push(o)
-                this.selectTag.push(o)
-                this.text = "";
-            }else{
-                layer.alert(data.msg)
-            }
-        },
-        deleteSelectTag(index){
-            this.selectTag.splice(index,1);
-        },
-        verification(name){
-            let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
-            let result = reg.test(name);
-            if(!result)
-                layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
-            return result;
-        },
-    },
-    watch:{
-        // text(value){
-        //     console.log(value);
-        //     if(value){
-        //         console.log(this.$refs.sizer);
-        //         this.$refs.input.style.width = this.$refs.sizer.offsetWidth
-        //     }else{
-        //         this.$refs.input.style.width = "";
-        //     }
-        // }
-    },
-    mounted:async function() {
-        // console.log("404");
-        this.simple = new Simplemde({
-    		element: document.getElementById("post-content"),
-            status: true,
-            spellChecker:false,
-            autoDownloadFontAwesome:false,
-            toolbar: false//['heading-smaller','heading-bigger','horizontal-rule','clean-block'],
-            // status: ["autosave", "lines", "words", "cursor"],
-    	});
-        this.simple.codemirror.on("cursorActivity",()=>{
-    		var stat = this.simple.getState(this.simple);
-            // console.log(stat);
-    		for(var key in this.toolbar) {
-				if(stat[key]) {
-					this.toolbar[key].active = true;
-				} else if(key != "fullscreen" && key != "side-by-side") {
-					this.toolbar[key].active = false;
-				}
-    		}
-    	});
-        key.bind('tag',{
-            keys:['ctrl+s'],
-            oncall:(e)=>{
-                e.preventDefault();
-                console.log("保存");
-            },
-        })
-        $('.tag-drop').dropdown();
-    }
-}
-</script>

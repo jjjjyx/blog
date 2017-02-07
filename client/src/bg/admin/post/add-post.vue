@@ -7,14 +7,14 @@
             </a>
         </div>
         <ul class="am-list post-list" v-if="list.length">
-            <li class="item" v-for="item in list" @click="pathappend(item)" :class="{'active':isActivePostId==item.id}">
+            <li class="item" v-for="item in list" @click="pathappend(item)" :class="{'active':currentPost.id==item.id}">
                 <i class="am-icon-file"></i>
                 <a class="post-title am-text-truncate">
                     {{item.post_title}}
                 </a>
-                <p class="abbreviate am-text-truncate">爱上当看见爱上快乐到家了asdaskdhasdkhash</p>
-                <p class="wordage am-text-xs">字数：0</p>
-                <div class="am-dropdown post-opt am-fr" data-am-dropdown v-if="isActivePostId==item.id">
+                <p class="abbreviate am-text-truncate">{{item.post_content}}</p>
+                <p class="wordage am-text-xs" v-if="item.post_content&&item.post_content.length">字数：{{item.post_content.length}}</p>
+                <div class="am-dropdown post-opt am-fr" data-am-dropdown v-if="currentPost.id==item.id">
                   <i class="am-icon-cog am-dropdown-toggle"  data-am-dropdown-toggle></i>
                   <ul class="am-dropdown-content am-text-xs">
                     <li><a >直接发布</a></li>
@@ -44,7 +44,7 @@ export default {
         ...mapGetters([
             'isActiveId',
             'postsList',
-            'isActivePostId'
+            'currentPost'
         ]),
         list(){
             // console.log(this.postsList.filter((item)=>item.term_id==this.isActiveId))
@@ -73,7 +73,7 @@ export default {
             }
         },
         pathappend(item){
-            if(item.id != this.isActivePostId){
+            if(item.id != this.currentPost.id){
                 this.$router.push({ path: `/tag/${this.isActiveId}/post/${item.id}`})
             }
         },
@@ -101,24 +101,33 @@ export default {
             'delPost'
         ]),
         ...mapActions([
-            'setActivePostId'
+            'setActivePostId',
+            'setCurrendPostConetent'
         ])
     },
     watch: {
         // 如果路由有变化，会再次执行该方法
-        '$route':function(){
-            this.setActivePostId(this.$route.params.id)
+        '$route':async function(){
+            this.setActivePostId(this.$route.params.id);
+            if(this.currentPost.id&&!this.currentPost.post_content){
+                let d = await api.postContent(this.currentPost.id);
+                this.setCurrendPostConetent(d.post_content);
+            }
+            // console.log(this.currentPost);
             setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
         }
     },
     mounted:async function() {
-        // console.log("====")
+
         let data = await api.posts();
         if(data.code==0){
-            // this.postsList = data.data;
             this.setPosts(data.data);
-            console.log(this.$route.params.id);
-            this.setActivePostId(this.$route.params.id)
+            this.setActivePostId(this.$route.params.id);
+            if(this.currentPost.id&&!this.currentPost.post_content){
+                let d = await api.postContent(this.currentPost.id);
+                this.setCurrendPostConetent(d.post_content);
+            }
+            console.log(this.currentPost)
         }else{
             layer.alert('发生异常，请刷新后重试');
         }
