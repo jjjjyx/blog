@@ -86,6 +86,8 @@
 
         left: @leftWidth+1;
         top: 1px;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
     .theme-black {
         .left-sidebar {
@@ -172,17 +174,20 @@ export default {
         async add() {
             if(!this.verification(this.newTerm.name)) return;
             let data = await addTerm(this.newTerm);
+            // console.log(222)
             if(data.code == 0) {
                 let o = {
                     term_id: data.data.insertId,
                     taxonomy:'category',
                 }
-                // this.termList.splice(0, 0, Object.assign(o,this.newTerm));
-                this.addTerm(Object.assign(o,this.newTerm),0)
-                layer.alert(data.msg);
+                this.addTerm({
+                    obj:Object.assign(o,this.newTerm),
+                    index:0
+                })
             }else{
                 layer.alert(data.msg);
             }
+
 
         },
         toggleDown(e,item){
@@ -220,7 +225,8 @@ export default {
         verification(name){
             let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
             let result = reg.test(name);
-            layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
+            if(!result)
+                layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
             return result;
         },
         confirmDelete(item){

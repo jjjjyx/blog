@@ -1,4 +1,4 @@
-// import "lodash"
+import "lodash"
 
 import Vue from "vue"
 import VueRouter from "vue-router"

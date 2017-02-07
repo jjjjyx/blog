@@ -83,7 +83,7 @@ export function userGetInfo() {
 }
 export function getAllTerm(taxonomy){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/getAllTerm`,{taxonomy}).done((data) => {
+        $.post(`${API_SERVER}/api/term/getAllTerm`,{taxonomy}).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
@@ -92,7 +92,7 @@ export function getAllTerm(taxonomy){
 }
 export function addTerm(params){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/addTerm`,params).done((data) => {
+        $.post(`${API_SERVER}/api/term/addTerm`,params).done((data) => {
             resolve(data);
         }).fail(({status,responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
@@ -101,7 +101,7 @@ export function addTerm(params){
 }
 export function addTag(params){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/addTag`,params).done((data) => {
+        $.post(`${API_SERVER}/api/term/addTag`,params).done((data) => {
             resolve(data);
         }).fail(({status,responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
@@ -110,7 +110,7 @@ export function addTag(params){
 }
 export function editTermName(params){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/editTerm`,params).done((data) => {
+        $.post(`${API_SERVER}/api/term/editTerm`,params).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
@@ -119,7 +119,7 @@ export function editTermName(params){
 }
 export function deleteTerm(term_id){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/deleteTerm`,{term_id}).done((data) => {
+        $.post(`${API_SERVER}/api/term/deleteTerm`,{term_id}).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
@@ -129,7 +129,7 @@ export function deleteTerm(term_id){
 
 export function addPost(params){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/newpost`,params).done((data) => {
+        $.post(`${API_SERVER}/api/post/newpost`,params).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
@@ -138,7 +138,16 @@ export function addPost(params){
 }
 export function posts(){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/api/posts`).done((data) => {
+        $.post(`${API_SERVER}/api/post/posts`).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+export function delPost(id){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/post/delPost`,{id}).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);

@@ -60,8 +60,8 @@ app.use(utils.middleware().unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
 }));
-app.use("/api", require(path.join(__dirname, "service/router", "term.js"))());
-app.use("/api", require(path.join(__dirname, "service/router", "post.js"))());
+app.use("/api/term", require(path.join(__dirname, "service/router", "term.js"))());
+app.use("/api/post", require(path.join(__dirname, "service/router", "post.js"))());
 app.use("/api/user", require(path.join(__dirname, "service/router", "user.js"))());
 
 

@@ -28,8 +28,15 @@ const mutations = {
     setPosts (state,list){
         state.postsList = list;
     },
-    addPost (state,obj,index){
-        
+    addPost (state,{obj,index}){
+        if(index==0||index){
+            state.postsList.splice(index,0,obj)
+        }else
+            state.postsList.push(obj);
+    },
+    delPost (state,id){
+        let index = state.postsList.findIndex((item)=>item.id===id)
+        state.postsList.splice(index,1)
     },
     SET_ACTIVE_POSTID(state,id){
         state.isActivePostId = id

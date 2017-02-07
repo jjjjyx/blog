@@ -27,7 +27,7 @@ const mutations = {
     setTerm (state,list){
         state.termList = list;
     },
-    addTerm (state,obj,index) {
+    addTerm (state,{obj,index}) {
         if(obj.hasOwnProperty('term_id')&&obj.hasOwnProperty('name')&&obj.hasOwnProperty('taxonomy'))
             if(index==0||index){
                 state.termList.splice(index,0,obj)

@@ -1,27 +1,27 @@
 <template>
     <div >
         <div class="new-post ">
-            <a href="javascript:;" class="am-text-xs am-padding am-block am-link-muted " @click="addPost" v-disabled="!addPostBtnDisabled" :class="{'am-disabled':addPostBtnDisabled}">
+            <a href="javascript:;" class="am-text-xs am-padding am-block am-link-muted " @click="newPost" v-disabled="!addPostBtnDisabled" :class="{'am-disabled':addPostBtnDisabled}">
                 <i class="am-icon-edit am-text-lg"></i> <span style="vertical-align: text-bottom;">新建文章</span>
                 <span class="typing_loader" v-show="addPostBtnDisabled"></span>
             </a>
         </div>
         <ul class="am-list post-list" v-if="list.length">
-            <li class="active item" v-for="item in list" @click="pathappend(item)">
+            <li class="item" v-for="item in list" @click="pathappend(item)" :class="{'active':isActivePostId==item.id}">
                 <i class="am-icon-file"></i>
                 <a class="post-title am-text-truncate">
                     {{item.post_title}}
                 </a>
                 <p class="abbreviate am-text-truncate">爱上当看见爱上快乐到家了asdaskdhasdkhash</p>
                 <p class="wordage am-text-xs">字数：0</p>
-                <div class="am-dropdown post-opt" data-am-dropdown v-if="isActivePostId==item.id">
+                <div class="am-dropdown post-opt am-fr" data-am-dropdown v-if="isActivePostId==item.id">
                   <i class="am-icon-cog am-dropdown-toggle"  data-am-dropdown-toggle></i>
                   <ul class="am-dropdown-content am-text-xs">
                     <li><a >直接发布</a></li>
                     <li class="am-divider"></li>
                     <li><a >移动文章</a></li>
                     <li><a >历史版本</a></li>
-                    <li><a >删除文章</a></li>
+                    <li><a @click="del(item)">删除文章</a></li>
                     <li class="am-divider"></li>
                     <li><a >属性</a></li>
                   </ul>
@@ -48,32 +48,57 @@ export default {
         ]),
         list(){
             // console.log(this.postsList.filter((item)=>item.term_id==this.isActiveId))
-            return this.postsList.filter((item)=>item.term_id==this.isActiveId)
+            return _.orderBy(this.postsList.filter((item)=>item.term_id==this.isActiveId),'seq_in_nb')
         }
     },
     methods: {
-        async addPost(){
+        async newPost(){
             if(!this.addPostBtnDisabled){
                 this.addPostBtnDisabled = true;
+                let seq_in_nb = this.list.length===0 ? 0 : (_.first(this.list).seq_in_nb)-1
                 let data = await api.addPost({
                     post_title:'无标题文章',
-                    term_id:this.isActiveId
+                    term_id:this.isActiveId,
+                    seq_in_nb
                 });
-                this.addPostBtnDisabled = false;
-                if(data.code){
 
+                if(data.code==0){
+                    this.addPost({
+                        obj:data.data,
+                        index:0
+                    });
                 }
+                this.addPostBtnDisabled = false;
                 // setTimeout(()=>this.addPostBtnDisabled = false,2000)
             }
         },
         pathappend(item){
-            // console.log(this.$route)
             if(item.id != this.isActivePostId){
                 this.$router.push({ path: `/tag/${this.isActiveId}/post/${item.id}`})
             }
         },
+        del(item){
+            let self = this;
+            layer.confirm(`确认删除文章《${item.post_title}》，文章将被移动到回收站，您可以在那里恢复它。60天后将被彻底删除。`,{
+                btn: ['确定','取消'] //按钮
+            },async function(){
+                let data = await api.delPost(item.id);
+                if(data.code ==0){
+                     self.$router.replace({ path: `/tag/${self.isActiveId}/post/`});
+                     self.delPost(item.id);
+                     layer.closeAll();
+                }else{
+                    layer.alert(data.msg)
+                }
+            },()=>{
+            })
+
+
+        },
         ...mapMutations([
-            'setPosts'
+            'setPosts',
+            'addPost',
+            'delPost'
         ]),
         ...mapActions([
             'setActivePostId'
@@ -82,9 +107,7 @@ export default {
     watch: {
         // 如果路由有变化，会再次执行该方法
         '$route':function(){
-            console.log(12312)
             this.setActivePostId(this.$route.params.id)
-
             setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
         }
     },
@@ -99,7 +122,7 @@ export default {
         }else{
             layer.alert('发生异常，请刷新后重试');
         }
-        $('.post-opt').dropdown();
+        setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
 
     }
 }
@@ -117,6 +140,7 @@ export default {
             border-right: transparent;
             &.active {
                 border-left-color: #3bb4f2 !important;
+                background-color: #ececec;
             }
             &:hover {
                 background-color: #ececec;

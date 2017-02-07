@@ -60,7 +60,7 @@ class PostDao {
 
     }
     getPosts(callback){
-        let sql = "select id,post_author,post_date,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,post_modified,post_content_filtered,post_parent,menu_order,post_type,post_mime_type,comment_count,term_id from j_posts";
+        let sql = "select id,post_author,post_date,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,post_modified,post_content_filtered,post_parent,menu_order,post_type,post_mime_type,comment_count,term_id,seq_in_nb from j_posts";
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
@@ -76,9 +76,9 @@ class PostDao {
             })
         });
     }
-    save({post_author,term_id,post_title,post_content,post_status,post_name},callback){
+    save({post_author,term_id,post_title,post_content,post_status,post_name,seq_in_nb},callback){
         console.log(term_id,post_title,post_author,post_status,post_name)
-        let sql ="INSERT INTO `myblog`.`j_posts` (`post_author`, `post_date`, `post_content`, `post_title`, `term_id`,`post_name`,`post_status`) VALUES (?, ?, ?, ?, ?, ?, ?);"
+        let sql ="INSERT INTO `myblog`.`j_posts` (`post_author`, `post_date`, `post_content`, `post_title`, `term_id`,`post_name`,`post_status`,`seq_in_nb`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);"
         let s = "SELECT taxonomy FROM j_terms where term_id=?;"
         db.pool.getConnection(function (err, connection) {
             if (err) {
@@ -91,15 +91,43 @@ class PostDao {
                 }else{
                     // console.log(result);
                     if(result.length==1&&result[0].taxonomy=='category'){
-                        connection.query(sql, [post_author,new Date(),post_content,post_title,term_id,post_name,post_status],(err2, result2) => {
+                        let post_date = new Date();
+                        connection.query(sql, [post_author,new Date(),post_content,post_title,term_id,post_name,post_status,seq_in_nb],(err2, result2) => {
                             console.log(err2)
                             if (err2) {
                                 callback(true);
                             }else{
-                                callback(false, result2);
+                                let r = {
+                                    id:result2.insertId,
+                                    post_author,term_id,post_title,post_content,post_status,post_name,
+                                    post_date,
+                                    seq_in_nb
+                                }
+                                callback(false, r);
                             }
                         })
                     }
+                }
+                connection.release();
+            })
+        });
+    }
+    update(bean,callback){
+        let key = Object.keys(bean);
+        
+    }
+    del(id,callback){ // 其他的东西也要删除
+        let sql ="DELETE FROM `myblog`.`j_posts` WHERE `id`=?;";
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(sql,[id],(err, result)=>{
+                if (err) {
+                    callback(true);
+                }else{
+                    callback(false, result);
                 }
                 connection.release();
             })
