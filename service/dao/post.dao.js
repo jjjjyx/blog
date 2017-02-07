@@ -91,7 +91,7 @@ class PostDao {
                 callback(true);
                 return;
             }
-            connection.query(sql, {id}, (err, result) => {
+            connection.query(sql, [id], (err, result) => {
                 console.log(err);
                 if (err) {
                     callback(true);

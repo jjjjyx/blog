@@ -7,10 +7,13 @@ var async = require("async");
 let config = require("../config");
 // console.log(config.db);
 
-config.db.queryFormat =function (query, values) {
+config.db.queryFormat = function (query, values) {
     if (!values) return query;
+    if(values instanceof Array){
+        return mysql.format(query,values);
+    }else
+
     return query.replace(/\:(\w+)|\?/g, function (txt, key) {
-        console.log(txt,key)
         if (values.hasOwnProperty(key)) {
             return this.escape(values[key]);
         }
