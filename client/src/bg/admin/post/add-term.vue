@@ -47,71 +47,12 @@
 <style lang="less" scoped>
     @leftWidth :240px;
     @middleWidth :280px;
-    @keyframes slideInY {
-      0% {
-          height: 0;
-          opacity: 0;
-      }
-      100% {
-        opacity: 1;
-        height: auto;
-      }
-    }
-    @keyframes slideOutY {
-      0% {
-        opacity: 1;
-        transform: scaleY(1);
-      }
-      100% {
-        opacity: 0;
-        transform: scaleY(0);
-      }
-    }
+
     .category-name {
         display: block;
         width: 100px;
     }
-    .left-sidebar {
-        width: @leftWidth;
-        top: 1px;
-        border-left: 1px solid #e9ecf3;
-        z-index: 100;
-    }
-    .middle-warpper {
-        transition: all 0.4s ease-in-out;
-        width: 280px;
-        height: 100%;
-        position: absolute;
-        background-color: #fff;
-
-        left: @leftWidth+1;
-        top: 1px;
-        overflow-y: auto;
-        overflow-x: hidden;
-    }
-    .theme-black {
-        .left-sidebar {
-            border-left: 1px solid #3a4144;
-        }
-        .middle-warpper {
-            background-color: #3a4144;
-            border-right: 1px solid #282d2f;
-        }
-    }
-    .slide.in {
-        animation-name: slideInY;
-        transform-origin: top center;
-    }
-    .slide.out {
-        animation-name: slideOutY;
-        transform-origin: top center;
-    }
-    .right-warpper {
-        position: relative;;
-        margin-left: @leftWidth+@middleWidth+2;
-        // margin-top: -20px;
-
-    }
+    
     .new-tags {
         padding: 0 15px 15px;
         margin-top: 20px;

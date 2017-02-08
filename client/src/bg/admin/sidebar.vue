@@ -56,9 +56,9 @@
                     </a>
                 </li>
                 <li class="sidebar-nav-link">
-                    <a href="javascript:;">
-                        <i class="am-icon-angle-right sidebar-nav-link-logo"></i> 回收站
-                    </a>
+                    <router-link to="/trash" active-class='active'>
+                        <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 回收站
+                    </router-link>
                 </li>
             </ul>
         </li>

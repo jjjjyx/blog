@@ -26,6 +26,7 @@ import PostM from "./post/post.vue";
 import AddTerm from "./post/add-term.vue";
 import AddPost from "./post/add-post.vue";
 import PostEdit from "./post/post-edit.vue";
+import PostTrash from "./post/trash.vue";
 
 import NotFoundComponent from "./404.vue"
 // console.log(store.getters.user)
@@ -65,6 +66,10 @@ var router = new VueRouter({
 
         },
         {
+            path:"/trash/:id(\\d+)?",
+            component:PostTrash,
+        },
+        {
             path:"/tag",
             component:AddTerm,
             meta:{
@@ -74,33 +79,19 @@ var router = new VueRouter({
             },
             children:[
                 {
-                    path:'',
+                    path:':term_id(\\d+)?',
                     components:{
                         default:AddPost,
                         rightW:PostEdit
                     },
                 },
                 {
-                    path:':term_id',
+                    path:':term_id(\\d+)/post/:id(\\d+)?',
                     components:{
                         default:AddPost,
                         rightW:PostEdit
                     },
                 },
-                {
-                    path:':term_id/post/:id',
-                    components:{
-                        default:AddPost,
-                        rightW:PostEdit
-                    },
-                },
-                {
-                    path:':term_id/post',
-                    components:{
-                        default:AddPost,
-                        rightW:PostEdit
-                    },
-                }
             ],
 
         },

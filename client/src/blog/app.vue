@@ -174,7 +174,7 @@ export default {
         ])
     },
     mounted: function() {
-
+        $("#preloader").fadeOut(1000,()=>$("#preloader").remove())
     }
 }
 

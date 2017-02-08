@@ -1,6 +1,6 @@
 // import "lodash";
 
-import "../../public/css/import.less";
+import "./static/css/import.less";
 
 import Vue from "vue"
 // import VueResource from "vue-resource"

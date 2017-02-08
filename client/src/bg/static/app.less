@@ -19,6 +19,9 @@ header {
     z-index: 1102;
     position: relative;
 }
+
+@import "post";
+
 .am-dropdown-content input[type=checkbox], input[type=radio]{
     margin-top: 4px;
 }
@@ -26,34 +29,11 @@ header {
     right:10px;
     left:auto;
 }
-.CodeMirror {
-    // background-color: transparent !important;
-    // max-height: 700px;
-    // height: 100% !important;
-    overflow: auto;
-    border: none !important;
-}
-.CodeMirror-fullscreen{
-    z-index: 101 !important;
-    max-height: 100%;
-}
-.editor-preview-side {
-    z-index: 101 !important;
-}
-.am-badge {
-    // color: rgba(0,0,0,.6);
-    >i.close, >i.delete{
-        cursor: pointer;
-        transition: background .1s ease;
-        opacity: .5;
-        &:hover{
-            opacity: 1;
-        }
-    }
-}
+
 #preloader {
     opacity: 1;
 }
+
 
 @headersHeight: 56px;
 .tpl-header-logo {
@@ -1155,18 +1135,11 @@ ul.tpl-dropdown-content {
         background-image: none;
         border: 1px solid #c2cad8;
         border-radius: 4px;
-        -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
         box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
-        -webkit-transition: border-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
-        -o-transition: border-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
         transition: border-color ease-in-out 0.15s,box-shadow ease-in-out 0.15s;
         background: 0 0;
         border: 0;
         border-bottom: 1px solid #c2cad8;
-        -webkit-border-radius: 0;
-        -moz-border-radius: 0;
-        -ms-border-radius: 0;
-        -o-border-radius: 0;
         border-radius: 0;
         color: #555;
         box-shadow: none;
