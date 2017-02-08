@@ -92,7 +92,6 @@ class PostDao {
                 return;
             }
             connection.query(sql, [id], (err, result) => {
-                console.log(err);
                 if (err) {
                     callback(true);
                 } else {
@@ -149,7 +148,6 @@ class PostDao {
                     if (result.length == 1 && result[0].taxonomy == 'category') {
                         let post_date = new Date();
                         connection.query(sql, [post_author, new Date(), post_content, post_title, term_id, post_name, post_status, seq_in_nb], (err2, result2) => {
-                            console.log(err2)
                             if (err2) {
                                 callback(true);
                             } else {
@@ -217,7 +215,6 @@ class PostDao {
                 if (err) {
                     callback(true);
                 } else {
-                    // console.log(result,222)
                     callback(false, result);
                 }
                 connection.release();

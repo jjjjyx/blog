@@ -2,12 +2,14 @@
 // import api from "../../../public/js/netapi";
 const state = {
     postsList:[],
-    currentPost:{}
+    currentPost:{},
+    isUpdateContent:null,
 }
 
 const getters = {
     postsList:state => state.postsList,
     currentPost:state => state.currentPost,
+    isUpdateContent: state => state.isUpdateContent,
 }
 
 // actions
@@ -23,10 +25,14 @@ const actions = {
             }
         }else{
             commit('SET_CURRENT_POSTID',{});
+            commit("UPDATE_CONTENT",null);
         }
     },
-    setCurrendPostConetent({ commit},content){
-        commit("SET_CURRENDPOST_CONETENT",content)
+    setCurrendPostConetent({commit},content){
+        commit("SET_CURRENDPOST_CONETENT",content);
+    },
+    update_current_postcontent({commit},content){
+        commit("UPDATE_CONTENT",content);
     }
 
 }
@@ -49,6 +55,9 @@ const mutations = {
     },
     SET_CURRENT_POSTID(state,id){
         state.currentPost = id
+    },
+    UPDATE_CONTENT(state,c){
+        state.isUpdateContent = c;
     }
 }
 

@@ -33,7 +33,7 @@
             </div>
         </div>
         <div class="post-content" :style="postContent">
-            <textarea id="post-content"></textarea>
+            <textarea id="post-content" v-model="currentPost.post_content"></textarea>
         </div>
     </form>
 </template>
@@ -101,11 +101,6 @@ export default {
                 height:`${height}px`
             }
         },
-        ...mapGetters([
-            'contentHeight',
-            'tagList',
-            'currentPost'
-        ]),
         toolbarList(){
             let arr = [];
             let temp = [];
@@ -119,10 +114,17 @@ export default {
             }
             arr.push(temp);
             return arr;
-        }
+        },
+        ...mapGetters([
+            'contentHeight',
+            'tagList',
+            'currentPost',
+            'isUpdateContent'
+        ]),
     },
     methods: {
         ...mapMutations([
+            // 'SET_CURRENDPOST_CONETENT'
         ]),
         ...mapActions([
             'setCurrendPostConetent'
@@ -185,31 +187,31 @@ export default {
         },
         async saveCurrPost(){
             let value = this.simple.value();
-            this.setCurrendPostConetent(value)
-            // this.currentPost.post_content = ;
-            // console.log(this.currentPost);
-            let data = api.savePost(this.currentPost);
-            console.log(data);
+            this.setCurrendPostConetent(value);
+            this.saveStatus = "保存中..";
+            let data = await api.savePost(this.currentPost);
+            this.saveStatus = "已保存"
+            // setTimeout(()=>this.saveStatus = "已保存",1000)
         },
     },
     watch:{
-        // '$route':'fetchData'
+        // '$route':'fetchData',
+        'isUpdateContent':function(v){
+            if(v!=null){
+                this.simple.value(v);
+            }
+        }
     },
     mounted:async function() {
-        // console.log("404");
-        // console.log(this.currentPost.id,2222,_.isEmpty({}))
         this.simple = new Simplemde({
     		element: document.getElementById("post-content"),
             status: true,
             spellChecker:false,
             autoDownloadFontAwesome:false,
-            // lineNumbers:true,
-            toolbar: false//['heading-smaller','heading-bigger','horizontal-rule','clean-block'],
-            // status: ["autosave", "lines", "words", "cursor"],
+            toolbar: false
     	});
         this.simple.codemirror.on("cursorActivity",()=>{
     		var stat = this.simple.getState(this.simple);
-            // console.log(stat);
     		for(var key in this.toolbar) {
 				if(stat[key]) {
 					this.toolbar[key].active = true;
@@ -222,14 +224,18 @@ export default {
         this.simple.codemirror.on("changes",(e,a)=>{
             if(_time)
                 clearTimeout(_time);
-            _time = setTimeout(this.saveCurrPost,1200);
-            // console.log(1111,e,a);
+            let value = this.simple.value();
+            if(value != this.currentPost.post_content){
+                _time = setTimeout(this.saveCurrPost,1200);
+            }
         });
+        let self = this;
         key.bind('tag',{
             keys:['ctrl+s'],
             oncall:(e)=>{
                 e.preventDefault();
-                console.log("保存");
+                // console.log("保存");
+                self.saveCurrPost();
             },
         })
         $('.tag-drop').dropdown();

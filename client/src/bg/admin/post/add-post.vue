@@ -102,16 +102,20 @@ export default {
         ]),
         ...mapActions([
             'setActivePostId',
-            'setCurrendPostConetent'
+            'setCurrendPostConetent',
+            'update_current_postcontent'
         ])
     },
     watch: {
         // 如果路由有变化，会再次执行该方法
         '$route':async function(){
             this.setActivePostId(this.$route.params.id);
-            if(this.currentPost.id&&!this.currentPost.post_content){
-                let d = await api.postContent(this.currentPost.id);
-                this.setCurrendPostConetent(d.post_content);
+            if(this.currentPost.id){
+                if(!this.currentPost.post_content){
+                    let d = await api.postContent(this.currentPost.id);
+                    this.setCurrendPostConetent(d.post_content);
+                }
+                this.update_current_postcontent(this.currentPost.post_content);
             }
             // console.log(this.currentPost);
             setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
@@ -123,11 +127,13 @@ export default {
         if(data.code==0){
             this.setPosts(data.data);
             this.setActivePostId(this.$route.params.id);
-            if(this.currentPost.id&&!this.currentPost.post_content){
-                let d = await api.postContent(this.currentPost.id);
-                this.setCurrendPostConetent(d.post_content);
+            if(this.currentPost.id){
+                if(!this.currentPost.post_content){
+                    let d = await api.postContent(this.currentPost.id);
+                    this.setCurrendPostConetent(d.post_content);
+                }
+                this.update_current_postcontent(this.currentPost.post_content);
             }
-            console.log(this.currentPost)
         }else{
             layer.alert('发生异常，请刷新后重试');
         }
