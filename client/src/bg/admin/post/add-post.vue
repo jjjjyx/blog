@@ -98,7 +98,7 @@ export default {
         ...mapMutations([
             'setPosts',
             'addPost',
-            'delPost'
+            'delPost',
         ]),
         ...mapActions([
             'setActivePostId',
@@ -111,11 +111,13 @@ export default {
         '$route':async function(){
             this.setActivePostId(this.$route.params.id);
             if(this.currentPost.id){
-                if(!this.currentPost.post_content){
+                if(!this.currentPost.post_content&&!this.currentPost.postTag){
                     let d = await api.postContent(this.currentPost.id);
                     this.setCurrendPost(d);
                 }
                 this.update_current_postcontent(this.currentPost.post_content);
+            }else{
+                this.update_current_postcontent("");
             }
             // console.log(this.currentPost);
             setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
@@ -128,11 +130,13 @@ export default {
             this.setPosts(data.data);
             this.setActivePostId(this.$route.params.id);
             if(this.currentPost.id){
-                if(!this.currentPost.post_content){
+                if(!this.currentPost.post_content&&!this.currentPost.postTag){
                     let d = await api.postContent(this.currentPost.id);
                     this.setCurrendPost(d);
                 }
                 this.update_current_postcontent(this.currentPost.post_content);
+            }else{
+                this.update_current_postcontent("");
             }
         }else{
             layer.alert('发生异常，请刷新后重试');

@@ -95,7 +95,8 @@ class TermDao {
     delete (term_id,callback){
         let sql = [
             {
-                sql:"DELETE FROM `j_posts` WHERE `term_id` = ?",
+                // sql:"DELETE FROM `j_posts` WHERE `term_id` = ?",
+                sql:"UPDATE `myblog`.`j_posts` SET `post_status`='trash', `term_id`=null WHERE `term_id`= ?;",
                 params:[term_id]
             },
             {

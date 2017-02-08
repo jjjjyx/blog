@@ -27,6 +27,14 @@ let errorHandler = function({status,responseJSON}){
             alert("尚未登录!");
             window.location.href="/";
             break;
+        case 429:
+            data.msg = "请求频繁";
+            layer.alert(data.msg, {
+                closeBtn: 0
+            },()=>{
+                window.location.href="/";
+            });
+            break;
         case 500:
         case 0:
         default:

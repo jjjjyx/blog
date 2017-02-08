@@ -1,5 +1,8 @@
 <template>
-    <form class="post-form markdown">
+    <form class="post-form markdown" >
+        <div v-if="!currentPost.id" class="dimmer am-vertical-align">
+            <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png"/>
+        </div>
         <input class="title am-text-truncate" v-model="currentPost.post_title" @input="change" @blur="blur"/>
         <div class="post-tags-bar am-text-xs" ref="posttags">
             <span>标签</span>
@@ -111,7 +114,8 @@ export default {
             'contentHeight',
             'tagList',
             'currentPost',
-            'isUpdateContent'
+            'isUpdateContent',
+            'lastPostId'
         ]),
     },
     methods: {
@@ -200,20 +204,14 @@ export default {
     watch:{
         // '$route':'fetchData',
         'isUpdateContent':function(v){
-            if(v!=null){
-                this.simple.value(v);
-            }
+            this.simple.value(v?v:'');
         },
         'currentPost.postTag'(v,ov){
-            if(v&&ov){
+            // 新旧不为空，且旧值不等于上次的文章
+            if(v && ov && !_.isEqual(ov,this.lastPostId.postTag)){
                 this.savePostTag();
             }
         }
-        // async selectTag(v){
-        //     console.log(v);
-        //     let data = await api.savePostTag({id:this.currentPost.id,tagList:this.selectTag});
-        //     console.log(data);
-        // }
     },
     mounted:async function() {
         this.simple = new Simplemde({
@@ -238,7 +236,8 @@ export default {
             if(_time)
                 clearTimeout(_time);
             let value = this.simple.value();
-            if(value != this.currentPost.post_content){
+            if(value != this.currentPost.post_content&&this.currentPost.post_content){
+                this.saveStatus = "已修改";
                 _time = setTimeout(this.saveCurrPost,1200);
             }
         });
@@ -260,6 +259,31 @@ export default {
         height: 100%;
         overflow: hidden;
         background-color: #fff;
+        .dimmer {
+            position: absolute;
+            top: 0!important;
+            left: 0!important;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            vertical-align: middle;
+            background-color: #f1f1f1;
+            opacity: 1;
+            line-height: 1;
+            animation-fill-mode: both;
+            animation-duration: .5s;
+            transition: background-color .5s linear;
+            user-select: none;
+            will-change: opacity;
+            z-index: 1000;
+            > img {
+                width: 120px;
+                height: auto;
+                border-radius: 50%;
+                border: 5px solid rgba(255, 255, 255, 0.3);
+                opacity: .5;
+            }
+        }
         .title {
             width: 100%;
             height: 50px;

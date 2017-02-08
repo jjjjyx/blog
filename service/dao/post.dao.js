@@ -100,7 +100,7 @@ class PostDao {
         db.execTrans(sql,callback);
     }
     getPosts(callback) {
-        let sql = "select id,post_author,post_date,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,post_modified,post_content_filtered,post_parent,menu_order,post_type,post_mime_type,comment_count,term_id,seq_in_nb,'' as post_content from j_posts";
+        let sql = "select id,post_author,post_date,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,post_modified,post_content_filtered,post_parent,menu_order,post_type,post_mime_type,comment_count,term_id,seq_in_nb,'' as post_content from j_posts where post_status not in('trash','delete')";
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
@@ -121,9 +121,9 @@ class PostDao {
         term_id,
         post_title,
         post_content,
-        post_status,
+        post_status='auto-draft',
         post_name,
-        seq_in_nb
+        seq_in_nb=0
     }, callback) {
         // console.log(term_id, post_title, post_author, post_status, post_name)
         // let keys = ['post_author', 'post_date', 'post_content', 'post_title', 'term_id','post_name','post_status','seq_in_nb']

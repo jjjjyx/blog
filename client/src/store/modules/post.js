@@ -3,27 +3,28 @@
 import Vue from 'vue'
 const state = {
     postsList:[],
+    lastPostId:0,
     currentPost:{},
-    isUpdateContent:null,
+    isUpdateContent:false,
 }
 
 const getters = {
     postsList:state => state.postsList,
     currentPost:state => state.currentPost,
     isUpdateContent: state => state.isUpdateContent,
+    lastPostId: state => state.lastPostId
 }
 
 // actions
 const actions = {
     setActivePostId({ commit, state, getters },id){
         let currList = state.postsList.filter((item)=>item.term_id == getters.isActiveId);
+        commit('SET_LAST_ID',getters.currentPost);
         if(currList.length){
             let r = state.postsList.find((item)=>item.id == id);
-            if(r){
-                commit('SET_CURRENT_POSTID',r);
-            }else{
-                commit('SET_CURRENT_POSTID',currList[0]);
-            }
+            if(!r)
+                r = currList[0];
+            commit('SET_CURRENT_POSTID',r);
         }else{
             commit('SET_CURRENT_POSTID',{});
             commit("UPDATE_CONTENT",null);
@@ -33,11 +34,8 @@ const actions = {
         commit("SET_CURRENDPOST_CONETENT",content);
     },
     setCurrendPost({commit},data){
-        // commit("SET_CURRENDPOST_CONETENT",content);
-        // coms
         commit("SET_CURRENDPOST_CONETENT",data[0].post_content);
         commit("SET_CURRENDPOST_TAG",data[1]);
-        // Vue.set
     },
     update_current_postcontent({commit},content){
         commit("UPDATE_CONTENT",content);
@@ -65,8 +63,10 @@ const mutations = {
         state.currentPost = id
     },
     SET_CURRENDPOST_TAG(state,id){
-        // state.currentPost.postTag = id;
         Vue.set(state.currentPost,'postTag',id);
+    },
+    SET_LAST_ID(state,id){
+        state.lastPostId = id;
     },
     UPDATE_CONTENT(state,c){
         state.isUpdateContent = c;
