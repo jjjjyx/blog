@@ -24,7 +24,7 @@ var pool = mysql.createPool(config.db);
 
 exports.pool = pool;
 
-function _getNewSqlParamEntity(sql, params, callback) {
+function _getNewSqlParamEntity(sql, params,resultFormat, callback) {
     if (callback) {
         return callback(null, {
             sql: sql,
@@ -32,8 +32,9 @@ function _getNewSqlParamEntity(sql, params, callback) {
         });
     }
     return {
-        sql: sql,
-        params: params
+        sql,
+        params,
+        resultFormat
     };
 }
 
@@ -52,6 +53,7 @@ exports.execTrans = function execTrans(sqlparamsEntities, callback) {
                 var temp = function (cb) {
                     var sql = sql_param.sql;
                     var param = sql_param.params;
+                    var resultFormat = sql_param.resultFormat;
                     connection.query(sql, param, function (tErr, rows, fields) {
                         if (tErr) {
                             connection.rollback(function () {
@@ -59,7 +61,11 @@ exports.execTrans = function execTrans(sqlparamsEntities, callback) {
                                 throw tErr;
                             });
                         } else {
-                            return cb(null, 'ok');
+                            if(resultFormat)
+                                return cb(null, resultFormat(rows));
+                            else
+                                return cb(null, rows);
+
                         }
                     })
                 };
@@ -68,6 +74,7 @@ exports.execTrans = function execTrans(sqlparamsEntities, callback) {
 
             async.series(funcAry, function (err, result) {
                 console.log("transaction error: " + err);
+                console.log(result);
                 if (err) {
                     connection.rollback(function (err) {
                         console.log("transaction error: " + err);
@@ -86,7 +93,7 @@ exports.execTrans = function execTrans(sqlparamsEntities, callback) {
                             });
                         } else {
                             connection.release();
-                            return callback(null, info);
+                            return callback(null, result, info);
                         }
                     })
                 }

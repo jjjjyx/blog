@@ -102,7 +102,7 @@ export default {
         ]),
         ...mapActions([
             'setActivePostId',
-            'setCurrendPostConetent',
+            'setCurrendPost',
             'update_current_postcontent'
         ])
     },
@@ -113,7 +113,7 @@ export default {
             if(this.currentPost.id){
                 if(!this.currentPost.post_content){
                     let d = await api.postContent(this.currentPost.id);
-                    this.setCurrendPostConetent(d.post_content);
+                    this.setCurrendPost(d);
                 }
                 this.update_current_postcontent(this.currentPost.post_content);
             }
@@ -130,7 +130,7 @@ export default {
             if(this.currentPost.id){
                 if(!this.currentPost.post_content){
                     let d = await api.postContent(this.currentPost.id);
-                    this.setCurrendPostConetent(d.post_content);
+                    this.setCurrendPost(d);
                 }
                 this.update_current_postcontent(this.currentPost.post_content);
             }

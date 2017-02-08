@@ -148,6 +148,32 @@ let deleteTerm = function (req, res, next) {
         // console.log(result.array());
     });
 }
+let deleteTag = function (req, res, next) {
+    req.checkBody('term_id','ID不正确').notEmpty().isInt();
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(res.map);
+        }else{
+            termDao.deleteTag(req.body.term_id, (err, data) => {
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.data = data;
+                    map.msg = "删除成功";
+                }
+                res.map = map;
+                next();
+            });
+        }
+    });
+}
 module.exports = function () {
     let router = new Router();
 
@@ -164,6 +190,9 @@ module.exports = function () {
         return res.status(200).json(res.map);
     });
     router.route("/deleteTerm").post(deleteTerm, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/deleteTag").post(deleteTag, function (req, res, next) {
         return res.status(200).json(res.map);
     });
 

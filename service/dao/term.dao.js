@@ -63,7 +63,11 @@ class TermDao {
                     }
                     return callback(true);
                 }else{
-                    callback(false, result);
+                    let r = {
+                        term_id: result.insertId,
+                        name,slug,term_group,taxonomy,description
+                    }
+                    callback(false, r);
                 }
             })
         });
@@ -91,13 +95,29 @@ class TermDao {
     delete (term_id,callback){
         let sql = [
             {
-                sql:"DELETE FROM `j_terms` WHERE `term_id`=:term_id",
-                params:{term_id}
+                sql:"DELETE FROM `j_posts` WHERE `term_id` = ?",
+                params:[term_id]
             },
-            // {
-            //     sql:"DELETE FROM `j_terms` WHERE `term_id`=?";
-            //     params:[term_id]
-            // }
+            {
+                sql:"DELETE FROM `j_terms` WHERE `term_id`=?",
+                params:[term_id]
+            }
+
+        ]
+        db.execTrans(sql,callback);
+    }
+
+    deleteTag(term_id,callback){
+        let sql = [
+            {
+                sql:"DELETE FROM `j_term_relationships` WHERE `term_id` = ?",
+                params:[term_id]
+            },
+            {
+                sql:"DELETE FROM `j_terms` WHERE `term_id`=?",
+                params:[term_id]
+            }
+
         ]
         db.execTrans(sql,callback);
     }

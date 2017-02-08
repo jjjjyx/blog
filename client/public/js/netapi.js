@@ -126,6 +126,15 @@ export function deleteTerm(term_id){
         });
     });
 }
+export function deleteTag(term_id){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/term/deleteTag`,{term_id}).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
 
 export function addPost(params){
     return new Promise((resolve, reject) => {
@@ -166,6 +175,15 @@ export function postContent(id){
 export function savePost(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/save`,params).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+export function savePostTag(params){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/post/saveTag`,params).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);

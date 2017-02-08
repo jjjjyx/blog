@@ -20,6 +20,20 @@ const actions = {
         }else{
             commit('SET_ACTIVEID',getters.categoryList[0].term_id);
         }
+    },
+    deleteTerm({ commit, state,getters },id){
+        let index;
+        getters.postsList.forEach((item)=>{
+            if(item.postTag){
+                index = item.postTag.findIndex((item)=>item.term_id==id);
+                // console.log(index,item);
+                if(index>=0)
+                    item.postTag.splice(index,1)
+            }
+        })
+        index = state.termList.findIndex((item)=>item.term_id==id)
+        commit("DELETE_TERM",index);
+
     }
 
 }
@@ -34,8 +48,7 @@ const mutations = {
             }else
                 state.termList.push(obj)
     },
-    deleteTerm (state,id) {
-        let index = state.termList.findIndex((item)=>item.term_id==id)
+    DELETE_TERM (state,index) {
         state.termList.splice(index,1)
     },
     SET_ACTIVEID(state,id){

@@ -115,7 +115,7 @@ let content = function(req, res, next){
             };
             return res.status(400).json(map);
         }else{
-            postDao.getPostContentById(req.body.id,(err, data)=>{
+            postDao.getPostInfoById(req.body.id,(err, data)=>{
                 let map = {};
                 if (err) {
                     map.code = -1;
@@ -124,7 +124,7 @@ let content = function(req, res, next){
                     // map.code = 0;
                     // map.data = data;
                     // map.msg = "删除成功";
-                    map = data[0];
+                    map = data;
                 }
                 res.map = map;
                 next();
@@ -152,7 +152,34 @@ let save = function(req, res, next){
                     map.code = 0;
                     map.data = data;
                     map.msg = "保存成功";
-                    // map = data[0];
+                }
+                res.map = map;
+                next();
+            })
+        }
+    });
+}
+let saveTag = function(req, res, next){
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    req.checkBody('tagList','请提交正确的分类').isArray();
+    console.log(req.body.tagList);
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(map);
+        }else{
+            postDao.savePostTag(req.body.id,req.body.tagList,(err, data)=>{
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.data = data;
+                    map.msg = "保存成功";
                 }
                 res.map = map;
                 next();
@@ -178,6 +205,9 @@ module.exports = function () {
         return res.status(200).json(res.map);
     });
     router.route("/save").post(save, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/saveTag").post(saveTag, function (req, res, next) {
         return res.status(200).json(res.map);
     });
 

@@ -9,15 +9,13 @@
               <div class="am-dropdown-content am-text-xs">
                   <h3 class="am-margin-0">复选框</h3>
                   <label class="am-checkbox" v-for="item in tagList">
-                      <input type="checkbox" :value="item" data-am-ucheck v-model="selectTag"> {{item.name}}
+                      <input type="checkbox" :value="item" data-am-ucheck v-model="currentPost.postTag"> {{item.name}}
+                      <i @click.stop.prevent="delTag(item)" class="am-close am-icon-times am-fr"></i>
                   </label>
               </div>
             </div>
-            <!-- <input class="am-text-truncate"/> -->
-            <a class="am-badge am-badge-default am-radius am-margin-left-xs" v-for="(s,index) in selectTag">{{s.name}} <i class="am-icon-remove delete" @click.stop="deleteSelectTag(index)"></i></a>
-            <!-- <a class="am-badge am-badge-primary am-radius">Free</a> -->
+            <a class="am-badge am-badge-default am-radius am-margin-left-xs" v-for="(s,index) in currentPost.postTag">{{s.name}} <i class="am-icon-remove delete" @click.stop="deleteSelectTag(index)"></i></a>
             <input class="input-tag" autocomplete="off" tabindex="0" type="text" ref="inputtag" v-model="text" placeholder="点击此处添加标签" @keyup.enter="addTag">
-            <!-- <span class="sizer" ref="sizer">{{text}}</span> -->
         </div>
         <span class="saving-notice">{{saveStatus}}</span>
         <div class="am-btn-toolbar post-nav">
@@ -85,12 +83,6 @@ export default {
     },
     components: {},
     computed: {
-        selectNum(){
-            return this.tagList.filter((item)=>item.select).length != this.tagList.length;
-        },
-        select(){
-            return this.tagList.filter((item)=>item.select)
-        },
         postContent(){
             let height = this.contentHeight;
             height -= 82;
@@ -127,21 +119,18 @@ export default {
             // 'SET_CURRENDPOST_CONETENT'
         ]),
         ...mapActions([
-            'setCurrendPostConetent'
+            'setCurrendPostConetent',
+            'deleteTerm'
         ]),
         showAddTag(){
             this.isAddTagShow = !this.isAddTagShow;
             $(this.$refs.posttags).slideToggle(200);
-            // if(this.isAddTagShow){
-            //     this.$nextTick(()=>{
-                    this.$refs.inputtag.focus();
-            //     })
-            // }
+            // this.$nextTick(()=>{
+            this.$refs.inputtag.focus();
+            // })
         },
         toolbarBtnClick(i){
-            // this.simple[i.action]();
             if(typeof this.simple[i.action] === "function"){
-                // console.log(this.simple[i.action])
                 this.simple[i.action](this.simple);
             }else{
                 window.open(i.action, "_blank");
@@ -149,25 +138,36 @@ export default {
         },
         async addTag(){
             // console.log(this.text,api);
-            if(!this.verification(this.text)) return;
-            let data =  await api.addTag({
-                name:this.text
-            })
-            // console.log(data);
-            if(data.code==0){
-                let o  = {
-                    term_id:data.data.insertId,
-                    name:this.text
-                }
-                this.tagList.push(o)
-                this.selectTag.push(o)
-                this.text = "";
+            let r = this.tagList.find((item)=>item.name==this.text);
+            let o;
+            if(r){
+                o  = r
             }else{
-                layer.alert(data.msg)
+                if(!this.verification(this.text)) return;
+                let data =  await api.addTag({
+                    name:this.text
+                })
+                if(data.code==0){
+                    o = data.data;
+                    this.tagList.push(o)
+                }else{
+                    return layer.msg("添加失败，请重试！");
+
+                }
             }
+            this.text = "";
+            this.currentPost.postTag.push(o);
+            // console.log(this.currentPost);
         },
         deleteSelectTag(index){
-            this.selectTag.splice(index,1);
+            this.currentPost.postTag.splice(index,1);
+            // console.log(this.currentPost);
+        },
+        delTag(item){
+            api.deleteTag(item.term_id).then(()=>{
+                this.deleteTerm(item.term_id)
+            });
+
         },
         verification(name){
             let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;
@@ -193,6 +193,9 @@ export default {
             this.saveStatus = "已保存"
             // setTimeout(()=>this.saveStatus = "已保存",1000)
         },
+        savePostTag(){
+            api.savePostTag({id:this.currentPost.id,tagList:this.currentPost.postTag});
+        }
     },
     watch:{
         // '$route':'fetchData',
@@ -200,7 +203,17 @@ export default {
             if(v!=null){
                 this.simple.value(v);
             }
+        },
+        'currentPost.postTag'(v,ov){
+            if(v&&ov){
+                this.savePostTag();
+            }
         }
+        // async selectTag(v){
+        //     console.log(v);
+        //     let data = await api.savePostTag({id:this.currentPost.id,tagList:this.selectTag});
+        //     console.log(data);
+        // }
     },
     mounted:async function() {
         this.simple = new Simplemde({
@@ -308,6 +321,12 @@ export default {
             right: 7px;
             z-index: 1140;
         }
+    }
+    .am-checkbox .am-close{
+        display: none;
+    }
+    .am-checkbox:hover .am-close{
+        display: block;
     }
     .saving-notice {
         font-size: 1.1rem;

@@ -22,7 +22,12 @@ app.use(expressValidator({
         isTermname(value){
             // console.log(value);
             return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(value)
-        }
+        },
+        isArray: function(value) {
+            if(value)
+                return Array.isArray(value);
+            else return true;
+        },
     }
 }));
 app.use(cookieParser());

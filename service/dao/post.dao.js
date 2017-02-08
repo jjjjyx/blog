@@ -84,22 +84,20 @@ class PostDao {
         ]
 
     }
-    getPostContentById(id, callback) {
-        let sql = "select post_content from j_posts where id = ?";
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
+    getPostInfoById(id, callback) {
+        // let sql = "";
+        let sql = [
+            {
+                sql:"select post_content from j_posts where id = ?",
+                params:[id],
+                resultFormat:rows => rows.length ? rows[0]:{}
+            },
+            {
+                sql:"select * from myblog.j_terms where term_id in (SELECT term_id FROM myblog.j_term_relationships where object_id=?)",
+                params:[id],
             }
-            connection.query(sql, [id], (err, result) => {
-                if (err) {
-                    callback(true);
-                } else {
-                    callback(false, result);
-                }
-                connection.release();
-            })
-        });
+        ];
+        db.execTrans(sql,callback);
     }
     getPosts(callback) {
         let sql = "select id,post_author,post_date,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,post_modified,post_content_filtered,post_parent,menu_order,post_type,post_mime_type,comment_count,term_id,seq_in_nb,'' as post_content from j_posts";
@@ -238,6 +236,24 @@ class PostDao {
                 connection.release();
             })
         });
+    }
+
+    savePostTag(id,tagList,callback){
+        let sql = [
+            {
+                sql:"DELETE FROM `myblog`.`j_term_relationships` WHERE `object_id`=?;",
+                params:[id]
+            }
+        ]
+        // for(tag of tagList)
+        tagList && tagList.forEach((tag,index)=>{
+            sql.push({
+                sql:"INSERT INTO `myblog`.`j_term_relationships` (`object_id`, `term_order`, `term_id`) VALUES (?,?,?);",
+                params:[id,index,tag.term_id]
+            })
+        })
+        console.log(sql);
+        db.execTrans(sql,callback);
     }
 }
 

@@ -162,10 +162,10 @@ export default {
             'toggleSidebar',
             'setTerm',
             'addTerm',
-            'deleteTerm'
         ]),
         ...mapActions([
-            'setActiveId'
+            'setActiveId',
+            'deleteTerm'
         ]),
         showAddTag(){
             $('.new-tags-form ').slideToggle(500);
@@ -176,12 +176,12 @@ export default {
             let data = await addTerm(this.newTerm);
             // console.log(222)
             if(data.code == 0) {
-                let o = {
-                    term_id: data.data.insertId,
-                    taxonomy:'category',
-                }
+                // let o = {
+                //     term_id: data.data.insertId,
+                //     taxonomy:'category',
+                // }
                 this.addTerm({
-                    obj:Object.assign(o,this.newTerm),
+                    obj:data.data,
                     index:0
                 })
             }else{

@@ -1,5 +1,6 @@
 
 // import api from "../../../public/js/netapi";
+import Vue from 'vue'
 const state = {
     postsList:[],
     currentPost:{},
@@ -31,6 +32,13 @@ const actions = {
     setCurrendPostConetent({commit},content){
         commit("SET_CURRENDPOST_CONETENT",content);
     },
+    setCurrendPost({commit},data){
+        // commit("SET_CURRENDPOST_CONETENT",content);
+        // coms
+        commit("SET_CURRENDPOST_CONETENT",data[0].post_content);
+        commit("SET_CURRENDPOST_TAG",data[1]);
+        // Vue.set
+    },
     update_current_postcontent({commit},content){
         commit("UPDATE_CONTENT",content);
     }
@@ -55,6 +63,10 @@ const mutations = {
     },
     SET_CURRENT_POSTID(state,id){
         state.currentPost = id
+    },
+    SET_CURRENDPOST_TAG(state,id){
+        // state.currentPost.postTag = id;
+        Vue.set(state.currentPost,'postTag',id);
     },
     UPDATE_CONTENT(state,c){
         state.isUpdateContent = c;
