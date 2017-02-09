@@ -112,7 +112,8 @@ export default {
         ]),
         ...mapActions([
             'setActiveId',
-            'deleteTerm'
+            'deleteTerm',
+            'clearActive'
         ]),
         showAddTag(){
             $('.new-tags-form ').slideToggle(500);
@@ -207,6 +208,7 @@ export default {
         setTimeout(()=>$('.add-post [data-am-dropdown]').dropdown(),500)
     },
     beforeRouteLeave(to,from,next){
+        this.clearActive();
         this.toggleSidebar(false);
         next();
     },

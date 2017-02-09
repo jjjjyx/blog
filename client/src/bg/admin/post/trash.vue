@@ -4,19 +4,7 @@
             <div class="middle-warpper ">
                 <h2 class="trash-title"><i class="am-icon-trash"></i> 回收站</h2>
                 <ul class="am-list am-text-xs am-margin-0" :style="uHeight">
-                    <li v-for="item in trashList">
-                        <a class="am-text-truncate"><i class="am-icon-file-text"></i> {{item.post_title}}</a>
-                        <span :data-destroy-date="formatDate(item.delete_at)">{{formatTime(item.delete_at)}}天后清除</span>
-                    </li>
-                    <li v-for="item in trashList">
-                        <a class="am-text-truncate"><i class="am-icon-file-text"></i> {{item.post_title}}</a>
-                        <span :data-destroy-date="formatDate(item.delete_at)">{{formatTime(item.delete_at)}}天后清除</span>
-                    </li>
-                    <li v-for="item in trashList">
-                        <a class="am-text-truncate"><i class="am-icon-file-text"></i> {{item.post_title}}</a>
-                        <span :data-destroy-date="formatDate(item.delete_at)">{{formatTime(item.delete_at)}}天后清除</span>
-                    </li>
-                    <li v-for="item in trashList">
+                    <li v-for="item in trashList" @click="path(item)">
                         <a class="am-text-truncate"><i class="am-icon-file-text"></i> {{item.post_title}}</a>
                         <span :data-destroy-date="formatDate(item.delete_at)">{{formatTime(item.delete_at)}}天后清除</span>
                     </li>
@@ -27,8 +15,7 @@
                 <div class="article-title">
                     <h3>无标车</h3>
                 </div>
-                <div class="article-content" :style="cHeight">
-                    
+                <div class="article-content" :style="cHeight" v-html="markeds(currentPost.post_content)">
                 </div>
                 <div class="article-toolbar">
                     <button type="button" class="am-btn am-btn-success">恢复文章</button>
@@ -42,6 +29,8 @@
 <script>
 import * as api from "../../../../public/js/netapi.js";
 import { mapGetters, mapActions,mapMutations } from 'vuex'
+import marked from 'marked';
+console.log(marked("# asd"));
 export default {
     data: function() {
         return {
@@ -53,6 +42,7 @@ export default {
         ...mapGetters([
             'posts',
             'trashList',
+            'currentPost',
             'contentHeight',
             'autoHeight'
         ]),
@@ -71,14 +61,31 @@ export default {
     },
     watch: {
         // 如果路由有变化，会再次执行该方法
-        '$route': function(){
-
+        '$route':async function(){
+            this.setTrashActivPostId(this.$route.params.id);
+            if(this.currentPost.id){
+                if(!this.currentPost.post_content){
+                    let d = await api.postContent(this.currentPost.id);
+                    this.setCurrendPostConetent(d[0].post_content);
+                }
+            }
         }
     },
     methods: {
         ...mapMutations([
             'setPosts'
         ]),
+        ...mapActions([
+            'setTrashActivPostId',
+            'setCurrendPostConetent',
+            'clearActive'
+
+        ]),
+        path(item){
+            if(item.id != this.currentPost.id){
+                this.$router.push({ path: `/post/trash/${item.id}`})
+            }
+        },
         formatTime(_time){
             let time = new Date(_time);
             let start = new Date();
@@ -89,7 +96,14 @@ export default {
             let time = new Date(_time);
             time.setDate(time.getDate()+60);
             return time.format('将于yyyy/MM/dd');
+        },
+        markeds(text){
+            return text?marked(text):'';
         }
+    },
+    beforeRouteLeave(to,from,next){
+        this.clearActive();
+        next();
     },
     mounted:async  function() {
         if(!this.posts||!this.posts.length){
@@ -133,6 +147,9 @@ export default {
             margin: 0;
             // font-size: 24.5px;
         }
+    }
+    .article-content {
+        padding: 30px;
     }
     .article-toolbar{
         position: absolute;

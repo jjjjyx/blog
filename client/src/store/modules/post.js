@@ -5,7 +5,7 @@ const state = {
     posts:[],
     lastPostId:0,
     currentPost:{},
-    isUpdateContent:false,
+    isUpdateContent:false, // 这个用来监视 编辑器内容是否被替换，直接监视currentPost.post_content 会有问题
 
     //term
     termList:[],
@@ -50,7 +50,11 @@ const actions = {
 
     },
 
-
+    clearActive({ commit, state, getters }){
+        commit('SET_LAST_ID',0);
+        commit('SET_CURRENT_POSTID',{});
+        commit("UPDATE_CONTENT",null);
+    },
     // post
     setActivePostId({ commit, state, getters },id){
         let currList = getters.postsList.filter((item)=>item.term_id == getters.isActiveId);
@@ -70,6 +74,18 @@ const actions = {
             commit('SET_CURRENT_POSTID',{});
             commit("UPDATE_CONTENT",null);
         }
+    },
+    setTrashActivPostId ({ commit, state, getters },id){
+        let r
+        if(id){
+            r = getters.trashList.find((item)=>item.id == id);
+            if(!r){
+                r = {};
+            }
+        }else{
+            r = getters.trashList[0];
+        }
+        commit('SET_CURRENT_POSTID',r);
     },
     setCurrendPostConetent({commit},content){
         commit("SET_CURRENDPOST_CONETENT",content);
