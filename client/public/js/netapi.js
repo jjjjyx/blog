@@ -198,3 +198,12 @@ export function savePostTag(params){
         });
     });
 }
+// export function savePostTag(params){
+//     return new Promise((resolve, reject) => {
+//         $.post(`${API_SERVER}/api/post/saveTag`,params).done((data) => {
+//             resolve(data);
+//         }).fail(({responseJSON}) => {
+//             reject([responseJSON.code, responseJSON]);
+//         });
+//     });
+// }

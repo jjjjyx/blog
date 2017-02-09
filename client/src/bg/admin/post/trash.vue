@@ -4,25 +4,24 @@
             <div class="middle-warpper ">
                 <h2 class="trash-title"><i class="am-icon-trash"></i> 回收站</h2>
                 <ul class="am-list am-text-xs">
-                    <li class="active">
-                        <a class="am-text-truncate"><i class="am-icon-file-text"></i> 每个人都有一个死角， 自己走不出来，别人也闯不进去。</a>
+                    <li v-for="item in trashList">
+                        <a class="am-text-truncate"><i class="am-icon-file-text"></i> {{item.post_title}}</a>
                         <span data-destroy-date="将于2017/3/21">40天后清除</span>
                     </li>
-                    <li>
-                        <a class="am-text-truncate"><i class="am-icon-file-text"></i> 每个人都有一个死角， 自己走不出来，别人也闯不进去。</a>
-                    </li>
                 </ul>
-                <a class="clear-trash" style="display: block;" href="javascript:void(null)">清空回收站</a>
+                <a class="clear-trash">清空回收站</a>
             </div>
         </div>
     </div>
 
 </template>
 <script>
-// import
+import * as api from "../../../../public/js/netapi.js";
 export default {
     data: function() {
-        return {}
+        return {
+            trashList:[]
+        }
     },
     components: {},
     computed: {
@@ -31,8 +30,8 @@ export default {
     methods: {
 
     },
-    mounted: function() {
-
+    mounted:async  function() {
+        // let data = api.getPostTrash();
     }
 }
 </script>
@@ -95,5 +94,9 @@ export default {
         font-size: 16px;
         text-align: center;
         color: #3bb4f2;
+        opacity: .8;
+        &:hover {
+            opacity: 1;
+        }
     }
 </style>

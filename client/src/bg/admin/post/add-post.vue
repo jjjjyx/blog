@@ -47,8 +47,7 @@ export default {
             'currentPost'
         ]),
         list(){
-            // console.log(this.postsList.filter((item)=>item.term_id==this.isActiveId))
-            return _.orderBy(this.postsList.filter((item)=>item.term_id==this.isActiveId),'seq_in_nb')
+            return _.orderBy(this.postsList,'seq_in_nb')
         }
     },
     methods: {
