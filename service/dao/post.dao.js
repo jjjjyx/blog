@@ -100,7 +100,33 @@ class PostDao {
         db.execTrans(sql,callback);
     }
     getPosts(callback) {
-        let sql = "select id,post_author,post_date,post_title,post_excerpt,post_status,comment_status,ping_status,post_name,post_modified,post_content_filtered,post_parent,menu_order,post_type,post_mime_type,comment_count,term_id,seq_in_nb,'' as post_content from j_posts where post_status !='delete'";
+        let sql = `
+            SELECT
+                id,
+                post_author,
+                post_date,
+                post_title,
+                post_excerpt,
+                post_status,
+                comment_status,
+                ping_status,
+                post_name,
+                post_modified,
+                post_content_filtered,
+                post_parent,
+                menu_order,
+                post_type,
+                post_mime_type,
+                comment_count,
+                term_id,
+                seq_in_nb,
+                '' AS post_content,
+                delete_at
+            FROM
+                j_posts
+            WHERE
+                post_status not in ('delete')
+            `;
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
@@ -116,6 +142,51 @@ class PostDao {
             })
         });
     }
+
+    getTrashPost(callback){
+        let sql = `
+            SELECT
+                id,
+                post_author,
+                post_date,
+                post_title,
+                post_excerpt,
+                post_status,
+                comment_status,
+                ping_status,
+                post_name,
+                post_modified,
+                post_content_filtered,
+                post_parent,
+                menu_order,
+                post_type,
+                post_mime_type,
+                comment_count,
+                term_id,
+                seq_in_nb,
+                '' AS post_content,
+                delete_at
+            FROM
+                j_posts
+            WHERE
+                post_status in ('trash')
+            `;
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(sql, (err, result) => {
+                if (err) {
+                    callback(true);
+                } else {
+                    callback(false, result);
+                }
+                connection.release();
+            })
+        });
+    }
+
     save({
         post_author,
         term_id,
@@ -221,13 +292,13 @@ class PostDao {
     }
 
     del(id, callback) { // 其他的东西也要删除
-        let sql = "DELETE FROM `myblog`.`j_posts` WHERE `id`=?;";
+        let sql = "UPDATE `myblog`.`j_posts` SET `post_status`='trash', delete_at = ?  WHERE `id`= ?;";
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
                 return;
             }
-            connection.query(sql, [id], (err, result) => {
+            connection.query(sql, [new Date(),id], (err, result) => {
                 if (err) {
                     callback(true);
                 } else {

@@ -54,6 +54,21 @@ let posts = function(req, res, next){
         next();
     });
 }
+let postsTrash = function(req, res, next){
+    postDao.getTrashPost((err, data)=>{
+        let map = {};
+        if (err) {
+            map.code = -1;
+            map.msg = data || "发生未知错误，刷新后重试";
+        } else {
+            map.code = 0;
+            map.data = data;
+            map.msg = "success";
+        }
+        res.map = map;
+        next();
+    });
+}
 let del = function(req, res, next){
     req.checkBody('id','请提交正确的id').notEmpty().isInt();
     req.getValidationResult().then(function(result) {
@@ -190,6 +205,9 @@ let saveTag = function(req, res, next){
 module.exports = function () {
     let router = new Router();
     router.route("/posts").post(posts, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/posts/trash").post(postsTrash, function (req, res, next) {
         return res.status(200).json(res.map);
     });
     router.route("/newpost").post(newpost, function (req, res, next) {

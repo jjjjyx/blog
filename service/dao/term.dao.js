@@ -96,12 +96,12 @@ class TermDao {
         let sql = [
             {
                 // sql:"DELETE FROM `j_posts` WHERE `term_id` = ?",
-                sql:"UPDATE `myblog`.`j_posts` SET `post_status`='trash', `term_id`=null WHERE `term_id`= ?;",
-                params:[term_id]
+                sql:"UPDATE `myblog`.`j_posts` SET `post_status`='trash', delete_at = ?  WHERE `term_id`= ?;",
+                params:[new Date(),term_id]
             },
             {
-                sql:"DELETE FROM `j_terms` WHERE `term_id`=?",
-                params:[term_id]
+                sql:"UPDATE `myblog`.`j_terms` SET `delete_at`=? WHERE `term_id`=?;",
+                params:[new Date(),term_id]
             }
 
         ]

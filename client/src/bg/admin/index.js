@@ -66,11 +66,11 @@ var router = new VueRouter({
 
         },
         {
-            path:"/trash/:id(\\d+)?",
+            path:"/post/trash/:id(\\d+)?",
             component:PostTrash,
         },
         {
-            path:"/tag",
+            path:"/post/category",
             component:AddTerm,
             meta:{
                 name:'添加文章',
@@ -86,7 +86,7 @@ var router = new VueRouter({
                     },
                 },
                 {
-                    path:':term_id(\\d+)/post/:id(\\d+)?',
+                    path:':term_id(\\d+)/article/:id(\\d+)?',
                     components:{
                         default:AddPost,
                         rightW:PostEdit

@@ -2,7 +2,7 @@
 // import api from "../../../public/js/netapi";
 import Vue from 'vue'
 const state = {
-    postsList:[],
+    posts:[],
     lastPostId:0,
     currentPost:{},
     isUpdateContent:false,
@@ -13,7 +13,9 @@ const state = {
 }
 
 const getters = {
-    postsList:state => state.postsList.filter((item)=>item.term_id==state.isActiveId),
+    posts:state => state.posts,
+    postsList:state => state.posts.filter((item)=>!item.delete_at && item.term_id==state.isActiveId),
+    trashList:state => state.posts.filter((item)=>item.delete_at),
     currentPost:state => state.currentPost,
     isUpdateContent: state => state.isUpdateContent,
     lastPostId: state => state.lastPostId,
@@ -35,7 +37,7 @@ const actions = {
     },
     deleteTerm({ commit, state,getters },id){
         let index;
-        getters.postsList.forEach((item)=>{
+        getters.posts.forEach((item)=>{
             if(item.postTag){
                 index = item.postTag.findIndex((item)=>item.term_id==id);
                 // console.log(index,item);
@@ -54,9 +56,12 @@ const actions = {
         let currList = getters.postsList.filter((item)=>item.term_id == getters.isActiveId);
         commit('SET_LAST_ID',getters.currentPost);
         if(currList.length){
-            let r = getters.postsList.find((item)=>item.id == id);
-            if(id&&!r){
-                r = {}
+            let r
+            if(id){
+                r = getters.postsList.find((item)=>item.id == id);
+                if(!r){
+                    r ={};
+                }
             }else{
                 r = currList[0];
             }
@@ -80,17 +85,17 @@ const actions = {
 }
 const mutations = {
     setPosts (state,list){
-        state.postsList = list;
+        state.posts = list;
     },
     addPost (state,{obj,index}){
         if(index==0||index){
-            state.postsList.splice(index,0,obj)
+            state.posts.splice(index,0,obj)
         }else
-            state.postsList.push(obj);
+            state.posts.push(obj);
     },
     delPost (state,id){
-        let index = state.postsList.findIndex((item)=>item.id===id)
-        state.postsList.splice(index,1)
+        let index = state.posts.findIndex((item)=>item.id===id)
+        state.posts.splice(index,1)
     },
     SET_CURRENDPOST_CONETENT(state,content){
         state.currentPost.post_content=content;

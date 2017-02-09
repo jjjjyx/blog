@@ -30,7 +30,7 @@
             <!-- <a href="javascript:;">
                     <i class="am-icon-table sidebar-nav-link-logo"></i>
                 </a> -->
-            <a href="javascript:;" class="sidebar-nav-sub-title">
+            <a href="javascript:;" class="sidebar-nav-sub-title" data-link='/post'>
                 <i class="am-icon-book sidebar-nav-link-logo"></i> 文章管理
                 <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
             </a>
@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li class="sidebar-nav-link">
-                    <router-link to="/tag" active-class='active'>
+                    <router-link to="/post/category" active-class='active'>
                         <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 撰写文章
                     </router-link>
                 </li>
@@ -56,7 +56,7 @@
                     </a>
                 </li>
                 <li class="sidebar-nav-link">
-                    <router-link to="/trash" active-class='active'>
+                    <router-link to="/post/trash" active-class='active'>
                         <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 回收站
                     </router-link>
                 </li>
@@ -118,6 +118,19 @@ export default {
         ...mapMutations([
             'toggleSidebar'
         ])
+    },
+    watch: {
+        // 如果路由有变化，会再次执行该方法
+        '$route':function(){
+            $('.sidebar-nav-sub-title[data-link]').each((index,el)=>{
+                if(this.$route.path.indexOf($(el).data('link'))==0){
+                    $(el).addClass('active').siblings('.sidebar-nav-sub').slideDown(80).find('.sidebar-nav-sub-ico').addClass('sidebar-nav-sub-ico-rotate');
+                }else{
+                    $(el).removeClass('active').siblings('.sidebar-nav-sub').slideUp(80).end().find('.sidebar-nav-sub-ico').removeClass('sidebar-nav-sub-ico-rotate');
+                }
+            })
+
+        }
     },
     mounted: function() {
         // console.log("sidebar");

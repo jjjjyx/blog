@@ -26,6 +26,12 @@
 
                 </li>
             </ul>
+            <div class="commercial">
+                <router-link to="/post/trash" active-class='active' class="am-btn am-btn-default am-btn-block">
+                    <i class="am-icon-trash"></i>
+                    <span>回收站</span>
+                </router-link>
+            </div>
         </div>
         <router-view class="middle-warpper" ></router-view>
         <router-view class="right-warpper" name="rightW"></router-view>
@@ -52,7 +58,7 @@
         display: block;
         width: 100px;
     }
-    
+
     .new-tags {
         padding: 0 15px 15px;
         margin-top: 20px;
@@ -131,7 +137,7 @@ export default {
         },
         toggleDown(e,item){
             if(item.term_id != this.isActiveId){
-                this.$router.push({ path: `/tag/${item.term_id}`})
+                this.$router.push({ path: `/post/category/${item.term_id}`})
             }
         },
         editTagName(item){
@@ -176,7 +182,7 @@ export default {
             }, async function(){
                 let s = await deleteTerm(self.isActiveId);
                  if(s.code == 0) {
-                     self.$router.replace({ path: `/tag/`})
+                     self.$router.replace({ path: `/post/category`})
                      self.deleteTerm(item.term_id);
                      layer.closeAll();
                  }else

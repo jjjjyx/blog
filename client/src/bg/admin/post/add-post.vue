@@ -43,6 +43,7 @@ export default {
     computed: {
         ...mapGetters([
             'isActiveId',
+            'posts',
             'postsList',
             'currentPost'
         ]),
@@ -54,7 +55,7 @@ export default {
         async newPost(){
             if(!this.addPostBtnDisabled){
                 this.addPostBtnDisabled = true;
-                let seq_in_nb = this.list.length===0 ? 0 : (_.first(this.list).seq_in_nb)-1
+                let seq_in_nb = this.list.length === 0 ? 0 : (_.first(this.list).seq_in_nb)-1
                 let data = await api.addPost({
                     post_title:'无标题文章',
                     term_id:this.isActiveId,
@@ -73,7 +74,7 @@ export default {
         },
         pathappend(item){
             if(item.id != this.currentPost.id){
-                this.$router.push({ path: `/tag/${this.isActiveId}/post/${item.id}`})
+                this.$router.push({ path: `/post/category/${this.isActiveId}/article/${item.id}`})
             }
         },
         del(item){
@@ -83,7 +84,7 @@ export default {
             },async function(){
                 let data = await api.delPost(item.id);
                 if(data.code ==0){
-                     self.$router.replace({ path: `/tag/${self.isActiveId}/post/`});
+                     self.$router.replace({ path: `/post/category/${self.isActiveId}/article/`});
                      self.delPost(item.id);
                      layer.closeAll();
                 }else{
@@ -123,24 +124,26 @@ export default {
         }
     },
     mounted:async function() {
-
-        let data = await api.posts();
-        if(data.code==0){
-            this.setPosts(data.data);
-            this.setActivePostId(this.$route.params.id);
-            if(this.currentPost.id){
-                if(!this.currentPost.post_content&&!this.currentPost.postTag){
-                    let d = await api.postContent(this.currentPost.id);
-                    this.setCurrendPost(d);
+        if(!this.posts||!this.posts.length){
+            let data = await api.posts();
+            if(data.code==0){
+                this.setPosts(data.data);
+                this.setActivePostId(this.$route.params.id);
+                if(this.currentPost.id){
+                    if(!this.currentPost.post_content&&!this.currentPost.postTag){
+                        let d = await api.postContent(this.currentPost.id);
+                        this.setCurrendPost(d);
+                    }
+                    this.update_current_postcontent(this.currentPost.post_content);
+                }else{
+                    this.update_current_postcontent("");
                 }
-                this.update_current_postcontent(this.currentPost.post_content);
             }else{
-                this.update_current_postcontent("");
+                layer.alert('发生异常，请刷新后重试');
             }
-        }else{
-            layer.alert('发生异常，请刷新后重试');
+            setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
         }
-        setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
+
 
     }
 }

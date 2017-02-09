@@ -83,7 +83,7 @@ export default {
 
     },
     mounted: function() {
-        console.log(this.$route)
+        // console.log(this.$route)
         console.log("hello world");
     }
 }
