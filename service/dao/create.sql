@@ -57,7 +57,7 @@ CREATE TABLE `j_comments` (
   `comment_author_email` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '评论者邮箱',
   `comment_author_url` varchar(200) CHARACTER SET utf8 DEFAULT NULL COMMENT '评论者网址',
   `comment_author_ip` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '评论者IP',
-  `comment_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '评论时间',
+  `comment_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '评论时间',
   `comment_content` text CHARACTER SET utf8 COMMENT '评论正文',
   `comment_karma` int(11) DEFAULT '0',
   `comment_approved` varchar(20) CHARACTER SET utf8 DEFAULT '1' COMMENT '评论是否被批准',
@@ -126,7 +126,7 @@ DROP TABLE IF EXISTS `j_posts`;
 CREATE TABLE `j_posts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `post_author` bigint(20) unsigned DEFAULT '0' COMMENT '对应作者ID',
-  `post_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+  `post_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
   `post_content` longtext COLLATE utf8_bin COMMENT '正文',
   `post_title` text COLLATE utf8_bin COMMENT '标题',
   `post_excerpt` text COLLATE utf8_bin COMMENT '摘录',
@@ -137,7 +137,7 @@ CREATE TABLE `j_posts` (
   `post_name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '文章缩略名',
   `term_id` bigint(20) unsigned DEFAULT NULL COMMENT '所属分类',
   `pinged` text COLLATE utf8_bin COMMENT '已经PING过的链接',
-  `post_modified` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `post_modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   `post_content_filtered` text COLLATE utf8_bin COMMENT '未知\n内容 过滤',
   `post_parent` bigint(20) unsigned DEFAULT '0' COMMENT '父文章，主要用于PAGE',
   `guid` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '未知',
@@ -146,7 +146,7 @@ CREATE TABLE `j_posts` (
   `post_mime_type` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT 'MIME类型',
   `comment_count` bigint(20) DEFAULT '0' COMMENT '评论总数',
   `seq_in_nb` int(11) DEFAULT '0',
-  `delete_at` datetime DEFAULT NULL,
+  `delete_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `post_name` (`post_name`),
   KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`id`),
@@ -211,8 +211,8 @@ CREATE TABLE `j_terms` (
   `parent` bigint(20) unsigned DEFAULT NULL COMMENT '所属父分类方法ID',
   `count` bigint(20) DEFAULT NULL COMMENT '文章数统计',
   `description` longtext COLLATE utf8_bin COMMENT '说明\n',
-  `delete_at` datetime DEFAULT NULL,
-  `create_at` datetime NOT NULL,
+  `delete_at` timestamp NULL DEFAULT NULL,
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`term_id`),
   UNIQUE KEY `term_name` (`name`,`taxonomy`),
   KEY `name` (`name`)
@@ -270,7 +270,7 @@ CREATE TABLE `j_users` (
   `user_nickname` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `user_email` varchar(100) COLLATE utf8_bin DEFAULT NULL,
   `user_url` varchar(100) CHARACTER SET utf8 DEFAULT NULL COMMENT '网址',
-  `user_registered` datetime DEFAULT NULL COMMENT '注册时间',
+  `user_registered` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
   `user_activation_key` varchar(60) CHARACTER SET utf8 DEFAULT NULL COMMENT '激活码',
   `user_status` int(11) DEFAULT '0' COMMENT '用户状态',
   `display_name` varchar(250) CHARACTER SET utf8 DEFAULT NULL COMMENT '显示名称',
@@ -300,4 +300,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-10 11:21:13
+-- Dump completed on 2017-02-10 22:24:57
