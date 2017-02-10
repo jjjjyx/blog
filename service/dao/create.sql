@@ -135,7 +135,7 @@ CREATE TABLE `j_posts` (
   `ping_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT 'PING状态（open/closed）',
   `post_password` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '文章密码',
   `post_name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '文章缩略名',
-  `term_id` bigint(20) unsigned NOT NULL COMMENT '所属分类',
+  `term_id` bigint(20) unsigned DEFAULT NULL COMMENT '所属分类',
   `pinged` text COLLATE utf8_bin COMMENT '已经PING过的链接',
   `post_modified` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
   `post_content_filtered` text COLLATE utf8_bin COMMENT '未知\n内容 过滤',
@@ -146,6 +146,7 @@ CREATE TABLE `j_posts` (
   `post_mime_type` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT 'MIME类型',
   `comment_count` bigint(20) DEFAULT '0' COMMENT '评论总数',
   `seq_in_nb` int(11) DEFAULT '0',
+  `delete_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `post_name` (`post_name`),
   KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`id`),
@@ -153,7 +154,7 @@ CREATE TABLE `j_posts` (
   KEY `fk_j_terms_idx` (`term_id`),
   CONSTRAINT `fk_j_terms` FOREIGN KEY (`term_id`) REFERENCES `j_terms` (`term_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_j_users` FOREIGN KEY (`post_author`) REFERENCES `j_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,7 +163,7 @@ CREATE TABLE `j_posts` (
 
 LOCK TABLES `j_posts` WRITE;
 /*!40000 ALTER TABLE `j_posts` DISABLE KEYS */;
-INSERT INTO `j_posts` VALUES (44,1,'2017-02-07 13:22:41',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 05:22:41',NULL,0,NULL,0,'post',NULL,0,-3),(46,1,'2017-02-07 14:14:03',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:03',NULL,0,NULL,0,'post',NULL,0,-5),(47,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:03',NULL,0,NULL,0,'post',NULL,0,-6),(48,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:03',NULL,0,NULL,0,'post',NULL,0,-7),(49,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:03',NULL,0,NULL,0,'post',NULL,0,-8),(50,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-9),(51,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-10),(52,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-11),(53,1,'2017-02-07 14:14:04',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-12),(54,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-13),(55,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:04',NULL,0,NULL,0,'post',NULL,0,-14),(56,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-15),(57,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-16),(58,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-17),(59,1,'2017-02-07 14:14:05',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-18),(60,1,'2017-02-07 14:14:06',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-19),(61,1,'2017-02-07 14:14:06',NULL,'无标题文章',NULL,NULL,'open','open',NULL,NULL,11,NULL,'2017-02-07 06:14:05',NULL,0,NULL,0,'post',NULL,0,-20);
+INSERT INTO `j_posts` VALUES (63,1,'2017-02-07 21:53:01','11asdasdasdaszxkcja\nzxkasdk\n#\nasdkajsd\nss\nasddasdssda\n![](http://)','无标题文章asd',NULL,'auto-draft','open','open',NULL,NULL,13,NULL,'2017-02-08 20:18:02',NULL,0,NULL,0,'post',NULL,0,0,NULL),(64,1,'2017-02-08 10:03:13','22asdasdasdasdaaaaaaasdasdsssdasd','无标题文章kkk',NULL,'trash','open','open',NULL,NULL,13,NULL,'2017-02-08 11:04:49',NULL,0,NULL,0,'post',NULL,0,-1,'2017-02-09 21:16:59'),(65,1,'2017-02-08 10:31:50','33sdasdasd','无标题文章',NULL,'auto-draft','open','open',NULL,NULL,13,NULL,'2017-02-08 10:53:47',NULL,0,NULL,0,'post',NULL,0,-2,NULL),(66,1,'2017-02-08 15:32:37','sssdaassasdasdasdasddasdwasdws','无标题文章2222',NULL,'auto-draft','open','open',NULL,NULL,12,NULL,'2017-02-09 19:54:57',NULL,0,NULL,0,'post',NULL,0,0,NULL),(67,1,'2017-02-08 15:37:27',NULL,'无标题文章',NULL,'auto-draft','open','open',NULL,NULL,14,NULL,'2017-02-08 07:37:26',NULL,0,NULL,0,'post',NULL,0,0,NULL),(70,1,'2017-02-08 16:17:43',NULL,'无标题文章',NULL,'auto-draft','open','open',NULL,NULL,14,NULL,'2017-02-08 08:17:43',NULL,0,NULL,0,'post',NULL,0,-1,NULL),(71,1,'2017-02-08 16:35:36','asdsad','无标题文章',NULL,'auto-draft','open','open',NULL,NULL,12,NULL,'2017-02-09 09:53:11',NULL,0,NULL,0,'post',NULL,0,-1,NULL),(72,1,'2017-02-09 09:52:56',NULL,'无标题文章',NULL,'auto-draft','open','open',NULL,NULL,16,NULL,'2017-02-09 01:52:56',NULL,0,NULL,0,'post',NULL,0,0,NULL),(73,1,'2017-02-09 21:17:04','# 3阿萨德','无标题文章3',NULL,'trash','open','open',NULL,NULL,45,NULL,'2017-02-09 13:17:04',NULL,0,NULL,0,'post',NULL,0,0,'2017-02-10 11:19:31'),(74,1,'2017-02-09 21:17:05','2','无标题文章2',NULL,'trash','open','open',NULL,NULL,45,NULL,'2017-02-09 13:17:04',NULL,0,NULL,0,'post',NULL,0,-1,'2017-02-10 11:19:31'),(75,1,'2017-02-09 21:17:05','1','无标题文章1',NULL,'trash','open','open',NULL,NULL,45,NULL,'2017-02-09 13:17:04',NULL,0,NULL,0,'post',NULL,0,-2,'2017-02-10 11:19:31');
 /*!40000 ALTER TABLE `j_posts` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -210,10 +211,12 @@ CREATE TABLE `j_terms` (
   `parent` bigint(20) unsigned DEFAULT NULL COMMENT '所属父分类方法ID',
   `count` bigint(20) DEFAULT NULL COMMENT '文章数统计',
   `description` longtext COLLATE utf8_bin COMMENT '说明\n',
+  `delete_at` datetime DEFAULT NULL,
+  `create_at` datetime NOT NULL,
   PRIMARY KEY (`term_id`),
   UNIQUE KEY `term_name` (`name`,`taxonomy`),
   KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签';
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='存储每个目录、标签';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -222,7 +225,7 @@ CREATE TABLE `j_terms` (
 
 LOCK TABLES `j_terms` WRITE;
 /*!40000 ALTER TABLE `j_terms` DISABLE KEYS */;
-INSERT INTO `j_terms` VALUES (11,'java',NULL,0,'category',NULL,0,'分类'),(12,'javascript',NULL,0,'category',NULL,0,'分类'),(13,'html',NULL,0,'category',NULL,0,'分类'),(14,'css',NULL,0,'category',NULL,0,'分类'),(15,'asd',NULL,0,'category',NULL,0,'分类'),(16,'javaweb',NULL,0,'category',NULL,0,'分类'),(17,'jquery',NULL,0,'category',NULL,0,'分类'),(18,'git',NULL,0,'category',NULL,0,'分类'),(19,'mac',NULL,0,'category',NULL,0,'分类'),(20,'sql',NULL,0,'category',NULL,0,'分类'),(21,'nodejs',NULL,0,'category',NULL,0,'分类'),(22,'asd',NULL,NULL,'tag',NULL,0,'标签'),(23,'asdj',NULL,NULL,'tag',NULL,0,'标签'),(24,'kkk',NULL,NULL,'tag',NULL,0,'标签'),(26,'asdss',NULL,NULL,'tag',NULL,0,'标签'),(39,'obkdd',NULL,NULL,'category',NULL,0,'分类'),(40,'test',NULL,NULL,'category',NULL,0,'分类'),(41,'test2',NULL,NULL,'category',NULL,0,'分类'),(43,'test22',NULL,NULL,'category',NULL,0,'分类'),(44,'test222',NULL,NULL,'category',NULL,0,'分类'),(45,'testsss',NULL,NULL,'category',NULL,0,'分类'),(46,'testsssss',NULL,NULL,'category',NULL,0,'分类'),(47,'tttttss',NULL,NULL,'category',NULL,0,'分类');
+INSERT INTO `j_terms` VALUES (12,'javascript',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(13,'html',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(14,'css',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(15,'asd',NULL,0,'category',NULL,0,'分类','2017-02-10 11:19:00','2017-02-09 07:00:00'),(16,'javaweb',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(17,'jquery',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(18,'git',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(19,'mac',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(20,'sql',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(21,'nodejs',NULL,0,'category',NULL,0,'分类',NULL,'2017-02-09 07:00:00'),(39,'obkdd',NULL,NULL,'category',NULL,0,'分类','2017-02-10 11:19:07','2017-02-09 07:00:00'),(40,'test',NULL,NULL,'category',NULL,0,'分类','2017-02-10 11:19:17','2017-02-09 07:00:00'),(41,'test2',NULL,NULL,'category',NULL,0,'分类','2017-02-10 11:19:13','2017-02-09 07:00:00'),(43,'test22',NULL,NULL,'category',NULL,0,'分类','2017-02-10 11:19:21','2017-02-09 07:00:00'),(44,'test222',NULL,NULL,'category',NULL,0,'分类','2017-02-10 11:19:26','2017-02-09 07:00:00'),(45,'testsss',NULL,NULL,'category',NULL,0,'分类','2017-02-10 11:19:31','2017-02-09 07:00:00'),(47,'tttttss',NULL,NULL,'category',NULL,0,'分类','2017-02-10 11:19:36','2017-02-09 07:00:00'),(59,'test11',NULL,NULL,'tag',NULL,0,'标签',NULL,'2017-02-09 07:00:00'),(60,'java',NULL,NULL,'tag',NULL,0,'标签',NULL,'2017-02-09 07:00:00'),(63,'oo',NULL,NULL,'tag',NULL,0,'标签',NULL,'2017-02-09 07:00:00'),(64,'css',NULL,NULL,'tag',NULL,0,'标签',NULL,'2017-02-09 07:00:00'),(65,'s',NULL,NULL,'tag',NULL,0,'标签',NULL,'2017-02-09 07:00:00');
 /*!40000 ALTER TABLE `j_terms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -297,4 +300,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-07 14:21:42
+-- Dump completed on 2017-02-10 11:21:13
