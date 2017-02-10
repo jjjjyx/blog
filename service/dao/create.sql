@@ -137,7 +137,7 @@ CREATE TABLE `j_posts` (
   `post_name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '文章缩略名',
   `term_id` bigint(20) unsigned DEFAULT NULL COMMENT '所属分类',
   `pinged` text COLLATE utf8_bin COMMENT '已经PING过的链接',
-  `post_modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+  `post_modified` timestamp NULL DEFAULT NULL COMMENT '修改时间',
   `post_content_filtered` text COLLATE utf8_bin COMMENT '未知\n内容 过滤',
   `post_parent` bigint(20) unsigned DEFAULT '0' COMMENT '父文章，主要用于PAGE',
   `guid` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '未知',
@@ -300,4 +300,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-02-10 22:24:57
+-- Dump completed on 2017-02-10 22:30:41
