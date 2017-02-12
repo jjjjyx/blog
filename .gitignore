@@ -43,8 +43,12 @@ client/favicon.png
 /doc/view
 /client/public/tmp
 kfavicon.png
+
 /service/test/*
 
 !/service/test/*.js
 
+/public/*
+!/public/preloader.css
+!/public/favicon.png
 dump.rdb

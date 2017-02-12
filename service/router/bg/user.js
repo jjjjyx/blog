@@ -2,11 +2,11 @@ let debug = require('debug')('app:routes:user' + process.pid),
     Router = require("express").Router,
     bcrypt = require("bcryptjs"),
     path = require('path'),
-    utils = require('../utils'),
+    utils = require('../../utils'),
     rateLimiter = require('redis-rate-limiter'),
     redis = require("redis"),
     client = redis.createClient(),
-    userDao = require("../dao/user.dao").userDao;
+    userDao = require("../../dao/user.dao").userDao;
 
 
 var authenticate = function (req, res, next) {

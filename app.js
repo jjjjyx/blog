@@ -1,13 +1,14 @@
 let debug = require('debug')('app:' + process.pid);
 let express = require('express');
 let path = require('path');
+let ejs = require('ejs');
 let bodyParser = require('body-parser');
 let app = express();
 let cookieParser = require('cookie-parser'),
     expressValidator = require('express-validator');
 
-
-
+process.env.NODE_ENV = process.env.NODE_ENV||'production';
+var isDev = process.env.NODE_ENV !== 'production';
 debug("Starting application");
 
 let unless = require('express-unless');
@@ -16,6 +17,14 @@ let config = require("./service/config");
 let utils = require("./service/utils");
 global.C = config;
 
+// app.engine('html', consolidate.ejs);
+
+app.engine('.html', ejs.__express);
+app.set('view engine', 'html');
+app.set('views', path.resolve(__dirname, './service/views'));
+
+
+// app.use(express.favicon());
 app.use(bodyParser());
 app.use(expressValidator({
     customValidators:{
@@ -40,11 +49,10 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Credentials', true);
     res.setHeader("X-Powered-By", 'test');
     // res.setHeader("Server", 'jjjjyx');
-    res.setHeader("Content-Type", "application/json;charset=utf-8");
+    // res.setHeader("Content-Type", "application/json;charset=utf-8");
     next();
 });
 
-// app.use('/', express.static(path.join(__dirname, 'client/home')));
 // We are going to protect /api routes with JWT
 var jwtCheck = expressJwt({
     secret: global.C.secret,
@@ -53,11 +61,13 @@ var jwtCheck = expressJwt({
     }
 });
 jwtCheck.unless = unless;
-// app.use(function(req,res,next){
-//     // res.cookie("test", {account: 'userName', hash: 'hash', last: 'lastTime'}, {maxAge: 60000*60*24*5,httpOnly:true});
-//     next()
-// });
-app.use(jwtCheck.unless({
+
+app.use(express.static(path.join(__dirname, 'public')));
+// function (req, res, next) {
+//     // res.setHeader("Content-Type", "application/json;charset=utf-8");
+//     next();
+// }
+app.use("/api",jwtCheck.unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
 }));
@@ -65,10 +75,16 @@ app.use(utils.middleware().unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
 }));
-app.use("/api/term", require(path.join(__dirname, "service/router", "term.js"))());
-app.use("/api/post", require(path.join(__dirname, "service/router", "post.js"))());
-app.use("/api/user", require(path.join(__dirname, "service/router", "user.js"))());
+// app.use("/api/term", require(path.join(__dirname, "service/router", "term.js"))());
+// app.use("/api/post", require(path.join(__dirname, "service/router", "post.js"))());
+// app.use("/api/user", require(path.join(__dirname, "service/router", "user.js"))());
 
+
+
+require('./service/router')(app);
+// app.get('/', function(req, res){
+//     res.render('index', {title:'paint title'});
+// });
 
 /*错误处理器*/
 app.use(function (err, req, res, next) {
@@ -89,8 +105,27 @@ app.use(function (err, req, res, next) {
 //     // next(err);
 // })
 
+if (isDev) {
+    var webpack = require('webpack'),
+        webpackDevMiddleware = require('webpack-dev-middleware'),
+        webpackHotMiddleware = require('webpack-hot-middleware'),
+        webpackDevConfig = require('./webpack.dev.conf.js');
+
+    var compiler = webpack(webpackDevConfig);
+    // attach to the compiler & the server
+    app.use(webpackDevMiddleware(compiler, {
+        // public path should be the same with webpack config
+        publicPath: webpackDevConfig.output.publicPath,
+        noInfo: true,
+        stats: {
+            colors: true
+        }
+    }));
+    app.use(webpackHotMiddleware(compiler));
+}
+
 let server = app.listen(C.APP_PORT, function () {
     let host = server.address().address;
     let port = server.address().port;
-    console.log('Example app listening at http://%s:%s', host, port);
+    console.log(`Example app (${isDev?'dev':'production'}) listening at http://${host}:${port}`);
 });

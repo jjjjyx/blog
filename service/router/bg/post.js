@@ -2,8 +2,8 @@ let debug = require('debug')('app:routes:post' + process.pid),
     Router = require("express").Router,
     bcrypt = require("bcryptjs"),
     path = require('path'),
-    utils = require('../utils');
-    postDao = require("../dao/post.dao").postDao;
+    utils = require('../../utils');
+    postDao = require("../../dao/post.dao").postDao;
 
 let newpost = function(req, res, next){
     req.checkBody('post_title','请输入一个有效的标题，有效的标题长度在1~255').notEmpty().len(1,255);
