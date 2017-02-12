@@ -100,7 +100,7 @@ class TermDao {
                 params:[new Date(),term_id]
             },
             {
-                sql:"UPDATE `myblog`.`j_terms` SET `delete_at`=? WHERE `term_id`=?;",
+                sql:"UPDATE `myblog`.`j_terms` SET `delete_at`= ? WHERE `term_id`=?;",
                 params:[new Date(),term_id]
             }
 

@@ -50,5 +50,5 @@ kfavicon.png
 
 /public/*
 !/public/preloader.css
-!/public/favicon.png
+!/public/favicon.ico
 dump.rdb

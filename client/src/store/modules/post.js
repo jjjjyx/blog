@@ -21,8 +21,8 @@ const getters = {
     lastPostId: state => state.lastPostId,
     // term
     termList: state => state.termList,
-    categoryList: state => state.termList.filter((item)=> item.taxonomy == 'category'),
-    tagList: state => state.termList.filter((item)=> item.taxonomy == 'tag'),
+    categoryList: state => state.termList.filter((item)=>!item.delete_at && item.taxonomy == 'category'),
+    tagList: state => state.termList.filter((item)=>!item.delete_at && item.taxonomy == 'tag'),
     isActiveId: state => state.isActiveId
 }
 
