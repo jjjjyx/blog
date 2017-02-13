@@ -5,10 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env NODE_ENV=production & webpack --config webpack.config.js -p & node app",
+    "start": "cross-env NODE_ENV=production webpack --config webpack.config.js -p & node app",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -w -r 0",
     "build" : "webpack --config webpack.config.js -p",
-    "dev": "cross-env NODE_ENV=dev supervisor app.js"
+    "dev": "cross-env NODE_ENV=dev supervisor -w service,app.js app"
   },
   "repository": {
     "type": "git",

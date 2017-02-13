@@ -131,7 +131,7 @@
                                 </li>
 
                                 <li class="tpl-dropdown-menu-notifications">
-                                    <a href="javascript:;" class="tpl-dropdown-menu-notifications-item am-cf"  onclick="signOut()">
+                                    <a href="javascript:;" class="tpl-dropdown-menu-notifications-item am-cf"  @click="signOut">
                                         <div class="tpl-dropdown-menu-notifications-title">
                                             <i class="am-icon-sign-out"></i>
                                             <span> 退出</span>
@@ -142,7 +142,7 @@
                         </li>
                         <!-- 退出 -->
                         <li class="am-text-sm">
-                            <a href="javascript:;">
+                            <a href="javascript:;"  @click="signOut">
                                 <span class="am-icon-sign-out"></span> 退出
                             </a>
                         </li>
@@ -179,6 +179,7 @@
 </template>
 <script>
 import { mapGetters, mapActions,mapMutations } from 'vuex'
+import * as api from "../../../public/js/netapi.js";
 import Sidebar from "./sidebar";
 import store from "../../store/index";
 export default {
@@ -209,6 +210,15 @@ export default {
             // cookie.set
             // storageSave('SelcetColor',theme)
             localStorage.setItem('selectSkiner', theme);
+        },
+        async signOut(){
+            let data = await api.logOut();
+            console.log(data);
+            layer.alert(data.msg, {
+                closeBtn: 0
+            },()=>{
+                window.location.href="/";
+            });
         }
     },
     mounted: function() {

@@ -71,7 +71,7 @@ app.use("/api",jwtCheck.unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
 }));
-app.use(utils.middleware().unless({
+app.use("/api",utils.middleware().unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
 }));

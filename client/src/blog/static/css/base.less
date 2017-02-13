@@ -16,14 +16,16 @@ body {
 }
 
 a {
-    font-size: 1.4rem;
+    // font-size: 1.4rem;
     color: @logoColor;
+    cursor: pointer;
     outline: none;
     text-decoration: none;
     transition:color 0.2s ease-out,border 0.2s ease-out,opacity 0.2s ease-out;
     &:active, &:hover {
         outline: 0;
         text-decoration: none;
+        color: @logoColor;
     }
 }
 ol, ul {
@@ -182,7 +184,9 @@ header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
     }
 
     .input-group {
-        width: 100%;
+        display: table;
+        border-collapse: separate;
+        // width: 100%;
         padding: 0 7px;
     }
     input.form-control{
@@ -192,8 +196,16 @@ header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
         color: #fff;
         height: 40px;
         padding: 0 15px;
+        display: table-cell;
+        z-index: 2;
+        float: left;
+        width: 100%;
     }
     .input-group-addon{
+        display: table-cell;
+        width: 1%;
+        white-space: nowrap;
+        vertical-align: middle;
         background-color: transparent;
         border: none;
         color: #fff;

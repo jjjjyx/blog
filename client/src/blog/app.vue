@@ -35,14 +35,14 @@
         height: 200px;
         transform: rotate(-6deg);
     }
-    .focusinfo{
+    .focusinfo {
         position: absolute;
         width: 100%;
         max-width: 800px;
         padding: 0 10px;
         top: 35%;
         left: 50%;
-        transform: translate(-50%,-50%);
+        transform: translate(-50%, -50%);
         text-align: center;
     }
     .focusinfo .avatar {
@@ -53,7 +53,6 @@
         height: auto;
         border-radius: 50%;
         border: 5px solid rgba(255, 255, 255, 0.3);
-
     }
     .focusinfo .avatar-p {
         width: 60%;
@@ -63,20 +62,20 @@
         background: rgba(0, 0, 0, 0.66);
         padding: 20px 30px;
         margin-top: 30px;
-        font-family: miranafont,"Hiragino Sans GB",STXihei,"Microsoft YaHei",SimSun,sans-serif;
+        font-family: miranafont, "Hiragino Sans GB", STXihei, "Microsoft YaHei", SimSun, sans-serif;
         letter-spacing: 1px;
         line-height: 20px;
-        white-space:nowrap;
+        white-space: nowrap;
     }
-
 }
 
 
-@media (max-width: 1280px){
-.headertop .centerbg {
-    display: none;
+@media (max-width: 1280px) {
+    .headertop .centerbg {
+        display: none;
+    }
 }
-}
+
 </style>
 
 <template>
@@ -95,8 +94,8 @@
                 <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png">
             </a>
             <p class="avatar-p">
-                手持两把锟斤拷，口中疾呼烫烫烫。<br>
-                脚踏千朵屯屯屯，笑看万物锘锘锘。
+                手持两把锟斤拷，口中疾呼烫烫烫。
+                <br> 脚踏千朵屯屯屯，笑看万物锘锘锘。
             </p>
         </div>
     </div>
@@ -109,11 +108,63 @@
                 </div>
                 <div class="recommend-post">
                     <ul class="j-article-list">
-                        <li>党说：先搞后台管理</li>
+                        <!-- <li>党说：先搞后台管理</li>
                         <li>1</li>
                         <li>1</li>
-                        <li>1</li>
+                         -->
+                         <li>
+                            <div class="content">
+                                <h4 class="title"><a>前端后端分离，怎么解决SEO优化的问题呢？</a></h4>
+                                <div class="options am-fr">
+                                    <a class="read" >
+                                        <i class="am-icon-eye"></i>
+                                        <span class="num">392</span>
+                                    </a>
+                                    <a class="comment" >
+                                        <i class="am-icon-comment-o"></i>
+                                        <span class="num">3</span>
+                                    </a>
+                                    <a class="like" >
+                                        <i class="am-icon-heart-o"></i>
+                                        <span class="num">3</span>
+                                    </a>
+                                </div>
+                                <div class="meta am-margin-vertical-xs">
+                                    <a title="酱酱酱酱油鲜" class="name">酱酱酱酱油鲜</a> 2017-02-13 11:15:26
+                                </div>
+                                <p class="">
+                                     所谓的前后端分离，到底是分离什么呢？其实就是页面的渲染工作，之前是后端渲染好页面，交给前端来显示，分离后前端需要自己拼装html代码，然后再显示。前端来管理页面的渲染有很多好处，比如减少网络请求量，制作单页面应用等。事情听起来简单，但这么一分离又会牵扯到很多问..
+                                </p>
+                                <div class="j-category-tag">
+                                    <a class="category">java</a>
+                                    <i class="am-icon-tags"></i>
+                                    <a>c++</a>
+                                    <a>.net</a>
+                                </div>
+                            </div>
+                         </li>
                     </ul>
+                    <div class="j-article-placeholder index">
+                        <div class="img"></div>
+                        <div class="content">
+                            <div class="author">
+                                <div class="avatar"></div>
+                                <div class="name"></div>
+                            </div>
+                            <div class="title"></div>
+                            <div class="text"></div>
+                            <div class="text animation-delay"></div>
+                            <div class="text short-text"></div>
+                            <div class="meta">
+                                <i class="am-icon-eye ic-list-read"></i>
+                                <div class="read"></div>
+                                <i class="am-icon-comment ic-list-comments"></i>
+                                <div class="small"></div>
+                                <i class="am-icon-heart ic-list-like"></i>
+                                <div class="small"></div>
+                            </div>
+                        </div>
+                    </div>
                     <p class="load-more">
                         <button class="am-btn am-round gray btn-bordered am-btn-sm">加载更多</button>
                     </p>
@@ -134,6 +185,41 @@
                         <a class="tag">。。。</a>
                     </div>
                 </div>
+                <div class="part">
+                    <div class="j-title">
+                        <h3>
+                            <span class="num">72</span>小时热文榜
+                        </h3>
+                        <a href="javascript:;" class="r btn btn-sm red">
+                            TOP 50   &nbsp;&nbsp;<i class="am-icon-angle-right"></i>
+                        </a>
+                        <!-- <span class="gapline">|</span> -->
+                    </div>
+                </div>
+                <div class="part">
+                    <div class="j-title">
+                        <h3 class="">近期评论</h3>
+                        <!-- <span class="gapline">|</span> -->
+                    </div>
+                </div>
+                <div class="part">
+                    <div class="j-title">
+                        <h3 class="">文章归档</h3>
+                        <!-- <span class="gapline">|</span> -->
+                    </div>
+                </div>
+                <div class="part">
+                    <div class="j-title">
+                        <h3 class="">分类目录</h3>
+                        <!-- <span class="gapline">|</span> -->
+                    </div>
+                </div>
+                <div class="part">
+                    <div class="j-title">
+                        <h3 class="">功能</h3>
+                        <!-- <span class="gapline">|</span> -->
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -144,7 +230,10 @@
 
 <script>
 
-import {mapGetters, mapActions} from 'vuex'
+import {
+    mapGetters, mapActions
+}
+from 'vuex'
 import store from "../store/index";
 import BlobHeader from "../components/head.vue";
 import BlobFooter from "../components/bottom.vue";
@@ -174,7 +263,7 @@ export default {
         ])
     },
     mounted: function() {
-        $("#preloader").fadeOut(1000,()=>$("#preloader").remove())
+        $("#preloader").fadeOut(1000, () => $("#preloader").remove())
     }
 }
 

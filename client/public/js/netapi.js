@@ -1,9 +1,6 @@
 
-// let API_SERVER = "http://121.42.198.67:8081";
 let API_SERVER = "http://localhost:3878"
-// let FILE_API_SERVER = "http://139.129.17.237:15001"
-// let UPLOAD_API_SERVER = "http://121.42.198.67:9001"
-    // let API_SERVER = "http://192.168.184.167:8081"
+
 let REQUEST_TIMEOUT = 3000
 
 let ERR_TIMEOUT = -255
