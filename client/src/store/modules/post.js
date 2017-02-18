@@ -96,6 +96,9 @@ const actions = {
     },
     update_current_postcontent({commit},content){
         commit("UPDATE_CONTENT",content);
+    },
+    merge({commit},obj){
+        commit("MERGE",obj);
     }
 
 }
@@ -145,6 +148,9 @@ const mutations = {
     },
     SET_ACTIVEID(state,id){
         state.isActiveId = id;
+    },
+    MERGE(state,obj){
+        _.merge(state.currentPost,obj);
     }
 }
 

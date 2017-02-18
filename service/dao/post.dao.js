@@ -85,7 +85,51 @@ class PostDao {
             "create_at",
             "author"
         ]
+        this.selectSql = `SELECT
+            jp.id,
+            jp.post_date,
+            jp.post_title,
+            jp.post_excerpt,
+            jp.post_status,
+            jp.comment_status,
+            jp.ping_status,
+            jp.post_name,
+            jp.post_modified,
+            jp.post_content_filtered,
+            jp.post_parent,
+            jp.menu_order,
+            jp.post_type,
+            jp.post_mime_type,
+            jp.comment_count,
+            jp.term_id,
+            jp.guid,
+            jp.seq_in_nb,
+            '' AS post_content,
+            jp.delete_at,
+            jp.create_at,
+            ju.user_login as post_author,
+            jp.author,
+            case when jp.post_password is null then false else true end as ppassword
+        FROM
+            j_posts jp left join j_users ju on jp.post_author = ju.id`
 
+    }
+    findPostById(id,callback){
+        let sql = `${this.selectSql} WHERE jp.id = ?`;
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(sql,[id], (err, result) => {
+                if (err) {
+                    callback(true);
+                } else {
+                    callback(false, result);
+                }
+                connection.release();
+            })
+        });
     }
     getPostInfoById(id, callback) {
         // let sql = "";
@@ -100,36 +144,7 @@ class PostDao {
         db.execTrans(sql, callback);
     }
     getPosts(callback) {
-        let sql = `
-            SELECT
-                jp.id,
-                jp.post_date,
-                jp.post_title,
-                jp.post_excerpt,
-                jp.post_status,
-                jp.comment_status,
-                jp.ping_status,
-                jp.post_name,
-                jp.post_modified,
-                jp.post_content_filtered,
-                jp.post_parent,
-                jp.menu_order,
-                jp.post_type,
-                jp.post_mime_type,
-                jp.comment_count,
-                jp.term_id,
-                jp.seq_in_nb,
-                '' AS post_content,
-                jp.delete_at,
-                jp.create_at,
-                ju.user_login as post_author,
-                jp.author,
-                case when jp.post_password is null then false else true end as post_password
-            FROM
-                j_posts jp left join j_users ju on jp.post_author = ju.id
-            WHERE
-                post_status not in ('delete')
-            `;
+        let sql = `${this.selectSql} WHERE post_status not in ('delete')`;
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
@@ -147,33 +162,7 @@ class PostDao {
     }
 
     getTrashPost(callback) {
-        let sql = `
-            SELECT
-                id,
-                post_author,
-                post_date,
-                post_title,
-                post_excerpt,
-                post_status,
-                comment_status,
-                ping_status,
-                post_name,
-                post_modified,
-                post_content_filtered,
-                post_parent,
-                menu_order,
-                post_type,
-                post_mime_type,
-                comment_count,
-                term_id,
-                seq_in_nb,
-                '' AS post_content,
-                delete_at,
-            FROM
-                j_posts
-            WHERE
-                post_status in ('trash')
-            `;
+        let sql = `${this.selectSql} WHERE post_status not in ('trash')`;
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
@@ -202,6 +191,7 @@ class PostDao {
     }, callback) {
         let sql = "INSERT INTO `myblog`.`j_posts` (`post_author`, `create_at`, `post_content`, `post_title`, `term_id`,`post_name`,`post_status`,`seq_in_nb`,`author`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);"
         let s = "SELECT taxonomy FROM j_terms where term_id= ?;"
+        let self = this;
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
@@ -219,19 +209,7 @@ class PostDao {
                             if (err2) {
                                 callback(true);
                             } else {
-                                let r = {
-                                    id: result2.insertId,
-                                    post_author,
-                                    term_id,
-                                    post_title,
-                                    post_content,
-                                    post_status,
-                                    post_name,
-                                    create_at,
-                                    seq_in_nb,
-                                    author
-                                }
-                                callback(false, r);
+                                self.findPostById(result2.insertId,callback);
                             }
                         })
                     }
@@ -241,39 +219,65 @@ class PostDao {
         });
     }
     move(id, term_id, callback) {
-            let s = "SELECT taxonomy FROM j_terms where term_id= ?;"
-            let self = this;
-            db.pool.getConnection(function (err, connection) {
+        let s = "SELECT taxonomy FROM j_terms where term_id= ?;"
+        let self = this;
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(s, [term_id], (err, result) => {
                 if (err) {
                     callback(true);
-                    return;
-                }
-                connection.query(s, [term_id], (err, result) => {
-                    if (err) {
-                        callback(true);
-                    } else {
-                        // console.log(result);
-                        if (result.length == 1 && result[0].taxonomy == 'category') {
-                            // let post_date = new Date();
-                            self.update(id, {
-                                term_id
-                            }, callback);
-                        }
+                } else {
+                    // console.log(result);
+                    if (result.length == 1 && result[0].taxonomy == 'category') {
+                        // let post_date = new Date();
+                        self.update(id, {
+                            id,
+                            term_id
+                        }, callback);
                     }
-                    connection.release();
-                })
-            });
-        }
+                }
+                connection.release();
+            })
+        });
+    }
+    postPublish(id,guid,callback){
+        let post_date = new Date();
+        let post_status = "publish";
+        this.update(id,{id,guid,post_date,post_status},callback,['comment_count', 'id', 'create_at', 'delete_at', 'post_author']);
+    }
+
+    postUnlock(id,callback){
+        let sql = "UPDATE `j_posts` SET post_password=null WHERE `id`= :id";
+        db.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(sql, {id}, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    callback(true);
+                } else {
+                    callback(false,result);
+                }
+                connection.release();
+            })
+        });
+    }
         // 这里很机智的写法
-    update(id, data, callback) {
+    update(id, data, callback, ban = ['comment_count', 'id', 'create_at', 'delete_at', 'post_author','post_date']) {
         let keys = _.intersection(this.key, Object.keys(data));
-        let ban = ['post_date', 'guid', 'comment_count', 'id', 'create_at', 'delete_at', 'post_author']; // 不允许修改字段
         data.post_modified = new Date();
         let cc = [];
+        let r_data = {}
         for (let k of keys) {
             if (ban.indexOf(k) == -1 && data[k]) {
                 cc.push(`${k} = :${k}`);
             }
+            r_data[k] = data[k];
         }
         let sql = `UPDATE \`j_posts\` SET ${cc.join(',')} WHERE \`id\`= :id`;
         // console.log(sql,data,3333)
@@ -284,10 +288,10 @@ class PostDao {
             }
             connection.query(sql, data, (err, result) => {
                 if (err) {
-                    // console.log(err);
+                    console.log(err);
                     callback(true);
                 } else {
-                    callback(false, result);
+                    callback(false, r_data);
                 }
                 connection.release();
             })

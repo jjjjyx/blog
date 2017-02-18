@@ -2,8 +2,9 @@ let debug = require('debug')('app:routes:post' + process.pid),
     Router = require("express").Router,
     bcrypt = require("bcryptjs"),
     path = require('path'),
-    utils = require('../../utils');
-    postDao = require("../../dao/post.dao").postDao;
+    utils = require('../../utils'),
+    postDao = require("../../dao/post.dao").postDao,
+    objectid = require("objectid-js");
 
 let newpost = function(req, res, next){
     req.checkBody('post_title','请输入一个有效的标题，有效的标题长度在1~255').notEmpty().len(1,255);
@@ -202,6 +203,33 @@ let saveTag = function(req, res, next){
         }
     });
 }
+let postUnlock = function(req, res, next){
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(map);
+        }else{
+            // 生成一个固定链接
+            postDao.postUnlock(req.body.id, (err, data)=>{
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.data = data;
+                    map.msg = "取消密码成功";
+                }
+                res.map = map;
+                next();
+            })
+        }
+    });
+}
 let publish = function(req, res, next){
     req.checkBody('id','请提交正确的id').notEmpty().isInt();
     req.getValidationResult().then(function(result) {
@@ -212,20 +240,21 @@ let publish = function(req, res, next){
             };
             return res.status(400).json(map);
         }else{
-            // postDao.savePostTag(req.body.id,req.body.tagList,(err, data)=>{
-            //     let map = {};
-            //     if (err) {
-            //         map.code = -1;
-            //         map.msg = data || "发生未知错误，刷新后重试";
-            //     } else {
-            //         map.code = 0;
-            //         map.data = data;
-            //         map.msg = "保存成功";
-            //     }
-            //     res.map = map;
-            //     next();
-            // })
-            next();
+            // 生成一个固定链接
+            let guid = (new objectid()).toString();
+            postDao.postPublish(req.body.id, guid, (err, data)=>{
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.data = data;
+                    map.msg = "成功发布";
+                }
+                res.map = map;
+                next();
+            })
         }
     });
 }
@@ -256,6 +285,10 @@ module.exports = function () {
         return res.status(200).json(res.map);
     });
     router.route("/publish").post(publish, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/postUnlock").post(postUnlock, function (req, res, next) {
+        console.log(res.map)
         return res.status(200).json(res.map);
     });
 

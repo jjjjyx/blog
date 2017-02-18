@@ -203,6 +203,16 @@ export function postPublish(id){
         });
     });
 }
+export function postUnlock(id) {
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/post/postUnlock`,{id}).done((data) => {
+            console.log(data);
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
 // export function savePostTag(params){
 //     return new Promise((resolve, reject) => {
 //         $.post(`${API_SERVER}/api/post/saveTag`,params).done((data) => {

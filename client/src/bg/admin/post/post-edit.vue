@@ -26,7 +26,7 @@
                 <button type="button" class="am-btn am-btn-link" title="标签" @click="showAddTag" :class="{active:isAddTagShow}"><i class="am-icon-tags"></i></button>
                 <div class="am-dropdown am-btn-group-sm post-setting" data-am-dropdown>
                   <button type="button" class="am-btn am-btn-link am-dropdown-toggle" title="属性"><i class="am-icon-info-circle"></i></button>
-                  <div class="am-dropdown-content" style="width:300px">
+                  <div class="am-dropdown-content" style="width:320px">
                     <dl class="dl-horizontal sm am-text-sm am-margin-bottom-0">
                         <dt>标题</dt>
                         <dd>{{currentPost.post_title}}</dd>
@@ -35,7 +35,9 @@
                         <dd>{{formatTag(currentPost.postTag)}}</dd>
 
                         <dt>网址</dt>
-                        <dd>{{'3213'}}</dd>
+                        <dd>
+                            <a :href="currentPost.guid?('../../p/'+currentPost.guid):'javascript:;'" target="_blank">{{currentPost.guid||"-"}}<a>
+                        </dd>
 
                         <dt>创建时间</dt>
                         <dd>{{dateFormat(currentPost.create_at)}}</dd>
@@ -50,12 +52,12 @@
                         <dd>{{currentPost.post_author}}</dd>
 
                         <dt>加密</dt>
-                        <dd>
-                              <a @click="setPass" v-if="!currentPost.post_password">
+                        <dd class="am-text-xs">
+                              <a @click="setPass" v-if="!currentPost.ppassword">
                                 <i class="am-icon-lock"></i> 设置密码
                               </a>
                             <div v-else>
-                                <span><i class="am-icon-lock"></i> 已加密</span> <a class="am-text-xs"><i class="am-icon-unlock"></i> 取消</a>
+                                <span><i class="am-icon-lock"></i> 已加密</span> <a  @click="unlock"><i class="am-icon-unlock"></i> 取消</a>
                             </div>
                         </dd>
 
@@ -68,11 +70,12 @@
                         </dd> -->
 
                         <dt>评论状态</dt>
-                        <dd>
+                        <dd class="am-text-xs">
                             <select data-am-selected v-model="currentPost.comment_status">
                               <option value="open">打开</option>
                               <option value="closed">关闭</option>
                             </select>
+                            <a v-if="currentPost.post_status='publish'"><i class="am-icon-eye"></i> 查看评论 </a>
                         </dd>
 
                         <dt>文章状态</dt>
@@ -86,7 +89,11 @@
 
                     </dl>
                     <div class="am-text-right">
-                        <button class="am-btn am-btn-success am-round am-btn-xs" @click="publish"><i class="am-icon-share"></i> 发布</button>
+                        <button class="am-btn am-btn-secondary am-round am-btn-xs" ><i class="am-icon-save"></i> 保存 </button>
+                        <button v-if="currentPost.post_status=='auto-draft'" class="am-btn am-btn-success am-round am-btn-xs" @click="publish"><i class="am-icon-send"></i> 发布</button>
+                        <!-- TODO 撤回发布 -->
+                        <button v-if="currentPost.post_status=='publish'" class="am-btn am-btn-success am-round am-btn-xs" @click="unPublish"><i class="am-icon-retweet"></i> 撤回草稿箱</button>
+
                     </div>
                   </div>
                 </div>
@@ -191,31 +198,35 @@ export default {
         ]),
         ...mapActions([
             'setCurrendPostConetent',
-            'deleteTerm'
+            'deleteTerm',
+            'merge'
         ]),
+        // postUrl (guid){
+        //
+        //     return "-"
+        // }
         formatTag(tag){
             if(tag instanceof Array){
-                return tag.join(";")||"无";
+                return tag.map((item)=>item.name).join(";")||"-";
             }
-            return "无";
+            return "-";
+        },
+        async unlock(){
+            // this.currentPost.post_password = ;
+            delete this.currentPost.post_password;
+            let data = await api.postUnlock(this.currentPost.id);
+            if(data.code ==0){
+                this.currentPost.ppassword = false;
+                layer.msg("已取消加密");
+            }
         },
         setPass(){
             this.pass="";
-            // $('#setPass').modal({
-            //   relatedTarget: this,
-            //   onCancel: function(e) {
-            //     // alert('不想说!');
-            //   },
-            //   dimmer:true,
-            // });
-            // this.$nextTick(()=>{
-            //     this.$refs.passInput.focus();
-            //     this.$refs.passInput.select()
-            // });
             layer.prompt({title: '输入任何口令，并确认', formType: 1,maxlength:20},(val, index)=>{
                 if(val){
                     if(val.length<20&&val.length>=3){
                         this.currentPost.post_password = val;
+                        this.currentPost.ppassword = true;
                         this.saveCurrPost();
                         layer.msg("设置成功");
                         layer.close(index);
@@ -228,7 +239,7 @@ export default {
             });
         },
         dateFormat(date){
-            return new Date(date).format('yyyy/MM/dd hh:mm')
+            return date?new Date(date).format('yyyy/MM/dd hh:mm'):"-";
         },
         showAddTag(){
             this.isAddTagShow = !this.isAddTagShow;
@@ -298,15 +309,24 @@ export default {
             this.setCurrendPostConetent(value);
             this.saveStatus = "保存中..";
             let data = await api.savePost(this.currentPost);
+            this.merge(data.data);
             this.saveStatus = "已保存"
             // setTimeout(()=>this.saveStatus = "已保存",1000)
         },
         savePostTag(){
             api.savePostTag({id:this.currentPost.id,tagList:this.currentPost.postTag});
         },
-        publish(){
-            api.postPublish(this.currentPost.id);
+        async publish(){
+            let data = await api.postPublish(this.currentPost.id);
+            if(data.code==0){
+                this.merge(data.data);
+                layer.msg(data.msg);
+            }
+        },
+        unPublish (){
+
         }
+
     },
     watch:{
         // '$route':'fetchData',

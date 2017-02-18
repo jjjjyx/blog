@@ -64,7 +64,7 @@ export default {
 
                 if(data.code==0){
                     this.addPost({
-                        obj:data.data,
+                        obj:data.data[0],
                         index:0
                     });
                 }
