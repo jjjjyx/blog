@@ -59,9 +59,8 @@ export function login(username, password) {
             username,
             password
         }).done((data) => {
-            resolve([data.code, data.data]);
+            resolve(data);
         }).fail(({responseJSON={code:401}}) => {
-
             reject([responseJSON.code, responseJSON]);
         });
     });
@@ -70,7 +69,7 @@ export function login(username, password) {
 export function logOut() {
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/user/logout`).done((data) => {
-            resolve([data.code, data.data]);
+            resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
         });
@@ -80,7 +79,7 @@ export function logOut() {
 export function userGetInfo() {
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/user/auth`).done((data) => {
-            resolve([data.code, data.data]);
+            resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
         });
@@ -189,6 +188,15 @@ export function savePost(params){
 export function savePostTag(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/saveTag`,params).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+export function postPublish(id){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/post/publish`,{id}).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);

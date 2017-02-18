@@ -69,6 +69,10 @@
     }
 }
 
+.login {
+    position: absolute;
+
+}
 
 @media (max-width: 1280px) {
     .headertop .centerbg {
@@ -112,6 +116,37 @@
                         <li>1</li>
                         <li>1</li>
                          -->
+                         <li v-for="item in list">
+                            <div class="content">
+                                <h4 class="title"><a>{{item.post_title}}</a></h4>
+                                <div class="options am-fr">
+                                    <a class="read" >
+                                        <i class="am-icon-eye"></i>
+                                        <span class="num">{{item.eye}}</span>
+                                    </a>
+                                    <a class="comment" >
+                                        <i class="am-icon-comment-o"></i>
+                                        <span class="num">{{item.comment_count}}</span>
+                                    </a>
+                                    <a class="like" >
+                                        <i class="am-icon-heart-o"></i>
+                                        <span class="num">{{item.heart_count}}</span>
+                                    </a>
+                                </div>
+                                <div class="meta am-margin-vertical-xs">
+                                    <a :title="item.post_author" class="name">{{item.post_author}}</a> 2017-02-13 11:15:26
+                                </div>
+                                <p class="">
+                                     {{item.abstract}}
+                                </p>
+                                <div class="j-category-tag">
+                                    <a class="category">java</a>
+                                    <i class="am-icon-tags"></i>
+                                    <a>c++</a>
+                                    <a>.net</a>
+                                </div>
+                            </div>
+                         </li>
                          <li>
                             <div class="content">
                                 <h4 class="title"><a>前端后端分离，怎么解决SEO优化的问题呢？</a></h4>
@@ -174,10 +209,11 @@
                 <div class="part">
                     <div class="j-title">
                         <h3 class="">标签</h3>
-                        <!-- <span class="gapline">|</span> -->
+                        <!-- <span class="gapline">|</span> v-if="enabled" -->
                     </div>
                     <div class="tags">
-                        <a class="tag">java</a>
+                        <input type="password" ref="login" v-if="enabled" v-model="keyword" class="login" style="position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
+                        <a class="tag" data-tag="java" @mouseover="mouseover" @mouseout="mouseout">java</a>
                         <a class="tag">javascript</a>
                         <a class="tag">node</a>
                         <a class="tag">渗透</a>
@@ -230,40 +266,62 @@
 
 <script>
 
-import {
-    mapGetters, mapActions
-}
-from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import store from "../store/index";
 import BlobHeader from "../components/head.vue";
 import BlobFooter from "../components/bottom.vue";
-
+import keyboardJS from "keyboardjs"
+import * as api from "../../public/js/api.js";
 // import Head from "../components/head";
 
 
 export default {
     data: () => {
         return {
-            msg: "hello world"
+            list:[],
+            enabled:false,
+            keyword:'',
         }
     },
     // store,
     computed: {
-        ...mapGetters([
-            'user'
-        ]),
+
     },
     components: {
         BlobHeader,
         BlobFooter
     },
     methods: {
-        ...mapActions([
-            'userSignout'
-        ])
+        // ...mapActions([
+        //     'userSignout'
+        // ])
+        mouseover(){
+            this.enabled = true;
+            this.keyword = '';
+            keyboardJS.setContext('login');
+            this.$nextTick(()=>{
+                this.$refs.login.focus();
+            })
+
+        },
+        mouseout(){
+            keyboardJS.setContext('default');
+            this.enabled = false;
+        }
     },
     mounted: function() {
-        $("#preloader").fadeOut(1000, () => $("#preloader").remove())
+        $("#preloader").fadeOut(1000, () => $("#preloader").remove());
+        let self = this;
+        keyboardJS.withContext('login', function() {
+            keyboardJS.bind('enter', (e)=> {
+                api.login(...self.keyword.split(' ')).then(({code,msg})=>{
+                    if(code==0){
+                        layer.alert(msg);
+                    }
+                })
+            });
+        });
+
     }
 }
 

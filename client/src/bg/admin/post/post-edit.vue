@@ -24,7 +24,72 @@
         <div class="am-btn-toolbar post-nav">
             <div class="am-btn-group am-btn-group-sm">
                 <button type="button" class="am-btn am-btn-link" title="标签" @click="showAddTag" :class="{active:isAddTagShow}"><i class="am-icon-tags"></i></button>
-                <button type="button" class="am-btn am-btn-link" title="属性"><i class="am-icon-info-circle"></i></button>
+                <div class="am-dropdown am-btn-group-sm post-setting" data-am-dropdown>
+                  <button type="button" class="am-btn am-btn-link am-dropdown-toggle" title="属性"><i class="am-icon-info-circle"></i></button>
+                  <div class="am-dropdown-content" style="width:300px">
+                    <dl class="dl-horizontal sm am-text-sm am-margin-bottom-0">
+                        <dt>标题</dt>
+                        <dd>{{currentPost.post_title}}</dd>
+
+                        <dt>标签</dt>
+                        <dd>{{formatTag(currentPost.postTag)}}</dd>
+
+                        <dt>网址</dt>
+                        <dd>{{'3213'}}</dd>
+
+                        <dt>创建时间</dt>
+                        <dd>{{dateFormat(currentPost.create_at)}}</dd>
+
+                        <dt>修改时间</dt>
+                        <dd>{{dateFormat(currentPost.post_modified)}}</dd>
+
+                        <dt>作者</dt>
+                        <dd>{{currentPost.author}}</dd>
+
+                        <dt>创建者</dt>
+                        <dd>{{currentPost.post_author}}</dd>
+
+                        <dt>加密</dt>
+                        <dd>
+                              <a @click="setPass" v-if="!currentPost.post_password">
+                                <i class="am-icon-lock"></i> 设置密码
+                              </a>
+                            <div v-else>
+                                <span><i class="am-icon-lock"></i> 已加密</span> <a class="am-text-xs"><i class="am-icon-unlock"></i> 取消</a>
+                            </div>
+                        </dd>
+
+                        <!-- <dt>公开度</dt>
+                        <dd>
+                            <select data-am-selected>
+                              <option value="open">打开</option>
+                              <option value="closed">关闭</option>
+                            </select>
+                        </dd> -->
+
+                        <dt>评论状态</dt>
+                        <dd>
+                            <select data-am-selected v-model="currentPost.comment_status">
+                              <option value="open">打开</option>
+                              <option value="closed">关闭</option>
+                            </select>
+                        </dd>
+
+                        <dt>文章状态</dt>
+                        <dd>
+                            {{currentPost.post_status}}
+                            <!-- <select data-am-selected v-model="currentPost.post_status">
+                                <option value="publish">发布</option>
+                                <option value="auto-draft">草稿</option>
+                            </select> -->
+                        </dd>
+
+                    </dl>
+                    <div class="am-text-right">
+                        <button class="am-btn am-btn-success am-round am-btn-xs" @click="publish"><i class="am-icon-share"></i> 发布</button>
+                    </div>
+                  </div>
+                </div>
                 <button type="button" class="am-btn am-btn-link" title="附件"><i class="am-icon-paperclip fa-flip-horizontal"></i> <span>0</span></button>
             </div>
         </div>
@@ -44,6 +109,7 @@ import Simplemde from "simplemde/dist/simplemde.min.js";
 import "simplemde/dist/simplemde.min.css";
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 import * as api from "../../../../public/js/netapi.js";
+// import {dateFormat} from "../../../../public/js/netapi.js";
 // import keyboardJS from "keyboardjs"
 import key from "../../../../public/js/key.js";
 
@@ -51,6 +117,7 @@ export default {
     data: function() {
         return {
             // title:'无标题文章',
+            pass:'',
             saveStatus:"已保存",
             selectTag:[],
             isAddTagShow:false,
@@ -126,6 +193,43 @@ export default {
             'setCurrendPostConetent',
             'deleteTerm'
         ]),
+        formatTag(tag){
+            if(tag instanceof Array){
+                return tag.join(";")||"无";
+            }
+            return "无";
+        },
+        setPass(){
+            this.pass="";
+            // $('#setPass').modal({
+            //   relatedTarget: this,
+            //   onCancel: function(e) {
+            //     // alert('不想说!');
+            //   },
+            //   dimmer:true,
+            // });
+            // this.$nextTick(()=>{
+            //     this.$refs.passInput.focus();
+            //     this.$refs.passInput.select()
+            // });
+            layer.prompt({title: '输入任何口令，并确认', formType: 1,maxlength:20},(val, index)=>{
+                if(val){
+                    if(val.length<20&&val.length>=3){
+                        this.currentPost.post_password = val;
+                        this.saveCurrPost();
+                        layer.msg("设置成功");
+                        layer.close(index);
+                    }else{
+                        layer.msg("密码长度不符")
+                    }
+                }else{
+                    layer.close(index);
+                }
+            });
+        },
+        dateFormat(date){
+            return new Date(date).format('yyyy/MM/dd hh:mm')
+        },
         showAddTag(){
             this.isAddTagShow = !this.isAddTagShow;
             $(this.$refs.posttags).slideToggle(200);
@@ -199,6 +303,9 @@ export default {
         },
         savePostTag(){
             api.savePostTag({id:this.currentPost.id,tagList:this.currentPost.postTag});
+        },
+        publish(){
+            api.postPublish(this.currentPost.id);
         }
     },
     watch:{
@@ -250,7 +357,7 @@ export default {
                 self.saveCurrPost();
             },
         })
-        $('.tag-drop').dropdown();
+        $('.tag-drop,.post-setting').dropdown();
     }
 }
 </script>

@@ -23,7 +23,7 @@ let newpost = function(req, res, next){
             let term_id = req.body.term_id;
             let post_title = req.body.post_title;
             let seq_in_nb = req.body.seq_in_nb * 1;
-            postDao.save({post_author:req.user.id,post_title,term_id,seq_in_nb},(err, data)=>{
+            postDao.save({post_author:req.user.id,post_title,term_id,seq_in_nb,author:req.user.user_login},(err, data)=>{
                 let map = {};
                 if (err) {
                     map.code = -1;
@@ -202,6 +202,33 @@ let saveTag = function(req, res, next){
         }
     });
 }
+let publish = function(req, res, next){
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(map);
+        }else{
+            // postDao.savePostTag(req.body.id,req.body.tagList,(err, data)=>{
+            //     let map = {};
+            //     if (err) {
+            //         map.code = -1;
+            //         map.msg = data || "发生未知错误，刷新后重试";
+            //     } else {
+            //         map.code = 0;
+            //         map.data = data;
+            //         map.msg = "保存成功";
+            //     }
+            //     res.map = map;
+            //     next();
+            // })
+            next();
+        }
+    });
+}
 module.exports = function () {
     let router = new Router();
     router.route("/posts").post(posts, function (req, res, next) {
@@ -228,6 +255,10 @@ module.exports = function () {
     router.route("/saveTag").post(saveTag, function (req, res, next) {
         return res.status(200).json(res.map);
     });
+    router.route("/publish").post(publish, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+
 
     router.unless = require("express-unless");
     return router;

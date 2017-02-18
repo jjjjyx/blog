@@ -21,7 +21,38 @@ header {
 }
 
 @import "post";
-
+.am-modal{
+    background-color: rgba(0, 0, 0, 0.65);
+}
+.am-modal-dialog {
+    border: 1px solid #e9ecf3;
+}
+.dl-horizontal {
+    dt {
+        float: left;
+        width: 160px;
+        overflow: hidden;
+        clear: left;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    dd {
+        margin-left: 180px;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+}
+.dl-horizontal.sm {
+    dt {
+        width: 60px;
+    }
+    dd {
+        margin-left: 80px;
+    }
+}
 .am-dropdown-content input[type=checkbox], input[type=radio]{
     margin-top: 4px;
 }

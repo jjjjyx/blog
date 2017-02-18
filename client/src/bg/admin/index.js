@@ -34,10 +34,10 @@ async function isLogIn() {
     let is_login = false;
     // 判段用户实例是否存在或者过期
     if (store.getters.user === null || +new Date() - store.getters.user.validateTime > 60 * 60 * 1000) {
-        let [code, userdata] = await userGetInfo();
-        console.log(code,userdata);
-        if (code === 0) {
-            store.commit("USER_SET_INFO", userdata);
+        let date = await userGetInfo();
+        // console.log(code,userdata);
+        if (date.code === 0) {
+            store.commit("USER_SET_INFO", date.data);
             is_login = true;
         }
     } else {
