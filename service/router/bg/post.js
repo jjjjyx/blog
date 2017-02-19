@@ -11,7 +11,7 @@ let newpost = function(req, res, next){
     req.checkBody('term_id','未提交所属分类').notEmpty().isInt();
     // req.checkBody('seq_in_nb','未提交所属分类').notEmpty().isInt();
 
-    req.sanitizeBody('post_title').trim();
+    req.sanitizeBody('post_title').trim().escape();
     req.sanitizeBody('term_id');
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){

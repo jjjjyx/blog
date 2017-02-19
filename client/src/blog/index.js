@@ -1,6 +1,6 @@
 // import "lodash";
 
-import "./static/css/import.less";
+import "./static/css/index.less";
 
 import Vue from "vue"
 // import VueResource from "vue-resource"
@@ -13,11 +13,11 @@ Vue.config.errorHandler = function (err, vm) {
 // Vue.http.options.emulateJSON = true;
 
 import "../../public/js/vue.api.js"
-import api from "../../public/js/netapi.js"
+import api from "../../public/js/api.js"
 
 import App from "./app";
 
 const app = new Vue({
     el:'#main',
-    render: h => h(App)
+    ...App
 })

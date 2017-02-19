@@ -1,4 +1,86 @@
 @charset "UTF-8";
+@import "var";
+@import "base";
+
+.headertop {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    .centerbg {
+        width: 100%;
+        z-index: 0;
+        height: 550px;
+        // background-image: url(images/headerbg6.jpg);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+        z-index: -1;
+        background-image: url("http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png");
+        filter: blur(0px);
+    }
+    .slant-left {
+        background: #fff;
+        width: 101%;
+        position: absolute;
+        bottom: -80px;
+        right: 48%;
+        height: 200px;
+        transform: rotate(6deg);
+    }
+    .slant-right {
+        background: #fff;
+        width: 101%;
+        position: absolute;
+        bottom: -80px;
+        left: 48%;
+        height: 200px;
+        transform: rotate(-6deg);
+    }
+    .focusinfo {
+        position: absolute;
+        width: 100%;
+        max-width: 800px;
+        padding: 0 10px;
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+    .focusinfo .avatar {
+        display: block;
+    }
+    .focusinfo .avatar>img {
+        width: 120px;
+        height: auto;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+    }
+    .focusinfo .avatar-p {
+        width: 60%;
+        margin: auto;
+        font-size: 14px;
+        color: #EAEADF;
+        background: rgba(0, 0, 0, 0.66);
+        padding: 20px 30px;
+        margin-top: 30px;
+        font-family: miranafont, "Hiragino Sans GB", STXihei, "Microsoft YaHei", SimSun, sans-serif;
+        letter-spacing: 1px;
+        line-height: 20px;
+        white-space: nowrap;
+    }
+}
+
+.login {
+    position: absolute;
+
+}
+
+@media (max-width: 1280px) {
+    .headertop .centerbg {
+        display: none;
+    }
+}
 
 .index-content{
 

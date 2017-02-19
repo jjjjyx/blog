@@ -59,32 +59,7 @@ let _ = require("lodash");
 // "seq_in_nb"]
 class PostDao {
     constructor() {
-        this.key = ["id",
-            "post_author",
-            "post_date",
-            "post_content",
-            "post_title",
-            "post_excerpt",
-            "post_status",
-            "comment_status",
-            "ping_status",
-            "post_password",
-            "post_name",
-            "term_id",
-            "pinged",
-            "post_modified",
-            "post_content_filtered",
-            "post_parent",
-            "guid",
-            "menu_order",
-            "post_type",
-            "post_mime_type",
-            "comment_count",
-            "seq_in_nb",
-            'delete_at',
-            "create_at",
-            "author"
-        ]
+        this.key = ["id","post_author","post_date","post_content","post_title","post_excerpt","post_status","comment_status","ping_status","post_password","post_name","term_id","pinged","post_modified","post_content_filtered","post_parent","guid","menu_order","post_type","post_mime_type","comment_count","seq_in_nb","delete_at","create_at","author"]
         this.selectSql = `SELECT
             jp.id,
             jp.post_date,
@@ -114,23 +89,34 @@ class PostDao {
             j_posts jp left join j_users ju on jp.post_author = ju.id`
 
     }
-    findPostById(id,callback){
-        let sql = `${this.selectSql} WHERE jp.id = ?`;
+
+    execCallBack(sql,data,callback,resultFormat){
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
                 return;
             }
-            connection.query(sql,[id], (err, result) => {
+            connection.query(sql,data, (err, result) => {
+                console.log(err);
                 if (err) {
                     callback(true);
                 } else {
-                    callback(false, result);
+                    if(typeof(resultFormat) == "function"){
+                        callback(false, resultFormat(result))
+                    }else{
+                        callback(false, result)
+                    }
                 }
                 connection.release();
             })
         });
     }
+
+    findPostById(id,callback){
+        let sql = `${this.selectSql} WHERE jp.id = ?`;
+        this.execCallBack(sql,[id],callback);
+    }
+
     getPostInfoById(id, callback) {
         // let sql = "";
         let sql = [{
@@ -143,40 +129,49 @@ class PostDao {
         }];
         db.execTrans(sql, callback);
     }
+    // 获取发布的文章列表，内容只显示100 字
+    getList(pg,f,callback){
+        let sql = `SELECT
+            jp.id,
+            jp.post_date,
+            jp.post_title,
+            jp.post_excerpt,
+            jp.post_status,
+            jp.comment_status,
+            jp.ping_status,
+            jp.post_name,
+            jp.post_modified,
+            jp.post_content_filtered,
+            jp.post_parent,
+            jp.menu_order,
+            jp.post_type,
+            jp.post_mime_type,
+            jp.comment_count,
+            jp.term_id,
+            jp.guid,
+            jp.seq_in_nb,
+            left(jp.post_content, 100) as post_content,
+            jp.delete_at,
+            jp.create_at,
+            ju.user_login as post_author,
+            jp.author,
+            case when jp.post_password is null then false else true end as ppassword
+        FROM
+            j_posts jp left join j_users ju on jp.post_author = ju.id
+        WHERE
+            post_status in ('publish')
+        `
+        this.execCallBack(sql,null,callback,f);
+    }
+
     getPosts(callback) {
         let sql = `${this.selectSql} WHERE post_status not in ('delete')`;
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql, (err, result) => {
-                if (err) {
-                    callback(true);
-                } else {
-                    callback(false, result);
-                }
-                connection.release();
-            })
-        });
+        this.execCallBack(sql,null,callback);
     }
 
     getTrashPost(callback) {
-        let sql = `${this.selectSql} WHERE post_status not in ('trash')`;
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql, (err, result) => {
-                if (err) {
-                    callback(true);
-                } else {
-                    callback(false, result);
-                }
-                connection.release();
-            })
-        });
+        let sql = `${this.selectSql} WHERE post_status in ('trash')`;
+        this.execCallBack(sql,null,callback);
     }
 
     save({
@@ -230,9 +225,7 @@ class PostDao {
                 if (err) {
                     callback(true);
                 } else {
-                    // console.log(result);
                     if (result.length == 1 && result[0].taxonomy == 'category') {
-                        // let post_date = new Date();
                         self.update(id, {
                             id,
                             term_id
@@ -256,21 +249,7 @@ class PostDao {
 
     postUnlock(id,callback){
         let sql = "UPDATE `j_posts` SET post_password = null WHERE `id`= :id";
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql, {id}, (err, result) => {
-                if (err) {
-                    console.log(err);
-                    callback(true);
-                } else {
-                    callback(false,result);
-                }
-                connection.release();
-            })
-        });
+        this.execCallBack(sql,{id},callback);
     }
         // 这里很机智的写法
     update(id, data, callback, ban = ['comment_count', 'id', 'create_at', 'delete_at', 'post_author','post_date']) {
@@ -286,39 +265,14 @@ class PostDao {
         }
         let sql = `UPDATE \`j_posts\` SET ${cc.join(',')} WHERE \`id\`= :id`;
         // console.log(sql,data,3333)
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql, data, (err, result) => {
-                if (err) {
-                    console.log(err);
-                    callback(true);
-                } else {
-                    callback(false, r_data);
-                }
-                connection.release();
-            })
+        this.execCallBack(sql,data,callback,(result)=>{
+            return r_data;
         });
     }
 
     del(id, callback) { // 其他的东西也要删除
         let sql = "UPDATE `myblog`.`j_posts` SET `post_status`='trash', delete_at = ?  WHERE `id`= ?;";
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql, [new Date(), id], (err, result) => {
-                if (err) {
-                    callback(true);
-                } else {
-                    callback(false, result);
-                }
-                connection.release();
-            })
-        });
+        this.execCallBack(sql,[new Date(), id],callback);
     }
 
     savePostTag(id, tagList, callback) {
@@ -333,7 +287,6 @@ class PostDao {
                 params: [id, index, tag.term_id]
             })
         })
-        console.log(sql);
         db.execTrans(sql, callback);
     }
 }

@@ -86,3 +86,12 @@ export function userGetInfo() {
         });
     });
 }
+export function loadMore(pg) {
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/`,{pg},null,'html').done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([500]);
+        });
+    });
+}

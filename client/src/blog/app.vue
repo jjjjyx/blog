@@ -1,85 +1,5 @@
 <style lang="less">
 
-.headertop {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    .centerbg {
-        width: 100%;
-        z-index: 0;
-        height: 550px;
-        // background-image: url(images/headerbg6.jpg);
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-        z-index: -1;
-        background-image: url("http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png");
-        filter: blur(0px);
-    }
-    .slant-left {
-        background: #fff;
-        width: 101%;
-        position: absolute;
-        bottom: -80px;
-        right: 48%;
-        height: 200px;
-        transform: rotate(6deg);
-    }
-    .slant-right {
-        background: #fff;
-        width: 101%;
-        position: absolute;
-        bottom: -80px;
-        left: 48%;
-        height: 200px;
-        transform: rotate(-6deg);
-    }
-    .focusinfo {
-        position: absolute;
-        width: 100%;
-        max-width: 800px;
-        padding: 0 10px;
-        top: 35%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-    }
-    .focusinfo .avatar {
-        display: block;
-    }
-    .focusinfo .avatar>img {
-        width: 120px;
-        height: auto;
-        border-radius: 50%;
-        border: 5px solid rgba(255, 255, 255, 0.3);
-    }
-    .focusinfo .avatar-p {
-        width: 60%;
-        margin: auto;
-        font-size: 14px;
-        color: #EAEADF;
-        background: rgba(0, 0, 0, 0.66);
-        padding: 20px 30px;
-        margin-top: 30px;
-        font-family: miranafont, "Hiragino Sans GB", STXihei, "Microsoft YaHei", SimSun, sans-serif;
-        letter-spacing: 1px;
-        line-height: 20px;
-        white-space: nowrap;
-    }
-}
-
-.login {
-    position: absolute;
-
-}
-
-@media (max-width: 1280px) {
-    .headertop .centerbg {
-        display: none;
-    }
-}
-
 </style>
 
 <template>
@@ -111,42 +31,7 @@
                     <!-- <span class="gapline">|</span> -->
                 </div>
                 <div class="recommend-post">
-                    <ul class="j-article-list">
-                        <!-- <li>党说：先搞后台管理</li>
-                        <li>1</li>
-                        <li>1</li>
-                         -->
-                         <li v-for="item in list">
-                            <div class="content">
-                                <h4 class="title"><a>{{item.post_title}}</a></h4>
-                                <div class="options am-fr">
-                                    <a class="read" >
-                                        <i class="am-icon-eye"></i>
-                                        <span class="num">{{item.eye}}</span>
-                                    </a>
-                                    <a class="comment" >
-                                        <i class="am-icon-comment-o"></i>
-                                        <span class="num">{{item.comment_count}}</span>
-                                    </a>
-                                    <a class="like" >
-                                        <i class="am-icon-heart-o"></i>
-                                        <span class="num">{{item.heart_count}}</span>
-                                    </a>
-                                </div>
-                                <div class="meta am-margin-vertical-xs">
-                                    <a :title="item.post_author" class="name">{{item.post_author}}</a> 2017-02-13 11:15:26
-                                </div>
-                                <p class="">
-                                     {{item.abstract}}
-                                </p>
-                                <div class="j-category-tag">
-                                    <a class="category">java</a>
-                                    <i class="am-icon-tags"></i>
-                                    <a>c++</a>
-                                    <a>.net</a>
-                                </div>
-                            </div>
-                         </li>
+                    <ul class="j-article-list" ref="articleList">
                          <li>
                             <div class="content">
                                 <h4 class="title"><a>前端后端分离，怎么解决SEO优化的问题呢？</a></h4>
@@ -178,6 +63,7 @@
                                 </div>
                             </div>
                          </li>
+
                     </ul>
                     <div class="j-article-placeholder index">
                         <div class="img"></div>
@@ -201,7 +87,7 @@
                         </div>
                     </div>
                     <p class="load-more">
-                        <button class="am-btn am-round gray btn-bordered am-btn-sm">加载更多</button>
+                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore">加载更多</button>
                     </p>
                 </div>
             </div>
@@ -292,9 +178,6 @@ export default {
         BlobFooter
     },
     methods: {
-        // ...mapActions([
-        //     'userSignout'
-        // ])
         mouseover(){
             this.enabled = true;
             this.keyword = '';
@@ -302,11 +185,15 @@ export default {
             this.$nextTick(()=>{
                 this.$refs.login.focus();
             })
-
         },
         mouseout(){
             keyboardJS.setContext('default');
             this.enabled = false;
+        },
+        async loadMore(){
+            let data = await api.loadMore(0);
+            $(this.$refs.articleList).append(data);
+            console.log(data);
         }
     },
     mounted: function() {
