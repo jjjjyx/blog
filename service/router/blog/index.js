@@ -9,9 +9,15 @@ let debug = require('debug')('app:routes:blog/index' + process.pid),
 module.exports = function () {
     let router = new Router();
     router.get('/', function(req, res) {
-        console.log(11111);
+        console.log("hello world");
         res.render('index');
     });
+
+    router.get('/test', function(req, res) {
+        console.log("hello world");
+        res.render('index');
+    });
+
 
     router.unless = require("express-unless");
     return router;

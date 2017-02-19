@@ -249,8 +249,13 @@ class PostDao {
         this.update(id,{id,guid,post_date,post_status},callback,['comment_count', 'id', 'create_at', 'delete_at', 'post_author']);
     }
 
+    postUnPublish(id,callback){
+        let post_status = "auto-draft";
+        this.update(id,{id,post_status},callback);
+    }
+
     postUnlock(id,callback){
-        let sql = "UPDATE `j_posts` SET post_password=null WHERE `id`= :id";
+        let sql = "UPDATE `j_posts` SET post_password = null WHERE `id`= :id";
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);

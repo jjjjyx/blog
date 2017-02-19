@@ -258,6 +258,32 @@ let publish = function(req, res, next){
         }
     });
 }
+let postUnPublish = function(req, res, next){
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            let map = {
+                code: 1,
+                msg: result.array()[0].msg
+            };
+            return res.status(400).json(map);
+        }else{
+            postDao.postUnPublish(req.body.id, (err, data)=>{
+                let map = {};
+                if (err) {
+                    map.code = -1;
+                    map.msg = data || "发生未知错误，刷新后重试";
+                } else {
+                    map.code = 0;
+                    map.data = data;
+                    map.msg = "取消发布成功";
+                }
+                res.map = map;
+                next();
+            })
+        }
+    });
+}
 module.exports = function () {
     let router = new Router();
     router.route("/posts").post(posts, function (req, res, next) {
@@ -285,6 +311,9 @@ module.exports = function () {
         return res.status(200).json(res.map);
     });
     router.route("/publish").post(publish, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/postUnPublish").post(postUnPublish, function (req, res, next) {
         return res.status(200).json(res.map);
     });
     router.route("/postUnlock").post(postUnlock, function (req, res, next) {

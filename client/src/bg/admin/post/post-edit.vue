@@ -75,7 +75,7 @@
                               <option value="open">打开</option>
                               <option value="closed">关闭</option>
                             </select>
-                            <a v-if="currentPost.post_status='publish'"><i class="am-icon-eye"></i> 查看评论 </a>
+                            <a v-if="currentPost.post_status == 'publish'"><i class="am-icon-eye"></i> 查看评论 </a>
                         </dd>
 
                         <dt>文章状态</dt>
@@ -89,9 +89,8 @@
 
                     </dl>
                     <div class="am-text-right">
-                        <button class="am-btn am-btn-secondary am-round am-btn-xs" ><i class="am-icon-save"></i> 保存 </button>
+                        <button class="am-btn am-btn-secondary am-round am-btn-xs" @click="saveCurrPost"><i class="am-icon-save"></i> 保存 </button>
                         <button v-if="currentPost.post_status=='auto-draft'" class="am-btn am-btn-success am-round am-btn-xs" @click="publish"><i class="am-icon-send"></i> 发布</button>
-                        <!-- TODO 撤回发布 -->
                         <button v-if="currentPost.post_status=='publish'" class="am-btn am-btn-success am-round am-btn-xs" @click="unPublish"><i class="am-icon-retweet"></i> 撤回草稿箱</button>
 
                     </div>
@@ -323,8 +322,12 @@ export default {
                 layer.msg(data.msg);
             }
         },
-        unPublish (){
-
+        async unPublish (){
+            let data = await api.postUnPublish(this.currentPost.id);
+            if(data.code==0){
+                this.merge(data.data);
+                layer.msg(data.msg);
+            }
         }
 
     },
