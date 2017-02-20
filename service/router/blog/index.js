@@ -5,6 +5,9 @@ let debug = require('debug')('app:routes:blog/index' + process.pid),
     // utils = require('../utils');
     postDao = require("../../dao/post.dao").postDao;
     // validator = require('node-validator');
+
+
+    // request.getHeader("x-requested-with");
 const loadPost = function(req, res, next){
     req.checkBody('pg','页码应为整数').isInt();
     req.getValidationResult().then(function(result) {

@@ -244,7 +244,7 @@ class PostDao {
 
     postUnPublish(id,callback){
         let post_status = "auto-draft";
-        this.update(id,{id,post_status},callback);
+        this.update(id,{id,post_status},callback,['comment_count', 'id', 'create_at', 'delete_at', 'post_author']);
     }
 
     postUnlock(id,callback){
@@ -252,7 +252,7 @@ class PostDao {
         this.execCallBack(sql,{id},callback);
     }
         // 这里很机智的写法
-    update(id, data, callback, ban = ['comment_count', 'id', 'create_at', 'delete_at', 'post_author','post_date']) {
+    update(id, data, callback, ban = ['comment_count', 'id', 'create_at', 'delete_at', 'post_author','post_date', 'post_status', 'guid']) {
         let keys = _.intersection(this.key, Object.keys(data));
         data.post_modified = new Date();
         let cc = [];

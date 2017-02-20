@@ -150,7 +150,15 @@ let content = function(req, res, next){
 }
 let save = function(req, res, next){
     req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    req.checkBody('post_title','请输入一个有效的标题，有效的标题长度在1~255').notEmpty().len(1,255);
     // console.log(req.body);
+    req.sanitizeBody('post_title').trim().escape();
+    // 很奇怪，提交为空的 竟然会出错
+    if(req.body.author)
+        req.sanitizeBody('author').trim().escape();
+    if(req.body.post_name)
+        req.sanitizeBody('post_name').trim().escape();
+
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
             let map = {
