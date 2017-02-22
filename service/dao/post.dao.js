@@ -131,7 +131,8 @@ class PostDao {
     }
     // 获取发布的文章列表，内容只显示100 字
     getList(pg,f,callback){
-        let sql = `SELECT
+        let sql = `
+        SELECT
             jp.id,
             jp.post_date,
             jp.post_title,
@@ -147,7 +148,7 @@ class PostDao {
             jp.post_type,
             jp.post_mime_type,
             jp.comment_count,
-            jp.term_id,
+            jt.name as term_id,
             jp.guid,
             jp.seq_in_nb,
             left(jp.post_content, 100) as post_content,
@@ -157,11 +158,20 @@ class PostDao {
             jp.author,
             case when jp.post_password is null then false else true end as ppassword
         FROM
-            j_posts jp left join j_users ju on jp.post_author = ju.id
+            j_posts jp left join j_users ju on jp.post_author = ju.id left join j_terms jt on jp.term_id = jt.term_id
         WHERE
             post_status in ('publish')
         `
-        this.execCallBack(sql,null,callback,f);
+        // let sqlList = [{
+        //     sql: sql,
+        //     params: null,
+        //     resultFormat: f
+        // }, {
+        //     sql: "select * from myblog.j_terms where term_id in (SELECT term_id FROM myblog.j_term_relationships where object_id = ?)",
+        //     params: [id],
+        // }];
+        db.execTrans(sql, callback);
+        // this.execCallBack(sql,null,callback,f);
     }
 
     getPosts(callback) {

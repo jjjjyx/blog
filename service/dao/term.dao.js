@@ -35,7 +35,7 @@ class TermDao {
                 callback(true);
                 return;
             }
-            connection.query(sql,{taxonomy}, (err, result,fields) => {
+            connection.query(sql,{taxonomy}, (err, result, fields) => {
                 connection.release();
                 if (err || !result.length) {
                     callback(true);

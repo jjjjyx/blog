@@ -1,11 +1,16 @@
 let debug = require('debug')('app:routes:blog/index' + process.pid),
     Router = require("express").Router,
-    // bcrypt = require("bcryptjs"),
-    // path = require('path'),
-    // utils = require('../utils');
+    xss = require('xss'),
+    marked = require("marked"),
+    renderer = new marked.Renderer(),
     postDao = require("../../dao/post.dao").postDao;
     // validator = require('node-validator');
-
+// 为了将markdown 的内容全部提取出来 不包含符号
+for(let i in renderer){
+    renderer[i] = function(text){
+        return text
+    }
+}
 
     // request.getHeader("x-requested-with");
 const loadPost = function(req, res, next){
@@ -20,36 +25,40 @@ const loadPost = function(req, res, next){
         }else{
             postDao.getList(req.body.pg,(data)=>{
                 let s = "";
+                let fn = (l)=>{
+                    return ''
+                }
                 data.forEach((item)=>{
+                    // console.log(marked(item.post_content,{renderer,sanitize:true}))
+                    // console.log($("*",marked(item.post_content)).text())
                     s+=`
-                        <li>
+                        <li data-node-id='${item.id}'>
                            <div class="content">
-                               <h4 class="title"><a>${item.post_title}</a></h4>
+                               <h4 class="title"><a href="p/${item.guid}" target="_blank">${xss(item.post_title)}</a></h4>
                                <div class="options am-fr">
-                                   <a class="read" >
+                                   <a class="read" href="p/${item.guid}" target="_blank">
                                        <i class="am-icon-eye"></i>
-                                       <span class="num">${item.eye}</span>
+                                       <span class="num">${item.eye_count||0}</span>
                                    </a>
-                                   <a class="comment" >
+                                   <a class="comment" href="p/${item.guid}#comment" target="_blank">
                                        <i class="am-icon-comment-o"></i>
                                        <span class="num">${item.comment_count}</span>
                                    </a>
                                    <a class="like" >
                                        <i class="am-icon-heart-o"></i>
-                                       <span class="num">${item.heart_count}</span>
+                                       <span class="num">${item.heart_count||0}</span>
                                    </a>
                                </div>
                                <div class="meta am-margin-vertical-xs">
-                                   <a title="${item.post_author}" class="name">${item.post_author}</a> ${item.post_date}
+                                   <a title="${xss(item.post_author)}" class="name" >${xss(item.post_author)}</a> ${new Date(item.post_date).format("yyyy-MM-dd hh:mm:ss")}
                                </div>
                                <p class="">
-                                    ${item.post_content}
+                                    ${xss(marked(item.post_content,{renderer}))}...
                                </p>
                                <div class="j-category-tag">
-                                   <a class="category">java</a>
+                                   <a class="category">${item.term_id}</a>
                                    <i class="am-icon-tags"></i>
-                                   <a>c++</a>
-                                   <a>.net</a>
+                                   ${fn(item.postTag)}
                                </div>
                            </div>
                         </li>
@@ -74,7 +83,6 @@ module.exports = function () {
         console.log("hello world");
         res.render('index');
     }).post(loadPost, function (req, res, next) {
-        console.log(res.map)
         return res.status(200).send(res.map);
     });
 
