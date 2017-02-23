@@ -104,7 +104,7 @@ module.exports = {
     },
     plugins: [
         new CleanWebpackPlugin(['public'],{
-            exclude: ["preloader.css","favicon.ico"]
+            exclude: ["preloader.css","favicon.ico",'editormd']
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',

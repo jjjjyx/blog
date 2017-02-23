@@ -99,20 +99,22 @@
                 <button type="button" class="am-btn am-btn-link" title="附件"><i class="am-icon-paperclip fa-flip-horizontal"></i> <span>0</span></button>
             </div>
         </div>
-        <div class="am-btn-toolbar post-toolbar">
+        <!-- <div class="am-btn-toolbar post-toolbar">
             <div class="am-btn-group am-btn-group-sm" v-for="item in toolbarList">
                 <button type="button" class="am-btn am-btn-default am-radius" :class="{'am-active':i.active}" :title="i.title" v-for="i in item" @click="toolbarBtnClick(i)"><i :class="i.className"></i></button>
             </div>
-        </div>
-        <div class="post-content" :style="postContent">
-            <textarea id="post-content" v-model="currentPost.post_content"></textarea>
+        </div> -->
+        <div class="post-content" :style="postContent" >
+            <div id="post-editormd"></div>
+            <!-- <textarea id="post-content" v-model="currentPost.post_content"></textarea> -->
         </div>
     </form>
 </template>
 
 <script>
-import Simplemde from "simplemde/dist/simplemde.min.js";
-import "simplemde/dist/simplemde.min.css";
+// import Simplemde from "simplemde/dist/simplemde.min.js";
+// import "simplemde/dist/simplemde.min.css";
+
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 import * as api from "../../../../public/js/netapi.js";
 // import {dateFormat} from "../../../../public/js/netapi.js";
@@ -161,10 +163,10 @@ export default {
     computed: {
         postContent(){
             let height = this.contentHeight;
-            height -= 82;
-            if(this.isAddTagShow){
-                height -= 25;
-            }
+            height -= 50;
+            // if(this.isAddTagShow){
+            //     height -= 25;
+            // }
             return {
                 height:`${height}px`
             }
@@ -248,11 +250,11 @@ export default {
             // })
         },
         toolbarBtnClick(i){
-            if(typeof this.simple[i.action] === "function"){
-                this.simple[i.action](this.simple);
-            }else{
-                window.open(i.action, "_blank");
-            }
+            // if(typeof this.simple[i.action] === "function"){
+            //     this.simple[i.action](this.simple);
+            // }else{
+            //     window.open(i.action, "_blank");
+            // }
         },
         async addTag(){
             // console.log(this.text,api);
@@ -304,7 +306,7 @@ export default {
             }
         },
         async saveCurrPost(){
-            let value = this.simple.value();
+            // let value = this.simple.value();
             this.setCurrendPostConetent(value);
             this.saveStatus = "保存中..";
             let data = await api.savePost(this.currentPost);
@@ -334,7 +336,7 @@ export default {
     watch:{
         // '$route':'fetchData',
         'isUpdateContent':function(v){
-            this.simple.value(v?v:'');
+            // this.simple.value(v?v:'');
         },
         'currentPost.postTag'(v,ov){
             // 新旧不为空，且旧值不等于上次的文章
@@ -344,33 +346,38 @@ export default {
         }
     },
     mounted:async function() {
-        this.simple = new Simplemde({
-    		element: document.getElementById("post-content"),
-            status: true,
-            spellChecker:false,
-            autoDownloadFontAwesome:false,
-            toolbar: false
-    	});
-        this.simple.codemirror.on("cursorActivity",()=>{
-    		var stat = this.simple.getState(this.simple);
-    		for(var key in this.toolbar) {
-				if(stat[key]) {
-					this.toolbar[key].active = true;
-				} else if(key != "fullscreen" && key != "side-by-side") {
-					this.toolbar[key].active = false;
-				}
-    		}
-    	});
-        let _time = null;
-        this.simple.codemirror.on("changes",(e,a)=>{
-            if(_time)
-                clearTimeout(_time);
-            let value = this.simple.value();
-            if(value != this.currentPost.post_content&&this.currentPost.post_content){
-                this.saveStatus = "已修改";
-                _time = setTimeout(this.saveCurrPost,1200);
-            }
+        // this.simple = new Simplemde({
+    	// 	element: document.getElementById("post-content"),
+        //     status: true,
+        //     spellChecker:false,
+        //     autoDownloadFontAwesome:false,
+        //     toolbar: false
+    	// });
+        // this.simple.codemirror.on("cursorActivity",()=>{
+    	// 	var stat = this.simple.getState(this.simple);
+    	// 	for(var key in this.toolbar) {
+		// 		if(stat[key]) {
+		// 			this.toolbar[key].active = true;
+		// 		} else if(key != "fullscreen" && key != "side-by-side") {
+		// 			this.toolbar[key].active = false;
+		// 		}
+    	// 	}
+    	// });
+        // let _time = null;
+        // this.simple.codemirror.on("changes",(e,a)=>{
+        //     if(_time)
+        //         clearTimeout(_time);
+        //     let value = this.simple.value();
+        //     if(value != this.currentPost.post_content&&this.currentPost.post_content){
+        //         this.saveStatus = "已修改";
+        //         _time = setTimeout(this.saveCurrPost,1200);
+        //     }
+        // });
+        editormd("post-editormd", {
+            path : '../editormd/lib/',
+            // autoLoadModules:false,
         });
+
         let self = this;
         key.bind('tag',{
             keys:['ctrl+s'],

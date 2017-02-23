@@ -179,7 +179,7 @@ let save = function(req, res, next){
 let saveTag = function(req, res, next){
     req.checkBody('id','请提交正确的id').notEmpty().isInt();
     req.checkBody('tagList','请提交正确的分类').isArray();
-    console.log(req.body.tagList);
+
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
             let map = {
