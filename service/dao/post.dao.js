@@ -82,7 +82,7 @@ class PostDao {
             '' AS post_content,
             jp.delete_at,
             jp.create_at,
-            ju.user_login as post_author,
+            ju.user_nickname as post_author,
             jp.author,
             case when jp.post_password is null then false else true end as ppassword
         FROM
@@ -97,8 +97,9 @@ class PostDao {
                 return;
             }
             connection.query(sql,data, (err, result) => {
-                console.log(err);
+
                 if (err) {
+                    console.log(err);
                     callback(true);
                 } else {
                     if(typeof(resultFormat) == "function"){
@@ -130,48 +131,41 @@ class PostDao {
         db.execTrans(sql, callback);
     }
     // 获取发布的文章列表，内容只显示100 字
-    getList(pg,f,callback){
+    getList({hasloadId},f,callback){
         let sql = `
         SELECT
-            jp.id,
-            jp.post_date,
-            jp.post_title,
-            jp.post_excerpt,
-            jp.post_status,
-            jp.comment_status,
-            jp.ping_status,
-            jp.post_name,
-            jp.post_modified,
-            jp.post_content_filtered,
-            jp.post_parent,
-            jp.menu_order,
-            jp.post_type,
-            jp.post_mime_type,
-            jp.comment_count,
-            jt.name as term_id,
-            jp.guid,
-            jp.seq_in_nb,
-            left(jp.post_content, 100) as post_content,
-            jp.delete_at,
-            jp.create_at,
-            ju.user_login as post_author,
-            jp.author,
-            case when jp.post_password is null then false else true end as ppassword
+          jp.id,
+          jp.post_date,
+          jp.post_title,
+          jp.post_excerpt,
+          jp.post_status,
+          jp.comment_status,
+          jp.ping_status,
+          jp.post_name,
+          jp.post_modified,
+          jp.post_content_filtered,
+          jp.menu_order,
+          jp.post_type,
+          jp.comment_count,
+          jp.eye_count,
+          jt.name AS term_id,
+          jp.guid,
+          LEFT(jp.post_content, 100) AS post_content,
+          ju.user_nickname AS post_author,
+          jp.author,
+          CASE WHEN jp.post_password IS NULL  THEN FALSE  ELSE TRUE  END AS ppassword,
+          GROUP_CONCAT(jtr.name) as postTag
         FROM
-            j_posts jp left join j_users ju on jp.post_author = ju.id left join j_terms jt on jp.term_id = jt.term_id
+          j_posts jp
+          LEFT JOIN j_users ju  ON jp.post_author = ju.id
+          LEFT JOIN j_terms jt  ON jp.term_id = jt.term_id
+          LEFT JOIN  (SELECT  j2tr.object_id, j2t.name  FROM j_term_relationships j2tr  LEFT JOIN j_terms j2t  ON j2t.term_id = j2tr.term_id) jtr  ON jtr.object_id = jp.id
         WHERE
-            post_status in ('publish')
+            post_status in ('publish') ${hasloadId ? 'and jp.id NOT IN (?) ':''}
+        GROUP BY jp.id
+        LIMIT 0, 10
         `
-        // let sqlList = [{
-        //     sql: sql,
-        //     params: null,
-        //     resultFormat: f
-        // }, {
-        //     sql: "select * from myblog.j_terms where term_id in (SELECT term_id FROM myblog.j_term_relationships where object_id = ?)",
-        //     params: [id],
-        // }];
-        db.execTrans(sql, callback);
-        // this.execCallBack(sql,null,callback,f);
+        this.execCallBack(sql,[hasloadId],callback,f);
     }
 
     getPosts(callback) {

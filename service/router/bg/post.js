@@ -23,7 +23,7 @@ let newpost = function(req, res, next){
             let term_id = req.body.term_id;
             let post_title = req.body.post_title;
             let seq_in_nb = req.body.seq_in_nb * 1;
-            postDao.save({post_author:req.user.id,post_title,term_id,seq_in_nb,author:req.user.user_login},(err, data)=>{
+            postDao.save({post_author:req.user.id,post_title,term_id,seq_in_nb,author:req.user.user_nickname},(err, data)=>{
                 let map = {};
                 if (err) {
                     map.code = -1;

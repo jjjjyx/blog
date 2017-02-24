@@ -33,19 +33,21 @@ let errorHandler = function({status,responseJSON}){
             });
             break;
         case 500:
-        case 0:
-        default:
             data.msg = "发生未知错误,请刷新后稍后重试！";
             layer.alert(data.msg, {
                 closeBtn: 0
             },()=>{
                 location.reload();
             });
+            break;
+        // case 0:
+        default:
+
     }
     return data
 }
 $.ajaxSetup({
-    dataType: "json",
+    // dataType: "json",
     timeout: REQUEST_TIMEOUT,
     xhrFields: {
         withCredentials: true

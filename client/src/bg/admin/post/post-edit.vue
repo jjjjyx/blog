@@ -1,5 +1,5 @@
 <template>
-    <form class="post-form markdown" >
+    <form class="post-form markdown" @submit.prevent>
         <div v-if="!currentPost.id" class="dimmer am-vertical-align">
             <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png"/>
         </div>
@@ -105,7 +105,9 @@
             </div>
         </div> -->
         <div class="post-content" :style="postContent" >
-            <div id="post-editormd"></div>
+            <div id="post-editormd">
+                <textarea style="display:none;" placeholder="Enjoy Markdown! coding now..." >{{currentPost.post_content}}</textarea>
+            </div>
             <!-- <textarea id="post-content" v-model="currentPost.post_content"></textarea> -->
         </div>
     </form>
@@ -130,33 +132,7 @@ export default {
             selectTag:[],
             isAddTagShow:false,
             text:'',
-            toolbar:{
-                "bold": {name: "bold",action: "toggleBold",className: "am-icon-bold",title: "Bold",default: true,active:false,},
-                "italic": {name: "italic",action: "toggleItalic",className: "am-icon-italic",title: "Italic",default: true,active:false,},
-                "strikethrough": {name: "strikethrough",action: "toggleStrikethrough",className: "am-icon-strikethrough",title: "Strikethrough",active:false,},
-                "heading": {name: "heading",action: "toggleHeadingSmaller",className: "am-icon-header",title: "Heading",default: true,active:false,},
-                "separator-1": {name: "separator-1"},
-                "code": {name: "code",action: "toggleCodeBlock",className: "am-icon-code",title: "Code",active:false,},
-                "quote": {name: "quote",action: "toggleBlockquote",className: "am-icon-quote-left",title: "Quote",default: true,active:false,},
-                "unordered-list": {name: "unordered-list",action: "toggleUnorderedList",className: "am-icon-list-ul",title: "Generic List",default: true,active:false,},
-                "ordered-list": {name: "ordered-list",action: "toggleOrderedList",className: "am-icon-list-ol",title: "Numbered List",default: true,active:false,},
-                "clean-block": {name: "clean-block",action: "cleanBlock",className: "am-icon-eraser fa-clean-block",title: "Clean block",active:false,},
-                "separator-2": {name: "separator-2"},
-                "link": {name: "link",action: "drawLink",className: "am-icon-link",title: "Create Link",default: true,active:false,},
-                "image": {name: "image",action: "drawImage",className: "am-icon-picture-o",title: "Insert Image",default: true,active:false,},
-                "table": {name: "table",action: "drawTable",className: "am-icon-table",title: "Insert Table",active:false,},
-                "horizontal-rule": {name: "horizontal-rule",action: "drawHorizontalRule",className: "am-icon-minus",title: "Insert Horizontal Line",active:false,},
-                "separator-3": {name: "separator-3"},
-                "preview": {name: "preview",action: "togglePreview",className: "am-icon-eye no-disable",title: "Toggle Preview",default: true,active:false,},
-                "side-by-side": {name: "side-by-side",action: "toggleSideBySide",className: "am-icon-columns no-disable no-mobile",title: "Toggle Side by Side",default: true,active:false,},
-                "fullscreen": {name: "fullscreen",action: "toggleFullScreen",className: "am-icon-arrows-alt no-disable no-mobile",title: "Toggle Fullscreen",default: true,active:false,},
-                "separator-4": {name: "separator-4"},
-                "guide": {name: "guide",action: "https://simplemde.com/markdown-guide",className: "am-icon-question-circle",title: "Markdown Guide",default: true,active:false,},
-                // "separator-5": {name: "separator-5"},
-                // "undo": {name: "undo",action: "undo",className: "am-icon-undo no-disable",title: "Undo",},
-                // "redo": {name: "redo",action: "redo",className: "am-icon-repeat no-disable",title: "Redo"}
-                },
-            simple:null,
+            editormd,
         }
     },
     components: {},
@@ -164,9 +140,9 @@ export default {
         postContent(){
             let height = this.contentHeight;
             height -= 50;
-            // if(this.isAddTagShow){
-            //     height -= 25;
-            // }
+            if(this.isAddTagShow){
+                height -= 25;
+            }
             return {
                 height:`${height}px`
             }
@@ -186,11 +162,7 @@ export default {
             return arr;
         },
         ...mapGetters([
-            'contentHeight',
-            'tagList',
-            'currentPost',
-            'isUpdateContent',
-            'lastPostId'
+            'contentHeight', 'tagList', 'currentPost', 'isUpdateContent', 'lastPostId'
         ]),
     },
     methods: {
@@ -198,9 +170,7 @@ export default {
             // 'SET_CURRENDPOST_CONETENT'
         ]),
         ...mapActions([
-            'setCurrendPostConetent',
-            'deleteTerm',
-            'merge'
+            'setCurrendPostConetent', 'deleteTerm', 'merge'
         ]),
         // postUrl (guid){
         //
@@ -245,16 +215,7 @@ export default {
         showAddTag(){
             this.isAddTagShow = !this.isAddTagShow;
             $(this.$refs.posttags).slideToggle(200);
-            // this.$nextTick(()=>{
             this.$refs.inputtag.focus();
-            // })
-        },
-        toolbarBtnClick(i){
-            // if(typeof this.simple[i.action] === "function"){
-            //     this.simple[i.action](this.simple);
-            // }else{
-            //     window.open(i.action, "_blank");
-            // }
         },
         async addTag(){
             // console.log(this.text,api);
@@ -306,7 +267,7 @@ export default {
             }
         },
         async saveCurrPost(){
-            // let value = this.simple.value();
+            let value = this.editormd.getMarkdown();
             this.setCurrendPostConetent(value);
             this.saveStatus = "保存中..";
             let data = await api.savePost(this.currentPost);
@@ -336,7 +297,8 @@ export default {
     watch:{
         // '$route':'fetchData',
         'isUpdateContent':function(v){
-            // this.simple.value(v?v:'');
+            if(this.editormd.cm)
+                this.editormd.setMarkdown(v?v:'');
         },
         'currentPost.postTag'(v,ov){
             // 新旧不为空，且旧值不等于上次的文章
@@ -346,38 +308,47 @@ export default {
         }
     },
     mounted:async function() {
-        // this.simple = new Simplemde({
-    	// 	element: document.getElementById("post-content"),
-        //     status: true,
-        //     spellChecker:false,
-        //     autoDownloadFontAwesome:false,
-        //     toolbar: false
-    	// });
-        // this.simple.codemirror.on("cursorActivity",()=>{
-    	// 	var stat = this.simple.getState(this.simple);
-    	// 	for(var key in this.toolbar) {
-		// 		if(stat[key]) {
-		// 			this.toolbar[key].active = true;
-		// 		} else if(key != "fullscreen" && key != "side-by-side") {
-		// 			this.toolbar[key].active = false;
-		// 		}
-    	// 	}
-    	// });
-        // let _time = null;
-        // this.simple.codemirror.on("changes",(e,a)=>{
-        //     if(_time)
-        //         clearTimeout(_time);
-        //     let value = this.simple.value();
-        //     if(value != this.currentPost.post_content&&this.currentPost.post_content){
-        //         this.saveStatus = "已修改";
-        //         _time = setTimeout(this.saveCurrPost,1200);
-        //     }
-        // });
-        editormd("post-editormd", {
-            path : '../editormd/lib/',
-            // autoLoadModules:false,
-        });
 
+        // console.log();
+        editormd.emoji.path = "http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/";
+        this.editormd = editormd("post-editormd", {
+            path : '../editormd/lib/',
+            emoji:true,
+            toolbarIcons:()=> [
+                "undo", "redo", "|",
+                "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
+                "h1", "h2", "h3", "h4", "h5", "h6", "|",
+                "list-ul", "list-ol", "hr", "|",
+                "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "|",
+                "goto-line", "watch", "preview", "fullscreen", "clear", "search", "|",
+                "help", "publish"
+            ],
+            toolbarIconsClass:{
+                publish:'am-icon-send'
+            },
+            // toolbarIconTexts : {
+            //    publish : "直接发布"  // 如果没有图标，则可以这样直接插入内容，可以是字符串或HTML标签
+            // },
+            // toolbarCustomIcons :{
+            //     publish:(()=> `<a unselectable="no" ><i class="am-icon-send fa" name="publish" style="display:inline-block"></i> 直接发布</a>`)()
+            // },
+            // toolbarHandlers:{
+            //     publish:(cm, icon, cursor, selection)=>{
+            //         console.log(icon)
+            //     }
+            // },
+
+        });
+        let _time = null;
+        this.editormd.on("change",()=>{
+            if(_time)
+                clearTimeout(_time);
+            let value = this.editormd.getMarkdown();
+            if(this.currentPost.post_content && value != this.currentPost.post_content){
+                this.saveStatus = "已修改";
+                _time = setTimeout(this.saveCurrPost,1200);
+            }
+        })
         let self = this;
         key.bind('tag',{
             keys:['ctrl+s'],
@@ -396,6 +367,7 @@ export default {
         height: 100%;
         overflow: hidden;
         background-color: #fff;
+        z-index: 100;
         .dimmer {
             position: absolute;
             top: 0!important;

@@ -32,40 +32,8 @@
                 </div>
                 <div class="recommend-post">
                     <ul class="j-article-list" ref="articleList">
-                         <li>
-                            <div class="content">
-                                <h4 class="title"><a>前端后端分离，怎么解决SEO优化的问题呢？</a></h4>
-                                <div class="options am-fr">
-                                    <a class="read" >
-                                        <i class="am-icon-eye"></i>
-                                        <span class="num">392</span>
-                                    </a>
-                                    <a class="comment" >
-                                        <i class="am-icon-comment-o"></i>
-                                        <span class="num">3</span>
-                                    </a>
-                                    <a class="like" >
-                                        <i class="am-icon-heart-o"></i>
-                                        <span class="num">3</span>
-                                    </a>
-                                </div>
-                                <div class="meta am-margin-vertical-xs">
-                                    <a title="酱酱酱酱油鲜" class="name">酱酱酱酱油鲜</a> 2017-02-13 11:15:26
-                                </div>
-                                <p class="">
-                                     所谓的前后端分离，到底是分离什么呢？其实就是页面的渲染工作，之前是后端渲染好页面，交给前端来显示，分离后前端需要自己拼装html代码，然后再显示。前端来管理页面的渲染有很多好处，比如减少网络请求量，制作单页面应用等。事情听起来简单，但这么一分离又会牵扯到很多问..
-                                </p>
-                                <div class="j-category-tag">
-                                    <a class="category">java</a>
-                                    <i class="am-icon-tags"></i>
-                                    <a>c++</a>
-                                    <a>.net</a>
-                                </div>
-                            </div>
-                         </li>
-
                     </ul>
-                    <div class="j-article-placeholder index">
+                    <div class="j-article-placeholder index" v-if="loading">
                         <div class="img"></div>
                         <div class="content">
                             <div class="author">
@@ -87,7 +55,8 @@
                         </div>
                     </div>
                     <p class="load-more">
-                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore">加载更多</button>
+                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore" v-if="noPost">加载更多</button>
+                        <span v-else>没有更多了</span>
                     </p>
                 </div>
             </div>
@@ -160,13 +129,14 @@ import keyboardJS from "keyboardjs"
 import * as api from "../../public/js/api.js";
 // import Head from "../components/head";
 
-
 export default {
     data: () => {
         return {
             list:[],
             enabled:false,
             keyword:'',
+            loading:false,
+            noPost :true,
         }
     },
     // store,
@@ -191,12 +161,23 @@ export default {
             this.enabled = false;
         },
         async loadMore(){
-            let data = await api.loadMore(0);
-            $(this.$refs.articleList).append(data);
-            console.log(data);
+            this.loading = true;
+            let hasloadId = $("li[data-node-id]",this.$refs.articleList).map((e,el)=>$(el).data('node-id')).get();
+            let pg = 0;
+
+            let data = await api.loadMore({hasloadId,pg});
+            if(data!='没有更多了'){
+                $(this.$refs.articleList).append(data);
+            }else{
+                this.noPost = false;
+            }
+            this.loading = false;
         }
     },
     mounted: function() {
+        let dl = $("#datali");
+        this.$refs.articleList.innerHTML = dl.html();
+        dl.remove();
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
         let self = this;
         keyboardJS.withContext('login', function() {

@@ -30,7 +30,6 @@
 import * as api from "../../../../public/js/netapi.js";
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 import marked from 'marked';
-console.log(marked("# asd"));
 export default {
     data: function() {
         return {
