@@ -80,6 +80,7 @@ const loadPost = function(req, res, next){
 module.exports = function () {
     let router = new Router();
     router.route("/").get(function(req, res) {
+        console.log("===")
         req.checkQuery('hasloadId').isArray();
         req.getValidationResult().then(function(result) {
             if(!result.isEmpty()){
@@ -102,7 +103,9 @@ module.exports = function () {
     });
 
     router.route("/p/:guid").get(function(req, res){
-
+        console.log(123);
+        
+        res.render('p');
     })
 
     router.unless = require("express-unless");

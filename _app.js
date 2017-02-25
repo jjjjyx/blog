@@ -7,6 +7,10 @@ let app = express();
 let cookieParser = require('cookie-parser'),
     expressValidator = require('express-validator');
 
+
+    const fs = require('fs');
+    const vueServerRenderer = require('vue-server-renderer');
+
 process.env.NODE_ENV = process.env.NODE_ENV||'production';
 var isDev = process.env.NODE_ENV !== 'production';
 debug("Starting application");
@@ -53,57 +57,41 @@ app.use(function (req, res, next) {
     next();
 });
 
-// We are going to protect /api routes with JWT
-var jwtCheck = expressJwt({
-    secret: global.C.secret,
-    getToken: function (req) {
-        return req.cookies.u
-    }
-});
-jwtCheck.unless = unless;
 
 app.use(express.static(path.join(__dirname, 'public')));
-// function (req, res, next) {
-//     // res.setHeader("Content-Type", "application/json;charset=utf-8");
-//     next();
-// }
-app.use("/api",jwtCheck.unless({
-    path: ['/api/user/login'],
-    method: 'OPTIONS'
-}));
-app.use("/api",utils.middleware().unless({
-    path: ['/api/user/login'],
-    method: 'OPTIONS'
-}));
-// app.use("/api/term", require(path.join(__dirname, "service/router", "term.js"))());
-// app.use("/api/post", require(path.join(__dirname, "service/router", "post.js"))());
-// app.use("/api/user", require(path.join(__dirname, "service/router", "user.js"))());
 
 
+const serverBundleFilePath = path.join(__dirname, './dist/p.js')
+const serverBundleFileCode = fs.readFileSync(serverBundleFilePath, 'utf8');
+const bundleRenderer = vueServerRenderer.createBundleRenderer(serverBundleFileCode);
 
-require('./service/router')(app);
-// app.get('/', function(req, res){
-//     res.render('index', {title:'paint title'});
-// });
+// Client-Side Bundle File
+const clientBundleFileUrl = '/p.js';
 
-if (isDev) {
-    var webpack = require('webpack'),
-        webpackDevMiddleware = require('webpack-dev-middleware'),
-        webpackHotMiddleware = require('webpack-hot-middleware'),
-        webpackDevConfig = require('./webpack/webpack.client.js');
+app.get('/ssr_test', function (req, res) {
+    bundleRenderer.renderToString((err, html) => {
+      if (err){
+        res.status(500).send(`
+          <h1>Error: ${err.message}</h1>
+          <pre>${err.stack}</pre>
+        `);
+      } else {
+        res.send(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <title>Vue 2.0 SSR</title>
+            </head>
+            <body>
+              ${html}
+              <script src="${clientBundleFileUrl}"></script>
+            </body>
+          </html>`);
+      }
+    });
 
-    var compiler = webpack(webpackDevConfig);
-    // attach to the compiler & the server
-    app.use(webpackDevMiddleware(compiler, {
-        // public path should be the same with webpack config
-        publicPath: webpackDevConfig.output.publicPath,
-        noInfo: true,
-        stats: {
-            colors: true
-        }
-    }));
-    app.use(webpackHotMiddleware(compiler));
-}
+});
 
 // /*404*/
 app.use(function (req, res, next) {
