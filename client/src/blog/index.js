@@ -6,7 +6,7 @@ import Vue from "vue"
 // import VueResource from "vue-resource"
 
 // Vue.use(VueResource);
-Vue.config.errorHandler = function (err, vm) {
+Vue.config.errorHandler = function(err, vm) {
     console.log(err, vm);
 }
 
@@ -18,6 +18,6 @@ import api from "../../public/js/api.js"
 import App from "./app";
 
 const app = new Vue({
-    el:'#main',
+    el: '#main',
     ...App
 })

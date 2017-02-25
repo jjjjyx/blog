@@ -80,7 +80,7 @@ const loadPost = function(req, res, next){
 module.exports = function () {
     let router = new Router();
     router.route("/").get(function(req, res) {
-        req.checkParams('hasloadId').isArray();
+        req.checkQuery('hasloadId').isArray();
         req.getValidationResult().then(function(result) {
             if(!result.isEmpty()){
                 let map = {
@@ -89,7 +89,7 @@ module.exports = function () {
                 };
                 return res.render('index');
             }else{
-                let hasloadId = req.params.hasloadId;
+                let hasloadId = req.query.hasloadId;
                 postDao.getList({hasloadId},indexLi,(err, data)=>{
                     res.render('index',{datali:data});
                 })
@@ -101,6 +101,9 @@ module.exports = function () {
         return res.status(200).send(res.map);
     });
 
+    router.route("/p/:guid").get(function(req, res){
+
+    })
 
     router.unless = require("express-unless");
     return router;

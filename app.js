@@ -86,24 +86,8 @@ require('./service/router')(app);
 //     res.render('index', {title:'paint title'});
 // });
 
-/*错误处理器*/
-app.use(function (err, req, res, next) {
-    console.log(err.message);
-    if (err.name === 'UnauthorizedError') {
-        return res.status(200).send({code:401,msg:'invalid token...'});
-    }
-    return res.status(500).json({
-        code: 500,
-        msg: err.message
-    });
-});
-// // /*404*/
-// app.use(function (req, res, next) {
-//     let err = new Error('Not Found');
-//     err.status = 404;
-//     res.render('admin-404');
-//     // next(err);
-// })
+
+
 
 if (isDev) {
     var webpack = require('webpack'),
@@ -124,6 +108,24 @@ if (isDev) {
     app.use(webpackHotMiddleware(compiler));
 }
 
+// /*404*/
+app.use(function (req, res, next) {
+    let err = new Error('Not Found');
+    err.status = 404;
+    res.render('404');
+})
+
+/*错误处理器*/
+app.use(function (err, req, res, next) {
+    console.log(err.message);
+    if (err.name === 'UnauthorizedError') {
+        return res.status(200).send({code:401,msg:'invalid token...'});
+    }
+    return res.status(500).json({
+        code: 500,
+        msg: err.message
+    });
+});
 let server = app.listen(C.APP_PORT, function () {
     let host = server.address().address;
     let port = server.address().port;

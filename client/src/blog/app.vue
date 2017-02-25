@@ -114,7 +114,7 @@
             </div>
         </div>
     </div>
-    <blob-footer></blob-footer>
+    <blob-footer ></blob-footer>
 </div>
 
 </template>
