@@ -11,8 +11,10 @@ console.log("entry:",entry)
 const developmentConf = merge(baseConfig, {
     entry,
     plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin()
         new ExtractTextPlugin({
-            filename:'[name].css', 
+            filename:'[name].css',
             allChunks: true
         }),
         new webpack.LoaderOptionsPlugin({
