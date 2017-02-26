@@ -24,46 +24,6 @@ Date.prototype.format = function(format){
     return format;
 }
 
-export function re_findall (pattern, s) {
-    let result = [];
-    s.replace(pattern, (_, val) => { result.push(val); })
-    return result;
-}
-
-export const initFnName = "init"; // 在扩展类中声明此方法 讲在类初始化的时候掉用
-
-function copyProperties(target, source,c) {
-    for (let key of Reflect.ownKeys(source)) {
-        if(key === initFnName){
-            c.registerInit(source[key]);
-        }else if (key !== "constructor" && key !== "prototype" && key !== "name" ) {
-            let desc = Object.getOwnPropertyDescriptor(source, key);
-            Object.defineProperty(target, key, desc);
-        }
-    }
-}
-
-// mix 模式
-export function mix(...mixins) {
-    class Mix {
-        constructor(){
-            let initQueue = Mix._initFnQueue.slice();
-            while (initQueue.length) initQueue.shift().call(this);
-        }
-        static registerInit(fn){
-            this._initFnQueue.push(fn)
-        }
-        static _initFnQueue = []
-    }
-
-    for (let mixin of mixins) {
-        copyProperties(Mix, mixin);
-        copyProperties(Mix.prototype, mixin.prototype,Mix);
-    }
-
-    return Mix;
-}
-
 export function getTimeText(timeInMs,pattern) {
     let ms = Math.abs(timeInMs*1000 - new Date()),
         s = ms / 1000,
@@ -201,50 +161,3 @@ export const browser = (function() {
     browser.version = version;
     return browser;
 })();
-
-/**
- * Uses canvas.measureText to compute and return the width of the given text of given font in pixels.
- *
- * @param {String} text The text to be rendered.
- * @param {String} font The css font descriptor that text is to be rendered with (e.g. "bold 14px verdana").
- *
- * @see http://stackoverflow.com/questions/118241/calculate-text-width-with-javascript/21015393#21015393
- */
-export function getTextWidth(text, font) {
-    // re-use canvas object for better performance
-    var canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-    var context = canvas.getContext("2d");
-    context.font = font;
-    var metrics = context.measureText(text);
-    // 我可以计算文本宽度了。你问我为啥不也返回一下高度？因为 metrics 里就width这一个值
-    // 而文本高度据说实际就是字号的大小
-    return metrics.width;
-}
-
-// 设置文本选中
-export function selectText(element) {
-    var text = document.getElementById(element);
-    if (document.body.createTextRange) {
-        var range = document.body.createTextRange();
-        //range.moveToElementText(text);
-        range.select();
-    } else if (window.getSelection) {
-        var selection = window.getSelection();
-        var range = document.createRange();
-        range.selectNodeContents(text);
-        selection.removeAllRanges();
-        selection.addRange(range);
-    }
-}
-
-export function axss(value) {
-    var div = document.createElement('div');
-    div.innerHTML = value;
-    $(div).find('script, iframe, link').remove();
-    for (var name in div) {
-        if (name.indexOf('on') === 0) {
-            div.removeAttribute(name);
-        }
-    }
-    return div.innerHTML;
-}

@@ -1,7 +1,8 @@
 <template>
     <div class="my-app">
-        这是一个 404 页面
+        这是一个 404 页面sss
         {{haa}}
+        <input type="text" v-model="haa" />
         a
     </div>
 </template>

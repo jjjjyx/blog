@@ -45,13 +45,7 @@ module.exports = {
                 loader: 'babel',
                 include: path.join(__dirname, './client'),
             },
-            // 编译css并自动添加css前缀
-            // {
-            //     test: /\.css$/,
-            //     loader: 'style!css!postcss-loader',
-            //     include: path.join(__dirname, './client/public/view'),
-            // },
-            // 编译css并自动添加css前缀
+
             {
                 test: /\.css$/,
                 // loader: 'style!css',

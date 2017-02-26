@@ -49,14 +49,20 @@ module.exports = {
             {
                 test: /\.css$/,
                 // loader: 'style!css',
-                loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader'),
+                loader: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use:'css-loader!postcss-loader'
+                })
                 // include: path.join(__dirname, './node_modules'),
             },
             // 自动编译 less 文件
             {
                 test: /\.less$/,
                 // loader: "style!css!postcss!less?sourceMap",
-                loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader!less-loader'),
+                loader: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    use:'css-loader!postcss-loader!less-loader'
+                }),
                 include: path.join(__dirname, './client'),
             },
             // 图片转化，自动转化为base64的编码

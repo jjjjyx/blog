@@ -36,7 +36,7 @@
 
                         <dt>网址</dt>
                         <dd>
-                            <a :href="currentPost.guid?('../../p/'+currentPost.guid):'javascript:;'" target="_blank">{{currentPost.guid||"-"}}<a>
+                            <a :href="currentPost.guid?('../../p/'+currentPost.guid):'javascript:;'" target="_blank">{{currentPost.guid||"-"}}</a>
                         </dd>
 
                         <dt>创建时间</dt>

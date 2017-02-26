@@ -19,5 +19,5 @@ import App from "./app";
 
 const app = new Vue({
     el: '#main',
-    ...App
+    render: h => h(App)
 })

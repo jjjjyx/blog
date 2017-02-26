@@ -91,6 +91,7 @@ if (isDev) {
         webpackDevMiddleware = require('webpack-dev-middleware'),
         webpackHotMiddleware = require('webpack-hot-middleware'),
         webpackDevConfig = require('./webpack/webpack.client.js');
+        // webpackDevConfig = require('./webpack.dev.conf.js')
 
     var compiler = webpack(webpackDevConfig);
     // attach to the compiler & the server

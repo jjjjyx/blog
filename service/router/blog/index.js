@@ -92,6 +92,7 @@ module.exports = function () {
             }else{
                 let hasloadId = req.query.hasloadId;
                 postDao.getList({hasloadId},indexLi,(err, data)=>{
+
                     res.render('index',{datali:data});
                 })
             }
@@ -101,13 +102,6 @@ module.exports = function () {
     }).post(loadPost, function (req, res, next) {
         return res.status(200).send(res.map);
     });
-
-    router.route("/p/:guid").get(function(req, res){
-        console.log(123);
-        
-        res.render('p');
-    })
-
     router.unless = require("express-unless");
     return router;
 }
