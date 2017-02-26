@@ -37,10 +37,15 @@
 </head>
 
 <body>
-    {{ APP }}
+    <div id="main"></div>
     <div id="preloader">
 	    <div id="preloader-inner" class="battery"></div>
 	</div>
+    <!-- 没有最蠢的办法,这我的seo 解决方案= = -->
+    <ul style="opacity:0" id="datali">
+        <%-datali%>
+    </ul>
+    <script type="text/javascript" src="/vendor.js"></script>
     <script type="text/javascript" src="/index.js"></script>
 </body>
 </html>

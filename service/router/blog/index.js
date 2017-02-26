@@ -1,30 +1,10 @@
 let debug = require('debug')('app:routes:blog/index' + process.pid),
     Router = require("express").Router,
     xss = require('xss'),
-    path = require('path'),
     marked = require("marked"),
     renderer = new marked.Renderer(),
     postDao = require("../../dao/post.dao").postDao;
     // validator = require('node-validator');
-    //
-
-    const VueSSR = require('vue-ssr')
-    const fs = require('fs');
-    const resolve = file => path.resolve(__dirname, file);
-    const vueServerRenderer = require('vue-server-renderer');
-
-    const serverConfig = require('../../../webpack/webpack.server');
-
-    const indexRenderer = new VueSSR({
-        projectName: 'index',
-        rendererOptions: {
-            cache: require('lru-cache')({
-                max: 10240,
-                maxAge: 1000 * 60 * 15
-            })
-        },
-        webpackServer: serverConfig
-    })
 // 为了将markdown 的内容全部提取出来 不包含符号
 for(let i in renderer){
     renderer[i] = function(text){
@@ -100,28 +80,26 @@ const loadPost = function(req, res, next){
 module.exports = function () {
     let router = new Router();
     router.route("/").get(function(req, res) {
-        //
-        // req.checkQuery('hasloadId').isArray();
-        // req.getValidationResult().then(function(result) {
-        //     if(!result.isEmpty()){
-        //         let map = {
-        //             code: 1,
-        //             msg: result.array()[0].msg
-        //         };
-        //         return res.render('index');
-        //     }else{
-        //         let hasloadId = req.query.hasloadId;
-        //         postDao.getList({hasloadId},indexLi,(err, data)=>{
-        //             res.render('index');
-        //         })
-        //     }
-        //
-        // });
-        let template = fs.readFileSync(resolve("../../views/index.html"),'utf8');
-        console.log(indexRenderer.render(req, res, template));
+        console.log("===")
+        req.checkQuery('hasloadId').isArray();
+        req.getValidationResult().then(function(result) {
+            if(!result.isEmpty()){
+                let map = {
+                    code: 1,
+                    msg: result.array()[0].msg
+                };
+                return res.render('index');
+            }else{
+                let hasloadId = req.query.hasloadId;
+                postDao.getList({hasloadId},indexLi,(err, data)=>{
+
+                    res.render('index',{datali:data});
+                })
+            }
+
+        });
 
     }).post(loadPost, function (req, res, next) {
-        console.log("12312312321312");
         return res.status(200).send(res.map);
     });
     router.unless = require("express-unless");

@@ -6,8 +6,9 @@ let bodyParser = require('body-parser');
 let app = express();
 let cookieParser = require('cookie-parser'),
     expressValidator = require('express-validator');
-global.NODE_ENV = process.env.NODE_ENV || 'production'
-var isDev = NODE_ENV !== 'production';
+
+process.env.NODE_ENV = process.env.NODE_ENV||'production';
+var isDev = process.env.NODE_ENV !== 'production';
 debug("Starting application");
 
 let unless = require('express-unless');
@@ -15,7 +16,6 @@ let expressJwt = require('express-jwt');
 let config = require("./service/config");
 let utils = require("./service/utils");
 global.C = config;
-
 
 // app.engine('html', consolidate.ejs);
 
@@ -62,7 +62,7 @@ var jwtCheck = expressJwt({
 });
 jwtCheck.unless = unless;
 
-
+app.use(express.static(path.join(__dirname, 'public')));
 // function (req, res, next) {
 //     // res.setHeader("Content-Type", "application/json;charset=utf-8");
 //     next();
@@ -87,14 +87,10 @@ require('./service/router')(app);
 // });
 
 if (isDev) {
-
-    app.locals.env = NODE_ENV;
-    app.locals.reload = true;
-
     var webpack = require('webpack'),
         webpackDevMiddleware = require('webpack-dev-middleware'),
         webpackHotMiddleware = require('webpack-hot-middleware'),
-        webpackDevConfig = require('./webpack/webpack.config.js');
+        webpackDevConfig = require('./webpack/webpack.client.js');
         // webpackDevConfig = require('./webpack.dev.conf.js')
 
     var compiler = webpack(webpackDevConfig);
@@ -109,7 +105,7 @@ if (isDev) {
     }));
     app.use(webpackHotMiddleware(compiler));
 }
-app.use(express.static(path.join(__dirname, 'public')));
+
 // /*404*/
 app.use(function (req, res, next) {
     let err = new Error('Not Found');
@@ -123,7 +119,6 @@ app.use(function (err, req, res, next) {
     if (err.name === 'UnauthorizedError') {
         return res.status(200).send({code:401,msg:'invalid token...'});
     }
-    console.log(err);
     return res.status(500).json({
         code: 500,
         msg: err.message
@@ -132,5 +127,5 @@ app.use(function (err, req, res, next) {
 let server = app.listen(C.APP_PORT, function () {
     let host = server.address().address;
     let port = server.address().port;
-    console.log(`Example app (${process.env.NODE_ENV}) listening at http://${host}:${port}`);
+    console.log(`Example app (${isDev?'dev':'production'}) listening at http://${host}:${port}`);
 });

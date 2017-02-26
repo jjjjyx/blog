@@ -23,11 +23,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules|bower_components)/,
-                query:{
-                    presets: ['es2015', 'stage-2'],
-                    plugins: ['transform-runtime']
-                }
+                exclude: /(node_modules|bower_components)/
             },
             // 编译css并自动添加css前缀
             {
