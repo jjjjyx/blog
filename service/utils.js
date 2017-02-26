@@ -1,5 +1,4 @@
-let
-    debug = require('debug')('app:utils:' + process.pid),
+let debug = require('debug')('app:utils:' + process.pid),
     path = require('path'),
     util = require('util'),
     redis = require("redis"),
@@ -10,7 +9,12 @@ let
     TOKEN_EXPIRATION = 60,
     TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5;
 // UnauthorizedAccessError = require(path.join(__dirname, 'errors', 'UnauthorizedAccessError.js'));
+// const VueSSR = require('vue-ssr')
+// const fs = require('fs');
+// const resolve = file => path.resolve(__dirname, file);
+// const vueServerRenderer = require('vue-server-renderer');
 
+const serverConfig = require('../webpack/webpack.server');
 
 client.on('error', function (err) {
     debug(err);
@@ -176,5 +180,20 @@ module.exports.middleware = function () {
     func.unless = require("express-unless");
 
     return func;
-
 };
+//
+//
+// const indexRenderer = new VueSSR({
+//     projectName: 'p',
+//     rendererOptions: {
+//         cache: require('lru-cache')({
+//             max: 10240,
+//             maxAge: 1000 * 60 * 15
+//         })
+//     },
+//     webpackServer: serverConfig
+// })
+// module.exports.Vuessr = function (req, res,{projectName,viewPath}){
+//     let template = fs.readFileSync(resolve("../../views/p.html"),'utf8');
+//     indexRenderer.render(req, res, template);
+// }

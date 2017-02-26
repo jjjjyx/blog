@@ -31,7 +31,7 @@
                     <!-- <span class="gapline">|</span> -->
                 </div>
                 <div class="recommend-post">
-                    <ul class="j-article-list" ref="articleList">
+                    <ul class="j-article-list" ref="articleList" v-html="hh">
                     </ul>
                     <div class="j-article-placeholder index" v-if="loading">
                         <div class="img"></div>
@@ -121,11 +121,9 @@
 
 <script>
 
-import {mapGetters, mapActions} from 'vuex'
-import store from "../store/index";
 import BlobHeader from "../components/head.vue";
 import BlobFooter from "../components/bottom.vue";
-import keyboardJS from "keyboardjs"
+// import keyboardJS from "keyboardjs"
 import * as api from "../../public/js/api.js";
 // import Head from "../components/head";
 
@@ -137,6 +135,7 @@ export default {
             keyword:'',
             loading:false,
             noPost :true,
+            hh:'sss'
         }
     },
     // store,
@@ -175,20 +174,20 @@ export default {
         }
     },
     mounted: function() {
-        let dl = $("#datali");
-        this.$refs.articleList.innerHTML = dl.html();
-        dl.remove();
+        // let dl = $("#datali");
+        // this.$refs.articleList.innerHTML = dl.html();
+        // dl.remove();
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
-        let self = this;
-        keyboardJS.withContext('login', function() {
-            keyboardJS.bind('enter', (e)=> {
-                api.login(...self.keyword.split(' ')).then(({code,msg})=>{
-                    if(code==0){
-                        layer.alert(msg);
-                    }
-                })
-            });
-        });
+        // this.loadMore();
+        // keyboardJS.withContext('login', function() {
+        //     keyboardJS.bind('enter', (e)=> {
+        //         api.login(...self.keyword.split(' ')).then(({code,msg})=>{
+        //             if(code==0){
+        //                 layer.alert(msg);
+        //             }
+        //         })
+        //     });
+        // });
 
     }
 }

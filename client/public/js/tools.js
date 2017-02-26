@@ -24,6 +24,12 @@ Date.prototype.format = function(format){
     return format;
 }
 
+export function re_findall (pattern, s) {
+    let result = [];
+    s.replace(pattern, (_, val) => { result.push(val); })
+    return result;
+}
+
 export function getTimeText(timeInMs,pattern) {
     let ms = Math.abs(timeInMs*1000 - new Date()),
         s = ms / 1000,

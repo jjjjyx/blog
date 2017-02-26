@@ -1,40 +1,33 @@
 let debug = require('debug')('app:routes:blog/index' + process.pid),
     path = require('path'),
     Router = require("express").Router,
-    xss = require('xss'),
-    marked = require("marked"),
-    renderer = new marked.Renderer(),
     postDao = require("../../dao/post.dao").postDao;
 
-    const fs = require('fs');
-    const vueServerRenderer = require('vue-server-renderer');
+const VueSSR = require('vue-ssr')
+const fs = require('fs');
+const resolve = file => path.resolve(__dirname, file);
+const vueServerRenderer = require('vue-server-renderer');
 
+const serverConfig = require('../../../webpack/webpack.server');
 
-console.log(path.resolve('dist/p.js'));
-const serverBundleFilePath = path.resolve('dist/p.js')
-const serverBundleFileCode = fs.readFileSync(serverBundleFilePath, 'utf8');
-const bundleRenderer = vueServerRenderer.createBundleRenderer(serverBundleFileCode);
+const indexRenderer = new VueSSR({
+    projectName: 'p',
+    rendererOptions: {
+        cache: require('lru-cache')({
+            max: 10240,
+            maxAge: 1000 * 60 * 15
+        })
+    },
+    webpackServer: serverConfig
+})
 
-console.log(serverBundleFileCode);
 
 module.exports = function() {
     let router = new Router();
     router.route("/p/:guid").get(function(req, res) {
-        bundleRenderer.renderToString((err, html) => {
-            if (err) {
-                res.status(500).send(`
-                  <h1>Error: ${err.message}</h1>
-                  <pre>${err.stack}</pre>
-                `);
-            } else {
-                console.log(html);
-                res.render('p', {
-                    html
-                });
-            }
-        });
+        let template = fs.readFileSync(resolve("../../views/p.html"),'utf8');
+        indexRenderer.render(req, res, template);
     })
-
     router.unless = require("express-unless");
     return router;
 }

@@ -44,14 +44,14 @@ let errorHandler = function({status,responseJSON}){
     }
     return data
 }
-$.ajaxSetup({
-    dataType: "json",
-    timeout: REQUEST_TIMEOUT,
-    xhrFields: {
-        withCredentials: true
-    },
-    error:errorHandler
-});
+// $.ajaxSetup({
+//     dataType: "json",
+//     timeout: REQUEST_TIMEOUT,
+//     xhrFields: {
+//         withCredentials: true
+//     },
+//     error:errorHandler
+// });
 
 export function login(username, password) {
     return new Promise((resolve, reject) => {

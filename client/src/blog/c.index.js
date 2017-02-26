@@ -17,7 +17,7 @@ import api from "../../public/js/api.js"
 
 import App from "./app";
 
-const app = new Vue({
-    el: '#main',
-    render: h => h(App)
-})
+const VueApp = Vue.extend(App);
+const app = new VueApp({
+  el: '#app',
+});

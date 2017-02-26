@@ -8,6 +8,13 @@ module.exports = Object.assign({}, base, {
   target: 'node',
   devtool: false,
   entry,
+  resolve: {
+      extensions: ['.js', '.vue'],
+      alias: {
+          jquery: path.join(__dirname, 'node_modules/jquery/dist/jquery'),
+      }
+  },
+  externals: Object.keys(require('../package.json').dependencies),
   output: {
     path:  path.join(__dirname, '../dist'),
     filename: "[name].js",
@@ -19,6 +26,10 @@ module.exports = Object.assign({}, base, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
       'process.env.VUE_ENV': '"server"'
-    })
+    }),
+    new webpack.ProvidePlugin({
+        $: "jquery",
+        'jQuery': "jquery",
+    }),
   ]
 })
