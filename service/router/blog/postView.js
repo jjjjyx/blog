@@ -11,9 +11,7 @@ module.exports = function() {
     let router = new Router();
     router.route("/p/:guid").get(function(req, res) {
 
-        res.render('p', {
-            html
-        });
+        res.render('p');
 
     })
 

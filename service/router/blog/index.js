@@ -6,17 +6,25 @@ let debug = require('debug')('app:routes:blog/index' + process.pid),
     postDao = require("../../dao/post.dao").postDao;
     // validator = require('node-validator');
 // 为了将markdown 的内容全部提取出来 不包含符号
+let textChar = (text)=> text||"";
+let emptyChar = ()=> '';
 for(let i in renderer){
-    renderer[i] = function(text){
-        return text
-    }
+    renderer[i] =textChar
 }
+renderer.list = emptyChar
+renderer.hr = emptyChar
+renderer.tablerow = emptyChar
+renderer.table = emptyChar
+renderer.image = (href, title, text)=>title||"";
+renderer.link = (href, title, text)=>title||"";
 
 let indexLi = (data)=>{
     let s = "";
     data.forEach((item)=>{
         // console.log(marked(item.post_content,{renderer,sanitize:true}))
         // console.log($("*",marked(item.post_content)).text())
+        console.log(marked(item.post_content,{renderer}));
+        console.log(item.post_content)
         s+=`
             <li data-node-id='${item.id}'>
                <div class="content">
@@ -39,7 +47,7 @@ let indexLi = (data)=>{
                        <a title="${xss(item.post_author)}" class="name" >${xss(item.post_author)}</a> ${new Date(item.post_date).format("yyyy-MM-dd hh:mm:ss")}
                    </div>
                    <p class="">
-                        ${xss(marked(item.post_content,{renderer}))}...
+                        ${xss(marked(item.post_content,{renderer}).substring(0,140))}...
                    </p>
                    <div class="j-category-tag">
                        <a class="category">${item.term_id}</a>

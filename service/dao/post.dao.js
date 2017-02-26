@@ -150,7 +150,7 @@ class PostDao {
           jp.eye_count,
           jt.name AS term_id,
           jp.guid,
-          LEFT(jp.post_content, 100) AS post_content,
+          jp.post_content,
           ju.user_nickname AS post_author,
           jp.author,
           CASE WHEN jp.post_password IS NULL  THEN FALSE  ELSE TRUE  END AS ppassword,

@@ -12,7 +12,7 @@ const developmentConf = merge(baseConfig, {
     entry,
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
+        new webpack.NoErrorsPlugin(),
         new ExtractTextPlugin({
             filename:'[name].css',
             allChunks: true

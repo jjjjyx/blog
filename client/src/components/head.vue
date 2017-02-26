@@ -45,7 +45,6 @@
 
 <script>
 
-import {mapGetters, mapActions} from 'vuex'
 
 export default {
     data: () => {
@@ -55,15 +54,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'user'
-        ]),
     },
     components: {},
     methods: {
-        ...mapActions([
-            'userSignout'
-        ])
     },
     mounted: function() {
         let h1 = 0;
