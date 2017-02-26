@@ -92,7 +92,6 @@ module.exports = function () {
             }else{
                 let hasloadId = req.query.hasloadId;
                 postDao.getList({hasloadId},indexLi,(err, data)=>{
-
                     res.render('index',{datali:data});
                 })
             }

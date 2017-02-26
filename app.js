@@ -6,9 +6,8 @@ let bodyParser = require('body-parser');
 let app = express();
 let cookieParser = require('cookie-parser'),
     expressValidator = require('express-validator');
-
-process.env.NODE_ENV = process.env.NODE_ENV||'production';
-var isDev = process.env.NODE_ENV !== 'production';
+global.NODE_ENV = process.env.NODE_ENV || 'production'
+var isDev = NODE_ENV !== 'production';
 debug("Starting application");
 
 let unless = require('express-unless');
@@ -62,11 +61,7 @@ var jwtCheck = expressJwt({
 });
 jwtCheck.unless = unless;
 
-app.use(express.static(path.join(__dirname, 'public')));
-// function (req, res, next) {
-//     // res.setHeader("Content-Type", "application/json;charset=utf-8");
-//     next();
-// }
+
 app.use("/api",jwtCheck.unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
@@ -75,22 +70,14 @@ app.use("/api",utils.middleware().unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
 }));
-// app.use("/api/term", require(path.join(__dirname, "service/router", "term.js"))());
-// app.use("/api/post", require(path.join(__dirname, "service/router", "post.js"))());
-// app.use("/api/user", require(path.join(__dirname, "service/router", "user.js"))());
-
-
 
 require('./service/router')(app);
-// app.get('/', function(req, res){
-//     res.render('index', {title:'paint title'});
-// });
 
 if (isDev) {
     var webpack = require('webpack'),
         webpackDevMiddleware = require('webpack-dev-middleware'),
         webpackHotMiddleware = require('webpack-hot-middleware'),
-        webpackDevConfig = require('./webpack/webpack.client.js');
+        webpackDevConfig = require('./webpack/webpack.config.js');
         // webpackDevConfig = require('./webpack.dev.conf.js')
 
     var compiler = webpack(webpackDevConfig);
@@ -105,20 +92,20 @@ if (isDev) {
     }));
     app.use(webpackHotMiddleware(compiler));
 }
-
+app.use(express.static(path.join(__dirname, 'public')));
 // /*404*/
 app.use(function (req, res, next) {
     let err = new Error('Not Found');
     err.status = 404;
     res.render('404');
 })
-
 /*错误处理器*/
 app.use(function (err, req, res, next) {
     console.log(err.message);
     if (err.name === 'UnauthorizedError') {
         return res.status(200).send({code:401,msg:'invalid token...'});
     }
+    console.log(err);
     return res.status(500).json({
         code: 500,
         msg: err.message
