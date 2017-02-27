@@ -47,7 +47,7 @@ export default {
 
     },
     mounted: function() {
-        console.log("文章展示页面");
+        api.loadArticleInfo();
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
     }
 }

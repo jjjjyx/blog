@@ -88,7 +88,6 @@ const loadPost = function(req, res, next){
 module.exports = function () {
     let router = new Router();
     router.route("/").get(function(req, res) {
-        console.log("===")
         req.checkQuery('hasloadId').isArray();
         req.getValidationResult().then(function(result) {
             if(!result.isEmpty()){
@@ -103,7 +102,6 @@ module.exports = function () {
                     res.render('index',{datali:data});
                 })
             }
-
         });
 
     }).post(loadPost, function (req, res, next) {

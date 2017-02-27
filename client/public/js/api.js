@@ -95,3 +95,12 @@ export function loadMore(params) {
         });
     });
 }
+export function loadArticleInfo(params){
+    return new Promise((resolve, reject) => {
+        $.post("./",params,null).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([500]);
+        });
+    });
+}
