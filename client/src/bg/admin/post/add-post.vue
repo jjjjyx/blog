@@ -9,11 +9,18 @@
         <ul class="am-list post-list" v-if="list.length">
             <li class="item" v-for="item in list" @click="pathappend(item)" :class="{'active':currentPost.id==item.id}">
                 <i class="am-icon-file"></i>
+
                 <a class="post-title am-text-truncate">
-                    {{item.post_title}}
+                     {{item.post_title}}
                 </a>
                 <p class="abbreviate am-text-truncate">{{item.post_content}}</p>
-                <p class="wordage am-text-xs" v-if="item.post_content&&item.post_content.length">字数：{{item.post_content.length}}</p>
+                <p class="wordage am-text-xs" >
+                    <span v-show="item.post_content && item.post_content.length"> 字数：{{item.post_content.length||0}}</span>
+                </p>
+                <p class="post-status">
+                    <i class="am-icon-rocket am-text-success am-text-sm am-margin-right-xs" v-if="item.post_status=='publish'" title="已发布"></i>
+                    <i class="am-icon-lock  am-text-sm" v-if="item.ppassword" title="加密"></i>
+                </p>
                 <div class="am-dropdown post-opt am-fr" data-am-dropdown v-if="currentPost.id==item.id">
                   <i class="am-icon-cog am-dropdown-toggle"  data-am-dropdown-toggle></i>
                   <ul class="am-dropdown-content am-text-xs">
@@ -189,6 +196,13 @@ export default {
             font-size: 3rem;
             color: #c6b281;
         }
+        /*li.item>i.am-icon-rocket {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 1.5rem;
+            color: #c6b281;
+        }*/
         li.item>.abbreviate {
             cursor: pointer;
             position: absolute;
@@ -202,14 +216,18 @@ export default {
             font-weight: normal;
             line-height: 30px;
         }
-        li.item>.wordage {
+        li.item>.wordage,li.item>.post-status {
             position: absolute;
             bottom: 5px;
-            left: 5px;
+            right: 30px;
             font-family: -apple-system, "SF UI Text", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
             font-size: 9px;
             font-weight: normal;
             line-height: 16px;
+        }
+        li.item>.wordage {
+            right: auto;
+            left: 5px;
         }
         li.item>.post-opt{
             position: absolute;
