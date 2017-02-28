@@ -52,7 +52,7 @@ const app = new Vue({
         },
         async loadMore(){
             this.loading = true;
-            let hasloadId = $("li[data-node-id]",this.$refs.articleList).map((e,el)=>$(el).data('node-id')).get();
+            let hasloadId = $("article[data-node-id]",this.$refs.articleList).map((e,el)=>$(el).data('node-id')).get();
             let pg = 0;
             let data = await api.loadArticleList({hasloadId,pg});
             if(data!='没有更多了'){

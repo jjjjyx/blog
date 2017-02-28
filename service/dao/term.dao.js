@@ -10,42 +10,42 @@ let db = require("./database");
 
 
 class TermDao {
-    loadAll (callback){
-        let sql = "select * from j_terms";
+    execCallBack(sql,data,callback,resultFormat){
         db.pool.getConnection(function (err, connection) {
             if (err) {
                 callback(true);
                 return;
             }
-            connection.query(sql, (err, result,fields) => {
-                connection.release();
-                if (err || !result.length) {
+            connection.query(sql,data, (err, result) => {
+                if (err) {
+                    console.log(err);
                     callback(true);
-                    return;
-                }else{
-                    callback(false, result);
+                } else {
+                    if(typeof(resultFormat) == "function"){
+                        callback(false, resultFormat(result))
+                    }else{
+                        callback(false, result)
+                    }
                 }
+                connection.release();
             })
         });
+    }
+
+    loadAll (callback){
+        let sql = "select * from j_terms";
+        this.execCallBack(sql,null,callback);
     }
     loadByTaxonomy(taxonomy,callback){
         let sql = "select * from j_terms where taxonomy = :taxonomy;";
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql,{taxonomy}, (err, result, fields) => {
-                connection.release();
-                if (err || !result.length) {
-                    callback(true);
-                    return;
-                }else{
-                    callback(false, result);
-                }
-            })
-        });
+        this.execCallBack(sql,null,callback);
     }
+
+    loadCategory(callback){
+        let sql = "select * from j_terms where taxonomy = 'category' and delete_at is null";
+        this.execCallBack(sql,null,callback);
+    }
+
     add ({name,slug,term_group,taxonomy,description},callback){
         let sql = "INSERT INTO `j_terms` (`name`, `slug`, `term_group`,`taxonomy`,`description`,`count`) VALUES (:name, :slug, :term_group, :taxonomy, :description, 0)";
         db.pool.getConnection(function (err, connection) {
@@ -53,10 +53,8 @@ class TermDao {
                 callback(true);
                 return;
             }
-
             connection.query(sql, {name,slug,term_group,taxonomy,description},(err, result) => {
                 connection.release();
-                console.log(err);
                 if (err) {
                     if(err.code=='ER_DUP_ENTRY'){
                         return callback(true,"分类已存在")

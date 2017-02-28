@@ -2,7 +2,7 @@
 // eventproxy
 // import mysql from "mysql";
 let mysql = require("mysql");
-var async = require("async");
+let async = require("async");
 
 let config = require("../config");
 // console.log(config.db);
@@ -74,7 +74,6 @@ exports.execTrans = function execTrans(sqlparamsEntities, callback) {
 
             async.series(funcAry, function (err, result) {
                 console.log("transaction error: " + err);
-                console.log(result);
                 if (err) {
                     connection.rollback(function (err) {
                         console.log("transaction error: " + err);

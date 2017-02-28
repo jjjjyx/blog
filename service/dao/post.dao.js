@@ -120,7 +120,7 @@ class PostDao {
     getArticleInfoByGuid(guid, callback) {
         let sql = [{
             sql: "select ?? from j_posts where guid = ?",
-            params: [['post_title','post_date','post_content','author'],guid],
+            params: [['post_title','post_date','post_content','author','id'],guid],
             resultFormat: rows => rows.length ? rows[0] : {}
         }, {
             sql: "select * from myblog.j_terms where term_id in (SELECT term_id FROM myblog.j_term_relationships where object_id=(select id from j_posts where guid = ?))",

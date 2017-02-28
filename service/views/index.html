@@ -64,7 +64,6 @@
                     </div>
                     <div class="recommend-post">
                         <main class="j-article-list" ref="articleList">
-                            
                             <%-datali%>
                         </main>
                         <div class="j-article-placeholder index" v-if="loading">
@@ -102,12 +101,13 @@
                         </div>
                         <div class="tags">
                             <input type="password" ref="login" v-if="enabled" v-model="keyword" class="login" style="position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
-                            <a class="tag" data-tag="java" @mouseover="mouseover" @mouseout="mouseout">java</a>
-                            <a class="tag">javascript</a>
-                            <a class="tag">node</a>
-                            <a class="tag">渗透</a>
-                            <a class="tag">struts2</a>
-                            <a class="tag">。。。</a>
+                            <%for(item of termList){%>
+                                <%if(item.name=='java'){%>
+                                <a class="tag" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout"><%=item.name%></a>
+                                <%}else{%>
+                                <a class="tag" data-tag='<%=item.name%>'><%=item.name%></a>
+                                <%}%>
+                            <%}%>
                         </div>
                     </div>
                     <div class="part">
@@ -120,12 +120,28 @@
                             </a>
                             <!-- <span class="gapline">|</span> -->
                         </div>
+                        <div class="ds-top-threads" data-range="daily" data-num-items="10"></div>
+                        <script type="text/javascript">
+                            var duoshuoQuery = {
+                                short_name: "jjjjyx"
+                            };
+                            (function() {
+                                var ds = document.createElement('script');
+                                ds.type = 'text/javascript';
+                                ds.async = true;
+                                ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                                ds.charset = 'UTF-8';
+                                (document.getElementsByTagName('head')[0] ||
+                                    document.getElementsByTagName('body')[0]).appendChild(ds);
+                            })();
+                        </script>
                     </div>
                     <div class="part">
                         <div class="j-title">
                             <h3 class="">近期评论</h3>
                             <!-- <span class="gapline">|</span> -->
                         </div>
+                        <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="1" data-show-time="1" data-show-admin="1" data-excerpt-length="70"></ul>
                     </div>
                     <div class="part">
                         <div class="j-title">
@@ -133,12 +149,11 @@
                             <!-- <span class="gapline">|</span> -->
                         </div>
                     </div>
-                    <div class="part">
+                    <!-- <div class="part">
                         <div class="j-title">
                             <h3 class="">分类目录</h3>
-                            <!-- <span class="gapline">|</span> -->
                         </div>
-                    </div>
+                    </div> -->
                     <div class="part">
                         <div class="j-title">
                             <h3 class="">功能</h3>

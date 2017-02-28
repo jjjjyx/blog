@@ -54,6 +54,64 @@ ol, ul {
 .white{
     color: #fff;
 }
+.am-badge {
+    cursor: pointer;
+}
+.am-btn-logo {
+    background-color: #ec5c51;
+    color: white;
+    -webkit-appearance: none;
+    &:hover,&:focus {
+        color: white;
+        background-color: #d7342e;
+    }
+}
+.am-tag-xs {
+    font-size: .5rem;
+}
+// 没有使用
+.am-tag{
+    display: inline-block;
+    line-height: 1;
+    vertical-align: baseline;
+    margin: 0 .14285714em;
+    background-color: #e8e8e8;
+    background-image: none;
+    padding: .38rem .38rem;
+    padding-left: 10px;
+    color: rgba(0,0,0,.6);
+    text-transform: none;
+    font-weight: 700;
+    border: 0 solid transparent;
+    margin-left: 1em;
+    position: relative;
+    border-radius: 0 .28571429rem .28571429rem 0;
+    transition: none;
+    &::before{
+        position: absolute;
+        transform: translateY(-50%) translateX(50%) rotate(-45deg);
+        top: 50%;
+        right: 100%;
+        content: '';
+        background-color: inherit;
+        background-image: none;
+        width: 1.2em;
+        height: 1.2em;
+        transition: none;
+    }
+    &::after{
+        position: absolute;
+        content: '';
+        top: 55%;
+        left: -.25em;
+        margin-top: -.25em;
+        background-color: #fff!important;
+        width: .3em;
+        height: .3em;
+        box-shadow: 0 -1px 1px 0 rgba(0,0,0,.3);
+        border-radius: 500rem;
+    }
+}
 .am-icon-stack{
     position: relative;
     display: inline-block;
