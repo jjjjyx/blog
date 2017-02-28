@@ -92,6 +92,7 @@
     }
     .articles {
         width: 640px;
+        padding: 0 .5rem;
         .j-title {
             font-size: 1.6rem;
             margin-bottom: 0;
@@ -162,18 +163,67 @@
     padding-top: 20px;
 }
 .j-article-list{
-    li {
+    article {
         position: relative;
         width: 100%;
         margin: 0 0 17px;
-        padding: 0 2px 17px 0;
+        padding: 4px 12px 17px;
         border-bottom: 1px solid #f0f0f0;
         word-wrap: break-word;
+        border-radius: 2px;
+        &.blurring.dimmable:hover {
+            &>:not(.dimmer){
+                -webkit-filter: blur(2px) grayscale(.7);
+                        filter: blur(5px) grayscale(.7);
+                transition: .8s filter ease,.8s -webkit-filter ease;
+            }
+            .dimmer {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
     }
-    li.have-img {
+    // li.password{
+    //     &:hover{
+    //
+    //     }
+    // }
+    article .password {
+        &>span {
+            font-size: 4.8rem
+        }
+        .am-icon-circle {
+            color: @logoColor;
+        }
+        .am-icon-lock {
+            color: white;
+        }
+        .am-form-group {
+            input {
+                display: inline-block;
+                width: 150px;
+                font-size: 1.3rem;
+                padding: .5em;
+                line-height: 17px;
+                color: #555;
+                vertical-align: middle;
+                background-color: #fff;
+                background-image: none;
+                border: 1px solid #ccc;
+                -webkit-appearance: none;
+                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+            }
+            input+.am-btn{
+                &:hover,&:focus{
+                    outline: none;
+                }
+            }
+        }
+    }
+    article.have-img {
         min-height: 140px;
     }
-    li .title {
+    article .title {
         margin: 0px 0 4px;
         display: inherit;
         font-size: 1.9rem;
@@ -189,12 +239,12 @@
 
 
     }
-    li .abstract {
+    article .abstract {
         margin: 0 0 8px;
         font-size: 13px;
         line-height: 24px;
     }
-    li .meta {
+    article .meta {
         padding-right: 0!important;
         font-size: 1.2rem;
         font-weight: 400;
@@ -211,20 +261,20 @@
         //     color: #b4b4b4;
         // }
     }
-    li .options a {
+    article .options a {
         color: #808080;
         margin-left: 5px;
         &:hover{
             color: @logoColor;
         }
     }
-    li p.intro {
+    article p.intro {
         color: #808080;
         font-size: 1.6rem;
         line-height: 1.6rem;
         margin-bottom: 15px;
     }
-    li .j-category-tag {
+    article .j-category-tag {
         font-size: 1.2rem;
         i,a:not(.category) {
             margin-left:7px;

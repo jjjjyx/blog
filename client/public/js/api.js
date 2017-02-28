@@ -86,7 +86,7 @@ export function userGetInfo() {
         });
     });
 }
-export function loadMore(params) {
+export function loadArticleList(params) {
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/`,params,null,'html').done((data) => {
             resolve(data);

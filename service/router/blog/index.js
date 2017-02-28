@@ -20,15 +20,29 @@ renderer.link = (href, title, text)=>title||"";
 
 let indexLi = (data)=>{
     let s = "";
+    let pH =
+    `<from class="password dimmer inverted ">
+        <span class="am-icon-stack">
+          <i class="am-icon-circle am-icon-stack-2x"></i>
+          <i class="am-icon-lock am-icon-stack-1x white"></i>
+        </span>
+        <div class="am-form-group am-margin-top-sm">
+            <input type="password" class="am-round" placeholder="输入访问密码" style="width">
+            <button class="am-btn am-btn-success am-btn-sm am-round">
+                <i class="am-icon-arrow-circle-right"></i>
+            </button>
+        </div>
+    </from>
+    `;
     data.forEach((item)=>{
         // console.log(marked(item.post_content,{renderer,sanitize:true}))
         // console.log($("*",marked(item.post_content)).text())
-        console.log(marked(item.post_content,{renderer}));
-        console.log(item.post_content)
+        // console.log(item)
+        // console.log("====")
         s+=`
-            <li data-node-id='${item.id}'>
+            <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}">${item.ppassword?pH:''}
                <div class="content">
-                   <h4 class="title"><a href="p/${item.guid}" target="_blank">${xss(item.post_title)}</a></h4>
+                   <h3 class="title"><a href="p/${item.guid}" target="_blank">${xss(item.post_title)}</a></h3>
                    <div class="options am-fr">
                        <a class="read" href="p/${item.guid}" target="_blank">
                            <i class="am-icon-eye"></i>
@@ -54,7 +68,7 @@ let indexLi = (data)=>{
                        ${item.postTag ? `<i class="am-icon-tags"></i> <a>${item.postTag.replace(/,/g,"</a><a>")}</a>`:''}
                    </div>
                </div>
-            </li>
+            </article>
         `
     })
     return s||"没有更多了";

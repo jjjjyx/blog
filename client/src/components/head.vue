@@ -53,11 +53,6 @@ export default {
             isSearchShow: false
         }
     },
-    computed: {
-    },
-    components: {},
-    methods: {
-    },
     mounted: function() {
         let h1 = 0;
         let h2 = 25;
@@ -76,8 +71,10 @@ export default {
                 $('.bootsnav').addClass('gizle');
                 if (s > ss) {
                     $('.bootsnav').removeClass('sabit');
+                    this.$emit("sabit",true);
                 } else {
                     $('.bootsnav').addClass('sabit');
+                    this.$emit("sabit",false);
                 }
                 ss = s;
             }

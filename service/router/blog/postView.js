@@ -22,6 +22,7 @@ let loadArticleInfo = function(req, res, next){
                 let articleInfo = data[0];
                 articleInfo.post_date = new Date(articleInfo.post_date).format("yyyy-MM-dd hh:mm:ss")
                 articleInfo.postTag = data[1];
+                articleInfo.tocm = articleInfo.post_content.indexOf("[TOCM]")>=0;
                 res.render("article",articleInfo)
             })
         }

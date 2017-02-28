@@ -12,6 +12,7 @@ const app = new Vue({
             message:'hello',
             post_content:"",
             editormdView:null,
+            aside:false,
         }
     },
     components: {
@@ -22,9 +23,13 @@ const app = new Vue({
 
     },
     methods: {
-
+        togglehead(s){
+            this.aside = s;
+            // console.log(111);
+        }
     },
     mounted: function() {
+        editormd.emoji.path = "http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/";
         this.editormdView = editormd.markdownToHTML("article-inner", {
             htmlDecode      : "style,script,iframe",  // you can filter tags decode
             emoji           : true,
@@ -32,6 +37,9 @@ const app = new Vue({
             tex             : false,  // 默认不解析
             flowChart       : false,  // 默认不解析
             sequenceDiagram : false,  // 默认不解析
+            tocm            : true,    // Using [TOCM]
+            tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
+
         });
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
     }

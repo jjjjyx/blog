@@ -42,10 +42,17 @@
 
 <body>
     <div id="app">
-        <blob-header></blob-header>
+        <blob-header @sabit="togglehead"></blob-header>
         <div class="blank"></div>
         <section class="wrapper">
             <div class="am-container article-page">
+                <%if(tocm){%>
+                <aside class="article-tocm" ref="article-tocm" :class="{padTop:aside}">
+                    <h1>Table of Contents</h1>
+                    <section class=" markdown-body editormd-preview-container" id="custom-toc-container">
+                    </section>
+                </aside>
+                <%}%>
                 <article>
                     <h1><%=post_title%></h1>
                     <div class="post-info ">
@@ -73,7 +80,7 @@
     <div id="preloader">
 	    <div id="preloader-inner" class="battery"></div>
 	</div>
-     <script src="//cdn.bootcss.com/vue/2.1.10/vue.min.js"></script>
+     <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>
      <script type="text/javascript" src="/article.js"></script>
 </body>
 </html>

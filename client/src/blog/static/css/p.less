@@ -2,7 +2,10 @@
 @import "var";
 @import "base";
 
-
+section.wrapper{
+    display: block;
+    position: relative;
+}
 .am-container.article-page {
     width: 700px;
     padding: 40px 0;
@@ -22,4 +25,29 @@
     .meta {
         color: #969696;
     }
+}
+.article-tocm {
+    width: 280px;
+    height: 100%;
+    position: fixed;;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background: #fff;
+    z-index: 8;
+    padding: 18px;
+    padding-top: 50px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-bottom: none;
+    transition: .4s all ease;
+    &.padTop {
+        padding-top: 0px;
+    }
+    &:hover {
+        overflow: auto;
+    }
+}
+#custom-toc-container {
+    padding-left: 0;
 }
