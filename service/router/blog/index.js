@@ -45,7 +45,7 @@ let indexLi = (data) => {
             if (body.code == 0) {
                 b = body.response;
             }
-            let getB = (guid,k) = b[guid]?b[guid][k]:0;
+            let getB = (guid,k) => b[guid]?b[guid][k]:0;
             data.forEach((item) => {
                 s += `
                     <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}">${item.ppassword?pH:''}
