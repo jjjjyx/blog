@@ -55,7 +55,7 @@ const app = new Vue({
             let hasloadId = $("article[data-node-id]",this.$refs.articleList).map((e,el)=>$(el).data('node-id')).get();
             let pg = 0;
             let data = await api.loadArticleList({hasloadId,pg});
-            if(data!='没有更多了'){
+            if(data&&data!='没有更多了'){
                 $(this.$refs.articleList).append(data);
             }else{
                 this.noPost = false;

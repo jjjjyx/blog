@@ -23,34 +23,18 @@
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-
-    <link href="//cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
-    <link href="/preloader.css" rel="stylesheet">
-    <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
     <link href="/article.css" rel="stylesheet">
-    <link href="/editormd/css/editormd.preview.css" rel="stylesheet" />
     <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
-    <script src="//cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js"></script>
-    <script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
-    <script src="/editormd/lib/marked.min.js"></script>
-    <script src="/editormd/lib/prettify.min.js"></script>
-    <script src="/editormd/editormd.min.js"></script>
+    <link href="//cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
+
 </head>
 
 <body>
     <div id="app">
-        <blob-header @sabit="togglehead"></blob-header>
+        <blob-header></blob-header>
         <div class="blank"></div>
         <section class="wrapper">
             <div class="am-container article-page">
-                <%if(tocm){%>
-                <aside class="article-tocm" ref="article-tocm" :class="{padTop:aside}">
-                    <h1>Table of Contents</h1>
-                    <section class=" markdown-body editormd-preview-container" id="custom-toc-container">
-                    </section>
-                </aside>
-                <%}%>
                 <article>
                     <h1><%=post_title%></h1>
                     <%if(postTag.length){%>
@@ -67,17 +51,21 @@
                         </a>
                         <p class="meta am-margin-top-xs am-margin-bottom-0 am-link-muted am-text-xs" style>
                             <span class="publish-time"><%=post_date%></span>
-                            <span class="wordage">字数 {{post_content.leng}}</span>
                             <span class="views-count">阅读 0</span>
                             <span class="comments-count">评论 0</span>
-                            <span class="likes-count">喜欢 <span class="ds-highlight">0</span></span>
+                            <span class="likes-count">喜欢 0</span>
                         </p>
                     </div>
-                    <div class="inner" ref="inner" id="article-inner">
-                        <textarea style="display:none;" name="article-markdown-doc">
-<%=post_content%>
-                        </textarea>
-                    </div>
+                    <form class="inner am-form am-form-inline" ref="inner" id="article-inner" method="post" >
+                        <fieldset>
+                            <legend class="am-text-sm">这是一篇受保护的文章,您必须输入密码才能查看</legend>
+                            <div class="am-form-group am-form-icon">
+                                <i class="am-icon-lock"></i>
+                                <input type="password" class="am-form-field" id="doc-ipt-pass-1" placeholder="密码" name="post_password">
+                            </div>
+                            <button type="submit" class="am-btn am-btn-primary am-round"><i class="am-icon-unlock"></i> 解锁查看</button>
+                        </fieldset>
+                    </form>
                 </article>
 
                 <footer id="post-footer" class="am-cf">
@@ -109,27 +97,6 @@
                         <a class="am-btn am-round am-btn-xs am-btn-secondary"><i class="am-icon-share"></i> 分享</a>
                     </div>
                 </footer>
-                <!-- 多说评论框 start -->
-                <div class="ds-thread" data-thread-key="<%=guid%>" data-title="<%=post_title%>" data-url="/p/<%=guid%>"></div>
-                <!-- 多说评论框 end -->
-                <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-                <script type="text/javascript">
-                    var duoshuoQuery = { short_name: "jjjjyx"};
-                    (function() {
-                        var ds = document.createElement('script');
-                        ds.type = 'text/javascript';
-                        ds.async = true;
-                        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-                        ds.charset = 'UTF-8';
-                        (document.getElementsByTagName('head')[0] ||
-                            document.getElementsByTagName('body')[0]).appendChild(ds);
-                    })();
-                </script>
-                <!-- 多说公共JS代码 end -->
-
-                <aside id="comment">
-                    <!-- 分享 -->
-                </aside>
             </div>
         </section>
         <blob-footer ></blob-footer>
@@ -140,7 +107,6 @@
 
     <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>
     <script type="text/javascript" src="/vendor.js"></script>
-    <script type="text/javascript" src="/article.js"></script>
+    <script type="text/javascript" src="/inputPass.js"></script>
 </body>
-
 </html>

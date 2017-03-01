@@ -47,7 +47,7 @@ exports.execTrans = function execTrans(sqlparamsEntities, callback) {
             if (err) {
                 return callback(err, null);
             }
-            console.log("开始执行transaction，共执行" + sqlparamsEntities.length + "条数据");
+            // console.log("开始执行transaction，共执行" + sqlparamsEntities.length + "条数据");
             var funcAry = [];
             sqlparamsEntities.forEach(function (sql_param) {
                 var temp = function (cb) {
@@ -73,7 +73,7 @@ exports.execTrans = function execTrans(sqlparamsEntities, callback) {
             });
 
             async.series(funcAry, function (err, result) {
-                console.log("transaction error: " + err);
+                // console.log("transaction error: " + err);
                 if (err) {
                     connection.rollback(function (err) {
                         console.log("transaction error: " + err);
@@ -82,7 +82,7 @@ exports.execTrans = function execTrans(sqlparamsEntities, callback) {
                     });
                 } else {
                     connection.commit(function (err, info) {
-                        console.log("transaction info: " + JSON.stringify(info));
+                        // console.log("transaction info: " + JSON.stringify(info));
                         if (err) {
                             console.log("执行事务失败，" + err);
                             connection.rollback(function (err) {

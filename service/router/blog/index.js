@@ -22,19 +22,19 @@ renderer.link = (href, title, text) => title || "";
 
 let indexLi = (data) => {
     let s = "";
-    let pH =
-        `<from class="password dimmer inverted ">
+    let pH =(guid)=>
+        `<form class="password dimmer inverted " method="post" action="/p/${guid}" target="_blank">
         <span class="am-icon-stack">
           <i class="am-icon-circle am-icon-stack-2x"></i>
           <i class="am-icon-lock am-icon-stack-1x white"></i>
         </span>
         <div class="am-form-group am-margin-top-sm">
-            <input type="password" class="am-round" placeholder="输入访问密码" style="width">
-            <button class="am-btn am-btn-success am-btn-sm am-round">
+            <input type="password" class="am-round" placeholder="输入访问密码" style="width" name="post_password">
+            <button class="am-btn am-btn-success am-btn-sm am-round" type="submit">
                 <i class="am-icon-arrow-circle-right"></i>
             </button>
         </div>
-    </from>
+    </form>
     `;
     let articleGuidList = data.map((item) => item.guid);
     var client = request.newClient('http://api.duoshuo.com');
@@ -48,7 +48,7 @@ let indexLi = (data) => {
             let getB = (guid,k) => b[guid]?b[guid][k]:0;
             data.forEach((item) => {
                 s += `
-                    <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}">${item.ppassword?pH:''}
+                    <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}">${item.ppassword?pH(item.guid):''}
                        <div class="content">
                            <h3 class="title"><a href="p/${item.guid}" target="_blank">${xss(item.post_title)}</a></h3>
                            <div class="options am-fr">
@@ -79,7 +79,7 @@ let indexLi = (data) => {
                     </article>
                 `
             })
-            resolve(s);
+            resolve(s||"没有更多了");
         });
     });
 
