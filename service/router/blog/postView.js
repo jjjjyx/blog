@@ -38,7 +38,9 @@ let loadArticleInfo = function(req, res, next){
     });
 }
 let commentCallback = function(req, res, next){
-
+    req.checkBody('action', '').notEmpty();
+    req.checkBody('signature', '').isBase64();
+    console.log(action,'---ds');
 }
 module.exports = function() {
     let router = new Router();
@@ -46,7 +48,7 @@ module.exports = function() {
         req.post_password = req.body.post_password;
         next();
     },loadArticleInfo)
-    router.route("/commentCallback").get(commentCallback)
+    router.route("/commentCallback").post(commentCallback)
     router.unless = require("express-unless");
     return router;
 }
