@@ -26,7 +26,7 @@ let indexLi = (data) => {
         `<form class="password dimmer inverted " method="post" action="/p/${guid}" target="_blank">
         <span class="am-icon-stack">
           <i class="am-icon-circle am-icon-stack-2x"></i>
-          <i class="am-icon-lock am-icon-stack-1x white"></i>
+          <i class="am-icon-expeditedssl am-icon-stack-1x white"></i>
         </span>
         <div class="am-form-group am-margin-top-sm">
             <input type="password" class="am-round" placeholder="输入访问密码" style="width" name="post_password">
@@ -47,10 +47,12 @@ let indexLi = (data) => {
             }
             let getB = (guid,k) => b[guid]?b[guid][k]:0;
             data.forEach((item) => {
+                // <a class="am-corner-label am-orange"></a>
                 s += `
                     <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}">${item.ppassword?pH(item.guid):''}
+
                        <div class="content">
-                           <h3 class="title"><a href="p/${item.guid}" target="_blank">${xss(item.post_title)}</a></h3>
+                           <h3 class="title"><a href="p/${item.guid}" target="_blank">${item.menu_order?'<span>[ 置顶 ]</span> ':''}${xss(item.post_title)}</a></h3>
                            <div class="options am-fr">
                                <a class="read" href="p/${item.guid}" target="_blank">
                                    <i class="am-icon-eye"></i>

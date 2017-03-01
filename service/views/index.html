@@ -34,7 +34,7 @@
 
 <body>
     <div id="app">
-        <blob-header></blob-header>
+        <blob-header :active='"index"'></blob-header>
         <!-- #masthead -->
         <div class="blank"></div>
 
@@ -96,12 +96,21 @@
                             <!-- <span class="gapline">|</span> v-if="enabled" -->
                         </div>
                         <div class="tags">
-                            <input type="password" ref="login" v-if="enabled" v-model="keyword" class="login" style="position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
+                            <input type="password" ref="login" v-if="enabled" v-model="keyword" class="login" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
                             <%for(item of termList){%>
                                 <%if(item.name=='java'){%>
-                                <a class="tag" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout"><%=item.name%></a>
+                                <a class="tag" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout">
+                                    <span class="tag-icon">
+                                        <i class="<%=item.icon%>"></i>
+                                    </span>
+                                    <span><%=item.name%></span></a>
                                 <%}else{%>
-                                <a class="tag" data-tag='<%=item.name%>'><%=item.name%></a>
+                                <a class="tag" data-tag='<%=item.name%>'>
+                                    <span class="tag-icon">
+                                        <i class="<%=item.icon%>"></i>
+                                    </span>
+                                    <span><%=item.name%></span>
+                                </a>
                                 <%}%>
                             <%}%>
                         </div>
@@ -116,7 +125,7 @@
                             </a>
                             <!-- <span class="gapline">|</span> -->
                         </div>
-                        <div class="ds-top-threads" data-range="daily" data-num-items="10"></div>
+                        <ul class="ds-top-threads" data-range="daily" data-num-items="10"></ul>
                         <script type="text/javascript">
                             var duoshuoQuery = {
                                 short_name: "jjjjyx"

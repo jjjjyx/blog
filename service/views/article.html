@@ -40,7 +40,7 @@
 
 <body>
     <div id="app">
-        <blob-header @sabit="togglehead"></blob-header>
+        <blob-header @sabit="togglehead" :active='"index"'></blob-header>
         <div class="blank"></div>
         <section class="wrapper">
             <div class="am-container article-page">
@@ -67,10 +67,8 @@
                         </a>
                         <p class="meta am-margin-top-xs am-margin-bottom-0 am-link-muted am-text-xs" style>
                             <span class="publish-time"><%=post_date%></span>
-                            <span class="wordage">字数 {{post_content.leng}}</span>
+                            <span class="wordage">字数 {{post_contentLength}}</span>
                             <span class="views-count">阅读 0</span>
-                            <span class="comments-count">评论 0</span>
-                            <span class="likes-count">喜欢 <span class="ds-highlight">0</span></span>
                         </p>
                     </div>
                     <div class="inner" ref="inner" id="article-inner">
@@ -88,9 +86,9 @@
                         </a> 转载请注明出处、作者和<a href="/p/<%=guid%>" title="<%=post_title%>" class="am-text-secondary">本文链接</a>。
                     </div>
                     <!-- 文章分类 相关推荐 -->
-                    <div class="post-like am-fr am-margin-left-xs">
+                    <!-- <div class="post-like am-fr am-margin-left-xs">
                         <a class="am-btn am-round am-btn-xs am-btn-logo"><i class="am-icon-heart"></i> 喜欢 | 0</a>
-                    </div>
+                    </div> -->
                     <div class="post-share am-fr">
                         <ul class="sharehidden">
                             <li>

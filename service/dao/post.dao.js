@@ -172,6 +172,7 @@ class PostDao {
           jp.comment_count,
           jp.eye_count,
           jt.name AS term_id,
+          jp.menu_order,
           jp.guid,
           jp.post_content,
           ju.user_nickname AS post_author,
@@ -186,6 +187,7 @@ class PostDao {
         WHERE
             post_status in ('publish') ${hasloadId ? 'and jp.id NOT IN (?) ':''}
         GROUP BY jp.id
+        ORDER BY menu_order DESC, jp.post_date DESC
         LIMIT 0, 10
         `
         this.execCallBack(sql,[hasloadId],callback,f);

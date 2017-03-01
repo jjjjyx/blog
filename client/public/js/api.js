@@ -61,7 +61,6 @@ export function login(username, password) {
         }).done((data) => {
             resolve(data);
         }).fail(({responseJSON={code:401}}) => {
-
             reject([responseJSON.code, responseJSON]);
         });
     });

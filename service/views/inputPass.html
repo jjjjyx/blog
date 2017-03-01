@@ -31,7 +31,7 @@
 
 <body>
     <div id="app">
-        <blob-header></blob-header>
+        <blob-header :active='"index"'></blob-header>
         <div class="blank"></div>
         <section class="wrapper">
             <div class="am-container article-page">
@@ -60,7 +60,7 @@
                         <fieldset>
                             <legend class="am-text-sm">这是一篇受保护的文章,您必须输入密码才能查看</legend>
                             <div class="am-form-group am-form-icon">
-                                <i class="am-icon-lock"></i>
+                                <i class="am-icon-key"></i>
                                 <input type="password" class="am-form-field" id="doc-ipt-pass-1" placeholder="密码" name="post_password">
                             </div>
                             <button type="submit" class="am-btn am-btn-primary am-round"><i class="am-icon-unlock"></i> 解锁查看</button>

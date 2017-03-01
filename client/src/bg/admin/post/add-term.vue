@@ -13,7 +13,7 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-nav-link curr" v-for="(item,index) in categoryList" :class="{'active':isActiveId == item.term_id}" @click="toggleDown($event,item)">
                     <div class=" am-cf" :class="{'sidebar-nav-sub-title active':isActiveId == item.term_id}" >
-                        <i class="am-icon-tag sidebar-nav-link-logo am-fl"></i>
+                        <i class=" sidebar-nav-link-logo am-fl" :class="item.icon"></i>
                         <span class="am-text-truncate category-name am-fl">{{item.name}}</span>
                         <div class="am-dropdown sidebar-nav-sub-ico am-fr am-margin-right-sm" data-am-dropdown v-if="isActiveId == item.term_id" :class="{'am-dropdown-up':index==categoryList.length-1}">
                           <i class="am-icon-cog am-dropdown-toggle"  data-am-dropdown-toggle></i>
@@ -124,10 +124,6 @@ export default {
             let data = await addTerm(this.newTerm);
             // console.log(222)
             if(data.code == 0) {
-                // let o = {
-                //     term_id: data.data.insertId,
-                //     taxonomy:'category',
-                // }
                 this.addTerm({
                     obj:data.data,
                     index:0

@@ -143,6 +143,7 @@
         h3 {
             display: inline-block;
             cursor: pointer;
+            margin: 7px 0;
         }
         h3.active {
             color: @logoColor;
@@ -236,6 +237,10 @@
                 color: #969696;
             }
         }
+        span{
+            color: #3989C1;
+            font-weight: 100;
+        }
 
 
     }
@@ -300,10 +305,36 @@
         font-size: 1.4rem;
         border-radius: 2px;
         margin: 0 7px 10px 0;
+        position: relative;
+        span{
+            transition: opacity .5s ease-out;
+        }
         &:hover {
             color: @logoColor;
             border-color: @logoColor;
-            background-color: rgba(34, 187, 149, 0.05);
+            // background-color: rgba(34, 187, 149, 0.05);
+            span:not(.tag-icon){
+                opacity: 0;
+            }
+            span.tag-icon{
+                opacity: 1;
+            }
+        }
+        span.tag-icon{
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            z-index: 2;
+            text-align: center;
+            vertical-align: middle;
+        }
+        i{
+            vertical-align: middle;
+            vertical-align: -webkit-baseline-middle;
+
         }
     }
     .j-title {
@@ -442,6 +473,31 @@
         }
     }
 }
+.ds-top-threads {
+    margin-left: 20px;
+    list-style: bengali;
+    li{
+        line-height: 24px;
+        margin-bottom: 20px;
+        a{
+            color: #333333;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    }
+}
+.ds-recent-comments{
+    a {
+        color: #333333;
+    }
+    .ds-excerpt{
+        color: #808080;
+        font-size: 1.3rem;
+        line-height: 1.5em;
+    }
+}
+
 
 @keyframes shortLoading {
     0% {

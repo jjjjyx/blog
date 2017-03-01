@@ -1,4 +1,5 @@
 @charset "UTF-8";
+@import url('//at.alicdn.com/t/font_apwvryofsh7rdx6r.css');
 body,
 html {
     height: 100%;
@@ -54,6 +55,9 @@ ol, ul {
 .white{
     color: #fff;
 }
+[class*=am-icon-].am-fl,.iconfont.am-fl {
+    margin-right: .3em;
+}
 .am-badge {
     cursor: pointer;
 }
@@ -64,6 +68,48 @@ ol, ul {
     &:hover,&:focus {
         color: white;
         background-color: #d7342e;
+    }
+}
+.am-orange {
+    &.am-corner-label{
+        border-color: #f26202!important;
+        color: #fff!important;
+    }
+}
+.am-corner-label{
+    display: inline-block;
+    line-height: 1;
+    vertical-align: baseline;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    text-transform: none;
+    font-weight: 700;
+    border: 0 solid #e8e8e8;
+    border-radius: 4px;
+    width: 4em;
+    height: 4em;
+    z-index: 1;
+    background-color: transparent;
+    transition: border-color .1s ease;
+    &::after {
+        position: absolute;
+        content: "";
+        right: 0;
+        top: 0;
+        z-index: -1;
+        width: 0;
+        height: 0;
+        background-color: transparent !important;
+        border-top: 0 solid transparent;
+        border-right: 4em solid transparent;
+        border-bottom: 4em solid transparent;
+        border-left: 0 solid transparent;
+        border-right-color: inherit;
+        transition: border-color .1s ease;
     }
 }
 .am-tag-xs {
@@ -213,6 +259,10 @@ ol, ul {
 }
 /* Navbar
 =================================*/
+header .am-container {
+    position: relative;
+    z-index: 3;
+}
 header.am-topbar.bootsnav{
     margin-bottom: 0;
     border-radius: 0px;
@@ -240,7 +290,8 @@ header.am-topbar.bootsnav ul.am-nav li.active > a{
     .am-topbar-nav>li>a:after{
         bottom: 0px;
     }
-    .am-topbar-nav>li>a:hover:after {
+    .am-topbar-nav>li>a:hover:after,.am-topbar-nav>li>a.active:after {
+        opacity: 1;
         border-bottom-color: @logoColor;
     }
 }

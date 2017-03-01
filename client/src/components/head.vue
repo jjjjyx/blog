@@ -13,7 +13,7 @@
             </div>
         </div>
     <div class="am-container">
-        <a href="#" class="am-topbar-brand">
+        <a href="/" class="am-topbar-brand">
           <!-- <a href="#" class="am-text-ir">Amaze UI</a> -->
           <img src="../../public/img/logo.png" class="logo" alt="">
         </a>
@@ -30,11 +30,7 @@
         <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
 
             <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right">
-                <li><a href="#">首页</a></li>
-                <li><a href="#">标签</a></li>
-                <li><a href="#">关于我</a></li>
-                <li><a href="#">作品</a></li>
-                <li><a href="#">BUG集锦</a></li>
+                <li v-for="item in menuList"><a :href="item.href" :class="{active:active==item.f}" >{{item.name}}</a></li>
             </ul>
         </div>
 
@@ -50,9 +46,17 @@ export default {
     data: () => {
         return {
             isGoTopShow: false,
-            isSearchShow: false
+            isSearchShow: false,
+            menuList:[
+                {name:'首页',href:'javascript:;',f:'index'},
+                {name:'标签',href:'javascript:;',f:'category'},
+                {name:'关于我',href:'javascript:;',f:'me'},
+                {name:'作品',href:'javascript:;',f:'works'},
+                {name:'BUG集锦',href:'javascript:;',f:'bug'}
+            ]
         }
     },
+    props: ['active'],
     mounted: function() {
         let h1 = 0;
         let h2 = 25;

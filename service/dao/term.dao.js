@@ -63,7 +63,7 @@ class TermDao {
                 }else{
                     let r = {
                         term_id: result.insertId,
-                        name,slug,term_group,taxonomy,description
+                        name,slug,term_group,taxonomy,description,icon:'am-icon-tag'
                     }
                     callback(false, r);
                 }

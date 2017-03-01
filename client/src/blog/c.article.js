@@ -11,7 +11,7 @@ const app = new Vue({
     data: function() {
         return {
             message:'hello',
-            post_content:"",
+            post_contentLength:0,
             editormdView:null,
             aside:false,
         }
@@ -42,6 +42,7 @@ const app = new Vue({
             tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
 
         });
+        this.post_contentLength = $("#article-inner").text().replace(/ /g,'').length;
         // 总滚动条高度-可视高度 - 底部高度 大于此值 将目录上移
         // let kh = getClientHeight();
         let bh = 388;
