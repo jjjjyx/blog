@@ -45,6 +45,7 @@ let indexLi = (data) => {
             if (body.code == 0) {
                 b = body.response;
             }
+            let getB = (guid,k) = b[guid]?b[guid][k]:0;
             data.forEach((item) => {
                 s += `
                     <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}">${item.ppassword?pH:''}
@@ -57,11 +58,11 @@ let indexLi = (data) => {
                                </a>
                                <a class="comment" href="p/${item.guid}#comment" target="_blank">
                                    <i class="am-icon-comment-o"></i>
-                                   <span class="num">${b[item.guid].comments}</span>
+                                   <span class="num">${getB(item.guid,'comments')}</span>
                                </a>
                                <a class="like" >
                                    <i class="am-icon-heart-o"></i>
-                                   <span class="num">${b[item.guid].likes}</span>
+                                   <span class="num">${getB(item.guid,'likes')}</span>
                                </a>
                            </div>
                            <div class="meta am-margin-vertical-xs">
