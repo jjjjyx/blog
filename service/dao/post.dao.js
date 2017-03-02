@@ -193,6 +193,11 @@ class PostDao {
         this.execCallBack(sql,[hasloadId],callback,f);
     }
 
+    getPostsGroup(callback){
+        let sql="SELECT * FROM (SELECT DATE_FORMAT(post_date,'%Y 年%m 月') AS post_date FROM j_posts WHERE post_status = 'publish') AS t GROUP BY t.post_date";
+        this.execCallBack(sql,null,callback);
+    }
+
     getPosts(callback) {
         let sql = `${this.selectSql} WHERE post_status not in ('delete')`;
         this.execCallBack(sql,null,callback);

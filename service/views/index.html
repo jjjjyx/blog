@@ -125,7 +125,7 @@
                             </a>
                             <!-- <span class="gapline">|</span> -->
                         </div>
-                        <ul class="ds-top-threads" data-range="daily" data-num-items="10"></ul>
+                        <ul class="ds-top-threads j-list" data-range="daily" data-num-items="10"></ul>
                         <script type="text/javascript">
                             var duoshuoQuery = {
                                 short_name: "jjjjyx"
@@ -153,6 +153,13 @@
                             <h3 class="">文章归档</h3>
                             <!-- <span class="gapline">|</span> -->
                         </div>
+                        <ul class="j-list">
+                            <%for(item of groupList){%>
+                                <li>
+                                    <a><i class="am-icon-calendar-plus-o"></i> <%=item.post_date%></a>
+                                </li>
+                            <%}%>
+                        </ul>
                     </div>
                     <!-- <div class="part">
                         <div class="j-title">

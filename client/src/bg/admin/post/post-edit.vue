@@ -326,6 +326,16 @@ export default {
             toolbarIconsClass:{
                 publish:'am-icon-send'
             },
+            onload:()=>{
+                console.log(this.editormd);
+                console.log(this.editormd.cm);
+                this.editormd.codeEditor.on("contextmenu",function(editor,e){
+                    console.log(111,e);
+                })
+                this.editormd.codeEditor.on("change",function(editor,e){
+                    console.log(112221,e);
+                })
+            }
             // toolbarIconTexts : {
             //    publish : "直接发布"  // 如果没有图标，则可以这样直接插入内容，可以是字符串或HTML标签
             // },
@@ -339,6 +349,8 @@ export default {
             // },
 
         });
+
+
         let _time = null;
         this.editormd.on("change",()=>{
             if(_time)

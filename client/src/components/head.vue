@@ -50,6 +50,7 @@ export default {
             menuList:[
                 {name:'首页',href:'javascript:;',f:'index'},
                 {name:'标签',href:'javascript:;',f:'category'},
+                {name:'归档',href:'javascript:;',f:'archives'},
                 {name:'关于我',href:'javascript:;',f:'me'},
                 {name:'作品',href:'javascript:;',f:'works'},
                 {name:'BUG集锦',href:'javascript:;',f:'bug'}

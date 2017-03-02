@@ -4,6 +4,7 @@ let debug = require('debug')('app:routes:blog/index' + process.pid),
     marked = require("marked"),
     renderer = new marked.Renderer(),
     request = require('request-json'),
+    _ = require("lodash"),
     postDao = require("../../dao/post.dao").postDao,
     termDao = require("../../dao/term.dao").termDao;
 // validator = require('node-validator');
@@ -114,28 +115,45 @@ const loadPost = function(req, res, next) {
         }
     });
 }
+let getIndexData = [
+    function(req, res,next) {
+        req.checkQuery('hasloadId').isArray();
+        req.getValidationResult().then(function(result) {
+            let hasloadId = req.query.hasloadId;
+            if (!result.isEmpty()) {
+                hasloadId = null;
+            }
+            postDao.getList({ hasloadId }, indexLi, (err, data) => {
+                data.then((datali)=>{
+                    req.renderData = {
+                        datali
+                    };
+                    next()
+                })
+            })
+
+        });
+    },
+    function(req, res,next) {
+        termDao.loadCategory((err,termList)=>{
+            req.renderData.termList = termList;
+            next();
+        });
+    },
+    function(req, res,next) {
+        postDao.getPostsGroup((err, data) => {
+            req.renderData.groupList = data;
+            next()
+        })
+    }
+];
 
 module.exports = function() {
     let router = new Router();
-    router.route("/").get(function(req, res) {
-        req.checkQuery('hasloadId').isArray();
-        req.getValidationResult().then(function(result) {
-            if (!result.isEmpty()) {
-                let map = { code: 1, msg: result.array()[0].msg };
-                return res.render('index');
-            } else {
-                let hasloadId = req.query.hasloadId;
-                postDao.getList({ hasloadId }, indexLi, (err, data) => {
-                    termDao.loadCategory((err2,termList)=>{
-                        data.then((datali)=>res.render('index', {
-                            datali,
-                            termList
-                        }))
-                    })
-
-                })
-            }
-        });
+    router.route("/").get(getIndexData,function(req, res) {
+        if(!_.isEmpty(req.renderData)){
+            res.render('index', req.renderData)
+        }
 
     }).post(loadPost, function(req, res, next) {
         return res.status(200).send(res.map);
