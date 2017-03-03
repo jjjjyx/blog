@@ -10,12 +10,12 @@ Vue.use(VueRouter);
 Vue.config.errorHandler = function (err, vm) {
     console.log(err, vm);
 }
-
+ZeroClipboard.config( { swfPath: '//cdn.bootcss.com/zeroclipboard/2.3.0/ZeroClipboard.swf' } );
 import "../static/app.less";
 
 import store from "../../store/index.js"
 
-import {userGetInfo} from "../../../public/js/netapi";
+import * as api from "../../../public/js/netapi";
 import "../../../public/js/vue.api";
 
 // 入口
@@ -31,6 +31,9 @@ import AddPost from "./post/add-post.vue";
 import PostEdit from "./post/post-edit.vue";
 import PostTrash from "./post/trash.vue";
 
+// 上传
+import ImgUpload from "./upload/upload.vue";
+
 // import Test from "./testUpload.vue";
 
 import NotFoundComponent from "./404.vue"
@@ -39,7 +42,7 @@ async function isLogIn() {
     let is_login = false;
     // 判段用户实例是否存在或者过期
     if (store.getters.user === null || +new Date() - store.getters.user.validateTime > 60 * 60 * 1000) {
-        let date = await userGetInfo();
+        let date = await api.userGetInfo();
         // console.log(code,userdata);
         if (date.code === 0) {
             store.commit("USER_SET_INFO", date.data);
@@ -108,10 +111,18 @@ var router = new VueRouter({
             ],
 
         },
-        // {
-        //     path:"/test",
-        //     component:Test
-        // },
+        {
+            path:"/upload/management",
+            components:{
+                default:ImgUpload,
+                toc:Toc
+            },
+            meta:{
+                name:'上传管理',
+                description:'',
+                sub:'上传的图片管理'
+            }
+        },
         {
             path: "*",
             component: NotFoundComponent
@@ -128,8 +139,22 @@ router.beforeEach(async function (to, from, next) {
     if (!auth) {
         alert("尚未登录!")
         return window.location.href="/";
-    }else
+    }else{
+        if(!store.getters.termList||!store.getters.termList.length){
+            let data = await api.getAllTerm();
+            if(data.code == 0){
+                store.commit('setTerm',data.data)
+            }
+        }
+        if(!store.getters.posts||!store.getters.posts.length){
+            let data = await api.posts();
+            if(data.code == 0){
+                store.commit('setPosts',data.data)
+            }
+        }
+
         $("#preloader").fadeOut(1000,()=>$("#preloader").remove());
+    }
     next();
 });
 

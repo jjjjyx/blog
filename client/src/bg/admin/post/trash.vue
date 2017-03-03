@@ -104,15 +104,8 @@ export default {
         this.clearActive();
         next();
     },
-    mounted:async  function() {
-        if(!this.posts||!this.posts.length){
-            let data = await api.posts();
-            if(data.code==0){
-                this.setPosts(data.data);
-            }else{
-                layer.alert('发生异常，请刷新后重试');
-            }
-        }
+    mounted: function() {
+
     }
 }
 </script>

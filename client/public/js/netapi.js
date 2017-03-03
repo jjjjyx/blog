@@ -234,6 +234,25 @@ export function getToken(){
         });
     });
 }
+export function getImgs(){
+    return new Promise((resolve, reject) => {
+        $.get(`${API_SERVER}/api/img/list`).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+export function delImg(key){
+    return new Promise((resolve, reject) => {
+        $.get(`${API_SERVER}/api/img/delImg`,{key}).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+
 // export function savePostTag(params){
 //     return new Promise((resolve, reject) => {
 //         $.post(`${API_SERVER}/api/post/saveTag`,params).done((data) => {

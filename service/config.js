@@ -47,5 +47,9 @@ exports.qiUpload= {
     'ACCESS_KEY': 'yON2TZBHksg2FxJdZzrZcm5hDLzEB-YG7I1iyw6I',
     'SECRET_KEY': 'lAkKzNLxsNs9eQXJ6DTyjJAxf6A0A_wsTGYxZDGH',
     'Bucket_Name': 'jyximg',
-    'Domain': 'http://oht47c0d0.bkt.clouddn.com/'
+    'Domain': 'http://oht47c0d0.bkt.clouddn.com/',
+    UP_HOST : 'http://upload.qiniu.com',
+    UC_HOST :'http://uc.qbox.me',
+    RS_HOST : 'http://rs.qbox.me',
+    RSF_HOST : 'http://rsf.qbox.me'
 };

@@ -15,7 +15,7 @@
                 </a>
                 <p class="abbreviate am-text-truncate">{{item.post_content}}</p>
                 <p class="wordage am-text-xs" >
-                    <span v-show="item.post_content && item.post_content.length"> 字数：{{item.post_content.length||0}}</span>
+                    <span v-if="item.post_content"> 字数：{{item.post_content.length||0}}</span>
                 </p>
                 <p class="post-status">
                     <i class="am-icon-rocket am-text-success am-text-sm am-margin-right-xs" v-if="item.post_status=='publish'" title="已发布"></i>
@@ -109,6 +109,7 @@ export default {
         ]),
         ...mapActions([
             'setActivePostId',
+            'setActiveId',
             'setCurrendPost',
             'update_current_postcontent'
         ])
@@ -131,25 +132,18 @@ export default {
         }
     },
     mounted:async function() {
-        if(!this.posts||!this.posts.length){
-            let data = await api.posts();
-            if(data.code==0){
-                this.setPosts(data.data);
-                this.setActivePostId(this.$route.params.id);
-                if(this.currentPost.id){
-                    if(!this.currentPost.post_content&&!this.currentPost.postTag){
-                        let d = await api.postContent(this.currentPost.id);
-                        this.setCurrendPost(d);
-                    }
-                    this.update_current_postcontent(this.currentPost.post_content);
-                }else{
-                    this.update_current_postcontent("");
-                }
-            }else{
-                layer.alert('发生异常，请刷新后重试');
+        this.setActiveId(this.$route.params.term_id);
+        this.setActivePostId(this.$route.params.id);
+        if(this.currentPost.id){
+            if(!this.currentPost.post_content&&!this.currentPost.postTag){
+                let d = await api.postContent(this.currentPost.id);
+                this.setCurrendPost(d);
             }
-            setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
+            this.update_current_postcontent(this.currentPost.post_content);
+        }else{
+            this.update_current_postcontent("");
         }
+        setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
 
 
     }

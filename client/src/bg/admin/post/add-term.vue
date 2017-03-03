@@ -90,7 +90,6 @@ import {getAllTerm,addTerm,editTermName,deleteTerm} from "../../../../public/js/
 export default {
     data: function() {
         return {
-            termList:[],
             newTerm:{
                 name:''
             },
@@ -207,17 +206,6 @@ export default {
         this.clearActive();
         this.toggleSidebar(false);
         next();
-    },
-    async beforeRouteEnter(to, from, next){
-        let data = await getAllTerm();
-        if(data.code == 0){
-            next((vm)=>{
-                vm.setTerm(data.data)
-                vm.setActiveId(to.params.term_id)
-            });
-        }else{
-            next(false)
-        }
     }
 }
 </script>

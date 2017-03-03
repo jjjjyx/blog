@@ -181,3 +181,30 @@ export function getClientHeight()
     }
     return clientHeight;
 }
+
+///格式化文件大小
+export function formatFileSize(fileSize) {
+    if (fileSize < 1024) {
+        return fileSize + 'B';
+    } else if (fileSize < (1024*1024)) {
+        var temp = fileSize / 1024;
+        temp = temp.toFixed(2);
+        return temp + 'KB';
+    } else if (fileSize < (1024*1024*1024)) {
+        var temp = fileSize / (1024*1024);
+        temp = temp.toFixed(2);
+        return temp + 'MB';
+    } else {
+        var temp = fileSize / (1024*1024*1024);
+        temp = temp.toFixed(2);
+        return temp + 'GB';
+    }
+}
+
+// // 千分位分隔
+let DIGIT_PATTERN = /(^|\s)\d+(?=\.?\d*($|\s))/g
+let MILI_PATTERN = /(?=(?!\b)(\d{3})+\.?\b)/g
+export function miliFormat(num){
+    return num && num.toString()
+    		.replace(DIGIT_PATTERN, (m) => m.replace(MILI_PATTERN, ','));
+}

@@ -63,9 +63,9 @@
             </ul>
         </li>
         <li class="sidebar-nav-link">
-            <a href="javascript:;">
+            <router-link to="/upload/management" active-class='active'>
                 <i class="am-icon-upload sidebar-nav-link-logo"></i> 上传管理
-            </a>
+            </router-link>
         </li>
         <li class="sidebar-nav-link">
             <a href="javascript:;">

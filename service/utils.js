@@ -1,7 +1,10 @@
 let
     debug = require('debug')('app:utils:' + process.pid),
+    fs = require('fs'),
+    url = require('url'),
     path = require('path'),
     util = require('util'),
+    crypto = require('crypto'),
     redis = require("redis"),
     client = redis.createClient(),
     _ = require("lodash"),
@@ -19,6 +22,45 @@ client.on('error', function (err) {
 client.on('connect', function () {
     debug("Redis successfully connected");
 });
+
+exports.isQiniuCallback = isQiniuCallback;
+
+exports.urlsafeBase64Encode = function(jsonFlags) {
+  var encoded = new Buffer(jsonFlags).toString('base64');
+  return exports.base64ToUrlSafe(encoded);
+}
+
+exports.base64ToUrlSafe = function(v) {
+  return v.replace(/\//g, '_').replace(/\+/g, '-');
+}
+
+exports.hmacSha1 = function(encodedFlags, secretKey) {
+  /*
+   *return value already encoded with base64
+  * */
+  var hmac = crypto.createHmac('sha1', secretKey);
+  hmac.update(encodedFlags);
+  return hmac.digest('base64');
+}
+
+// func generateAccessToken
+
+exports.generateAccessToken = function(uri, body) {
+  var u = url.parse(uri);
+  var path = u.path;
+  var access = path + '\n';
+  if (body) {
+    access += body;
+  }
+  var digest = exports.hmacSha1(access, C.qiUpload.SECRET_KEY);
+  var safeDigest = exports.base64ToUrlSafe(digest);
+  return 'QBox ' + C.qiUpload.ACCESS_KEY + ':' + safeDigest;
+}
+
+function isQiniuCallback(path, body, callbackAuth) {
+  var auth = exports.generateAccessToken(path, body);
+  return auth === callbackAuth;
+}
 
 module.exports.fetch = function (headers) {
     if (headers && headers.authorization) {

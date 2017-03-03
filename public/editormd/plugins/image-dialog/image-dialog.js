@@ -165,38 +165,6 @@
                     dialog.find("[type=\"submit\"]").bind("click", submitHandler).trigger("click");
 				});
             }
-            // function Qiniu_upload(files, length, i){
-            //     if (length > i) {
-            //         var formdata = new FormData()
-            //         formdata.append('file', files[i])
-            //         let token = settings.token();
-            //         formdata.append('key', new Date().getTime() + '.jpg')
-            //         formdata.append('token', '七牛账号对应的token')
-            //         $.ajax({
-            //             type: 'POST',
-            //             url: 'http://up.qiniu.com/',
-            //             data: formdata,
-            //             dataType: 'json',
-            //             contentType: false,
-            //             processData: false
-            //         }).then(function(json) {
-            //             var oldurl = $('[data-url]').val()
-            //             if (oldurl === '') {
-            //                 $('[data-url]').val('七牛图片服务器的域名/' + json.key)
-            //             } else {
-            //                 oldurl = oldurl + '$$七牛图片服务器的域名/' + json.key
-            //                 $('[data-url]').val(oldurl)
-            //             }
-            //             i++
-            //             Qiniu_upload(files, length, i)
-            //         }, function (err) {
-            //             console.log(err)
-            //         })
-            //     } else {
-            //         $('[name="file"]').val('')
-            //         loading(false)
-            //     }
-            // }
 			dialog = editor.find("." + dialogName);
 			dialog.find("[type=\"text\"]").val("");
 			dialog.find("[type=\"file\"]").val("");

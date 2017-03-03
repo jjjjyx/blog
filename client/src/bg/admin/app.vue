@@ -204,7 +204,9 @@ export default {
     methods: {
         ...mapMutations([
             'setContentHeight',
-            'toggleSidebar'
+            'toggleSidebar',
+            'setTerm',
+            'setPosts'
         ]),
         setTheme (theme){
             this.skiner = theme;
@@ -214,7 +216,6 @@ export default {
         },
         async signOut(){
             let data = await api.logOut();
-            console.log(data);
             layer.alert(data.msg, {
                 closeBtn: 0
             },()=>{
@@ -222,7 +223,7 @@ export default {
             });
         }
     },
-    mounted: function() {
+    mounted:async function() {
         this.skiner = localStorage.getItem('selectSkiner')||this.skiner;
         let headersHeight = 56;
         let setH = ()=> this.setContentHeight($(window).height()-headersHeight);
