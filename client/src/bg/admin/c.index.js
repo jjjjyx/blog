@@ -23,11 +23,15 @@ import App from "./app.vue";
 
 import Index from "./index.vue";
 
+import Toc from "./Toc.vue";
+
 import PostM from "./post/post.vue";
 import AddTerm from "./post/add-term.vue";
 import AddPost from "./post/add-post.vue";
 import PostEdit from "./post/post-edit.vue";
 import PostTrash from "./post/trash.vue";
+
+// import Test from "./testUpload.vue";
 
 import NotFoundComponent from "./404.vue"
 // console.log(store.getters.user)
@@ -51,18 +55,26 @@ var router = new VueRouter({
     // mode: "history",
     routes: [{
             path: "/",
-            component: Index,
+            components:{
+                default:Index,
+                toc:Toc
+            },
             meta:{
                 name:'首页',
                 description:'也没什么好说的',
+                sub:'dashboard'
             }
         },
         {
             path:"/post/management",
-            component:PostM,
+            components:{
+                default:PostM,
+                toc:Toc
+            },
             meta:{
                 name:'文章管理',
                 description:'管理文章发布状态',
+                sub:'Article'
             },
 
         },
@@ -96,6 +108,10 @@ var router = new VueRouter({
             ],
 
         },
+        // {
+        //     path:"/test",
+        //     component:Test
+        // },
         {
             path: "*",
             component: NotFoundComponent

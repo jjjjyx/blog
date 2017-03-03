@@ -1,6 +1,6 @@
 <template>
     <div id="">
-        文章管理
+        
     </div>
 </template>
 <script>

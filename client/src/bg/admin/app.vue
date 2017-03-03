@@ -171,6 +171,7 @@
             <!-- 内容区域 -->
             <div class="tpl-content-wrapper" :style="autoHeight" :class="{active:isSidebarShow}">
                 <div style="overflow-y: auto;overflow-x: hidden;height:100%;width:100%;">
+                    <router-view class="container-fluid am-cf" name="toc"></router-view>
                     <router-view></router-view>
                 </div>
             </div>

@@ -291,6 +291,26 @@ export default {
                 this.merge(data.data);
                 layer.msg(data.msg);
             }
+        },
+        qiniuUpload(file ,{token,key,domain},fn){
+            let xhr = new XMLHttpRequest();
+            //创建表单
+            xhr.open('POST', 'http://up-z2.qiniu.com/', true);
+            var formData;
+            formData = new FormData();
+            formData.append('key', key);
+            formData.append('token', token);
+            formData.append('file', file);
+            formData.append('mimeType', "image/jpeg");
+            xhr.onreadystatechange = function(response) {
+                if (xhr.readyState == 4 && xhr.status == 200 && xhr.responseText) {
+                    fn(key,domain)
+                } else {
+                    console.log("failed...");
+                }
+            }
+            //提交数据
+            xhr.send(formData);
         }
 
     },
@@ -308,12 +328,13 @@ export default {
         }
     },
     mounted:async function() {
-
+        let self = this;
         // console.log();
         editormd.emoji.path = "http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/";
         this.editormd = editormd("post-editormd", {
-            path : '../editormd/lib/',
-            emoji:true,
+            path              : '../editormd/lib/',
+            emoji             : true,
+            imageUpload       : true,
             toolbarIcons:()=> [
                 "undo", "redo", "|",
                 "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
@@ -327,27 +348,27 @@ export default {
                 publish:'am-icon-send'
             },
             onload:()=>{
-                console.log(this.editormd);
-                console.log(this.editormd.cm);
-                this.editormd.codeEditor.on("contextmenu",function(editor,e){
-                    console.log(111,e);
-                })
-                this.editormd.codeEditor.on("change",function(editor,e){
-                    console.log(112221,e);
-                })
+                this.editormd.cm.getInputField().addEventListener("paste", async function (e) {
+                    var clipboardData = event.clipboardData || window.clipboardData;
+                    if (clipboardData) {
+                         for (var i = 0, len = e.clipboardData.items.length; i < len; i++) {
+                            var item = e.clipboardData.items[i];
+                            if (item.kind === "file" && item.type == 'image/png') {
+                                var pasteFile = item.getAsFile();
+                                let tokenK = await api.getToken();
+                                self.qiniuUpload(pasteFile,tokenK,(key,domain)=>{
+                                    let img = `![](${domain}${key})\n`;
+                                    self.editormd.insertValue(img);
+                                })
+                            }
+                        }
+                    }
+                });
+            },
+            ouloadFn :async function(files,fn) {
+                let tokenK = await api.getToken();
+                self.qiniuUpload(files,tokenK,fn)
             }
-            // toolbarIconTexts : {
-            //    publish : "直接发布"  // 如果没有图标，则可以这样直接插入内容，可以是字符串或HTML标签
-            // },
-            // toolbarCustomIcons :{
-            //     publish:(()=> `<a unselectable="no" ><i class="am-icon-send fa" name="publish" style="display:inline-block"></i> 直接发布</a>`)()
-            // },
-            // toolbarHandlers:{
-            //     publish:(cm, icon, cursor, selection)=>{
-            //         console.log(icon)
-            //     }
-            // },
-
         });
 
 
@@ -361,7 +382,7 @@ export default {
                 _time = setTimeout(this.saveCurrPost,1200);
             }
         })
-        let self = this;
+
         key.bind('tag',{
             keys:['ctrl+s'],
             oncall:(e)=>{

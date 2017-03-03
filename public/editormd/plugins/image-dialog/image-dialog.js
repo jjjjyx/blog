@@ -148,38 +148,55 @@
                     loading(true);
 
                     var submitHandler = function() {
-
-                        var uploadIframe = document.getElementById(iframeName);
-
-                        uploadIframe.onload = function() {
-
+                        var files = fileInput[0].files
+                        if (files.length > 0) {
+                            //Qiniu_upload(files, files.length, 0)
+                            settings.ouloadFn(files[0],(key,domain)=>{
+                                // console.log(key,domain)
+                                $('[data-url]').val(domain + key)
+                                loading(false);
+                            })
+                        }else{
                             loading(false);
-
-                            var body = (uploadIframe.contentWindow ? uploadIframe.contentWindow : uploadIframe.contentDocument).document.body;
-                            var json = (body.innerText) ? body.innerText : ( (body.textContent) ? body.textContent : null);
-
-                            json = (typeof JSON.parse !== "undefined") ? JSON.parse(json) : eval("(" + json + ")");
-
-                            if(!settings.crossDomainUpload)
-                            {
-                              if (json.success === 1)
-                              {
-                                  dialog.find("[data-url]").val(json.url);
-                              }
-                              else
-                              {
-                                  alert(json.message);
-                              }
-                            }
-
-                            return false;
-                        };
+                        }
+                        return false
                     };
 
                     dialog.find("[type=\"submit\"]").bind("click", submitHandler).trigger("click");
 				});
             }
-
+            // function Qiniu_upload(files, length, i){
+            //     if (length > i) {
+            //         var formdata = new FormData()
+            //         formdata.append('file', files[i])
+            //         let token = settings.token();
+            //         formdata.append('key', new Date().getTime() + '.jpg')
+            //         formdata.append('token', '七牛账号对应的token')
+            //         $.ajax({
+            //             type: 'POST',
+            //             url: 'http://up.qiniu.com/',
+            //             data: formdata,
+            //             dataType: 'json',
+            //             contentType: false,
+            //             processData: false
+            //         }).then(function(json) {
+            //             var oldurl = $('[data-url]').val()
+            //             if (oldurl === '') {
+            //                 $('[data-url]').val('七牛图片服务器的域名/' + json.key)
+            //             } else {
+            //                 oldurl = oldurl + '$$七牛图片服务器的域名/' + json.key
+            //                 $('[data-url]').val(oldurl)
+            //             }
+            //             i++
+            //             Qiniu_upload(files, length, i)
+            //         }, function (err) {
+            //             console.log(err)
+            //         })
+            //     } else {
+            //         $('[name="file"]').val('')
+            //         loading(false)
+            //     }
+            // }
 			dialog = editor.find("." + dialogName);
 			dialog.find("[type=\"text\"]").val("");
 			dialog.find("[type=\"file\"]").val("");

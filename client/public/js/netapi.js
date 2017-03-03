@@ -225,6 +225,15 @@ export function postUnlock(id) {
         });
     });
 }
+export function getToken(){
+    return new Promise((resolve, reject) => {
+        $.get(`${API_SERVER}/api/img/token`).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
 // export function savePostTag(params){
 //     return new Promise((resolve, reject) => {
 //         $.post(`${API_SERVER}/api/post/saveTag`,params).done((data) => {

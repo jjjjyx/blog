@@ -13,7 +13,7 @@ const developmentConf = merge(baseConfig, {
     devtool: 'cheap-module-source-map',
     plugins: [
         new CleanWebpackPlugin(['../public'],{
-            exclude: ["preloader.css","favicon.ico",'editormd']
+            exclude: ["preloader.css","favicon.ico",'editormd','Moxie.swf']
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',

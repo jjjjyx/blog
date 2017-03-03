@@ -1,5 +1,5 @@
 'use strict';
-
+// module.exports
 
 let db = {
     host: '127.0.0.1',
@@ -43,3 +43,9 @@ exports.db = db;
 exports.APP_PORT = 3878;
 exports.secret = "$2a$10$5A/Wb/EnCwdS2Yxdk0ouGe4beJn7ZTpPD9ofzMdaLc45EgIZwURg6"
 exports.allowOrigin = allowOrigin;
+exports.qiUpload= {
+    'ACCESS_KEY': 'yON2TZBHksg2FxJdZzrZcm5hDLzEB-YG7I1iyw6I',
+    'SECRET_KEY': 'lAkKzNLxsNs9eQXJ6DTyjJAxf6A0A_wsTGYxZDGH',
+    'Bucket_Name': 'jyximg',
+    'Domain': 'http://oht47c0d0.bkt.clouddn.com/'
+};

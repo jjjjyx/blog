@@ -36,9 +36,9 @@
             </a>
             <ul class="sidebar-nav sidebar-nav-sub">
                 <li class="sidebar-nav-link">
-                    <a href="javascript:;">
+                    <router-link to="/post/management" active-class='active'>
                         <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 所有文章
-                    </a>
+                    </router-link>
                 </li>
                 <li class="sidebar-nav-link">
                     <router-link to="/post/category" active-class='active'>

@@ -5,4 +5,5 @@ module.exports = function (app) {
     app.use("/api/term", require("./bg/term.js")());
     app.use("/api/post", require("./bg/post.js")());
     app.use("/api/user", require("./bg/user.js")());
+    app.use("/api/img" , require("./bg/upLoadFile.js")());
 };
