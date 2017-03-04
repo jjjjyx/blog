@@ -51,7 +51,7 @@
                                         <td>{{item.id}}</td>
                                         <td class="am-text-middle">{{item.post_title}}</td>
                                         <td class="am-text-middle">{{item.author}}</td>
-                                        <td class="am-text-middle">{{item.create_at}}</td>
+                                        <td class="am-text-middle">{{formatDate(item.create_at)}}</td>
                                         <td class="am-text-middle">
                                             <div class="tpl-table-black-operation">
                                                 <router-link :to="{path:`/post/category/${item.term_id}/article/${item.id}`}">
@@ -82,7 +82,9 @@ import { mapGetters, mapActions,mapMutations } from 'vuex'
 import * as api from "../../../../public/js/netapi.js";
 export default {
     data: function() {
-        return {}
+        return {
+            filterCategory:'',
+        }
     },
     components: {},
     computed: {
@@ -90,11 +92,20 @@ export default {
             'categoryList',
             'posts',
         ]),
+        filterPosts(){
+            return this.posts.filter((item)=>{
+                return !item.delete_at;
+            })
+        }
     },
     methods: {
         ...mapMutations([
             'setPosts'
-        ])
+        ]),
+        formatDate(_time){
+            let time = new Date(_time);
+            return time.format('yyyy/MM/dd hh:mm');
+        },
     },
     mounted:async function() {
         // console.log(this.$route)

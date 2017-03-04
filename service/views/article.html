@@ -92,16 +92,16 @@
                     <div class="post-share am-fr">
                         <ul class="sharehidden">
                             <li>
-                                <a href="http://www.jiathis.com/send/?webid=weixin&amp;url=http://dailinhua.com/article/214&amp;title=<%=post_title%>" onclick="window.open(this.href, 'renren-share', 'width=490,height=700');return false;" class="s-weixin"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/wechat.png"></a>
+                                <a href="http://www.jiathis.com/send/?webid=weixin&amp;url=http://www.mbdoge.cn/p/<%=guid%>&amp;title=<%=post_title%>" onclick="window.open(this.href, 'renren-share', 'width=490,height=700');return false;" class="s-weixin"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/wechat.png"></a>
                             </li>
                             <li>
-                                <a href="http://www.jiathis.com/send/?webid=qzone&amp;url=http://dailinhua.com/article/214&amp;title=<%=post_title%>" onclick="window.open(this.href, 'weibo-share', 'width=730,height=500');return false;" class="s-qq"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/qzone.png"></a>
+                                <a href="http://www.jiathis.com/send/?webid=qzone&amp;url=http://www.mbdoge.cn/p/<%=guid%>&amp;title=<%=post_title%>" onclick="window.open(this.href, 'weibo-share', 'width=730,height=500');return false;" class="s-qq"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/qzone.png"></a>
                             </li>
                             <li>
-                                <a href="http://www.jiathis.com/send/?webid=tsina&amp;url=http://dailinhua.com/article/214&amp;title=<%=post_title%>" onclick="window.open(this.href, 'weibo-share', 'width=550,height=235');return false;" class="s-sina"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/sina.png"></a>
+                                <a href="http://www.jiathis.com/send/?webid=tsina&amp;url=http://www.mbdoge.cn/p/<%=guid%>&amp;title=<%=post_title%>" onclick="window.open(this.href, 'weibo-share', 'width=550,height=235');return false;" class="s-sina"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/sina.png"></a>
                             </li>
                             <li>
-                                <a href="http://www.jiathis.com/send/?webid=douban&amp;url=http://dailinhua.com/article/214&amp;title=<%=post_title%>" onclick="window.open(this.href, 'renren-share', 'width=490,height=600');return false;" class="s-douban"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/douban.png"></a>
+                                <a href="http://www.jiathis.com/send/?webid=douban&amp;url=http://www.mbdoge.cn/p/<%=guid%>&amp;title=<%=post_title%>" onclick="window.open(this.href, 'renren-share', 'width=490,height=600');return false;" class="s-douban"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/douban.png"></a>
                             </li>
                         </ul>
                         <a class="am-btn am-round am-btn-xs am-btn-secondary"><i class="am-icon-share"></i> 分享</a>
@@ -109,7 +109,7 @@
                 </footer>
                 <div class="ds-thread" data-thread-key="<%=guid%>" data-title="<%=post_title%>" data-url="www.mbdoge.cn/p/<%=guid%>"></div>
                 <script type="text/javascript">
-                    var duoshuoQuery = { short_name: "jjjjyx"};
+                    var duoshuoQuery = { short_name: "\x6a\x6a\x6a\x6a\x79\x78"};
                     (function() {
                         var ds = document.createElement('script');
                         ds.type = 'text/javascript';
@@ -133,6 +133,28 @@
     <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>
     <script type="text/javascript" src="/vendor.js"></script>
     <script type="text/javascript" src="/article.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        var imgs = new Array();
+        imgs[0] = 'http://oht47c0d0.bkt.clouddn.com/d7d26cc0-00b2-11e7-89fa-17d9cf406414.png';
+        imgs[1] = 'http://oht47c0d0.bkt.clouddn.com/eb0065e0-00b2-11e7-89fa-17d9cf406414.png';
+        imgs[2] = 'http://oht47c0d0.bkt.clouddn.com/041a06d0-00b3-11e7-89fa-17d9cf406414.png';
+        imgs[3] = 'http://oht47c0d0.bkt.clouddn.com/0fe807a0-00b3-11e7-89fa-17d9cf406414.png';
+        imgs[4] = 'http://oht47c0d0.bkt.clouddn.com/1e498490-00b3-11e7-89fa-17d9cf406414.png';
+        imgs[5] = 'http://oht47c0d0.bkt.clouddn.com/28e60a40-00b3-11e7-89fa-17d9cf406414.png';
+        let wait = ()=>{
+            if($('.ds-avatar img[src*="duoshuo"]').length){
+                $('.ds-avatar img[src*="duoshuo"]').each(function(){
+                    var rand = Math.floor(Math.random()*imgs.length);
+                    $(this).attr("src",imgs[rand]);
+                })
+            }else{
+                setTimeout(wait,200);
+            }
+        }
+        wait();
+    });
+    </script>
 </body>
 
 </html>

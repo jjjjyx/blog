@@ -93,7 +93,9 @@
                     <div class="part">
                         <div class="j-title">
                             <h3 class="">标签</h3>
-                            <!-- <span class="gapline">|</span> v-if="enabled" -->
+                            <a href="javascript:;" class="r btn btn-sm " style="color:#B3B3B3">
+                                全部 &nbsp;&nbsp;<i class="am-icon-angle-right"></i>
+                            </a>
                         </div>
                         <div class="tags">
                             <input type="password" ref="login" v-if="enabled" v-model="keyword" class="login" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
@@ -125,10 +127,10 @@
                             </a>
                             <!-- <span class="gapline">|</span> -->
                         </div>
-                        <ul class="ds-top-threads j-list" data-range="daily" data-num-items="10"></ul>
+                        <ul class="ds-top-threads j-list" data-range="monthly" data-num-items="10"></ul>
                         <script type="text/javascript">
                             var duoshuoQuery = {
-                                short_name: "jjjjyx"
+                                short_name: "\x6a\x6a\x6a\x6a\x79\x78"
                             };
                             (function() {
                                 var ds = document.createElement('script');
@@ -183,5 +185,27 @@
      <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>
      <script type="text/javascript" src="/vendor.js"></script>
     <script type="text/javascript" src="/index.js"></script>
+    <script type="text/javascript">
+    $(document).ready(function(){
+        var imgs = new Array();
+        imgs[0] = 'http://oht47c0d0.bkt.clouddn.com/d7d26cc0-00b2-11e7-89fa-17d9cf406414.png';
+        imgs[1] = 'http://oht47c0d0.bkt.clouddn.com/eb0065e0-00b2-11e7-89fa-17d9cf406414.png';
+        imgs[2] = 'http://oht47c0d0.bkt.clouddn.com/041a06d0-00b3-11e7-89fa-17d9cf406414.png';
+        imgs[3] = 'http://oht47c0d0.bkt.clouddn.com/0fe807a0-00b3-11e7-89fa-17d9cf406414.png';
+        imgs[4] = 'http://oht47c0d0.bkt.clouddn.com/1e498490-00b3-11e7-89fa-17d9cf406414.png';
+        imgs[5] = 'http://oht47c0d0.bkt.clouddn.com/28e60a40-00b3-11e7-89fa-17d9cf406414.png';
+        let wait = ()=>{
+            if($('.ds-avatar img[src*="duoshuo"]').length){
+                $('.ds-avatar img[src*="duoshuo"]').each(function(){
+                    var rand = Math.floor(Math.random()*imgs.length);
+                    $(this).attr("src",imgs[rand]);
+                })
+            }else{
+                setTimeout(wait,200);
+            }
+        }
+        wait();
+    });
+    </script>
 </body>
 </html>

@@ -295,7 +295,11 @@
 
 .sidebar .part {
     padding-left: 30px;
+    padding-right: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
     margin-bottom: 50px;
+    background-color: #FAFAFA;
     .tag {
         display: inline-block;
         padding: 4px 10px 3px 10px;
@@ -351,6 +355,15 @@
         margin: 0;
         padding: 0;
         line-height: 24px;
+        &::after{
+            content: "";
+            width: 100px;
+            height: 1px;
+            background: @logoColor;
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+        }
     }
 
     .j-title .num {
@@ -390,7 +403,9 @@
     }
     .j-list li{
         line-height: 24px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #EDEDED;
         a{
             color: #333333;
         }
