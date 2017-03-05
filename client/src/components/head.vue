@@ -15,7 +15,7 @@
     <div class="am-container">
         <a href="/" class="am-topbar-brand">
           <!-- <a href="#" class="am-text-ir">Amaze UI</a> -->
-          <img src="../../public/img/logo.png" class="logo" alt="">
+          <img src="http://oht47c0d0.bkt.clouddn.com/d49ebe20-0164-11e7-a78f-bff8463d6eaf.png" class="logo" alt="">
         </a>
 
         <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success am-show-sm-only" data-am-collapse="{target: '#doc-topbar-collapse'}">
