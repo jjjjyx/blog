@@ -8,82 +8,83 @@ var async = require("async");
 
 //
 let tag = [
-//     {
-//     "name": "中国当代小说",
-//     "src": "262669"
-// }, {
-//     "name": "中国近现代小说",
-//     "src": "262667"
-// }, {
-//     "name": "中国古典小说",
-//     "src": "262668"
-// }, {
-//     "name": "四大名著",
-//     "src": "262677"
-// }, {
-//     "name": "外国小说",
-//     "src": "262676"
-// }, {
-//     "name": "传记",
-//     "src": "264006"
-// }, {
-//     "name": "言情",
-//     "src": "262673"
-// }, {
-//     "name": "魔幻玄幻",
-//     "src": "262681"
-// }, {
-//     "name": "历史小说",
-//     "src": "262682"
-// }, {
-//     "name": "悬疑/惊悚",
-//     "src": "264298"
-// }, {
-//     "name": "玄幻/新武侠",
-//     "src": "264299"
-// }, {
-//     "name": "校园",
-//     "src": "264300"
-// }, {
-//     "name": "叛逆/成长",
-//     "src": "264301"
-// }, {
-//     "name": "大陆原创",
-//     "src": "264302"
-// }, {
-//     "name": "爆笑/无厘头",
-//     "src": "264303"
-// }, {
-//     "name": "爱情/情感",
-//     "src": "264304"
-// }, {
-//     "name": "娱乐/偶像",
-//     "src": "264297"
-// }, {
-//     "name": "其他青春文学",
-//     "src": "264305"
-// }, {
-//     "name": "艺术理论",
-//     "src": "262817"
-// }, {
-//     "name": "绘画",
-//     "src": "262846"
-// }, {
-//     "name": "影视艺术",
-//     "src": "262802"
-// }, {
-//     "name": "音乐",
-//     "src": "262806"
-// }, {
-//     "name": "书法篆刻",
-//     "src": "262822"
-// }, {
-//     "name": "设计",
-//     "src": "262836"
-// }, {
-//     "name": "人体艺术",
-//     "src": "262843"
-// },
+    {
+    "name": "中国当代小说",
+    "src": "262669"
+}, {
+    "name": "中国近现代小说",
+    "src": "262667"
+}, {
+    "name": "中国古典小说",
+    "src": "262668"
+}, {
+    "name": "四大名著",
+    "src": "262677"
+}, {
+    "name": "外国小说",
+    "src": "262676"
+}, {
+    "name": "传记",
+    "src": "264006"
+}, {
+    "name": "言情",
+    "src": "262673"
+}, {
+    "name": "魔幻玄幻",
+    "src": "262681"
+}, {
+    "name": "历史小说",
+    "src": "262682"
+}, {
+    "name": "悬疑/惊悚",
+    "src": "264298"
+}, {
+    "name": "玄幻/新武侠",
+    "src": "264299"
+}, {
+    "name": "校园",
+    "src": "264300"
+}, {
+    "name": "叛逆/成长",
+    "src": "264301"
+}, {
+    "name": "大陆原创",
+    "src": "264302"
+}, {
+    "name": "爆笑/无厘头",
+    "src": "264303"
+}, {
+    "name": "爱情/情感",
+    "src": "264304"
+},
+{
+    "name": "娱乐/偶像",
+    "src": "264297"
+}, {
+    "name": "其他青春文学",
+    "src": "264305"
+}, {
+    "name": "艺术理论",
+    "src": "262817"
+}, {
+    "name": "绘画",
+    "src": "262846"
+}, {
+    "name": "影视艺术",
+    "src": "262802"
+}, {
+    "name": "音乐",
+    "src": "262806"
+}, {
+    "name": "书法篆刻",
+    "src": "262822"
+}, {
+    "name": "设计",
+    "src": "262836"
+}, {
+    "name": "人体艺术",
+    "src": "262843"
+},
 {
     "name": "建筑艺术",
     "src": "262845"
@@ -675,11 +676,20 @@ let funArr = []
 
 tag.forEach(function (tagItem) {
     for (let cp = 1; cp <= 600; cp++) {
-        let url = `http://list.suning.com/emall/bookShowProductList.do?ci=${tagItem.src}&pg=09&n=2&cp=${cp}&st=0&cc=010`;
-
+        let url = `/emall/bookShowProductList.do?ci=${tagItem.src}&pg=09&n=2&cp=${cp}&st=0&cc=010`;
+        let options = {
+            host: 'list.suning.com',
+            port:80,
+            path:url,
+            method: 'GET',
+            headers: {
+                'Content-Type': 'text/html; charset=utf-8',
+                "User-Agent":"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36",
+            }
+        };
         let fun = function (cb) {
-            http.get(url, function (res) {
-                var html = "";
+            http.get(options, function (res) {
+                let html = "";
                 res.on("data", function (chunk) {
                     html += chunk;
                 });

@@ -1,6 +1,6 @@
 var fs = require("fs");
 var path = require("path")
-let dir = "D:/data";
+let dir = "J:\\无法格式化的文件\\mysql\\333333333333333333\\其他格式";
 var exec = require('child_process').exec;
 
 var iconv = require('iconv-lite');
@@ -20,7 +20,20 @@ function getTableName(p) {
     }))
 }
 
-fs.readdir("D:/data", function(err, files) {
+
+var mkdirs = function(dirpath, mode, callback) {
+    fs.exists(dirpath, function(exists) {
+        if(exists) {
+                callback(dirpath);
+        } else {
+                mkdirs(path.dirname(dirpath), mode, function(){
+                        fs.mkdir(dirpath, mode, callback);
+                });
+        }
+    });
+}
+
+fs.readdir(dir, function(err, files) {
     if (err) {
         return console.error(err);
     }
@@ -31,13 +44,12 @@ fs.readdir("D:/data", function(err, files) {
             let info = fs.statSync(p)
             if (info.isDirectory()) {
                 for(let name of getTableName(p)){
-                    let exportPath = path.join('d:',"export",file);
-                    if(!fs.existsSync(exportPath)){
-                        fs.mkdirSync(exportPath);
-                    }
-                    let sql = `mysqldump -u root  ${file} ${name} --no-create-info --skip-extended-insert --skip-create-options --compact > ${path.join(exportPath,name+".sql")}`;
-                    console.log(sql)
-                    ex(sql);
+                    let exportPath = path.join('d:',"sqlexport","无法格式化的文件/mysql/333333333333333333/其他格式",file);
+                    mkdirs(exportPath,null,function(d){
+                        let sql = `mysqldump -u root  ${file} ${name} --no-create-info --skip-extended-insert --skip-create-options --compact > ${path.join(exportPath,name+".sql")}`;
+                        ex(sql);
+                    });
+
                 }
             }
         }
