@@ -1,5 +1,5 @@
 import keyboardJS from "keyboardjs";
-import {re_findall, browser} from "./tools";
+import {reFindall, browser} from "./tools";
 
 /*{
     'key': ['enter'],
@@ -17,7 +17,7 @@ class Key {
 
     /** 按照系统不同对按键进行适配替换，同时返回每一个单体按键以及按键说明文本 */
     _compile(keytext) {
-        let btns = re_findall(/([a-z0-9]+|[+>])/g, keytext);
+        let btns = reFindall(/([a-z0-9]+|[+>])/g, keytext);
         for (let i in btns) {
             let btn = btns[i];
             if (browser.mac) {

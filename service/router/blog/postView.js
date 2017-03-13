@@ -1,11 +1,11 @@
-let debug = require('debug')('app:routes:blog/index' + process.pid),
+const debug = require('debug')('app:routes:blog/index' + process.pid),
     path = require('path'),
     Router = require("express").Router,
     xss = require('xss'),
     marked = require("marked"),
     renderer = new marked.Renderer(),
     _ = require("lodash"),
-    postDao = require("../../dao/post.dao").postDao;
+    postDao = require("../../dao/post.dao");
 
 let loadArticleInfo = function(req, res, next){
     req.checkParams('guid','链接不正确').isAlphanumeric().len(24);

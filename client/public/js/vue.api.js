@@ -1,19 +1,4 @@
 
-// export function notUser({redirect,next}){
-//     if(store.state.user==null){
-//         redirect('/user/login?time='+(+new Date()));
-//         $("#loader-inter").removeClass("active");
-//     }else
-//         next();
-// }
-//
-// export function haveUser({redirect,next}){
-//     if(store.state.user!=null){
-//         redirect('/');
-//     }else
-//         next();
-// }
-
 import Vue from "vue";
 
 import {dateFormat, getTimeText} from "./tools"

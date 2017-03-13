@@ -6,10 +6,10 @@ let debug = require('debug')('app:routes:user' + process.pid),
     rateLimiter = require('redis-rate-limiter'),
     redis = require("redis"),
     client = redis.createClient(),
-    userDao = require("../../dao/user.dao").userDao;
+    userDao = require("../../dao/user.dao");
 
 
-var authenticate = function (req, res, next) {
+let authenticate = function (req, res, next) {
     // debug("Processing authenticate middleware");
     var username = req.body.username,
         password = req.body.password;

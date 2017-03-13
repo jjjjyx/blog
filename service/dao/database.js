@@ -22,7 +22,37 @@ config.db.queryFormat = function (query, values) {
 }
 var pool = mysql.createPool(config.db);
 
+
+class BaseDao {
+    constructor(){
+
+    }
+    execCallBack(sql,data,callback,resultFormat){
+        exports.pool.getConnection(function (err, connection) {
+            if (err) {
+                callback(true);
+                return;
+            }
+            connection.query(sql,data, (err, result) => {
+
+                if (err) {
+                    console.log(err);
+                    callback(true);
+                } else {
+                    if(typeof(resultFormat) == "function"){
+                        callback(false, resultFormat(result))
+                    }else{
+                        callback(false, result)
+                    }
+                }
+                connection.release();
+            })
+        });
+    }
+}
+
 exports.pool = pool;
+exports.BaseDao = BaseDao;
 
 function _getNewSqlParamEntity(sql, params,resultFormat, callback) {
     if (callback) {

@@ -1,16 +1,16 @@
-let debug = require('debug')('app:routes:blog/index' + process.pid),
+const debug = require('debug')('app:routes:blog/index' + process.pid),
     Router = require("express").Router,
     xss = require('xss'),
     marked = require("marked"),
     renderer = new marked.Renderer(),
     request = require('request-json'),
     _ = require("lodash"),
-    postDao = require("../../dao/post.dao").postDao,
-    termDao = require("../../dao/term.dao").termDao;
+    postDao = require("../../dao/post.dao"),
+    termDao = require("../../dao/term.dao");
 // validator = require('node-validator');
 // 为了将markdown 的内容全部提取出来 不包含符号
-let textChar = (text) => text || "";
-let emptyChar = () => '';
+const textChar = (text) => text || "";
+const emptyChar = () => '';
 for (let i in renderer) {
     renderer[i] = textChar
 }
@@ -21,7 +21,7 @@ renderer.table = emptyChar
 renderer.image = (href, title, text) => title || "";
 renderer.link = (href, title, text) => title || "";
 
-let indexLi = (data) => {
+const indexLi = (data) => {
     let s = "";
     let pH =(guid)=>
         `<form class="password dimmer inverted " method="post" action="/p/${guid}" target="_blank">
@@ -38,7 +38,7 @@ let indexLi = (data) => {
     </form>
     `;
     let articleGuidList = data.map((item) => item.guid);
-    var client = request.newClient('http://api.duoshuo.com');
+    let client = request.newClient('http://api.duoshuo.com');
     return new Promise((resolve, reject) => {
         client.get(`threads/counts.json?short_name=jjjjyx&threads=${articleGuidList.join(',')}`, function(err, res, body) {
             // console.log(res.statusCode, body);

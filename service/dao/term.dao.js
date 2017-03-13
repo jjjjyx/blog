@@ -1,6 +1,4 @@
-'use strict';
-
-let db = require("./database");
+const db = require("./database");
 // `term_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT 'term_id：分类ID',
 // `name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '分类名',
 // `slug` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '缩略名',
@@ -9,27 +7,9 @@ let db = require("./database");
 //insert into j_term_taxonomy(term_id,taxonomy,description,count) select term_id,'category' as taxonomy,'分类' as description,0 as count from j_terms
 
 
-class TermDao {
-    execCallBack(sql,data,callback,resultFormat){
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql,data, (err, result) => {
-                if (err) {
-                    console.log(err);
-                    callback(true);
-                } else {
-                    if(typeof(resultFormat) == "function"){
-                        callback(false, resultFormat(result))
-                    }else{
-                        callback(false, result)
-                    }
-                }
-                connection.release();
-            })
-        });
+class TermDao extends db.BaseDao{
+    constructor() {
+        super();
     }
 
     loadAll (callback){
@@ -127,4 +107,4 @@ class TermsBean {
 }
 
 const termDao = new TermDao();
-module.exports.termDao = termDao;
+module.exports = termDao;

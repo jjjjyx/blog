@@ -3,45 +3,50 @@
  * @param format
  * @returns
  */
-Date.prototype.format = function(format){
+Date.prototype.format = function(format) {
     var o = {
-            "M+" : this.getMonth()+1, //month
-            "d+" : this.getDate(), //day
-            "h+" : this.getHours(), //hour
-            "m+" : this.getMinutes(), //minute
-            "s+" : this.getSeconds(), //second
-            "q+" : Math.floor((this.getMonth()+3)/3), //quarter
-            "S" : this.getMilliseconds() //millisecond
-        }
-        if(/(y+)/.test(format)) {
-            format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
-        }
-        for(var k in o) {
-            if(new RegExp("("+ k +")").test(format)) {
-                format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length));
+        "M+": this.getMonth() + 1, //month
+        "d+": this.getDate(), //day
+        "h+": this.getHours(), //hour
+        "m+": this.getMinutes(), //minute
+        "s+": this.getSeconds(), //second
+        "q+": Math.floor((this.getMonth() + 3) / 3), //quarter
+        "S": this.getMilliseconds() //millisecond
+    }
+    if (/(y+)/.test(format)) {
+        format = format.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (var k in o) {
+        if (new RegExp("(" + k + ")").test(format)) {
+            format = format.replace(RegExp.$1, RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length));
         }
     }
     return format;
 }
 
-export function re_findall (pattern, s) {
+export function reFindall(pattern, s) {
     let result = [];
-    s.replace(pattern, (_, val) => { result.push(val); })
+    s.replace(pattern, (index , val) => {
+        result.push(val);
+    })
     return result;
 }
 
-export function getTimeText(timeInMs,pattern) {
-    let ms = Math.abs(timeInMs*1000 - new Date()),
+export function getTimeText(timeInMs, pattern) {
+    let ms = Math.abs(timeInMs * 1000 - new Date()),
         s = ms / 1000,
         m = s / 60,
         h = m / 60;
-    if (s < 60) return `${s|0}秒前`;
-    if (m < 60) return `${m|0}分钟前`;
-    if (h < 24) return `昨天`;
-    return dateFormat(timeInMs,pattern);
+    if (s < 60)
+        return `${s|0}秒前`;
+    if (m < 60)
+        return `${m|0}分钟前`;
+    if (h < 24)
+        return `昨天`;
+    return dateFormat(timeInMs, pattern);
 }
-export function dateFormat(timeInMs,pattern){
-    return new Date(timeInMs*1000).format(pattern||'yyyy/MM/dd hh:mm')
+export function dateFormat(timeInMs, pattern) {
+    return new Date(timeInMs * 1000).format(pattern || 'yyyy/MM/dd hh:mm')
 }
 
 export const browser = (function() {
@@ -147,17 +152,22 @@ export const browser = (function() {
         browser.safari = +(RegExp["$1"] || RegExp["$2"]);
     }
     // Opera 9.50+
-    if (browser.opera) version = parseFloat(opera.version());
+    if (browser.opera)
+        version = parseFloat(opera.version());
     // WebKit 522+ (Safari 3+)
-    if (browser.webkit) version = parseFloat(agent.match(/ applewebkit\/(\d+)/)[1]);
+    if (browser.webkit)
+        version = parseFloat(agent.match(/ applewebkit\/(\d+)/)[1]);
     // 搜狗版本号无从得知
     // 猎豹版本号无从得知
     // 百度
-    if (browser.bd) version = parseFloat(agent.match(/bidubrowser\/(\d+)/)[1]);
+    if (browser.bd)
+        version = parseFloat(agent.match(/bidubrowser\/(\d+)/)[1]);
     // Opera 9.50+
-    if (browser.opera) version = parseFloat(agent.match(/opr\/(\d+)/)[1]);
+    if (browser.opera)
+        version = parseFloat(agent.match(/opr\/(\d+)/)[1]);
     // edge
-    if (browser.edge) version = parseFloat(agent.match(/edge\/(\d+)/)[1]);
+    if (browser.edge)
+        version = parseFloat(agent.match(/edge\/(\d+)/)[1]);
     /**
      * @property version
      * @for kity.Browser
@@ -168,16 +178,12 @@ export const browser = (function() {
     return browser;
 })();
 
-export function getClientHeight()
-{
-    var clientHeight=0;
-    if(document.body.clientHeight&&document.documentElement.clientHeight)
-    {
-        var clientHeight = (document.body.clientHeight<document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
-    }
-    else
-    {
-        var clientHeight = (document.body.clientHeight>document.documentElement.clientHeight)?document.body.clientHeight:document.documentElement.clientHeight;
+export function getClientHeight() {
+    var clientHeight = 0;
+    if (document.body.clientHeight && document.documentElement.clientHeight) {
+        var clientHeight = (document.body.clientHeight < document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
+    } else {
+        var clientHeight = (document.body.clientHeight > document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
     }
     return clientHeight;
 }
@@ -186,16 +192,16 @@ export function getClientHeight()
 export function formatFileSize(fileSize) {
     if (fileSize < 1024) {
         return fileSize + 'B';
-    } else if (fileSize < (1024*1024)) {
+    } else if (fileSize < (1024 * 1024)) {
         var temp = fileSize / 1024;
         temp = temp.toFixed(2);
         return temp + 'KB';
-    } else if (fileSize < (1024*1024*1024)) {
-        var temp = fileSize / (1024*1024);
+    } else if (fileSize < (1024 * 1024 * 1024)) {
+        var temp = fileSize / (1024 * 1024);
         temp = temp.toFixed(2);
         return temp + 'MB';
     } else {
-        var temp = fileSize / (1024*1024*1024);
+        var temp = fileSize / (1024 * 1024 * 1024);
         temp = temp.toFixed(2);
         return temp + 'GB';
     }
@@ -204,7 +210,7 @@ export function formatFileSize(fileSize) {
 // // 千分位分隔
 let DIGIT_PATTERN = /(^|\s)\d+(?=\.?\d*($|\s))/g
 let MILI_PATTERN = /(?=(?!\b)(\d{3})+\.?\b)/g
-export function miliFormat(num){
+export function miliFormat(num) {
     return num && num.toString()
-    		.replace(DIGIT_PATTERN, (m) => m.replace(MILI_PATTERN, ','));
+        .replace(DIGIT_PATTERN, (m) => m.replace(MILI_PATTERN, ','));
 }

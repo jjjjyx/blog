@@ -701,14 +701,14 @@ tag.forEach(function (tagItem) {
                             var item = {}
                             item['author'] = $('.commentStat .text-line .author>a', this).text();
                             item['booksName='] = $('.thirdInfo .sell', this).text();
-                            item['isbn'] = $(this).find('.bookCover').attr('rel');
+                            item['isbn'] = $(this).attr("name");
                             item['press'] = $('.commentStat .text-line>a', this).text();
                             item['price'] = $('.thirdInfo .bookPrice .fixedPrice>b', this).text().replace("¥", '');
                             item['publishDate'] = $('.commentStat .text-line .author+.text666', this).text().replace(/\//g, '');
                             item['type'] = tagItem.src;
                             item['typeName'] = tagItem.name;
                             item['context'] = $('.thirdInfo p.bookIntro', this).text();
-                            item['imgUrl'] = $(this).find('.bookCover').attr('src');
+                            item['imgUrl'] = $(this).find('.bookCover').attr('src2');
                             date.push(item);
                         });
                         fs.appendFile(path.join(__dirname, 'books.bak'), JSON.stringify(date) + "\n", function (err, c) {

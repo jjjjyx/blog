@@ -10,9 +10,7 @@ const qiniu = require("qiniu"),
 qiniu.conf.ACCESS_KEY = C.qiUpload.ACCESS_KEY;
 qiniu.conf.SECRET_KEY = C.qiUpload.SECRET_KEY;
 
-key = 'my-nodejs-logo.png';
-let domain = C.qiUpload.Domain
-
+const domain = C.qiUpload.Domain
 
 const uptoken = new qiniu.rs.PutPolicy(C.qiUpload.Bucket_Name);
 

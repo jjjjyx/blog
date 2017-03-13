@@ -1,9 +1,9 @@
-let debug = require('debug')('app:routes:term' + process.pid),
+const debug = require('debug')('app:routes:term' + process.pid),
     Router = require("express").Router,
     bcrypt = require("bcryptjs"),
     path = require('path'),
-    utils = require('../../utils');
-    termDao = require("../../dao/term.dao").termDao;
+    utils = require('../../utils'),
+    termDao = require("../../dao/term.dao");
     // validator = require('node-validator');
 
 // let nameReg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/;

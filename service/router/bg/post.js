@@ -1,9 +1,9 @@
-let debug = require('debug')('app:routes:post' + process.pid),
+const debug = require('debug')('app:routes:post' + process.pid),
     Router = require("express").Router,
     bcrypt = require("bcryptjs"),
     path = require('path'),
     utils = require('../../utils'),
-    postDao = require("../../dao/post.dao").postDao,
+    postDao = require("../../dao/post.dao"),
     objectid = require("objectid-js");
 
 let newpost = function(req, res, next){

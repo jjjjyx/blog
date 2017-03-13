@@ -1,7 +1,5 @@
-'use strict';
-
-let db = require("./database");
-let _ = require("lodash");
+const db = require("./database");
+const _ = require("lodash");
 
 // CREATE TABLE `j_posts` (
 //   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -57,9 +55,10 @@ let _ = require("lodash");
 // "post_mime_type",
 // "comment_count",
 // "seq_in_nb"]
-class PostDao {
+class PostDao extends db.BaseDao {
     constructor() {
-        this.key = ["id","post_author","post_date","post_content","post_title","post_excerpt","post_status","comment_status","ping_status","post_password","post_name","term_id","pinged","post_modified","post_content_filtered","post_parent","guid","menu_order","post_type","post_mime_type","comment_count","seq_in_nb","delete_at","create_at","author"]
+        super();
+        this.key = ["id","post_author","post_date","post_content","post_title","post_excerpt","post_status","comment_status","ping_status","post_password","post_name","term_id","pinged","post_modified","post_content_filtered","post_parent","guid","menu_order","post_type","post_mime_type","comment_count","seq_in_nb","delete_at","create_at","author"];
         this.selectSql = `SELECT
             jp.id,
             jp.post_date,
@@ -88,29 +87,6 @@ class PostDao {
         FROM
             j_posts jp left join j_users ju on jp.post_author = ju.id`
 
-    }
-
-    execCallBack(sql,data,callback,resultFormat){
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql,data, (err, result) => {
-
-                if (err) {
-                    console.log(err);
-                    callback(true);
-                } else {
-                    if(typeof(resultFormat) == "function"){
-                        callback(false, resultFormat(result))
-                    }else{
-                        callback(false, result)
-                    }
-                }
-                connection.release();
-            })
-        });
     }
 
     findPostById(id,callback){
@@ -326,4 +302,4 @@ class PostDao {
 }
 
 const postDao = new PostDao();
-module.exports.postDao = postDao;
+module.exports = postDao;
