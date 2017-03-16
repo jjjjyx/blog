@@ -11,6 +11,13 @@ try {
     API_SERVER = pri.default.API_SERVER || API_SERVER;
 } catch (e) {}
 
+/**
+ * 统一的错误处理器
+ * [errorHandler description]
+ * @param  {[type]} status       状态嘛
+ * @param  {[type]} responseJSON 响应体
+ * @return {[type]}
+ */
 let errorHandler = function({status,responseJSON}){
     let data ={code:status};
     switch (status) {
@@ -54,7 +61,12 @@ $.ajaxSetup({
     },
     error:errorHandler
 });
-
+/**
+ * 登录
+ * @param  {[type]} username 账号
+ * @param  {[type]} password 密码
+ * @return {[type]}
+ */
 export function login(username, password) {
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/user/login`, {
@@ -67,7 +79,10 @@ export function login(username, password) {
         });
     });
 }
-
+/**
+ * 退出登陆 虽然没用过
+ * @return {[type]} [description]
+ */
 export function logOut() {
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/user/logout`).done((data) => {
@@ -77,7 +92,10 @@ export function logOut() {
         });
     });
 }
-
+/**
+ * 获取用户的信息
+ * @return {[type]} [description]
+ */
 export function userGetInfo() {
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/user/auth`).done((data) => {
@@ -87,6 +105,11 @@ export function userGetInfo() {
         });
     });
 }
+/**
+ * 获取全部分类
+ * @param  {[type]} taxonomy [description]
+ * @return {[type]}          [description]
+ */
 export function getAllTerm(taxonomy){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/term/getAllTerm`,{taxonomy}).done((data) => {
@@ -96,6 +119,10 @@ export function getAllTerm(taxonomy){
         });
     });
 }
+/**
+ * 添加分类
+ * @param {[type]} params 分类的全部字段
+ */
 export function addTerm(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/term/addTerm`,params).done((data) => {
@@ -105,6 +132,10 @@ export function addTerm(params){
         });
     });
 }
+/**
+ * 添加标签
+ * @param {[type]} params [description]
+ */
 export function addTag(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/term/addTag`,params).done((data) => {
@@ -114,6 +145,11 @@ export function addTag(params){
         });
     });
 }
+/**
+ * 编辑分类
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
 export function editTermName(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/term/editTerm`,params).done((data) => {
@@ -123,6 +159,11 @@ export function editTermName(params){
         });
     });
 }
+/**
+ * 删除分类
+ * @param  {[type]} term_id [description]
+ * @return {[type]}         [description]
+ */
 export function deleteTerm(term_id){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/term/deleteTerm`,{term_id}).done((data) => {
@@ -132,6 +173,11 @@ export function deleteTerm(term_id){
         });
     });
 }
+/**
+ * 删除标签
+ * @param  {[type]} term_id [description]
+ * @return {[type]}         [description]
+ */
 export function deleteTag(term_id){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/term/deleteTag`,{term_id}).done((data) => {
@@ -141,7 +187,10 @@ export function deleteTag(term_id){
         });
     });
 }
-
+/**
+ * 新建文章
+ * @param {[type]} params [description]
+ */
 export function addPost(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/newpost`,params).done((data) => {
@@ -151,6 +200,10 @@ export function addPost(params){
         });
     });
 }
+/**
+ * 获取全部文章，不包括内容
+ * @return {[type]} [description]
+ */
 export function posts(){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/posts`).done((data) => {
@@ -160,6 +213,11 @@ export function posts(){
         });
     });
 }
+/**
+ * 删除文章
+ * @param  {[type]} id 要删除的文章id
+ * @return {[type]}    [description]
+ */
 export function delPost(id){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/delPost`,{id}).done((data) => {
@@ -169,6 +227,11 @@ export function delPost(id){
         });
     });
 }
+/**
+ * 获取文章的内容
+ * @param  {[type]} id 要获取文章内容的id
+ * @return {[type]}    [description]
+ */
 export function postContent(id){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/content`,{id}).done((data) => {
@@ -178,6 +241,11 @@ export function postContent(id){
         });
     });
 }
+/**
+ * 保存文章信息
+ * @param  {[type]} params 保存的字段
+ * @return {[type]}        [description]
+ */
 export function savePost(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/save`,params).done((data) => {
@@ -187,6 +255,11 @@ export function savePost(params){
         });
     });
 }
+/**
+ * 保存文章的标签
+ * @param  {[type]} params 标签列表
+ * @return {[type]}        [description]
+ */
 export function savePostTag(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/saveTag`,params).done((data) => {
@@ -196,6 +269,11 @@ export function savePostTag(params){
         });
     });
 }
+/**
+ * 发布文章
+ * @param  {[type]} id 要发布的文章id
+ * @return {[type]}    [description]
+ */
 export function postPublish(id){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/publish`,{id}).done((data) => {
@@ -205,6 +283,11 @@ export function postPublish(id){
         });
     });
 }
+/**
+ * 撤销文章发布
+ * @param  {[type]} id 要撤销发布的文章id
+ * @return {[type]}    [description]
+ */
 export function postUnPublish(id){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/postUnPublish`,{id}).done((data) => {
@@ -214,7 +297,11 @@ export function postUnPublish(id){
         });
     });
 }
-
+/**
+ * 文章解锁
+ * @param  {[type]} id 将加密的文章解密
+ * @return {[type]}    [description]
+ */
 export function postUnlock(id) {
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/api/post/postUnlock`,{id}).done((data) => {
@@ -225,6 +312,10 @@ export function postUnlock(id) {
         });
     });
 }
+/**
+ * 获取上传图片的token
+ * @return {[type]} [description]
+ */
 export function getToken(){
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/img/token`).done((data) => {
@@ -234,6 +325,10 @@ export function getToken(){
         });
     });
 }
+/**
+ * 获取图片服务器的图片列表
+ * @return {[type]} [description]
+ */
 export function getImgs(){
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/img/list`).done((data) => {
@@ -243,6 +338,11 @@ export function getImgs(){
         });
     });
 }
+/**
+ * 删除一个图片
+ * @param  {[type]} key [description]
+ * @return {[type]}     [description]
+ */
 export function delImg(key){
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/img/delImg`,{key}).done((data) => {

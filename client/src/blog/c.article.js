@@ -5,6 +5,8 @@ import "./static/css/p.less";
 import BlobHeader from "../components/head.vue";
 import BlobFooter from "../components/bottom.vue";
 import {getClientHeight} from "../../public/js/tools.js";
+import * as api from "../../public/js/api.js";
+
 
 const app = new Vue({
     el: '#app',
@@ -40,16 +42,24 @@ const app = new Vue({
             sequenceDiagram : false,  // 默认不解析
             tocm            : true,    // Using [TOCM]
             tocContainer    : "#custom-toc-container", // 自定义 ToC 容器层
-
+            // onload          :function(){
+            //     console.log(111);
+            // }
         });
         this.post_contentLength = $("#article-inner").text().replace(/ /g,'').length;
         // 总滚动条高度-可视高度 - 底部高度 大于此值 将目录上移
         // let kh = getClientHeight();
         let bh = 388;
+        let falg = true;
         $(document).scroll(() => {
             let kh = getClientHeight();
             let zh = document.body.scrollHeight;
             let s = $(document).scrollTop();
+            if(falg&&s>zh/2){
+                api.read().then(()=>{
+                    falg = false;
+                });
+            }
             if(s>(zh-kh-bh)){
                 if(this.$refs['article-tocm']){
                     $(this.$refs['article-tocm']).css({

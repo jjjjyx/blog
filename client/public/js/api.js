@@ -103,3 +103,18 @@ export function loadArticleInfo(params){
         });
     });
 }
+/**
+ * 阅读文章
+ * @param  {[type]} guid [description]
+ * @return {[type]}      [description]
+ */
+export function read(){
+    let pathname = window.location.pathname;
+    return new Promise((resolve, reject) => {
+        $.get(`${API_SERVER}${pathname}`).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
