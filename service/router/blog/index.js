@@ -5,8 +5,10 @@ const debug = require('debug')('app:routes:blog/index' + process.pid),
     renderer = new marked.Renderer(),
     request = require('request-json'),
     _ = require("lodash"),
+    utils = require('../../utils'),
     postDao = require("../../dao/post.dao"),
-    termDao = require("../../dao/term.dao");
+    termDao = require("../../dao/term.dao"),
+    visitorsDao = require("../../dao/visitors.dao");
 // validator = require('node-validator');
 // 为了将markdown 的内容全部提取出来 不包含符号
 const textChar = (text) => text || "";
@@ -145,6 +147,31 @@ let getIndexData = [
             req.renderData.groupList = data;
             next()
         })
+    },
+    function(req, res,next){
+        let ip = utils.getClientIp(req);
+        let userName ;
+        if(req.user)
+            userName = req.user.user_login;
+        visitorsDao.getVisitorsByIP(ip,(err,data)=>{
+            let last = data[0];
+            let jet = true;
+            if(last){
+                let last_at = new Date(last.create_at);
+                console.log((new Date().getTime() - last_at.getTime())/(1000*60*30))
+                jet = ((new Date().getTime() - last_at.getTime())/(1000*60*30))>1;
+            }
+            if(jet){
+                visitorsDao.add({ip,userName,address:'福州'},(err,data)=>{
+                    console.log(data);
+                    next();
+                })
+            }else{
+                next();
+            }
+
+        })
+
     }
 ];
 

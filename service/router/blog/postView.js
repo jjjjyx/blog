@@ -2,12 +2,15 @@ const debug = require('debug')('app:routes:blog/index' + process.pid),
     path = require('path'),
     Router = require("express").Router,
     xss = require('xss'),
+    utils = require('../../utils'),
     marked = require("marked"),
     renderer = new marked.Renderer(),
     _ = require("lodash"),
     postDao = require("../../dao/post.dao");
 
+
 let loadArticleInfo = function(req, res, next){
+    console.log(utils.getClientIp(req))
     req.checkParams('guid','链接不正确').isAlphanumeric().len(24);
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
