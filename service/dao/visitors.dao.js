@@ -1,9 +1,9 @@
 const db = require("./database");
 
 class Visitors extends db.BaseDao {
-    add({ip,userName='no',address},callback){
-        let sql = "INSERT INTO `myblog`.`j_visitors` (`ip`, `create_at`,`userName`,`address`) VALUES (?, ?, ?, ?);";
-        this.execCallBack(sql,[ip,new Date(),userName,address],callback);
+    add({ip,userName='no',address,isp},callback){
+        let sql = "INSERT INTO `myblog`.`j_visitors` (`ip`, `create_at`,`userName`,`address`,`isp`) VALUES (?, ?, ?, ?, ?);";
+        this.execCallBack(sql,[ip,new Date(),userName,address,isp],callback);
     }
     edit(id,time,callback){
 

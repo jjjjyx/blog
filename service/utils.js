@@ -1,5 +1,4 @@
-let
-    debug = require('debug')('app:utils:' + process.pid),
+const debug = require('debug')('app:utils:' + process.pid),
     fs = require('fs'),
     url = require('url'),
     path = require('path'),
@@ -9,6 +8,7 @@ let
     client = redis.createClient(),
     _ = require("lodash"),
     config = require("./config.js"),
+    request = require('request-json'),
     jsonwebtoken = require("jsonwebtoken"),
     TOKEN_EXPIRATION = 60,
     TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5;
@@ -227,3 +227,12 @@ module.exports.getClientIp = function getClientIp(req) {
     req.socket.remoteAddress ||
     req.connection.socket.remoteAddress;
 };
+
+module.exports.getIpInfo = function(ip){
+    let client = request.newClient('http://ip.taobao.com/');
+    return new Promise((resolve, reject) => {
+        client.get(`service/getIpInfo.php?ip=${ip}`, function(err, res, body) {
+            resolve(body);
+        });
+    });
+}
