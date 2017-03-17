@@ -47,8 +47,8 @@ app.use(function (req, res, next) {
     res.setHeader('Access-Control-Max-Age', 1000);
     res.setHeader('Access-Control-Allow-Headers', '*'); //X-Requested-With,content-type,Authorization,Set-Cookie
     res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader("X-Powered-By", 'test');
-    // res.setHeader("Server", 'jjjjyx');
+    res.setHeader("X-Powered-By", 'jjjjyx');
+    res.setHeader("Server", 'jjjjyx');
     // res.setHeader("Content-Type", "application/json;charset=utf-8");
     next();
 });

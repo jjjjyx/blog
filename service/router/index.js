@@ -8,6 +8,7 @@ module.exports = function (app) {
             let ip = utils.getClientIp(req);
             let userName ;
             let token = req.cookies.u;
+            // console.log(req.cookies.u)
             if(token){
                 let decoded = jsonwebtoken.decode(token);
                 userName = decoded.user_login;

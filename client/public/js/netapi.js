@@ -59,6 +59,9 @@ $.ajaxSetup({
     xhrFields: {
         withCredentials: true
     },
+    headers:{
+        "X-Requested-With":"XMLHttpRequest"
+    },
     error:errorHandler
 });
 /**
