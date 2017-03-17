@@ -13,48 +13,6 @@ const debug = require('debug')('app:routes:blog/index' + process.pid),
 let loadArticleInfo = [
     function(req, res, next){
         req.checkParams('guid','链接不正确').isAlphanumeric().len(24);
-        if(req.xhr){
-            let map = {
-                code:-1,
-                // msg:"ok"
-            }
-            req.getValidationResult().then(function(result) {
-                if(!result.isEmpty()){
-                    map.code = -1;
-                    // map.msg="链接不正确";
-                    res.status(200).json(map)
-                }else{
-                    let guid = req.params.guid;
-                    postDao.getArticleInfoByGuid(guid,(err, data)=>{
-                        let articleInfo = data[0];
-
-                        if(_.isEmpty(articleInfo)){
-                            map.code = -2;
-                        }
-                        let ip = utils.getClientIp(req);
-                        let useragent = req.headers['user-agent'];
-                        console.log(ip,useragent,guid)
-                        readsDao.add({ip,useragent,guid},(err)=>{
-                            if(err){
-                                map.code = -3;
-                                // 已经阅读或者数据库错误
-                            }else{
-                                map.code = 0;
-                            }
-                            res.status(200).json(map)
-                        })
-
-                    });
-                }
-
-            });
-
-        }else{
-            next();
-        }
-    },
-    function(req, res, next){
-
         req.getValidationResult().then(function(result) {
             if(!result.isEmpty()){
                 return res.render("404");
@@ -87,6 +45,41 @@ let loadArticleInfo = [
     //
     // }
 ]
+let read = function(req, res, next){
+    req.checkParams('guid','链接不正确').isAlphanumeric().len(24);
+    let map = {
+        code:-1,
+    }
+    req.getValidationResult().then(function(result) {
+        if(!result.isEmpty()){
+            map.code = -1;
+            // map.msg="链接不正确";
+            res.status(200).json(map)
+        }else{
+            let guid = req.params.guid;
+            postDao.getArticleInfoByGuid(guid,(err, data)=>{
+                let articleInfo = data[0];
+
+                if(_.isEmpty(articleInfo)){
+                    map.code = -2;
+                }
+                let ip = utils.getClientIp(req);
+                let useragent = req.headers['user-agent'];
+                readsDao.add({ip,useragent,guid},(err)=>{
+                    if(err){
+                        map.code = -3;
+                        // 已经阅读或者数据库错误
+                    }else{
+                        map.code = 0;
+                    }
+                    res.status(200).json(map)
+                })
+
+            });
+        }
+
+    });
+};
 let commentCallback = function(req, res, next){
     req.checkBody('action', '').notEmpty();
     req.checkBody('signature', '').isBase64();
@@ -98,6 +91,7 @@ module.exports = function() {
         req.post_password = req.body.post_password;
         next();
     },loadArticleInfo);
+    router.route("/read/p/:guid").get(read);
     router.route("/commentCallback").post(commentCallback)
     router.unless = require("express-unless");
     return router;

@@ -70,7 +70,8 @@ class BaseDao {
                             if (tErr) {
                                 connection.rollback(function () {
                                     console.log("事务失败，" + sql_param + "，ERROR：" + tErr);
-                                    throw tErr;
+                                    // throw tErr;
+                                    cb(tErr);
                                 });
                             } else {
                                 if(resultFormat)
@@ -85,10 +86,8 @@ class BaseDao {
                 });
 
                 async.series(funcAry, function (err, result) {
-                    // console.log("transaction error: " + err);
                     if (err) {
-                        connection.rollback(function (err) {
-                            console.log("transaction error: " + err);
+                        connection.rollback(function (err2) {
                             connection.release();
                             return callback(err, null);
                         });

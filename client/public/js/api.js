@@ -114,7 +114,7 @@ export function loadArticleInfo(params){
 export function read(){
     let pathname = window.location.pathname;
     return new Promise((resolve, reject) => {
-        $.get(`${API_SERVER}${pathname}`).done((data) => {
+        $.get(`${API_SERVER}/read${pathname}`).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);
