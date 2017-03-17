@@ -83,7 +83,7 @@ class TermDao extends db.BaseDao{
             }
 
         ]
-        db.execTrans(sql,callback);
+        this.execTrans(sql,callback);
     }
 
     deleteTag(term_id,callback){
@@ -98,7 +98,7 @@ class TermDao extends db.BaseDao{
             }
 
         ]
-        db.execTrans(sql,callback);
+        this.execTrans(sql,callback);
     }
 }
 

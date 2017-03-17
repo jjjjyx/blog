@@ -147,37 +147,6 @@ let getIndexData = [
             req.renderData.groupList = data;
             next()
         })
-    },
-    function(req, res,next){
-        let ip = utils.getClientIp(req);
-        let userName ;
-        if(req.user)
-            userName = req.user.user_login;
-        visitorsDao.getVisitorsByIP(ip,(err,data)=>{
-            let last = data[0];
-            let jet = true;
-            if(last){
-                let last_at = new Date(last.create_at);
-                jet = ((new Date().getTime() - last_at.getTime())/(1000*60*30))>1;
-            }
-            if(jet){
-                utils.getIpInfo(ip).then((e)=>{
-                    let address = "invaild ip.";
-                    let isp = "";
-                    if(e.code == 0){
-                        address =e.data.country+e.data.region+e.data.city+e.data.county
-                        isp = e.data.isp;
-                    }
-                    visitorsDao.add({ip,userName,address,isp},(err,data)=>{
-                        next();
-                    })
-                })
-            }else{
-                next();
-            }
-
-        })
-
     }
 ];
 

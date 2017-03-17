@@ -83,7 +83,7 @@ if (isDev) {
 
     var compiler = webpack(webpackDevConfig);
     // attach to the compiler & the server
-    app.use(webpackDevMiddleware(compiler, {
+    app.use("/static",webpackDevMiddleware(compiler, {
         // public path should be the same with webpack config
         publicPath: webpackDevConfig.output.publicPath,
         noInfo: true,
@@ -91,9 +91,10 @@ if (isDev) {
             colors: true
         }
     }));
-    app.use(webpackHotMiddleware(compiler));
+    app.use("/static",webpackHotMiddleware(compiler));
 }
-app.use(express.static(path.join(__dirname, 'public')));
+app.use("/static",express.static(path.join(__dirname, 'public')));
+app.use("/favicon.ico",express.static(path.join(__dirname, 'public/favicon.ico')));
 // /*404*/
 app.use(function (req, res, next) {
     let err = new Error('Not Found');

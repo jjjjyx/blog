@@ -55,10 +55,9 @@ const app = new Vue({
             let kh = getClientHeight();
             let zh = document.body.scrollHeight;
             let s = $(document).scrollTop();
-            if(falg&&s>zh/2){
-                api.read().then(()=>{
-                    falg = false;
-                });
+            if(falg&&s>zh/3){
+                falg = false;
+                api.read()
             }
             if(s>(zh-kh-bh)){
                 if(this.$refs['article-tocm']){

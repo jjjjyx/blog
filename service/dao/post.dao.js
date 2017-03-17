@@ -115,7 +115,7 @@ class PostDao extends db.BaseDao {
             sql: "select * from myblog.j_terms where term_id in (SELECT term_id FROM myblog.j_term_relationships where object_id=(select id from j_posts where guid = ?))",
             params: [guid],
         }];
-        db.execTrans(sqlList, callback);
+        this.execTrans(sqlList, callback);
     }
     getPostInfoById(id, callback) {
         // let sql = "";
@@ -127,7 +127,7 @@ class PostDao extends db.BaseDao {
             sql: "select * from myblog.j_terms where term_id in (SELECT term_id FROM myblog.j_term_relationships where object_id=?)",
             params: [id],
         }];
-        db.execTrans(sql, callback);
+        this.execTrans(sql, callback);
     }
     // 获取发布的文章列表，内容只显示100 字
     getList({hasloadId},f,callback){
@@ -297,7 +297,7 @@ class PostDao extends db.BaseDao {
                 params: [id, index, tag.term_id]
             })
         })
-        db.execTrans(sql, callback);
+        this.execTrans(sql, callback);
     }
 }
 

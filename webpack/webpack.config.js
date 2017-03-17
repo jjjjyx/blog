@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const merge = require('webpack-merge')
 const baseConfig = require('./webpack.base')
 const getEntries = require('./getEntries')
-const webpackHotMiddlewareConfig = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000'
+const webpackHotMiddlewareConfig = 'webpack-hot-middleware/client?path=/static/__webpack_hmr&timeout=20000'
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 let entry = getEntries("./client/src/**/c.*.js",webpackHotMiddlewareConfig)

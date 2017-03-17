@@ -332,7 +332,7 @@ export default {
         // console.log();
         editormd.emoji.path = "http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/";
         this.editormd = editormd("post-editormd", {
-            path              : '../editormd/lib/',
+            path              : '/static/editormd/lib/',
             emoji             : true,
             imageUpload       : true,
             toolbarIcons:()=> [
