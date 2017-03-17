@@ -27,7 +27,7 @@ module.exports = function (app) {
                             address =e.data.country+e.data.region+e.data.city+e.data.county
                             isp = e.data.isp;
                         }
-                        visitorsDao.add({ip,userName,address,isp,originalUrl})
+                        visitorsDao.add({ip,userName,address,isp,originalUrl},()=>{})
                     })
                 }
             })
