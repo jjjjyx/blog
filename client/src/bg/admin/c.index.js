@@ -33,7 +33,8 @@ import PostTrash from "./post/trash.vue";
 
 // 上传
 import ImgUpload from "./upload/upload.vue";
-
+import SiteSet from "./set/site.vue";
+import UserSet from "./set/user.vue";
 // import Test from "./testUpload.vue";
 
 import NotFoundComponent from "./404.vue"
@@ -122,6 +123,31 @@ var router = new VueRouter({
                 description:'',
                 sub:'上传的图片管理'
             }
+        },
+        {
+            path:'/user/set',
+            components:{
+                default:UserSet,
+                toc:Toc
+            },
+            meta:{
+                name:'用户资料',
+                description:'',
+                sub:'Personal information',
+                icon:'am-icon-user'
+            },
+        },
+        {
+            path:'/site/set',
+            components:{
+                default:SiteSet,
+                toc:Toc
+            },
+            meta:{
+                name:'站点设置',
+                description:'博客相关配置',
+                sub:'Blog information'
+            },
         },
         {
             path: "*",

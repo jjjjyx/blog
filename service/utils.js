@@ -124,7 +124,7 @@ module.exports.create = function (user, req, res, next) {
                     res.map = {
                         code: 0,
                         msg: "Token generated",
-                        data: data
+                        data
                     }
                     res.cookie("u", data.token, {maxAge: 60000*60*24*5,httpOnly:true});
                     next(); // we have succeeded

@@ -355,6 +355,34 @@ export function delImg(key){
         });
     });
 }
+/**
+ * 修改用户信息
+ * @param  {[type]} params 修改的信息
+ * @return {[type]}        [description]
+ */
+export function updataUserInfo(params){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/user/updataInfo`,params).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
+/**
+ * 修改密码
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
+export function updataUserPass(params){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/api/user/updataPass`,params).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}
 
 // export function savePostTag(params){
 //     return new Promise((resolve, reject) => {

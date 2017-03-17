@@ -17,7 +17,7 @@
             <!-- logo -->
             <div class="am-fl tpl-header-logo">
                 <router-link to="/" active-class='active' exact>
-                    <img src="../../../public/img/logo.png" alt="首页" title="返回首页">
+                    <img src="http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png" alt="首页" title="返回首页">
                 </router-link>
             </div>
             <!-- 右侧内容 -->

@@ -11,10 +11,12 @@
                 <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" alt="">
             </div>
             <span class="user-panel-logged-in-text">
-          <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
-          {{user&&user.user_nickname}}
-      </span>
-            <a href="javascript:;" class="tpl-user-panel-action-link"> <span class="am-icon-pencil"></span> 账号设置</a>
+                <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+                {{user&&user.user_nickname}}
+            </span>
+            <router-link to="/user/set" active-class='active' class="tpl-user-panel-action-link">
+                <span class="am-icon-pencil"></span> 账号设置
+            </router-link>
         </div>
     </div>
 
@@ -75,15 +77,14 @@
         <li class="sidebar-nav-heading">other<span class="sidebar-nav-heading-info"> 其他</span></li>
 
         <li class="sidebar-nav-link">
-            <a href="javascript:;">
-                <i class="am-icon-user sidebar-nav-link-logo"></i> 用户管理
-                <!-- <span class="am-badge am-badge-secondary sidebar-nav-link-logo-ico am-round am-fr am-margin-right-sm">6</span> -->
-            </a>
+            <router-link to="/user/set" active-class='active'>
+                <i class="am-icon-user sidebar-nav-link-logo"></i> 用户设置
+            </router-link>
         </li>
         <li class="sidebar-nav-link">
-            <a href="javascript:;">
-                <i class="am-icon-cog sidebar-nav-link-logo"></i> 设置
-            </a>
+            <router-link to="/site/set" active-class='active'>
+                <i class="am-icon-cog sidebar-nav-link-logo"></i> 站点设置
+            </router-link>
         </li>
         <li class="sidebar-nav-link">
             <a href="javascript:;">

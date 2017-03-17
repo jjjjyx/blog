@@ -1,8 +1,10 @@
 const db = require("./database");
-
+const _ = require("lodash");
 class UserDao extends db.BaseDao{
     constructor() {
         super();
+        this.key = [ "id", "user_login", "user_pass", "user_nickname", "user_email",
+"user_url", "user_registered", "user_status", "display_name" ]
     }
     getUserByLoginName(username, callback) {
         let sql = "select * from j_users where user_login = ?";
@@ -19,6 +21,23 @@ class UserDao extends db.BaseDao{
                     callback(false, new UserBean(result[0]));
                 }
             })
+        });
+    }
+    updata(user, data, callback, ban = ['id','user_login','user_registered']){
+        let keys = _.intersection(this.key, Object.keys(data));
+        let cc = [];
+        let r_data = {};
+        data['id'] = user.id;
+        for (let k of keys) {
+            if (ban.indexOf(k) == -1 && data[k]) {
+                cc.push(`${k} = :${k}`);
+            }
+            r_data[k] = data[k];
+        }
+        _.merge(user,r_data);
+        let sql = `UPDATE \`j_users\` SET ${cc.join(',')} WHERE \`id\`= :id`;
+        this.execCallBack(sql,data,callback,(result)=>{
+            return user;
         });
     }
 }

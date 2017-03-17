@@ -19,6 +19,9 @@ const actions = {
     //         commit("USER_SIGNOUT");
     //     }
     // }
+    mergeUser({commit},obj){
+        commit("MERGEUSER",obj);
+    }
 }
 const mutations = {
     USER_SET_INFO (state,user) {
@@ -27,6 +30,9 @@ const mutations = {
     },
     USER_SIGNOUT (state) {
         state.user = null;
+    },
+    MERGEUSER(state,obj){
+        _.merge(state.user,obj);
     }
 }
 

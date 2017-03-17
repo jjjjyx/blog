@@ -74,7 +74,7 @@ const app = new Vue({
             keyboardJS.bind('enter', (e)=> {
                 api.login(...self.keyword.split(' ')).then(({code,msg})=>{
                     if(code==0){
-                        layer.alert(msg);
+                        layer.msg(msg);
                     }
                 })
             });
