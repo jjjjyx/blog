@@ -24,9 +24,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-
-    <link href="//cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
     <link href="/static/preloader.css" rel="stylesheet">
+    <link href="//cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
     <link href="/static/vendor.css" rel="stylesheet" >
     <link href="/static/category.css" rel="stylesheet">
@@ -35,9 +34,15 @@
 </head>
 
 <body>
+    <div id="preloader">
+        <div id="preloader-inner" class="battery"></div>
+    </div>
     <div id="app">
         <blob-header :active='"category"'></blob-header>
         <div class="blank"></div>
+        <div class="amz-banner">
+            asd
+        </div>
         <section class="wrapper">
             <div class="am-container article-page">
                 123123
@@ -45,10 +50,6 @@
         </section>
         <blob-footer ></blob-footer>
     </div>
-    <div id="preloader">
-        <div id="preloader-inner" class="battery"></div>
-    </div>
-
     <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>
     <script type="text/javascript" src="/static/vendor.js"></script>
     <script type="text/javascript" src="/static/category.js"></script>

@@ -43,7 +43,8 @@ const app = new Vue({
             this.keyword = '';
             keyboardJS.setContext('login');
             this.$nextTick(()=>{
-                this.$refs.login.focus();
+                this.$refs.h.focus();
+                this.$refs.h.select();
             })
         },
         mouseout(){
@@ -56,19 +57,21 @@ const app = new Vue({
             let pg = 0;
             let data = await api.loadArticleList({hasloadId,pg});
             if(data&&data!='没有更多了'){
-                $(this.$refs.articleList).append(data);
+                $(data).appendTo(this.$refs.articleList).scrollspy();
+                // $().append(data)
             }else{
                 this.noPost = false;
             }
 
             this.loading = false;
-        }
+        },
+
     },
     mounted: function() {
         // let dl = $("#datali");
         // this.$refs.articleList.innerHTML = dl.html();
         // dl.remove();
-        $("#preloader").fadeOut(1000, () => $("#preloader").remove());
+        $("#preloader").fadeOut(1500, () => $("#preloader").remove());
         let self = this;
         keyboardJS.withContext('login', function() {
             keyboardJS.bind('enter', (e)=> {
@@ -79,6 +82,15 @@ const app = new Vue({
                 })
             });
         });
-
+        // 分类跑马灯
+        let tagHover = ()=>{
+            let next = $(".tag.active").removeClass('active').next('.tag');
+            if(!next.length){
+                next=$(".tag:eq(0)")
+            }
+            next.addClass("active");
+        }
+        setInterval(tagHover,1000);
+        // $(".tag>a:eq(0)").addClass("")
     }
 })

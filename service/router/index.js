@@ -36,7 +36,8 @@ module.exports = function (app) {
         next()
     });
     app.use('/', require('./blog/index.js')());
-    app.use('/', require('./blog/postView.js')());
+    app.use('/p', require('./blog/postView.js')());
+    app.use('/category', require('./blog/category.js')());
     app.use('/bg/admin', require('./bg/index.js')());
     app.use("/api/term", require("./bg/term.js")());
     app.use("/api/post", require("./bg/post.js")());

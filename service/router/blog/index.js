@@ -39,6 +39,8 @@ const indexLi = (data) => {
         </div>
     </form>
     `;
+    let animation =['scale-up','fade','slide-left','slide-bottom'];
+
     let articleGuidList = data.map((item) => item.guid);
     let client = request.newClient('http://api.duoshuo.com');
     return new Promise((resolve, reject) => {
@@ -52,8 +54,7 @@ const indexLi = (data) => {
             data.forEach((item) => {
                 // <a class="am-corner-label am-orange"></a>
                 s += `
-                    <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}">${item.ppassword?pH(item.guid):''}
-
+                    <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}" data-am-scrollspy="{animation: '${animation[Math.floor(Math.random() * 4)]}'}">${item.ppassword?pH(item.guid):''}
                        <div class="content">
                            <h3 class="title"><a href="p/${item.guid}" target="_blank">${item.menu_order?'<span>[ 置顶 ]</span> ':''}${xss(item.post_title)}</a></h3>
                            <div class="options am-fr">

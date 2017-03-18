@@ -23,8 +23,8 @@
     <!-- Add to homescreen for Safari on iOS -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link href="//cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
     <link href="/static/preloader.css" rel="stylesheet">
+    <link href="//cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
     <link href="/static/vendor.css" rel="stylesheet" >
     <link href="/static/index.css" rel="stylesheet">
@@ -34,6 +34,9 @@
 </head>
 
 <body>
+    <div id="preloader">
+	    <div id="preloader-inner" class="battery"></div>
+	</div>
     <div id="app">
         <blob-header :active='"index"'></blob-header>
         <!-- #masthead -->
@@ -44,10 +47,10 @@
             <div class="slant-left"></div>
             <div class="slant-right"></div>
             <div class="focusinfo">
-                <a class="avatar" href="javascript:;">
-                    <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png">
+                <a class="avatar am-animation-scale-up" href="javascript:;">
+                    <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" >
                 </a>
-                <p class="avatar-p">
+                <p class="avatar-p am-animation-slide-bottom">
                     手持两把锟斤拷，口中疾呼烫烫烫。<br>脚踏千朵屯屯屯，笑看万物锘锘锘。
                 </p>
             </div>
@@ -99,10 +102,10 @@
                             </a>
                         </div>
                         <div class="tags">
-                            <input type="password" ref="login" v-if="enabled" v-model="keyword" class="login" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
+                            <input type="password" ref="h" v-if="enabled" autocomplete="off" v-model="keyword" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
                             <%for(item of termList){%>
                                 <%if(item.name=='java'){%>
-                                <a class="tag" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout">
+                                <a class="tag active" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout">
                                     <span class="tag-icon">
                                         <i class="<%=item.icon%>"></i>
                                     </span>
@@ -180,14 +183,12 @@
         </div>
         <blob-footer ></blob-footer>
     </div>
-    <div id="preloader">
-	    <div id="preloader-inner" class="battery"></div>
-	</div>
      <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>
      <script type="text/javascript" src="/static/vendor.js"></script>
     <script type="text/javascript" src="/static/index.js"></script>
     <script type="text/javascript">
     $(document).ready(function(){
+
         var imgs = new Array();
         imgs[0] = 'http://oht47c0d0.bkt.clouddn.com/d7d26cc0-00b2-11e7-89fa-17d9cf406414.png';
         imgs[1] = 'http://oht47c0d0.bkt.clouddn.com/eb0065e0-00b2-11e7-89fa-17d9cf406414.png';

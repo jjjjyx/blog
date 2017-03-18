@@ -87,11 +87,11 @@ let commentCallback = function(req, res, next){
 }
 module.exports = function() {
     let router = new Router();
-    router.route("/p/:guid").get(loadArticleInfo).post(function(req, res, next){
+    router.route("/:guid").get(loadArticleInfo).post(function(req, res, next){
         req.post_password = req.body.post_password;
         next();
     },loadArticleInfo);
-    router.route("/read/p/:guid").get(read);
+    router.route("/read/:guid").get(read);
     router.route("/commentCallback").post(commentCallback)
     router.unless = require("express-unless");
     return router;
