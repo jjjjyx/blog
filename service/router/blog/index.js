@@ -8,6 +8,7 @@ const debug = require('debug')('app:routes:blog/index' + process.pid),
     utils = require('../../utils'),
     postDao = require("../../dao/post.dao"),
     termDao = require("../../dao/term.dao"),
+    siteDao = require("../../dao/site.dao"),
     visitorsDao = require("../../dao/visitors.dao");
 // validator = require('node-validator');
 // 为了将markdown 的内容全部提取出来 不包含符号
@@ -146,6 +147,16 @@ let getIndexData = [
     function(req, res,next) {
         postDao.getPostsGroup((err, data) => {
             req.renderData.groupList = data;
+            next()
+        })
+    },
+    function(req, res,next) {
+        siteDao.get((err, data) => {
+            let d = {}
+            data.forEach((item)=>{
+                d[item.key] = item.value
+            })
+            req.renderData.site = d;
             next()
         })
     }

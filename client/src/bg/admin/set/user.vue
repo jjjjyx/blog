@@ -107,6 +107,7 @@ import {
     mapMutations
 } from 'vuex'
 import * as api from "../../../../public/js/netapi.js";
+import {onValid,onInValid} from "../../../../public/js/tools.js";
 export default {
     data: function() {
         return {}
@@ -124,21 +125,6 @@ export default {
     },
     mounted: function() {
         let self = this;
-        function onInValid(validity){
-            var $field = $(validity.field);
-            var $group = $field.closest('.am-u-sm-9,.am-u-sm-8');
-            var $alert = $group.find('.am-alert');
-            var msg = $field.data('foolish-msg') || this.getValidationMessage(validity);
-
-            if (!$alert.length) {
-                $alert = $('<div class="am-alert am-alert-danger"></div>').hide().
-                appendTo($group);
-            }
-            $alert.html(msg).show();
-        }
-        function onValid(validity) {
-            $(validity.field).closest('.am-form-group').find('.am-alert').hide();
-        }
         $("#user-changgePass").validator({
             onValid,
             onInValid,
@@ -169,21 +155,6 @@ export default {
                     }else{
                         layer.msg(data.msg)
                     }
-
-                    // $.post("./!insert", $("#account-form").serializeArray(), function(r) {
-                    //     if (r.code == 0) {
-                    //         $('#my-confirm').modal({
-                    //             relatedTarget: this,
-                    //             onConfirm: function(options) {
-                    //                 $("#account-form input[required]").val('');
-                    //             },
-                    //             // closeOnConfirm: false,
-                    //             onCancel: function() {
-                    //                 window.location.href = "./!book";
-                    //             }
-                    //         });
-                    //     }
-                    // }, 'json')
                 }
                 return false;
             }

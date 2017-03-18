@@ -8,6 +8,7 @@ import * as getters from "./getters";
 // import * as actions from "./actions";
 import account from "./modules/account";
 import post from "./modules/post";
+import site from "./modules/site";
 
 Vue.use(Vuex);
 
@@ -26,7 +27,8 @@ export default new Vuex.Store({
     mutations,
     modules:{
         account,
-        post
+        post,
+        site
         // notify
     }
 })

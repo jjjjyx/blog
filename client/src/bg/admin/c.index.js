@@ -178,7 +178,10 @@ router.beforeEach(async function (to, from, next) {
                 store.commit('setPosts',data.data)
             }
         }
-
+        let data = await api.getSiteInfo();
+        if(data.code == 0){
+            store.commit('SITE_SET_INFO',data.data)
+        }
         $("#preloader").fadeOut(1000,()=>$("#preloader").remove());
     }
     next();

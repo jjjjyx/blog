@@ -318,7 +318,6 @@ module.exports = function () {
         return res.status(200).json(res.map);
     });
     router.route("/postUnlock").post(postUnlock, function (req, res, next) {
-        console.log(res.map)
         return res.status(200).json(res.map);
     });
 

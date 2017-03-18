@@ -105,7 +105,8 @@ class PostDao extends db.BaseDao {
                   comment_status,
                   post_status,
                   post_excerpt,
-                  post_password
+                  post_password,
+                  eye_count
                 FROM
                   j_posts  where guid = ? and post_status = 'publish'`,
             params: [guid],

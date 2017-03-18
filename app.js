@@ -8,7 +8,7 @@ let cookieParser = require('cookie-parser'),
     expressValidator = require('express-validator');
 global.NODE_ENV = process.env.NODE_ENV || 'production'
 var isDev = NODE_ENV !== 'production';
-console.log(isDev);
+
 debug("Starting application");
 
 let unless = require('express-unless');

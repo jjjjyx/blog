@@ -34,10 +34,10 @@
                             </div>
                         </div>
                         <div class="am-u-sm-12">
-                            <table class="am-table am-table-compact am-table-striped tpl-table-black ">
+                            <table class="am-table am-table-compact am-table-striped tpl-table-black imgListTable">
                                 <thead>
                                     <tr>
-                                        <th>文件名</th>
+                                        <th>预览</th>
                                         <th>文件类型</th>
                                         <th>文件大小</th>
                                         <th>最后更新</th>
@@ -52,7 +52,7 @@
                                         <td class="am-text-middle">{{formatDate(item.putTime)}}</td>
                                         <td class="am-text-middle">
                                             <div class="tpl-table-black-operation">
-                                                <a href="javascript:;" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 1}" @click="view(item.key)">
+                                                <a  href="javascript:;" data-am-modal="{target: '#doc-modal-1', closeViaDimmer: 1}" @click="view(item.key)">
                                                     <i class="am-icon-eye"></i>
                                                 </a>
                                                 <!--  @click="copy($event,item.key)" -->
@@ -62,9 +62,21 @@
                                                 <a ref="copyMd" class="copy-list-md" :data-clipboard-text="'![](' + domain + item.key + ')'">
                                                     markdown
                                                 </a>
-                                                <a @click='del(item.key,index)' class="tpl-table-black-operation-del">
-                                                    <i class="am-icon-trash"></i> 删除
-                                                </a>
+
+                                                <div class="am-dropdown" data-am-dropdown >
+                                                  <i class="am-icon-cog am-dropdown-toggle"  data-am-dropdown-toggle></i>
+                                                  <ul class="am-dropdown-content am-text-xs">
+                                                    <li><a >设置用户头像</a></li>
+                                                    <li class="am-divider"></li>
+                                                    <li><a @click="setSite('avatar',item.key)">设置为首页头像</a></li>
+                                                    <li><a @click="setSite('background',item.key)">设置首页背景</a></li>
+                                                    <li>
+                                                        <a @click='del(item.key,index)' class="tpl-table-black-operation-del am-text-danger">
+                                                            <i class="am-icon-trash"></i> 删除
+                                                        </a>
+                                                    </li>
+                                                  </ul>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -75,14 +87,17 @@
                 </div>
             </div>
 
-            <div class="am-modal am-modal-no-btn" tabindex="-1" id="doc-modal-1">
-              <div class="am-modal-dialog" style="width: 80%;height: 80%;min-height: 500px;">
+            <div class="am-modal img-view" tabindex="-1" id="doc-modal-1">
+              <div class="am-modal-dialog" :style="imgContent">
                 <div class="am-modal-hd">图片查看
                   <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
                 </div>
-                <div class="am-modal-bd">
-                      <img :src="src" class="am-img-responsive am-img-thumbnail am-radius" alt=""/>
+                <div class="am-modal-bd am-vertical-align" :style="bdContent">
+                      <img :src="src" class="am-img-thumbnail am-radius am-vertical-align" alt=""/>
                 </div>
+                <div class="am-modal-footer">
+                 <span class="am-modal-btn" data-am-modal-close>确定</span>
+               </div>
               </div>
             </div>
         </div>
@@ -90,12 +105,12 @@
     </div>
 </template>
 <style lang='less' scoped>
-    #doc-modal-1 {
-        img{
-            max-height: 430px;
-            margin: 0 auto;
-        }
-    }
+    // #doc-modal-1 {
+    //     // img{
+    //     //     max-height: 430px;
+    //     //     margin: 0 auto;
+    //     // }
+    // }
 </style>
 <script>
 // import
@@ -113,9 +128,27 @@ export default {
     components: {},
     computed: {
         ...mapGetters([
+            'contentHeight'
         ]),
+        imgContent(){
+            let height = this.contentHeight;
+            height -= 56;
+            return {
+                height:`${height}px`
+            }
+        },
+        bdContent(){
+            let height = this.contentHeight;
+            height -= (48+44+56);
+            return {
+                height:`${height}px`
+            }
+        }
     },
     methods: {
+        ...mapActions([
+            'mergeSite'
+        ]),
         ...mapMutations([
         ]),
         formatFileSize,
@@ -124,6 +157,7 @@ export default {
             return time.format('yyyy/MM/dd hh:mm');
         },
         async del(key,index){
+            $('.imgListTable [data-am-dropdown]').dropdown('close')
             let data = await api.delImg(key);
             layer.msg(data.msg);
             if(data.code==0){
@@ -131,8 +165,18 @@ export default {
             }
         },
         view(key){
+            $("#doc-modal-1").focus();
             this.src=this.domain+key;
         },
+        async setSite(key,url){
+            let params = {
+                [key]:this.domain+url
+            }
+            let data = await api.updataSiteInfo(params);
+            layer.msg(data.msg);
+            if(data.code==0)
+                this.mergeSite(params)
+        }
     },
     mounted:async function() {
         // console.log(this.$route)
@@ -149,6 +193,7 @@ export default {
                 clib2 = new ZeroClipboard(this.$refs.copyMd);
                 clib.on('aftercopy',fn);
                 clib2.on('aftercopy',fn);
+            $('.imgListTable [data-am-dropdown]').dropdown()
         })
     }
 }

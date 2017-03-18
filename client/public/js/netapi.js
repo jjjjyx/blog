@@ -384,6 +384,33 @@ export function updataUserPass(params){
     });
 }
 
+/**
+ * 修改站点设置
+ * @param  {[type]} params [description]
+ * @return {[type]}        [description]
+ */
+export function updataSiteInfo(params){
+   return new Promise((resolve, reject) => {
+       $.post(`${API_SERVER}/api/site/updata`,params).done((data) => {
+           resolve(data);
+       }).fail(({responseJSON}) => {
+           reject([responseJSON.code, responseJSON]);
+       });
+   });
+}
+/**
+ * 获取站点设置
+ * @return {[type]} [description]
+ */
+export function getSiteInfo(){
+   return new Promise((resolve, reject) => {
+       $.post(`${API_SERVER}/api/site`).done((data) => {
+           resolve(data);
+       }).fail(({responseJSON}) => {
+           reject([responseJSON.code, responseJSON]);
+       });
+   });
+}
 // export function savePostTag(params){
 //     return new Promise((resolve, reject) => {
 //         $.post(`${API_SERVER}/api/post/saveTag`,params).done((data) => {

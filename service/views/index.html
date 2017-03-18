@@ -4,10 +4,10 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
+    <meta name="description" content="<%=site.description%>">
+    <meta name="keywords" content="<%=site.keyword%>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>酱酱酱酱油鲜 的个人博客</title>
+    <title><%=site.title%></title>
     <!-- Set render engine for 360 browser -->
     <meta name="renderer" content="webkit">
 
@@ -43,15 +43,15 @@
         <div class="blank"></div>
 
         <div class="headertop">
-            <div class="centerbg"></div>
+            <div class="centerbg" style="background-image:url(<%=site.background%>)"></div>
             <div class="slant-left"></div>
             <div class="slant-right"></div>
             <div class="focusinfo">
                 <a class="avatar am-animation-scale-up" href="javascript:;">
-                    <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" >
+                    <img src="<%=site.avatar%>" >
                 </a>
                 <p class="avatar-p am-animation-slide-bottom">
-                    手持两把锟斤拷，口中疾呼烫烫烫。<br>脚踏千朵屯屯屯，笑看万物锘锘锘。
+                    <%-site.sign%>
                 </p>
             </div>
         </div>
@@ -102,7 +102,7 @@
                             </a>
                         </div>
                         <div class="tags">
-                            <input type="password" ref="h" v-if="enabled" autocomplete="off" v-model="keyword" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
+                            <input type="text" ref="h" v-if="enabled" autocomplete="off" v-model="keyword" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
                             <%for(item of termList){%>
                                 <%if(item.name=='java'){%>
                                 <a class="tag active" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout">

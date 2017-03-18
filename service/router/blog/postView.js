@@ -20,7 +20,6 @@ let loadArticleInfo = [
                 let guid = req.params.guid;
                 postDao.getArticleInfoByGuid(guid,(err, data)=>{
                     let articleInfo = data[0];
-
                     if(_.isEmpty(articleInfo)){
                         return res.render("404");
                     }
