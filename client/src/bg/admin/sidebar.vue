@@ -48,15 +48,15 @@
                     </router-link>
                 </li>
                 <li class="sidebar-nav-link">
-                    <a href="javascript:;">
+                    <router-link to="/post/term/management" active-class='active'>
                         <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 分类管理
-                    </a>
+                    </router-link>
                 </li>
-                <li class="sidebar-nav-link">
+                <!-- <li class="sidebar-nav-link">
                     <a href="javascript:;">
                         <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 标签管理
                     </a>
-                </li>
+                </li> -->
                 <li class="sidebar-nav-link">
                     <router-link to="/post/trash" active-class='active'>
                         <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 回收站

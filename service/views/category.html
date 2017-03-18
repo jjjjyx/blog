@@ -40,12 +40,33 @@
     <div id="app">
         <blob-header :active='"category"'></blob-header>
         <div class="blank"></div>
-        <div class="amz-banner">
-            asd
+        <div class="j-banner">
+            <div class="am-container">
+                <h1>全部分类</h1>
+                <p>好好挑，好好选，这里的分类很多 </p>
+            </div>
+            <div class="am-container">
+
+            </div>
         </div>
-        <section class="wrapper">
-            <div class="am-container article-page">
-                123123
+        <section class="wrapper am-container">
+            <div class="am-g">
+                <%for(item of termList){%>
+                    <div class="am-u-md-4">
+                        <div class="collection-wrap">
+                            <a class="tag-icon">
+                                <i class="<%=item.icon%>"></i>
+                            </a>
+                            <h4><a target="_blank" href="/c/dqfRwQ"><%=item.name%></a></h4>
+                            <p>
+                                <%=item.description%>
+                            </p>
+                            <button type="button" name="button" class="am-btn am-btn-success am-round">进入分类</button>
+                            <hr>
+                            <div class="count">xxx篇文章</div>
+                        </div>
+                    </div>
+                <%}%>
             </div>
         </section>
         <blob-footer ></blob-footer>

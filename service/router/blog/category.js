@@ -9,12 +9,20 @@ const debug = require('debug')('app:routes:blog/category' + process.pid),
     postDao = require("../../dao/post.dao"),
     termDao = require("../../dao/term.dao");
 
-
+let loadCategoryDate = [
+    function(req, res,next) {
+        req.renderData = {};
+        termDao.loadCategory((err,termList)=>{
+            req.renderData.termList = termList;
+            next();
+        });
+    },
+]
 
 module.exports = function() {
     let router = new Router();
-    router.route("/").get(function(req, res) {
-        res.render('category')
+    router.route("/").get(loadCategoryDate,function(req, res) {
+        res.render('category',req.renderData)
     });
     router.unless = require("express-unless");
     return router;

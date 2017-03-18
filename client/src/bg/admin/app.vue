@@ -23,9 +23,9 @@
             <!-- 右侧内容 -->
             <div class="tpl-header-fluid">
                 <!-- 侧边切换 -->
-                <div class="am-fl tpl-header-switch-button am-icon-list" @click="toggleSidebar(!isSidebarShow)">
-                    <span>
-                </span>
+                <div class="am-fl tpl-header-switch-button" @click="toggleSidebar(!isSidebarShow)">
+                    <i class="am-icon-list"></i>
+                    <i class="am-icon-reply"></i>
                 </div>
                 <!-- 搜索 -->
                 <div class="am-fl tpl-header-search">

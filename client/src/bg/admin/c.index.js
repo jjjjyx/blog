@@ -31,6 +31,8 @@ import AddPost from "./post/add-post.vue";
 import PostEdit from "./post/post-edit.vue";
 import PostTrash from "./post/trash.vue";
 
+import Category from "./post/term.vue";
+
 // 上传
 import ImgUpload from "./upload/upload.vue";
 import SiteSet from "./set/site.vue";
@@ -81,6 +83,18 @@ var router = new VueRouter({
                 sub:'Article'
             },
 
+        },
+        {
+            path:'/post/term/management',
+            components:{
+                default:Category,
+                toc:Toc
+            },
+            meta:{
+                name:'分类管理',
+                description:'管理分类，分类说明',
+                sub:'Category'
+            }
         },
         {
             path:"/post/trash/:id(\\d+)?",

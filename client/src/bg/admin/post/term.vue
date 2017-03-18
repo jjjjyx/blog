@@ -9,21 +9,13 @@
                         </div>
                     </div>
                     <div class="widget-body  am-fr">
-                        <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+                        <div class="am-u-sm-12 am-u-md-9 am-u-lg-9">
                             <div class="am-form-group">
                                 <div class="am-btn-toolbar">
                                     <div class="am-btn-group am-btn-group-xs">
                                         <!-- <button type="button" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> </button> -->
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
-                            <div class="am-form-group tpl-table-list-select">
-                                <select name="category" id="category" v-model="filterCategory">
-                                    <option value="0" >全部</option>
-                                    <option :value="item.term_id" v-for="item in categoryList" class="am-capitalize">{{item.name}}</option>
-                                </select>
                             </div>
                         </div>
                         <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
@@ -39,32 +31,27 @@
                                 <thead>
                                     <tr>
                                         <th>ID</th>
-                                        <th>缩略图</th>
-                                        <th>标题</th>
-                                        <th>类别</th>
-                                        <th>作者/创建时间</th>
-                                        <th>状态</th>
+                                        <th>图片/图标</th>
+                                        <th>名称</th>
+                                        <th>说明</th>
+                                        <th>文章数/创建时间</th>
                                         <th>操作</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="item in pageList">
-                                        <td>{{item.id}}</td>
-                                        <td>{{item.id}}</td>
+                                        <td>{{item.term_id}}</td>
+                                        <td class="am-text-middle category-table-icon"><i :class="item.icon"></i></td>
                                         <td class="am-text-middle">
-                                            <a class="table-post-title" v-if="item.post_status=='publish'" :href="'/p/'+item.guid" target="_blank">{{item.post_title}}</a>
-                                            <p class="table-post-title" v-else>{{item.post_title}}</p>
+                                            <!-- <a class="table-post-title" v-if="item.post_status=='publish'" :href="'/p/'+item.guid" target="_blank">{{item.post_title}}</a> -->
+                                            <p class="table-post-title am-capitalize">{{item.name}}</p>
                                         </td>
-                                        <td class="am-text-middle am-capitalize">{{fetchTermName(item.term_id)}}</td>
-                                        <td class="am-text-middle">{{item.author}}<br />{{formatDate(item.create_at)}}</td>
-                                        <td class="am-text-middle">{{status[item.post_status]}}</td>
+                                        <td class="am-text-middle ">{{item.description}}</td>
+                                        <td class="am-text-middle">共 <b>{{item.count}}</b> 篇文章<br />{{formatDate(item.create_at)}}</td>
                                         <td class="am-text-middle">
                                             <div class="tpl-table-black-operation">
-                                                <router-link :to="{path:`/post/category/${item.term_id}/article/${item.id}`}">
+                                                <a href="javascript:;" data-am-modal="{target: '#edit-category', closeViaDimmer: 1}" @click="activeItem = item">
                                                     <i class="am-icon-pencil"></i>
-                                                </router-link>
-                                                <a href="javascript:;">
-                                                    <i class="am-icon-thumb-tack"></i>
                                                 </a>
                                                 <a href="javascript:;" class="tpl-table-black-operation-del">
                                                     <i class="am-icon-trash"></i>
@@ -84,67 +71,71 @@
                     </div>
                 </div>
             </div>
+
+            <div class="am-modal am-text-xs" tabindex="-1" id="edit-category">
+              <div class="am-modal-dialog">
+                <div class="am-modal-hd">编辑分类
+                  <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+                </div>
+                <form class="am-modal-bd am-form am-text-left am-cf" id="edit-category-form">
+                    <div class="am-form-group am-u-md-6">
+                     <label for="doc-ipt-name-1">分类名称</label>
+                     <input type="text" class="" id="doc-ipt-name-1" placeholder="分类名称" name="name" :value="activeItem.name">
+                   </div>
+                   <div class="am-form-group am-u-md-6">
+                    <label for="doc-ipt-name-1">图标</label>
+                    <input type="text" class="" id="doc-ipt-name-1" placeholder="图标" name="icon" :value="activeItem.icon">
+                  </div>
+                   <div class="am-form-group am-u-md-12">
+                    <label for="doc-ipt-description-1">分类说明</label>
+                    <input type="text" class="" id="doc-ipt-description-1" placeholder="分类说明" name="description" :value="activeItem.description">
+                  </div>
+
+                </form>
+                <div class="am-modal-footer">
+                  <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+                  <span class="am-modal-btn" data-am-modal-confirm>提交</span>
+                </div>
+              </div>
+            </div>
         </div>
 
     </div>
 </template>
 <script>
-// import
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 import * as api from "../../../../public/js/netapi.js";
+import {onValid,onInValid} from "../../../../public/js/tools.js";
 export default {
     data: function() {
         return {
-            filterCategory:0,
-            tremObj :{},
-            status:{
-                'publish':'公开',
-                'auto-draft':"自动草稿",
-                'inherit':"继承",
-                'trash':"回收站",
-                ////
-            },
             currPage:0,
             rowsNum:8,
             searchname:'',
+            activeItem:{}
         }
     },
     components: {},
     computed: {
         ...mapGetters([
-            'categoryList',
-            'posts',
+            'categoryList'
         ]),
         max(){
             return this.filterPosts.length
         },
         pageNum(){
-            return Math.ceil(this.filterPosts.length/this.rowsNum);
+            return Math.ceil(this.filterCategory.length/this.rowsNum);
         },
-        filterPosts(){
-            return this.posts.filter((item)=>{
-                if(this.filterCategory){
-                    return (item.post_title.indexOf(this.searchname)>=0)&&item.term_id==this.filterCategory&&!item.delete_at;
-                }else{
-                    return (item.post_title.indexOf(this.searchname)>=0)&&!item.delete_at;
-                }
+        filterCategory(){
+            return this.categoryList.filter((item)=>{
+                return (item.name.indexOf(this.searchname)>=0)&&!item.delete_at;
             })
         },
         pageList(){
-            return this.filterPosts.slice(this.currPage*this.rowsNum,(this.currPage+1)*this.rowsNum)
+            return this.filterCategory.slice(this.currPage*this.rowsNum,(this.currPage+1)*this.rowsNum)
         }
     },
     methods: {
-        ...mapMutations([
-            'setPosts'
-        ]),
-        formatDate(_time){
-            let time = new Date(_time);
-            return time.format('yyyy/MM/dd hh:mm');
-        },
-        fetchTermName(id){
-            return this.tremObj[id];
-        },
         prev(){
             if(this.currPage>0)
                 this.currPage=this.currPage-1;
@@ -153,18 +144,28 @@ export default {
             if(this.currPage<this.pageNum-1)
                 this.currPage=this.currPage+1;
         },
+        formatDate(_time){
+            let time = new Date(_time);
+            return time.format('yyyy/MM/dd hh:mm');
+        },
     },
-    mounted:async function() {
-        // console.log(this.$route)
-        let tremObj = {}
-        this.categoryList.forEach((item)=>{
-            tremObj[item.term_id]=item.name
-        })
-        this.$set(this,'tremObj',tremObj);
-        let self = this;
-        $('#category').selected({btnSize: 'sm',searchBox:'1',maxHeight:200}).on('change', function() {
-            // var action = $(this).data('selected');
-            self.filterCategory = $(this).val()
+    mounted: function() {
+        // TODO 到这里
+        $("#edit-category-form").validator({
+            onValid,
+            onInValid,
+            submit: async function() {
+                if (this.isFormValid()) {
+                    let data = await api.updataUserInfo(this.$element.serializeArray())
+                    if(data.code==0){
+                        self.mergeUser(data.data);
+                        layer.msg("修改成功")
+                    }else{
+                        layer.msg(data.msg)
+                    }
+                }
+                return false;
+            }
         });
     }
 }

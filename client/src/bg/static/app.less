@@ -28,6 +28,9 @@ header {
 [class*=am-icon-].am-fl,.iconfont.am-fl {
     margin-right: .3em;
 }
+.am-capitalize {
+    text-transform:capitalize;
+}
 .am-modal{
     background-color: rgba(0, 0, 0, 0.65);
 }
@@ -112,9 +115,20 @@ header {
     padding: 0 22px;
     font-size: 22px;
     line-height: 55px;
-
+    .am-icon-reply{
+        display: none;
+    }
+    i {
+        transition:all 0.2s ease;
+    }
     &:hover {
         outline: none;
+        .am-icon-reply{
+            display: block;
+        }
+        .am-icon-list{
+            display: none;
+        }
     }
 }
 
