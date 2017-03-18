@@ -121,14 +121,12 @@ export default {
         async add() {
             if(!this.verification(this.newTerm.name)) return;
             let data = await addTerm(this.newTerm);
-            // console.log(222)
+            layer.msg(data.msg);
             if(data.code == 0) {
                 this.addTerm({
                     obj:data.data,
                     index:0
                 })
-            }else{
-                layer.alert(data.msg);
             }
         },
         toggleDown(e,item){

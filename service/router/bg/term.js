@@ -43,7 +43,9 @@ let addTerm = function (req, res, next) {
             };
             return res.status(400).json(map);
         }else{
-            termDao.add({name:req.body.name,taxonomy:'category',description:'分类'}, (err, data) => {
+            let description = req.body.description||"分类";
+            let icon = req.body.icon;
+            termDao.add({name:req.body.name,taxonomy:'category',description, icon}, (err, data) => {
                 let map = {};
                 if (err) {
                     map.code = -1;
@@ -70,7 +72,7 @@ let addTag = function (req, res, next) {
             };
             return res.status(400).json(map);
         }else{
-            termDao.add({name:req.body.name,taxonomy:'tag',description:'标签'}, (err, data) => {
+            termDao.add({name:req.body.name,taxonomy:'tag',description:'标签',icon:'',slug:''}, (err, data) => {
                 let map = {};
                 if (err) {
                     map.code = -1;
@@ -92,7 +94,7 @@ let editTerm = function (req, res, next) {
     req.checkBody('name','请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！').notEmpty().isTermname();
 
     req.sanitizeBody('name');
-
+    req.sanitizeBody('icon');
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
             let map = {
@@ -101,9 +103,9 @@ let editTerm = function (req, res, next) {
             };
             return res.status(400).json(map);
         }else{
-            let name = req.body.name,
-                term_id = req.body.term_id;
-            termDao.edit({term_id,name}, (err, data) => {
+            // let name = req.body.name,
+            //     term_id = req.body.term_id;
+            termDao.edit(req.body, (err, data) => {
                 let map = {};
                 if (err) {
                     map.code = -1;

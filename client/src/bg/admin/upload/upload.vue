@@ -14,6 +14,7 @@
                                 <div class="am-btn-toolbar">
                                     <div class="am-btn-group am-btn-group-xs">
                                         <button type="button" class="am-btn am-btn-default am-btn-success"><span class="am-icon-plus"></span> </button>
+                                        <input type="file" ref="upload" style="position: absolute;z-index: 0; width: 100%; height: 100%; opacity: 0;cursor: pointer;" @change="fileInput">
                                     </div>
                                 </div>
                             </div>
@@ -30,6 +31,7 @@
                                 <input type="text" class="am-form-field ">
                                 <span class="am-input-group-btn">
                                     <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search" type="button"></button>
+
                                  </span>
                             </div>
                         </div>
@@ -163,6 +165,9 @@ export default {
             if(data.code==0){
                 this.imgList.splice(index,1)
             }
+        },
+        fileInput(){
+
         },
         view(key){
             $("#doc-modal-1").focus();

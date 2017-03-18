@@ -49,27 +49,44 @@
 
             </div>
         </div>
-        <section class="wrapper am-container">
+        <div class="index-content clearfix">
             <div class="am-g">
-                <%for(item of termList){%>
-                    <div class="am-u-md-4">
-                        <div class="collection-wrap">
-                            <a class="tag-icon">
-                                <i class="<%=item.icon%>"></i>
-                            </a>
-                            <h4><a target="_blank" href="/c/dqfRwQ"><%=item.name%></a></h4>
-                            <p class="">
-                                <%=item.description.substring(0,60)%><%=item.description>60?'...':''%>
+                <div class="am-u-md-9 articles">
 
-                            </p>
-                            <button type="button" name="button" class="am-btn am-btn-success am-round">进入分类</button>
-                            <hr>
-                            <div class="count"><%=item.count%>篇文章</div>
+                    <div class="recommend-post">
+                        <main class="j-article-list" ref="articleList">
+                            <!-- <%-datali%> -->
+                        </main>
+                        <div class="j-article-placeholder index" v-if="loading">
+                            <div class="img"></div>
+                            <div class="content">
+                                <div class="author">
+                                    <div class="avatar"></div>
+                                    <div class="name"></div>
+                                </div>
+                                <div class="title"></div>
+                                <div class="text"></div>
+                                <div class="text animation-delay"></div>
+                                <div class="text short-text"></div>
+                                <div class="meta">
+                                    <i class="am-icon-eye ic-list-read"></i>
+                                    <div class="read"></div>
+                                    <i class="am-icon-comment ic-list-comments"></i>
+                                    <div class="small"></div>
+                                    <i class="am-icon-heart ic-list-like"></i>
+                                    <div class="small"></div>
+                                </div>
+                            </div>
                         </div>
+                        <p class="load-more">
+                            <button class="am-btn am-round gray btn-bordered am-btn-sm" v-if="noPost">加载更多</button>
+                            <span v-else>没有更多了</span>
+                        </p>
                     </div>
-                <%}%>
+                </div>
             </div>
-        </section>
+        </div>
+
         <blob-footer ></blob-footer>
     </div>
     <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>

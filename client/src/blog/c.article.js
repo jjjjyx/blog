@@ -10,12 +10,13 @@ import * as api from "../../public/js/api.js";
 
 const app = new Vue({
     el: '#app',
+    delimiters:['[[%','%]]'],
     data: function() {
         return {
             message:'hello',
             post_contentLength:0,
             editormdView:null,
-            aside:false,
+            aside:false
         }
     },
     components: {
