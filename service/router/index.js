@@ -13,25 +13,25 @@ module.exports = function (app) {
                 let decoded = jsonwebtoken.decode(token);
                 userName = decoded.user_login;
             }
-            visitorsDao.getVisitorsByIP(ip,(err,data)=>{
-                let last = data[0];
-                let jet = true;
-                if(last){
-                    let last_at = new Date(last.create_at);
-                    jet = ((new Date().getTime() - last_at.getTime())/(1000*60*30))>1;
+            // visitorsDao.getVisitorsByIP(ip,(err,data)=>{
+            //     let last = data[0];
+            //     let jet = true;
+            //     if(last){
+            //         let last_at = new Date(last.create_at);
+            //         jet = ((new Date().getTime() - last_at.getTime())/(1000*60*30))>1;
+            //     }
+            //     if(jet){
+            utils.getIpInfo(ip).then((e)=>{
+                let address = "invaild ip.";
+                let isp = "";
+                if(e.code == 0){
+                    address =e.data.country+e.data.region+e.data.city+e.data.county
+                    isp = e.data.isp;
                 }
-                if(jet){
-                    utils.getIpInfo(ip).then((e)=>{
-                        let address = "invaild ip.";
-                        let isp = "";
-                        if(e.code == 0){
-                            address =e.data.country+e.data.region+e.data.city+e.data.county
-                            isp = e.data.isp;
-                        }
-                        visitorsDao.add({ip,userName,address,isp,originalUrl},()=>{})
-                    })
-                }
+                visitorsDao.add({ip,userName,address,isp,originalUrl},()=>{})
             })
+            //     }
+            // })
         }
         next()
     });

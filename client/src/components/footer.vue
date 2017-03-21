@@ -25,10 +25,11 @@
                     <div class="widget">
                         <h4 class="title">友情链接</h4>
                         <ul class="content recent-post list-unstyled">
-                            <li><a href="http://www.bootcss.com/">Bootstrap 中文网</a></li>
+                            <!-- <li><a href="http://www.bootcss.com/">Bootstrap 中文网</a></li>
                             <li><a href="http://cn.vuejs.org/">Vue.js</a></li>
                             <li><a href="http://webpack.github.io/">Webpack</a></li>
-                            <li><a href="http://router.vuejs.org/zh-cn/index.html">Vue-Router2</a></li>
+                            <li><a href="http://router.vuejs.org/zh-cn/index.html">Vue-Router2</a></li> -->
+                            <li><a href="http://blog.tor1024.com/" target="_blank">致怀&#39;s Blog | 大好时光！</a></li>
 
                         </ul>
                     </div>

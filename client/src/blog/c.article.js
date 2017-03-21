@@ -56,7 +56,7 @@ const app = new Vue({
             let kh = getClientHeight();
             let zh = document.body.scrollHeight;
             let s = $(document).scrollTop();
-            if(falg&&s>zh/3){
+            if(falg&&s>200){
                 falg = false;
                 api.read()
             }
