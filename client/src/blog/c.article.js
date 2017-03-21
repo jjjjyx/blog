@@ -56,7 +56,7 @@ const app = new Vue({
             let kh = getClientHeight();
             let zh = document.body.scrollHeight;
             let s = $(document).scrollTop();
-            console.log(s);
+            // console.log(s);
             bh = $(".footer").outerHeight()+ $(".copyright").outerHeight()
             if(falg&&s>200){
                 falg = false;
