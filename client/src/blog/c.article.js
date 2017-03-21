@@ -56,6 +56,8 @@ const app = new Vue({
             let kh = getClientHeight();
             let zh = document.body.scrollHeight;
             let s = $(document).scrollTop();
+            console.log(s);
+            bh = $(".footer").outerHeight()+ $(".copyright").outerHeight()
             if(falg&&s>200){
                 falg = false;
                 api.read()
@@ -64,6 +66,12 @@ const app = new Vue({
                 if(this.$refs['article-tocm']){
                     $(this.$refs['article-tocm']).css({
                         top:-(s-(zh-kh-bh))+'px'
+                    })
+                }
+            }else{
+                if(this.$refs['article-tocm']){
+                    $(this.$refs['article-tocm']).css({
+                        top:'0px'
                     })
                 }
             }
