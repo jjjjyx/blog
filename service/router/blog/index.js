@@ -49,7 +49,7 @@ const indexLi = (data) => {
             // console.log(res.statusCode, body);
             let b = {};
             if (body.code == 0) {
-                b = body.response;
+                b = body.response||{};
             }
             let getB = (guid,k) => b[guid]?b[guid][k]:0;
             data.forEach((item) => {

@@ -14,8 +14,8 @@ const domain = C.qiUpload.Domain
 
 const uptoken = new qiniu.rs.PutPolicy(C.qiUpload.Bucket_Name);
 
-let client = request.newClient(C.qiUpload.RSF_HOST);
-let client2 = request.newClient(C.qiUpload.RS_HOST);
+let client = request.createClient(C.qiUpload.RSF_HOST);
+let client2 = request.createClient(C.qiUpload.RS_HOST);
 client.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 client2.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
