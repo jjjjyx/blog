@@ -9,6 +9,8 @@ const app = new Vue({
     data: function() {
         return {
             message:'hello',
+            loading:false,
+            noPost :true,
         }
     },
     components: {
@@ -21,7 +23,6 @@ const app = new Vue({
     methods: {
     },
     mounted: function() {
-
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
     }
 })

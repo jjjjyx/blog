@@ -68,12 +68,11 @@ var _hmt = _hmt || [];
                             <a class="tag-icon">
                                 <i class="<%=item.icon%>"></i>
                             </a>
-                            <h4><a target="_blank" href="/c/dqfRwQ"><%=item.name%></a></h4>
+                            <h4><a href="/category/<%=item.slug%>"><%=item.name%></a></h4>
                             <p class="">
                                 <%=item.description.substring(0,60)%><%=item.description>60?'...':''%>
-
                             </p>
-                            <button type="button" name="button" class="am-btn am-btn-success am-round">进入分类</button>
+                            <a type="button" name="button" class="am-btn am-btn-success am-round" href="/category/<%=item.slug%>">进入分类</a>
                             <hr>
                             <div class="count"><%=item.count%>篇文章</div>
                         </div>

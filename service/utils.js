@@ -10,6 +10,9 @@ const debug = require('debug')('app:utils:' + process.pid),
     config = require("./config.js"),
     request = require('request-json'),
     jsonwebtoken = require("jsonwebtoken"),
+    xss = require('xss'),
+    marked = require("marked"),
+    renderer = new marked.Renderer(),
     TOKEN_EXPIRATION = 60,
     TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5;
 // UnauthorizedAccessError = require(path.join(__dirname, 'errors', 'UnauthorizedAccessError.js'));
@@ -229,10 +232,98 @@ module.exports.getClientIp = function getClientIp(req) {
 };
 
 module.exports.getIpInfo = function(ip){
-    let client = request.newClient('http://ip.taobao.com/');
+    let client = request.createClient('http://ip.taobao.com/');
     return new Promise((resolve, reject) => {
         client.get(`service/getIpInfo.php?ip=${ip}`, function(err, res, body) {
             resolve(body);
         });
     });
+}
+const x="0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM";
+module.exports.randomChar = function(l)  {
+    var tmp="";
+    for(var i=0;i<l;i++)  {
+        tmp += x.charAt(Math.ceil(Math.random()*100000000)%x.length);
+    }
+    return tmp;
+}
+
+module.exports.getPostsCounts = function(articleGuidList)  {
+    let client = request.createClient('http://api.duoshuo.com');
+    return new Promise((resolve, reject) => {
+        client.get(`threads/counts.json?short_name=jjjjyx&threads=${articleGuidList.join(',')}`, function(err, res, body) {
+            if(err){
+                return resolve({});
+            }
+            resolve(body.response||{});
+        });
+    });
+}
+
+// 为了将markdown 的内容全部提取出来 不包含符号
+const textChar = (text) => text || "";
+const emptyChar = () => '';
+for (let i in renderer) {
+    renderer[i] = textChar
+}
+renderer.list = emptyChar
+renderer.hr = emptyChar
+renderer.tablerow = emptyChar
+renderer.table = emptyChar
+renderer.image = (href, title, text) => title || "";
+renderer.link = (href, title, text) => title || "";
+
+module.exports.indexLi = async function(data){
+    let s = "";
+    let pH =(guid)=>
+        `<form class="password dimmer inverted " method="post" action="/p/${guid}" target="_blank">
+        <span class="am-icon-stack">
+          <i class="am-icon-circle am-icon-stack-2x"></i>
+          <i class="am-icon-expeditedssl am-icon-stack-1x white"></i>
+        </span>
+        <div class="am-form-group am-margin-top-sm">
+            <input type="password" class="am-round" placeholder="输入访问密码" style="width" name="post_password">
+            <button class="am-btn am-btn-success am-btn-sm am-round" type="submit">
+                <i class="am-icon-arrow-circle-right"></i>
+            </button>
+        </div>
+    </form>
+    `;
+    let animation =['scale-up','fade','slide-left','slide-bottom'];
+
+    let articleGuidList = data.map((item) => item.guid);
+    let b = await module.exports.getPostsCounts(articleGuidList);
+    let getB = (guid,k) => b[guid]?b[guid][k]:0;
+    data.forEach((item) => {
+        // <a class="am-corner-label am-orange"></a>
+        s += `
+            <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}" data-am-scrollspy="{animation: '${animation[Math.floor(Math.random() * 4)]}'}">${item.ppassword?pH(item.guid):''}
+               <div class="content">
+                   <h3 class="title"><a href="/p/${item.guid}" target="_blank">${item.menu_order?'<span>[ 置顶 ]</span> ':''}${xss(item.post_title)}</a></h3>
+                   <div class="options am-fr">
+                       <a class="read" href="/p/${item.guid}" target="_blank">
+                           <i class="am-icon-eye"></i> <span class="num">${item.eye_count||0}</span>
+                       </a>
+                       <a class="comment" href="/p/${item.guid}#comment" target="_blank">
+                           <i class="am-icon-comment-o"></i> <span class="num">${getB(item.guid,'comments')}</span>
+                       </a>
+                       <a class="like" >
+                           <i class="am-icon-heart-o"></i> <span class="num">${getB(item.guid,'likes')}</span>
+                       </a>
+                   </div>
+                   <div class="meta am-margin-vertical-xs">
+                       <a title="${xss(item.post_author)}" class="name" >${xss(item.post_author)}</a> ${new Date(item.post_date).format("yyyy-MM-dd hh:mm:ss")}
+                   </div>
+                   <p class="">
+                        ${xss(marked(item.post_content,{renderer}).substring(0,140))}...
+                   </p>
+                   <div class="j-category-tag">
+                       <a class="category">${item.term_id}</a>
+                       ${item.postTag ? `<i class="am-icon-tags"></i> <a>${item.postTag.replace(/,/g,"</a><a>")}</a>`:''}
+                   </div>
+               </div>
+            </article>
+        `
+    })
+    return s.split("\n").map((s)=>s.trim()).join('') || "没有更多了";
 }

@@ -30,7 +30,7 @@
         <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
 
             <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right">
-                <li v-for="item in menuList"><a :href="item.href" :class="{active:active==item.f}" >{{item.name}}</a></li>
+                <li v-for="item in menuList"><a :href="'/'+item.href" :class="{active:active==item.f}" >{{item.name}}</a></li>
             </ul>
         </div>
 
@@ -48,7 +48,7 @@ export default {
             isGoTopShow: false,
             isSearchShow: false,
             menuList:[
-                {name:'首页',href:'/',f:'index'},
+                {name:'首页',href:'',f:'index'},
                 {name:'标签',href:'category',f:'category'},
                 {name:'归档',href:'archives',f:'archives'},
                 {name:'关于我',href:'me',f:'me'},

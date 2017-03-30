@@ -28,6 +28,10 @@ class TermDao extends db.BaseDao{
         let sql = "select * from j_terms where taxonomy = 'category' and delete_at is null";
         this.execCallBack(sql,null,callback);
     }
+    loadCategoryBySlug(slug,callback){
+        let sql = "select * from j_terms where taxonomy = 'category' and delete_at is null and slug = ?";
+        this.execCallBack(sql,[slug],callback);
+    }
     //{name,slug,term_group,taxonomy,description,icon}
     // 这里逻辑比较复杂 写个注释
     // 首先查询数据库有没有重复的

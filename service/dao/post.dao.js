@@ -131,7 +131,7 @@ class PostDao extends db.BaseDao {
         this.execTrans(sql, callback);
     }
     // 获取发布的文章列表，内容只显示100 字
-    getList({hasloadId},f,callback){
+    getList({hasloadId,slug},callback,f){
         let sql = `
         SELECT
           jp.id,
@@ -162,12 +162,12 @@ class PostDao extends db.BaseDao {
           LEFT JOIN j_terms jt  ON jp.term_id = jt.term_id
           LEFT JOIN  (SELECT  j2tr.object_id, j2t.name  FROM j_term_relationships j2tr  LEFT JOIN j_terms j2t  ON j2t.term_id = j2tr.term_id) jtr  ON jtr.object_id = jp.id
         WHERE
-            post_status in ('publish') ${hasloadId ? 'and jp.id NOT IN (?) ':''}
+            post_status in ('publish') ${hasloadId ? 'and jp.id NOT IN (:hasloadId) ':''} ${slug ? 'AND jt.slug = :slug':''}
         GROUP BY jp.id
         ORDER BY menu_order DESC, jp.post_date DESC
         LIMIT 0, 10
         `
-        this.execCallBack(sql,[hasloadId],callback,f);
+        this.execCallBack(sql,{hasloadId,slug},callback,f);
     }
 
     getPostsGroup(callback){

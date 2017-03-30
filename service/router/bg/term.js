@@ -45,7 +45,8 @@ let addTerm = function (req, res, next) {
         }else{
             let description = req.body.description||"分类";
             let icon = req.body.icon;
-            termDao.add({name:req.body.name,taxonomy:'category',description, icon}, (err, data) => {
+            let slug = utils.randomChar(6);
+            termDao.add({name:req.body.name,taxonomy:'category',description, icon, slug}, (err, data) => {
                 let map = {};
                 if (err) {
                     map.code = -1;
@@ -72,7 +73,8 @@ let addTag = function (req, res, next) {
             };
             return res.status(400).json(map);
         }else{
-            termDao.add({name:req.body.name,taxonomy:'tag',description:'标签',icon:'',slug:''}, (err, data) => {
+            let slug = utils.randomChar(6);
+            termDao.add({name:req.body.name,taxonomy:'tag',description:'标签',icon:'',slug}, (err, data) => {
                 let map = {};
                 if (err) {
                     map.code = -1;

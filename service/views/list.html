@@ -44,10 +44,11 @@
         <div class="blank"></div>
         <div class="j-banner">
             <div class="am-container">
-                <h1>全部分类</h1>
-                <p>好好挑，好好选，这里的分类很多 </p>
-            </div>
-            <div class="am-container">
+                <div class="am-fr category-icon tag-icon">
+                    <i class="<%=termInfo.icon%>"></i>
+                </div>
+                <h1><%=termInfo.name%></h1>
+                <p><%=termInfo.description%></p>
 
             </div>
         </div>
@@ -57,7 +58,7 @@
 
                     <div class="recommend-post">
                         <main class="j-article-list" ref="articleList">
-                            <!-- <%-datali%> -->
+                             <%-datali%>
                         </main>
                         <div class="j-article-placeholder index" v-if="loading">
                             <div class="img"></div>
@@ -88,7 +89,6 @@
                 </div>
             </div>
         </div>
-
         <blob-footer ></blob-footer>
     </div>
     <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>
