@@ -160,7 +160,6 @@ module.exports.retrieve = function (id, done) {
                 "message": err
             });
         }
-
         if (_.isNull(reply)) {
             return done(new Error("token_invalid"), {
                 code:200,
@@ -180,9 +179,7 @@ module.exports.retrieve = function (id, done) {
             }
 
         }
-
     });
-
 };
 
 module.exports.expire = function (req) {

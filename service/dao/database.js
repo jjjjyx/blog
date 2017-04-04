@@ -69,7 +69,6 @@ class BaseDao {
                             if (tErr) {
                                 connection.rollback(function () {
                                     console.log("事务失败，" + sql_param + "，ERROR：" + tErr);
-                                    // throw tErr;
                                     cb(tErr);
                                 });
                             } else {
