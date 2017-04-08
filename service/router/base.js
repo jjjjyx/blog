@@ -13,7 +13,7 @@ module.exports = function(app){
         app.locals['title'] = global.SITE.title;
         app.locals['baiduVerification'] = global.SITE.baiduVerification;
         app.locals['googleVerification'] = global.SITE.googleVerification;
-        app.locals['statistical'] = global.statistical;
+        app.locals['statistical'] = global.SITE.statistical;
         app.locals['head'] = function(name,{title,keyword,description} = {}){
             return `
     <meta charset="utf-8">
