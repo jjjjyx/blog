@@ -71,8 +71,8 @@ app.use("/api",utils.middleware().unless({
     path: ['/api/user/login'],
     method: 'OPTIONS'
 }));
-
-require('./service/router')(app);
+require('./service/router/base')(app);
+require('./service/router/index')(app);
 
 if (isDev) {
     var webpack = require('webpack'),

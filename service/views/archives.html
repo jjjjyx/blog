@@ -2,37 +2,8 @@
 <html class="zh-CN">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="baidu-site-verification" content="AM5Ni9Q2FO" />
-    <meta name="google-site-verification" content="yLtrMMNRDOv_51TRVxZymlX_By6Nr91RAEBC4-PfT3s" />
-    <title></title>
-    <!-- Set render engine for 360 browser -->
-    <meta name="renderer" content="webkit">
-
-    <!-- No Baidu Siteapp-->
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" rel="shortcut icon" />
-
-    <!-- Add to homescreen for Chrome on Android -->
-    <meta name="mobile-web-app-capable" content="yes">
-    <!-- <link rel="icon" sizes="192x192" href="assets/i/app-icon72x72@2x.png"> -->
-
-    <!-- Add to homescreen for Safari on iOS -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-
-    <link href="/static/preloader.css" rel="stylesheet">
-    <link href="//cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css" rel="stylesheet">
-    <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
-    <link href="/static/vendor.css" rel="stylesheet" >
-    <link href="/static/archives.css" rel="stylesheet">
-    <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
-    <script src="//cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js"></script>
+    <%=head('archives')%>
+    <%-statistical()%>
 </head>
 
 <body>
@@ -49,9 +20,7 @@
         </section>
         <blob-footer ></blob-footer>
     </div>
-    <script src="//cdn.bootcss.com/vue/2.2.1/vue.min.js"></script>
-    <script type="text/javascript" src="/static/vendor.js"></script>
-    <script type="text/javascript" src="/static/archives.js"></script>
+    <%-footer('archives')%>
 </body>
 
 </html>

@@ -67,7 +67,7 @@ var router = new VueRouter({
             },
             meta:{
                 name:'首页',
-                description:'也没什么好说的',
+                description:'欢迎您，尊贵的管理员',
                 sub:'dashboard'
             }
         },

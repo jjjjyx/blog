@@ -17,6 +17,13 @@ let updata = function(req, res,next){
         } else {
             map.code = 0;
             map.msg="修改完成";
+            siteDao.get((err, data) => {
+                let site = {}
+                data.forEach((item)=>{
+                    site[item.key] = item.value
+                })
+                global.SITE = site;
+            });
         }
         res.map = map;
         next();
@@ -32,11 +39,11 @@ let get = function(req, res,next){
             map.msg = data || "发生未知错误，刷新后重试";
         } else {
             map.code = 0;
-            let d = {};
-            data.forEach((item)=>{
-                d[item.key] = item.value
-            })
-            map.data = d;
+            // let d = {};
+            // data.forEach((item)=>{
+            //     d[item.key] = item.value
+            // })
+            map.data = data;
         }
         res.map = map;
         next();
