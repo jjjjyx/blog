@@ -318,11 +318,16 @@ header.am-topbar.bootsnav ul.am-nav li.active > a{
 }
 header.am-topbar.bootsnav .am-topbar-toggle{
     background-color: #fff !important;
+    color: #000;
     border: none;
     padding: 0;
     font-size: 18px;
     position: relative;
-    top: 5px;
+    top: 7px;
+    outline: none;
+    &:active {
+        box-shadow: none;
+    }
 }
 
 header.am-topbar.bootsnav ul.am-nav .dropdown-menu .dropdown-menu{
@@ -342,8 +347,8 @@ header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
     float: right;
     display: inline-block;
     margin-left: 13px;
-    margin-right: -15px;
 
+    margin-right: 0px;
     > ul{
         padding: 0;
         margin: 0 0 -7px 0;
@@ -367,7 +372,12 @@ header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
         border: solid 1px #e0e0e0;
     }
 }
+@media only screen and (min-width: 641px){
+    .attr-nav {
+        margin-right: -15px;
+    }
 
+}
 
 /* Top Search
 =================================*/
@@ -506,8 +516,9 @@ header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
 }
 #gotop {
     position: fixed;
+
     right: 120px;
-    bottom: 10px;
+    bottom: 20px;
     z-index: 9999;
     a {
         margin-top: 10px;
@@ -533,6 +544,17 @@ header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
         transition: all .3s ease-in;
         &:hover{
             transform: rotate(720deg);
+        }
+    }
+}
+@media only screen and (max-width: 641px){
+    #gotop {
+        right: 30px;
+        .icon-btn {
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            font-size: 1.4rem;
         }
     }
 }

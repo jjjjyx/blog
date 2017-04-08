@@ -14,12 +14,17 @@ section.wrapper{
     padding: 40px 0;
     color: #333;
     padding-bottom: 70px;
+    &.tocm {
+        width: auto;
+        padding: 40px 0 40px 300px ;
+        margin: 0
+    }
 }
 h1+.post-info {
-    margin: 30px 0 40px;
+    margin: 30px 0 20px;
 }
 .post-info{
-    margin: 5px 0 40px;
+    margin: 5px 0 20px;
     a.name{
         color: #333;
         font-size: 1.6rem;
@@ -32,7 +37,66 @@ h1+.post-info {
         color: #969696;
     }
 }
-
+.article-tocm {
+    width: 280px;
+    height: 100%;
+    position: fixed;;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background: #fff;
+    z-index: 8;
+    padding: 18px;
+    padding-top: 50px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-bottom: none;
+    // transition: .4s padding ease;
+    transition: left 0.4s ease-in-out,.4s padding ease;
+    &.padTop {
+        padding-top: 0px;
+    }
+    &:hover {
+        overflow: auto;
+    }
+    &.active {
+        left: -280px;
+    }
+    .btn-fold-menu {
+        line-height: 100;
+        position: absolute;
+        top: 21px;
+        right: -1px;
+        overflow: hidden;
+        width: 16px;
+        height: 36px;
+        border: 1px solid #c7e0ef;
+        border-right: none;
+        border-radius: 3px 0 0 3px;
+        // background: url(img/top-menu.png) -72px -40px no-repeat #f7fdfd;
+        z-index: 100;
+    }
+}
+@media only screen and (max-width: 641px){
+    .article-tocm {
+        left: -280px;
+    }
+    .article-tocm.active {
+        overflow: auto;
+    }
+    .am-container.article-page {
+        &.tocm {
+            padding: 40px 0;
+        }
+        article,footer,footer~div {
+            padding-left:20px;
+            padding-right:20px;
+        }
+        article .editormd-html-preview{
+            padding: 0;
+        }
+    }
+}
 #post-footer{
     &>div{
         padding:15px 0px;
@@ -80,28 +144,7 @@ h1+.post-info {
         }
     }
 }
-.article-tocm {
-    width: 280px;
-    height: 100%;
-    position: fixed;;
-    top: 0;
-    left: 0;
-    overflow: hidden;
-    background: #fff;
-    z-index: 8;
-    padding: 18px;
-    padding-top: 50px;
-    border: 1px solid #ddd;
-    border-top: none;
-    border-bottom: none;
-    transition: .4s padding ease;
-    &.padTop {
-        padding-top: 0px;
-    }
-    &:hover {
-        overflow: auto;
-    }
-}
+
 #comment {
     position: relative;
     top: -150px;

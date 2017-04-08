@@ -57,10 +57,13 @@
         <blob-header @sabit="togglehead" :active='"index"'></blob-header>
         <div class="blank"></div>
         <section class="wrapper">
-            <div class="am-container article-page">
+            <div class="am-container article-page <%if(tocm){%>tocm<%}%>">
                 <%if(tocm){%>
                 <aside class="article-tocm" ref="article-tocm" :class="{padTop:aside}">
-                    <h1>Table of Contents</h1>
+                    <h1>目  录</h1>
+                    <!-- <a class="btn-fold-menu"title="收起" >
+                        <i class="am-icon-angle-double-left"></i>
+                    </a> -->
                     <section class=" markdown-body editormd-preview-container" id="custom-toc-container">
                     </section>
                 </aside>
@@ -170,7 +173,7 @@
         wait();
     });
     </script>
-    <script>window._bd_share_config={"common":{"bdSnsKey":{"tsina":"972808999"},"bdText":"好东西当然要分析啦","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"8","bdPos":"left","bdTop":"153.5"},"image":{"viewList":["qzone","tsina","tqq","renren","weixin","copy"],"viewText":"分享到：","viewSize":"16"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+    <!-- <script>window._bd_share_config={"common":{"bdSnsKey":{"tsina":"972808999"},"bdText":"好东西当然要分析啦","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"8","bdPos":"left","bdTop":"153.5"},"image":{"viewList":["qzone","tsina","tqq","renren","weixin","copy"],"viewText":"分享到：","viewSize":"16"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script> -->
 </body>
 
 </html>
