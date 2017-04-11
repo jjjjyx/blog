@@ -35,6 +35,12 @@ let loadPostBySlug = [
         });
 
     },
+    function(req, res,next) {
+        termDao.loadCategory((err,termList)=>{
+            req.renderData.termList = termList;
+            next();
+        });
+    },
     function(req, res,next) { // 获取分类的文章
         let slug = req.params.slug
         postDao.getList({ slug }, (err, datali) => {

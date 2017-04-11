@@ -9,8 +9,8 @@
             <div class="am-dropdown tag-drop" data-am-dropdown>
               <!-- <button class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle>下拉列表 <span class="am-icon-caret-down"></span></button> -->
               <i class="am-icon-plus am-margin-right-xs am-dropdown-toggle"  data-am-dropdown-toggle></i>
-              <div class="am-dropdown-content am-text-xs">
-                  <h3 class="am-margin-0">复选框</h3>
+              <div class="am-dropdown-content am-text-xs" style="max-height: 300px; overflow-y: scroll;">
+                  <h3 class="am-margin-0">标签列表</h3>
                   <label class="am-checkbox" v-for="item in tagList">
                       <input type="checkbox" :value="item" data-am-ucheck v-model="currentPost.postTag"> {{item.name}}
                       <i @click.stop.prevent="delTag(item)" class="am-close am-icon-times am-fr"></i>

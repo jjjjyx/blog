@@ -1,14 +1,89 @@
 
 @logoColor: #ec5c51;
 @auxiliaryColor:#0793C6;
+@auxiliaryColor-2:#D82425;
 @mainFontColor : #505050;
 @mainTitleColor :#303030;
 @mainTitleSubColor :#959595;
 @mainContenColor :#444443;
-
+@bodyBgColor:#fff;
+@mainBgColor:#fff;
+@sidebarBgColor:#FAFAFA;
 
 .j-vertical-center {
     display: flex;
     flex-direction: column;
     justify-content: center;
+}
+
+.j-blog {
+    color: #fff;
+    background-color: @logoColor !important;
+    border-color: @logoColor !important;
+    &.am-btn:hover {
+        color: #fff;
+        border-color: @auxiliaryColor-2 !important;
+        background-color:  @auxiliaryColor-2 !important;
+    }
+}
+
+
+@keyframes toTopFromBottom {
+    49% {
+        transform: translateY(-100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translateY(100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
+
+@keyframes toBottomFromTop {
+    49% {
+        transform: translateY(100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translateY(-100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
+
+@keyframes toRightFromLeft {
+    49% {
+        transform: translate(100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translate(-100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
+
+@keyframes toLeftFromRight {
+    49% {
+        transform: translate(-100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translate(100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
 }

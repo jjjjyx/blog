@@ -17,10 +17,7 @@
         <div class="blank"></div>
 
         <div class="headertop">
-            <div class="centerbg" style="background-image:url(<%=site.background%>)"></div>
-            <div class="slant-left"></div>
-            <div class="slant-right"></div>
-            <div class="focusinfo">
+            <div class="centerbg j-vertical-center" style="background-image:url(<%=site.background%>)">
                 <a class="avatar am-animation-scale-up" href="javascript:;">
                     <img src="<%=site.avatar%>" >
                 </a>
@@ -28,6 +25,8 @@
                     <%-site.sign%>
                 </p>
             </div>
+            <div class="slant-left"></div>
+            <div class="slant-right"></div>
         </div>
         <div class="index-content am-cf am-container">
             <div class="am-g">
@@ -36,36 +35,34 @@
                         <h3 class="active">最新文章</h3>
                         <!-- <span class="gapline">|</span> -->
                     </div>
-                    <div class="recommend-post">
-                        <main class="j-article-list" ref="articleList">
-                            <%-datali%>
-                        </main>
-                        <div class="j-article-placeholder index" v-if="loading">
-                            <div class="img"></div>
-                            <div class="content">
-                                <div class="author">
-                                    <div class="avatar"></div>
-                                    <div class="name"></div>
-                                </div>
-                                <div class="title"></div>
-                                <div class="text"></div>
-                                <div class="text animation-delay"></div>
-                                <div class="text short-text"></div>
-                                <div class="meta">
-                                    <i class="am-icon-eye ic-list-read"></i>
-                                    <div class="read"></div>
-                                    <i class="am-icon-comment ic-list-comments"></i>
-                                    <div class="small"></div>
-                                    <i class="am-icon-heart ic-list-like"></i>
-                                    <div class="small"></div>
-                                </div>
+                    <main class="j-article-list" ref="articleList">
+                        <%-datali%>
+                    </main>
+                    <div class="j-article-placeholder index" v-if="loading">
+                        <div class="img"></div>
+                        <div class="content">
+                            <div class="author">
+                                <div class="avatar"></div>
+                                <div class="name"></div>
+                            </div>
+                            <div class="title"></div>
+                            <div class="text"></div>
+                            <div class="text animation-delay"></div>
+                            <div class="text short-text"></div>
+                            <div class="meta">
+                                <i class="am-icon-eye ic-list-read"></i>
+                                <div class="read"></div>
+                                <i class="am-icon-comment ic-list-comments"></i>
+                                <div class="small"></div>
+                                <i class="am-icon-heart ic-list-like"></i>
+                                <div class="small"></div>
                             </div>
                         </div>
-                        <p class="load-more">
-                            <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore" v-if="noPost">加载更多</button>
-                            <span v-else>没有更多了</span>
-                        </p>
                     </div>
+                    <p class="load-more">
+                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore" v-if="noPost">加载更多</button>
+                        <span v-else>没有更多了</span>
+                    </p>
                 </div>
                 <div class="am-u-md-4 sidebar">
                     <div class="part">
@@ -80,13 +77,13 @@
                             <%for(item of termList){%>
                                 <%if(item.name=='java'){%>
                                 <a class="tag active" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout" target="_blank" href="/category/<%=item.slug%>">
-                                    <span class="tag-icon">
+                                    <span class="tags-icon">
                                         <i class="<%=item.icon%>"></i>
                                     </span>
                                     <span><%=item.name%></span></a>
                                 <%}else{%>
                                 <a class="tag" data-tag='<%=item.name%>' target="_blank" href="/category/<%=item.slug%>">
-                                    <span class="tag-icon">
+                                    <span class="tags-icon">
                                         <i class="<%=item.icon%>"></i>
                                     </span>
                                     <span><%=item.name%></span>
@@ -141,11 +138,17 @@
                             <%}%>
                         </ul>
                     </div>
-                    <!-- <div class="part">
+                    <div class="part">
                         <div class="j-title">
-                            <h3 class="">分类目录</h3>
+                            <h3 class="">友情链接</h3>
+                            <a  class="r btn btn-sm " style="color:#B3B3B3">
+                                想要交换友链请联系我哦
+                            </a>
                         </div>
-                    </div> -->
+                        <ul class="j-links j-list">
+                            <li><a target="_blank" href="http://blog.tor1024.com/" title="致怀's Blog | 大好时光！">致怀's Blog | 大好时光！</a></li>
+                        </ul>
+                    </div>
                     <div class="part">
                         <div class="j-title">
                             <h3 class="">功能</h3>

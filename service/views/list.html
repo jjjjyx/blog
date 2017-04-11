@@ -23,9 +23,9 @@
 
             </div>
         </div>
-        <div class="index-content am-cf am-container">
+        <div class="index-content am-cf am-container" style="margin-top: 50px;">
             <div class="am-g">
-                <div class="am-u-md-9 articles">
+                <div class="am-u-md-8 articles">
 
                     <div class="recommend-post">
                         <main class="j-article-list" ref="articleList">
@@ -56,6 +56,72 @@
                             <button class="am-btn am-round gray btn-bordered am-btn-sm" v-if="noPost">加载更多</button>
                             <span v-else>没有更多了</span>
                         </p>
+                    </div>
+                </div>
+                <div class="am-u-md-4 sidebar">
+                    <div class="part j-blog am-padding-vertical-sm" style="text-align:center;">
+                        <img src="<%=avatar%>" alt="avatar" class="am-circle am-img-thumbnail am-margin-top-sm" height="90" width="90">
+                        <h3>酱酱酱酱油鲜</h3>
+                        <p>搞技术不是晚上才有灵感，<br>靠的是碌碌无为的白天引发的愧疚心。</p>
+                        <div class="social-ul">
+                            <li>
+                                <a href="javascript:;"><i class="am-icon-qq"></i></a>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="am-icon-github"></i></a>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="am-icon-weixin"></i></a>
+                            </li>
+                            <li>
+                                <a href="javascript:;"><i class="am-icon-envelope"></i></a>
+                            </li>
+                        </div>
+                    </div>
+                    <div class="part part-search">
+                        <div class="j-title">
+                            <h3>
+                                <span class="num am-icon-search"></span>Search
+                            </h3>
+                        </div>
+                        <form class="am-form">
+                            <div class="am-form-group">
+                                <input type="text" class="am-form-field am-radius" placeholder="Search ..." />
+                            </div>
+                            <div class="am-form-group">
+                                <button type="button" class="am-btn j-blog am-btn-block am-radius">搜索一下</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="part">
+                        <div class="j-title">
+                            <h3 class="">标签</h3>
+                            <a href="/category" class="r btn btn-sm " style="color:#B3B3B3">
+                                全部 &nbsp;&nbsp;<i class="am-icon-angle-right"></i>
+                            </a>
+                        </div>
+                        <div class="tags">
+                            <%for(item of termList){%>
+                            <a class="tag" data-tag='<%=item.name%>' target="_blank" href="/category/<%=item.slug%>">
+                                <span class="tags-icon">
+                                    <i class="<%=item.icon%>"></i>
+                                </span>
+                                <span><%=item.name%></span>
+                            </a>
+                            <%}%>
+                        </div>
+                    </div>
+
+                    <div class="part">
+                        <div class="j-title">
+                            <h3 class="">友情链接</h3>
+                            <a  class="r btn btn-sm " style="color:#B3B3B3">
+                                想要交换友链请联系我哦
+                            </a>
+                        </div>
+                        <ul class="j-links j-list">
+                            <li><a target="_blank" href="http://blog.tor1024.com/" title="致怀's Blog | 大好时光！">致怀's Blog | 大好时光！</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>

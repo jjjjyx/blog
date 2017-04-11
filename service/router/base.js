@@ -8,9 +8,11 @@ module.exports = function(app){
         })
         global.SITE = site;
 
-        console.log(global.SITE)
+        // console.log(global.SITE)
         app.locals['hello'] = function(){ return 'hello'; };
         app.locals['title'] = global.SITE.title;
+        app.locals['background'] = global.SITE.background;
+        app.locals['avatar'] = global.SITE.avatar;
         app.locals['baiduVerification'] = global.SITE.baiduVerification;
         app.locals['googleVerification'] = global.SITE.googleVerification;
         app.locals['statistical'] = global.SITE.statistical;
