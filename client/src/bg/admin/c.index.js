@@ -5,11 +5,14 @@ import Vuex from "vuex"
 import VueRouter from "vue-router"
 
 import keyboardJS from "keyboardjs"
+import "../../../public/js/editormd.extent";
+import "../../../public/css/editormd.extent.less";
 
 Vue.use(VueRouter);
 Vue.config.errorHandler = function (err, vm) {
     console.log(err, vm);
 }
+
 ZeroClipboard.config( { swfPath: '//cdn.bootcss.com/zeroclipboard/2.3.0/ZeroClipboard.swf' } );
 import "../static/app.less";
 

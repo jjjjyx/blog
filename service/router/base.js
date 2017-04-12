@@ -32,7 +32,7 @@ module.exports = function(app){
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link href="/static/preloader.css" rel="stylesheet">
+    <link href="/static/preloader.min.css" rel="stylesheet">
     <link href="${global.SITE.amazeuiCDN}/css/amazeui.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
     <link href="/static/vendor.css" rel="stylesheet" >

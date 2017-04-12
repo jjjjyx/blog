@@ -329,8 +329,6 @@ export default {
     },
     mounted:async function() {
         let self = this;
-        // console.log();
-        editormd.emoji.path = "http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/";
         this.editormd = editormd("post-editormd", {
             path              : '/static/editormd/lib/',
             emoji             : true,

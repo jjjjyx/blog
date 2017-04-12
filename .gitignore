@@ -50,7 +50,7 @@ kfavicon.png
 !/service/test/*.js
 
 /public/*
-!/public/preloader.css
+!/public/preloader.*
 !/public/favicon.ico
 !/public/editormd
 dump.rdb
