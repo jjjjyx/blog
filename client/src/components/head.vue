@@ -51,7 +51,7 @@ export default {
                 {name:'首页',href:'',f:'index'},
                 {name:'标签',href:'category',f:'category'},
                 {name:'归档',href:'archives',f:'archives'},
-                {name:'关于我',href:'me',f:'me'},
+                {name:'关于我',href:'author',f:'author'},
                 {name:'作品',href:'javascript:;',f:'works'},
                 {name:'BUG集锦',href:'javascript:;',f:'bug'}
             ]
