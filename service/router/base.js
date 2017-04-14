@@ -39,7 +39,7 @@ module.exports = function(app){
     <link href="/static/preloader.min.css" rel="stylesheet">
     <link href="${global.SITE.amazeuiCDN}/css/amazeui.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
-    ${isDev?'<link href="/static/vendor.css" rel="stylesheet" >':''}
+    ${!isDev?'<link href="/static/vendor.css" rel="stylesheet" >':''}
     <link href="/static/${name}.css" rel="stylesheet">
     <script src="${global.SITE.CDN}/jquery/3.1.1/jquery.min.js"></script>
     <script src="${global.SITE.amazeuiCDN}/js/amazeui.min.js"></script>
@@ -47,7 +47,7 @@ module.exports = function(app){
         }
         app.locals['footer'] = function (name){
             return `
-            <script src="${global.SITE.CDN}/vue/2.2.1/vue.min.js"></script>${isDev?'<script type="text/javascript" src="/static/vendor.js"></script>':''}
+            <script src="${global.SITE.CDN}/vue/2.2.1/vue.min.js"></script>${!isDev?'<script type="text/javascript" src="/static/vendor.js"></script>':''}
             <script type="text/javascript" src="/static/${name}.js"></script>
             `
         }
