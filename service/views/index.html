@@ -16,12 +16,12 @@
         <!-- #masthead -->
         <div class="blank"></div>
 
-        <div class="headertop">
+        <div class="headertop bounceInDown animated">
             <div class="centerbg j-vertical-center" style="background-image:url(<%=site.background%>)">
-                <a class="avatar am-animation-scale-up" href="javascript:;">
+                <a class="avatar am-animation-scale-up " href="javascript:;"  style="animation-delay: .51s;">
                     <img src="<%=site.avatar%>" >
                 </a>
-                <p class="avatar-p am-animation-slide-bottom">
+                <p class="avatar-p am-animation-slide-bottom " style="animation-delay: .51s;">
                     <%-site.sign%>
                 </p>
             </div>
@@ -133,7 +133,7 @@
                         <ul class="j-list">
                             <%for(item of groupList){%>
                                 <li>
-                                    <a><i class="am-icon-calendar-plus-o"></i> <%=item.post_date%></a>
+                                    <a href="/archives#<%=dateFormat(item.post_date,'MMMYY')%>"><i class="am-icon-calendar-plus-o"></i> <%=item.post_date2%></a>
                                 </li>
                             <%}%>
                         </ul>

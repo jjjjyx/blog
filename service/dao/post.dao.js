@@ -163,7 +163,7 @@ class PostDao extends db.BaseDao {
           LEFT JOIN  (SELECT  j2tr.object_id, j2t.name  FROM j_term_relationships j2tr  LEFT JOIN j_terms j2t  ON j2t.term_id = j2tr.term_id) jtr  ON jtr.object_id = jp.id
         WHERE
             post_status in ('publish') ${hasloadId ? 'and jp.id NOT IN (:hasloadId) ':''} ${slug ? 'AND jt.slug = :slug':''}
-        GROUP BY jp.id
+        group by id
         ORDER BY menu_order DESC, jp.post_date DESC
         LIMIT 0, 10
         `
@@ -171,7 +171,35 @@ class PostDao extends db.BaseDao {
     }
 
     getPostsGroup(callback){
-        let sql="SELECT * FROM (SELECT DATE_FORMAT(post_date,'%Y 年%m 月') AS post_date FROM j_posts WHERE post_status = 'publish') AS t GROUP BY t.post_date";
+        let sql="SELECT * FROM (SELECT DATE_FORMAT(post_date,'%Y 年%m 月') AS post_date2,post_date FROM j_posts WHERE post_status = 'publish') AS t GROUP BY t.post_date2 ORDER BY post_date DESC";
+        this.execCallBack(sql,null,callback);
+    }
+
+    getPostsActivity(callback){
+        let sql=`
+        SELECT
+          jp.id,
+          jp.post_date,
+          jp.post_title,
+          jp.post_status,
+          jp.post_name,
+          jp.post_content_filtered,
+          jp.menu_order,
+          jp.post_type,
+          jp.comment_count,
+          jp.eye_count,
+          jt.name AS term_id,
+          jp.menu_order,
+          jp.guid,
+          ju.user_nickname AS post_author,
+          jp.author
+        FROM
+          j_posts jp
+          LEFT JOIN j_users ju  ON jp.post_author = ju.id
+          LEFT JOIN j_terms jt  ON jp.term_id = jt.term_id
+        WHERE
+            post_status in ('publish')
+        ORDER BY jp.post_date DESC`;
         this.execCallBack(sql,null,callback);
     }
 

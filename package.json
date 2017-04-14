@@ -44,6 +44,7 @@
     "keyboardjs": "^2.3.3",
     "lodash": "^4.16.6",
     "marked": "^0.3.6",
+    "moment": "^2.18.1",
     "morgan": "^1.7.0",
     "multer": "^1.2.0",
     "mysql": "^2.12.0",
