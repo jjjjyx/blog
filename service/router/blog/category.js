@@ -44,7 +44,7 @@ let loadPostBySlug = [
     function(req, res,next) { // 获取分类的文章
         let slug = req.params.slug
         postDao.getList({ slug }, (err, datali) => {
-            req.renderData.datali = datali;
+            req.renderData.datali = datali.html;
             next()
         }, utils.indexLi)
     }

@@ -40,18 +40,18 @@
                         <li><a href="javascript: void(0)" @click="open('9P1TEN')" data-slug="9P1TEN">上课大纲</a></li>
                         <li><a href="javascript: void(0)" @click="open('MG1Wx9')" data-slug="MG1Wx9">毕业论文</a></li>
                     </ul>
-                    <main class="j-article-list am-tabs-bd" >
-                        <div class="am-tab-panel am-fade am-in am-active" ref="articleList">
+                    <main class="j-article-list am-tabs-bd am-tabs-bd-ofv" >
+                        <div class="am-tab-panel  am-active" ref="articleList">
                             <%-datali%>
                         </div>
-                        <div class="am-tab-panel am-fade am-in" ref="9P1TEN">
+                        <div class="am-tab-panel " ref="9P1TEN">
 
                         </div>
-                        <div class="am-tab-panel am-fade am-in" ref="MG1Wx9">
+                        <div class="am-tab-panel " ref="MG1Wx9">
 
                         </div>
                     </main>
-                    <div class="j-article-placeholder index" v-if="loading">
+                    <div class="j-article-placeholder index">
                         <div class="img"></div>
                         <div class="content">
                             <div class="author">
@@ -73,7 +73,10 @@
                         </div>
                     </div>
                     <p class="load-more">
-                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore" v-if="noPost">加载更多</button>
+                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore" v-if="noPost" >
+                            <i class="am-icon-spinner am-icon-spin am-text-xs" v-if="loading"></i> {{loading?'loading...':'加载更多'}}
+
+                        </button>
                         <span v-else>没有更多了</span>
                     </p>
                 </div>

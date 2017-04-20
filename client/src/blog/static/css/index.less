@@ -93,15 +93,22 @@
             border-bottom-color: transparent;
             // padding: 0 3rem;
         }
+        .am-tab-panel {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
         .am-nav-tabs>li {
             margin-bottom: 0px;
         }
         li>a{
             color: #555;
-            &:hover {
-                color: @logoColor;
+            background-color: transparent;
+            &:hover,&:focus,&:active {
                 background-color: transparent;
                 border-color: transparent;
+            }
+            &:hover {
+                color: @logoColor;
             }
             &::after {
                 position: absolute;
@@ -200,7 +207,7 @@
         position: relative;
         width: 100%;
         margin: 0 0 3rem;
-        padding: 3rem 0;
+        padding: 3rem;
         border-bottom: 1px solid #f0f0f0;
         word-wrap: break-word;
         border-radius: 2px;
@@ -317,11 +324,11 @@
 
     }
 }
-.j-article-list article,.sidebar .part{
-    // box-shadow: 0 4px 20px rgba(0,0,0,.1);
-    // border-bottom: 1px solid #d3d5d7;
+.j-article-list article,.sidebar .part,.j-article-placeholder{
+    box-shadow: 0 0 5px 0 #e2e3e4;
+    border-bottom: 1px solid #d3d5d7;
     &::before {
-        // content: "";
+        content: "";
         height: 1px;
         width: 100%;
         background-color: #FFF;
@@ -332,7 +339,7 @@
         position: absolute;
     }
     &::after {
-        // content: "";
+        content: "";
         height: 1px;
         width: 100%;
         background-color: #FFF;
@@ -507,14 +514,16 @@
     position: relative;
     padding: 0 2px 0 0;
     margin-bottom: 50px;
+    padding: 3rem;
+    background-color: @mainBgColor;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     .img {
         position: absolute;
-        bottom: 23px;
-        right: 0;
+        bottom: 5rem;
+        right: 3rem;
         width: 150px;
         height: 120px;
         border-radius: 4px;

@@ -165,7 +165,7 @@ class PostDao extends db.BaseDao {
             post_status in ('publish') ${slug ? 'AND jt.slug = :slug':''}
         group by id
         ORDER BY menu_order DESC, jp.post_date DESC
-        LIMIT ${(page-1)*rows}, ${rows}
+        LIMIT ${(page-1) * rows}, ${rows}
         `
 
         this.execCallBack(sql,{page,rows,slug},callback,f);
@@ -244,7 +244,6 @@ class PostDao extends db.BaseDao {
                     if (result.length == 1 && result[0].taxonomy == 'category') {
                         let create_at = new Date();
                         connection.query(sql, [post_author, create_at, post_content, post_title, term_id, post_name, post_status, seq_in_nb, author], (err2, result2) => {
-                            console.log(err2)
                             if (err2) {
                                 callback(true);
                             } else {
@@ -282,20 +281,39 @@ class PostDao extends db.BaseDao {
     }
     postPublish(id,guid,callback){
         let post_date = new Date();
-        let post_status = "publish";
-        this.update(id,{id,guid,post_date,post_status},callback,['comment_count', 'id', 'create_at', 'delete_at', 'post_author']);
+        let post_modified = new Date();
+        let sql = [{
+                sql:"UPDATE `j_posts` SET post_status = 'publish' , post_modified = :post_modified , post_date =:post_date , guid=:guid WHERE `id`= :id",
+                params:{id,guid,post_date,post_modified}
+            },
+            {
+                sql:'update j_terms t set t.count=t.count+1 where t.term_id = (select term_id from j_posts where id=:id)',
+                params:{id}
+            }
+        ];
+
+        this.execTrans(sql,callback);
     }
 
     postUnPublish(id,callback){
-        let post_status = "auto-draft";
-        this.update(id,{id,post_status},callback,['comment_count', 'id', 'create_at', 'delete_at', 'post_author']);
+        let post_modified = new Date();
+        let sql = [{
+                sql:"UPDATE `j_posts` SET post_status = 'auto-draft' , post_modified = :post_modified WHERE `id`= :id",
+                params:{id,post_modified}
+            },
+            {
+                sql:'update j_terms set count=count-1 where term_id = (select term_id from j_posts where id=:id)',
+                params:{id}
+            }
+        ];
+        this.execTrans(sql,callback);
     }
 
     postUnlock(id,callback){
         let sql = "UPDATE `j_posts` SET post_password = null WHERE `id`= :id";
         this.execCallBack(sql,{id},callback);
     }
-        // 这里很机智的写法
+    // 这里很机智的写法
     update(id, data, callback, ban = ['comment_count', 'id', 'create_at', 'delete_at', 'post_author','post_date', 'post_status', 'guid']) {
         let keys = _.intersection(this.key, Object.keys(data));
         data.post_modified = new Date();

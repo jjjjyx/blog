@@ -61,12 +61,8 @@ const app = new Vue({
             if(data.code==0&&data.data) {
                 this.$refs[this.activeDom].innerHTML =this.$refs[this.activeDom].innerHTML+data.data;
             }else{
-                this.noPost = false;
+                this.noPost = false
             }
-
-            // if(data&&data!='没有更多了'){
-            //     $(data).appendTo(this.$refs[this.activeDom]).scrollspy();
-            // }
             this.loading = false;
         },
         async open(dom = 'articleList'){
@@ -76,10 +72,22 @@ const app = new Vue({
             this.page = 1;
             let data = await api.loadArticleList({page:this.page,slug:dom});
             if(data.code==0) {
+                $('.j-article-placeholder').hide();
                 this.$refs[dom].innerHTML = data.data;
-                // $("article",this.$refs[dom]).scrollspy();
+                // $(".am-tab-panel.am-active").removeClass('am-active');
+                // $(this.$refs[dom]).addClass("am-active")
             }
             this.loading = false;
+            // this.bindScrollspy();
+        },
+        bindScrollspy(){
+            $('.j-article-placeholder').scrollspy().on('inview.scrollspy.amui', ()=> {
+                setTimeout(()=>{
+                    this.loadMore()
+                    $('.j-article-placeholder').remove()
+                },900);
+
+            })
         }
 
     },
@@ -112,5 +120,6 @@ const app = new Vue({
             // console.log('[%s] 选项卡打开了', $(this).text());
             self.open($(this).data('slug'))
         })
+        this.bindScrollspy();
     }
 })

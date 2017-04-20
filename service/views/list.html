@@ -20,7 +20,6 @@
                 </div>
                 <h1><%=termInfo.name%></h1>
                 <p><%=termInfo.description%></p>
-
             </div>
         </div>
         <div class="index-content am-cf am-container" style="margin-top: 50px;">
@@ -29,8 +28,9 @@
 
                     <div class="recommend-post">
                         <main class="j-article-list" ref="articleList">
-                             <%-datali%>
+                             <%-datali||'该分类暂时没有一篇文章'%>
                         </main>
+                        <%if(datali){%>
                         <div class="j-article-placeholder index" v-if="loading">
                             <div class="img"></div>
                             <div class="content">
@@ -53,9 +53,13 @@
                             </div>
                         </div>
                         <p class="load-more">
-                            <button class="am-btn am-round gray btn-bordered am-btn-sm" v-if="noPost">加载更多</button>
+                            <%if(termInfo.count>10){%>
+                            <button class="am-btn am-round gray btn-bordered am-btn-sm" v-if="noPost" @click="loadMore('<%=termInfo.slug%>')">加载更多</button>
+                            <%}else{%>
                             <span v-else>没有更多了</span>
+                            <%}%>
                         </p>
+                        <%}%>
                     </div>
                 </div>
                 <div class="am-u-md-4 sidebar">

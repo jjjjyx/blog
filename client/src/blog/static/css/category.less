@@ -4,6 +4,15 @@
 @import "index";
 
 
+// .j-banner{
+//     background-position: center center;
+//     // background-attachment: fixed;
+//     background-size: cover;
+//     background-repeat: no-repeat;
+//     color: #fff;
+//     padding: 90px 0;
+//     margin-bottom: 2rem;
+// }
 .wrapper {
     padding-top: 30px;
     padding-bottom: 50px;
@@ -73,6 +82,9 @@
 
 .sidebar .part{
     &.j-blog {
+        &::before,&::after{
+            content: none;
+        }
         img.am-img-thumbnail {
             background-color: #D82425;
             border: 1px solid #D82425;

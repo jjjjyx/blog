@@ -21,6 +21,9 @@ const app = new Vue({
 
     },
     methods: {
+        async loadMore(){
+            
+        }
     },
     mounted: function() {
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
