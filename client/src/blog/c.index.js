@@ -27,6 +27,8 @@ const app = new Vue({
             keyword:'',
             loading:false,
             noPost :true,
+            page:1,
+            activeDom:'articleList'
         }
     },
     // store,
@@ -53,18 +55,32 @@ const app = new Vue({
         },
         async loadMore(){
             this.loading = true;
-            let hasloadId = $("article[data-node-id]",this.$refs.articleList).map((e,el)=>$(el).data('node-id')).get();
-            let pg = 0;
-            let data = await api.loadArticleList({hasloadId,pg});
-            if(data&&data!='没有更多了'){
-                $(data).appendTo(this.$refs.articleList).scrollspy();
-                // $().append(data)
+            // let hasloadId = $("article[data-node-id]",this.$refs.articleList).map((e,el)=>$(el).data('node-id')).get();
+            this.page+=1;
+            let data = await api.loadArticleList({page:this.page,slug:this.activeDom=='articleList'?'':this.activeDom});
+            if(data.code==0&&data.data) {
+                this.$refs[this.activeDom].innerHTML =this.$refs[this.activeDom].innerHTML+data.data;
             }else{
                 this.noPost = false;
             }
 
+            // if(data&&data!='没有更多了'){
+            //     $(data).appendTo(this.$refs[this.activeDom]).scrollspy();
+            // }
             this.loading = false;
         },
+        async open(dom = 'articleList'){
+            this.loading = true;
+            this.activeDom = dom;
+            this.$refs[dom].innerHTML = '';
+            this.page = 1;
+            let data = await api.loadArticleList({page:this.page,slug:dom});
+            if(data.code==0) {
+                this.$refs[dom].innerHTML = data.data;
+                // $("article",this.$refs[dom]).scrollspy();
+            }
+            this.loading = false;
+        }
 
     },
     mounted: function() {
@@ -92,5 +108,9 @@ const app = new Vue({
         }
         setInterval(tagHover,1000);
         // $(".tag>a:eq(0)").addClass("")
+        $(this.$refs.tabs).find('a').on('opened.tabs.amui', function(e){
+            // console.log('[%s] 选项卡打开了', $(this).text());
+            self.open($(this).data('slug'))
+        })
     }
 })

@@ -49,6 +49,29 @@ class BaseDao {
         });
     }
 
+    asyncExec(sql,data,resultFormat){
+        return new Promise((resolve, reject) => {
+            exports.pool.getConnection(function (err, connection) {
+                if (err) {
+                    return reject(err);
+                }
+                connection.query(sql,data,async function(err, result){
+                    if (err) {
+                        console.log(err);
+                        return reject(err);
+                    } else {
+                        if(typeof(resultFormat) == "function"){
+                            resolve(await resultFormat(result));
+                        }else{
+                            resolve(result);
+                        }
+                    }
+                    connection.release();
+                })
+            });
+        });
+    }
+
     execTrans(sqlparamsEntities, callback) {
         pool.getConnection(function (err, connection) {
             if (err) {

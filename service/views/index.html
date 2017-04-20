@@ -30,13 +30,26 @@
         </div>
         <div class="index-content am-cf am-container">
             <div class="am-g">
-                <div class="am-u-md-8 articles">
-                    <div class="j-title">
+                <div class="am-u-md-8 articles am-tabs" data-am-tabs>
+                    <!-- <div class="j-title">
                         <h3 class="active">最新文章</h3>
-                        <!-- <span class="gapline">|</span> -->
-                    </div>
-                    <main class="j-article-list" ref="articleList">
-                        <%-datali%>
+                        <span class="gapline">|</span>
+                    </div> -->
+                    <ul class="am-tabs-nav am-nav am-nav-tabs" ref="tabs">
+                        <li class="am-active"><a href="javascript: void(0)" @click="open()">最新文章</a></li>
+                        <li><a href="javascript: void(0)" @click="open('9P1TEN')" data-slug="9P1TEN">上课大纲</a></li>
+                        <li><a href="javascript: void(0)" @click="open('MG1Wx9')" data-slug="MG1Wx9">毕业论文</a></li>
+                    </ul>
+                    <main class="j-article-list am-tabs-bd" >
+                        <div class="am-tab-panel am-fade am-in am-active" ref="articleList">
+                            <%-datali%>
+                        </div>
+                        <div class="am-tab-panel am-fade am-in" ref="9P1TEN">
+
+                        </div>
+                        <div class="am-tab-panel am-fade am-in" ref="MG1Wx9">
+
+                        </div>
                     </main>
                     <div class="j-article-placeholder index" v-if="loading">
                         <div class="img"></div>

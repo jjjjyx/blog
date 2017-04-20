@@ -90,7 +90,7 @@ export function userGetInfo() {
 }
 export function loadArticleList(params) {
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/`,params,null,'html').done((data) => {
+        $.post(`${API_SERVER}/`,params,null).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([500]);

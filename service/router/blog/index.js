@@ -11,21 +11,33 @@ const debug = require('debug')('app:routes:blog/index' + process.pid),
 
 // request.getHeader("x-requested-with");
 const loadPost = function(req, res, next) {
-    req.checkBody('pg', '页码应为整数').isInt();
-    req.checkBody('hasloadId').isArray()
+    req.checkBody('page').isInt({min:1});
+    // req.checkBody('slug').len(6);
     req.getValidationResult().then(function(result) {
         if (!result.isEmpty()) {
             let map = { code: 1, msg: result.array()[0].msg };
             return res.status(400).json(map);
         } else {
-            let hasloadId = req.body.hasloadId;
-            let pg = req.body.pg
-            postDao.getList({ pg, hasloadId }, (err, data) => {
+            let page = req.body.page,slug,rows = 10;
+            if(req.body.slug&&req.body.slug.length==6){
+                slug = req.body.slug
+            }
+            postDao.getList({ page,rows,slug }, (err, data) => {
                 if (err) {
-                    res.map = "没有更多了";
+                    res.map = {
+                        code:-1,
+                        msg:'内部服务错误！又有bug 要调了'
+                    };
                     next();
                 } else {
-                    res.map = data
+                    res.map = {};
+                    if(data.data.length<rows||data.html=='没有更多了'){
+                        res.map.next = ''
+                    }else{
+                        res.map.next = page*1+1;
+                    }
+                    res.map.data= data.html;
+                    res.map.code= 0;
                     return next();
                 }
             }, utils.indexLi)
@@ -34,20 +46,12 @@ const loadPost = function(req, res, next) {
 }
 let getIndexData = [
     function(req, res,next) {
-        req.checkQuery('hasloadId').isArray();
-        req.getValidationResult().then(function(result) {
-            let hasloadId = req.query.hasloadId;
-            if (!result.isEmpty()) {
-                hasloadId = null;
-            }
-            postDao.getList({ hasloadId }, (err, datali) => {
-                req.renderData = {
-                    datali
-                };
-                next()
-            }, utils.indexLi)
-
-        });
+        postDao.getList({}, (err, datali) => {
+            req.renderData = {
+                datali:datali.html
+            };
+            next()
+        }, utils.indexLi)
     },
     function(req, res,next) {
         termDao.loadCategory((err,termList)=>{
@@ -55,11 +59,14 @@ let getIndexData = [
             next();
         });
     },
-    function(req, res,next) {
-        postDao.getPostsGroup((err, data) => {
-            req.renderData.groupList = data;
-            next()
-        })
+    async function(req, res,next) {
+        // postDao.getPostsGroup((err, data) => {
+        //     req.renderData.groupList = data;
+        //     next()
+        // })
+        let data = await postDao.asyncGetPostsGroup();
+        req.renderData.groupList = data;
+        next()
     },
     function(req, res,next) {
         siteDao.get((err, data) => {

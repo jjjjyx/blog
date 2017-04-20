@@ -287,14 +287,14 @@ module.exports.indexLi = async function(data){
     </form>
     `;
     let animation =['scale-up','fade','slide-left','slide-bottom'];
-
+    //data-am-scrollspy="{animation: 'fade'}"
     let articleGuidList = data.map((item) => item.guid);
     let b = await module.exports.getPostsCounts(articleGuidList);
     let getB = (guid,k) => b[guid]?b[guid][k]:0;
     data.forEach((item) => {
         // <a class="am-corner-label am-orange"></a>
         s += `
-            <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}" data-am-scrollspy="{animation: 'fade'}">${item.ppassword?pH(item.guid):''}
+            <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}" >${item.ppassword?pH(item.guid):''}
                <div class="content">
                    <h3 class="title"><a href="/p/${item.guid}" target="_blank">${item.menu_order?'<span>[ 置顶 ]</span> ':''}${xss(item.post_title)}</a></h3>
                    <div class="options am-fr">
@@ -322,5 +322,8 @@ module.exports.indexLi = async function(data){
             </article>
         `
     })
-    return s.split("\n").map((s)=>s.trim()).join('') || "没有更多了";
+    return {
+        data,
+        html:s.split("\n").map((s)=>s.trim()).join('')
+    }
 }
