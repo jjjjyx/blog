@@ -46,7 +46,12 @@ export function getTimeText(timeInMs, pattern) {
     return dateFormat(timeInMs, pattern);
 }
 export function dateFormat(timeInMs, pattern) {
-    return new Date(timeInMs * 1000).format(pattern || 'yyyy/MM/dd hh:mm')
+    let t = timeInMs * 1000;
+    if(isNaN(t)){
+        return timeInMs?new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm'):"-";
+    }else{
+        return new Date(t).format(pattern || 'yyyy/MM/dd hh:mm') || '-';
+    }
 }
 
 export const browser = (function() {

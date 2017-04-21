@@ -83,6 +83,7 @@ class PostDao extends db.BaseDao {
             jp.create_at,
             ju.user_nickname as post_author,
             jp.author,
+            jp.post_img,
             case when jp.post_password is null then false else true end as ppassword
         FROM
             j_posts jp left join j_users ju on jp.post_author = ju.id`
@@ -154,6 +155,7 @@ class PostDao extends db.BaseDao {
           jp.post_content,
           ju.user_nickname AS post_author,
           jp.author,
+          jp.post_img,
           CASE WHEN jp.post_password IS NULL  THEN FALSE  ELSE TRUE  END AS ppassword,
           GROUP_CONCAT(jtr.name) as postTag
         FROM

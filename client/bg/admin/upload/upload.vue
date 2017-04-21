@@ -5,7 +5,7 @@
             <div class="widget am-cf">
                 <div class="widget-head am-cf">
                     <div class="widget-title  am-cf">
-                        上传列表
+                        上传列表2
                     </div>
                 </div>
                 <div class="widget-body  am-fr">

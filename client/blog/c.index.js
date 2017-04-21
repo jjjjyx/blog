@@ -92,9 +92,6 @@ const app = new Vue({
 
     },
     mounted: function() {
-        // let dl = $("#datali");
-        // this.$refs.articleList.innerHTML = dl.html();
-        // dl.remove();
         $("#preloader").fadeOut(1500, () => $("#preloader").remove());
         let self = this;
         keyboardJS.withContext('login', function() {

@@ -27,67 +27,8 @@
                 <div class="am-dropdown am-btn-group-sm post-setting" data-am-dropdown>
                   <button type="button" class="am-btn am-btn-link am-dropdown-toggle" title="属性"><i class="am-icon-info-circle"></i></button>
                   <div class="am-dropdown-content" style="width:320px">
-                    <dl class="dl-horizontal sm am-text-sm am-margin-bottom-0">
-                        <dt>标题</dt>
-                        <dd>{{currentPost.post_title}}</dd>
-
-                        <dt>标签</dt>
-                        <dd>{{formatTag(currentPost.postTag)}}</dd>
-
-                        <dt>网址</dt>
-                        <dd>
-                            <a :href="currentPost.guid?('../../p/'+currentPost.guid):'javascript:;'" target="_blank">{{currentPost.guid||"-"}}</a>
-                        </dd>
-
-                        <dt>创建时间</dt>
-                        <dd>{{dateFormat(currentPost.create_at)}}</dd>
-
-                        <dt>修改时间</dt>
-                        <dd>{{dateFormat(currentPost.post_modified)}}</dd>
-
-                        <dt>作者</dt>
-                        <dd>{{currentPost.author}}</dd>
-
-                        <dt>创建者</dt>
-                        <dd>{{currentPost.post_author}}</dd>
-
-                        <dt>加密</dt>
-                        <dd class="am-text-xs">
-                              <a @click="setPass" v-if="!currentPost.ppassword">
-                                <i class="am-icon-lock"></i> 设置密码
-                              </a>
-                            <div v-else>
-                                <span><i class="am-icon-lock"></i> 已加密</span> <a  @click="unlock"><i class="am-icon-unlock"></i> 取消</a>
-                            </div>
-                        </dd>
-
-                        <!-- <dt>公开度</dt>
-                        <dd>
-                            <select data-am-selected>
-                              <option value="open">打开</option>
-                              <option value="closed">关闭</option>
-                            </select>
-                        </dd> -->
-
-                        <dt>评论状态</dt>
-                        <dd class="am-text-xs">
-                            <select data-am-selected v-model="currentPost.comment_status">
-                              <option value="open">打开</option>
-                              <option value="closed">关闭</option>
-                            </select>
-                            <a v-if="currentPost.post_status == 'publish'"><i class="am-icon-eye"></i> 查看评论 </a>
-                        </dd>
-
-                        <dt>文章状态</dt>
-                        <dd>
-                            {{currentPost.post_status}}
-                            <!-- <select data-am-selected v-model="currentPost.post_status">
-                                <option value="publish">发布</option>
-                                <option value="auto-draft">草稿</option>
-                            </select> -->
-                        </dd>
-
-                    </dl>
+                    <!-- am-margin-bottom-0 -->
+                    <post-info class="am-margin-bottom-0" :current-post="currentPost" @changePost="test"></post-info>
                     <div class="am-text-right">
                         <button class="am-btn am-btn-secondary am-round am-btn-xs" @click="saveCurrPost"><i class="am-icon-save"></i> 保存 </button>
                         <button v-if="currentPost.post_status=='auto-draft'" class="am-btn am-btn-success am-round am-btn-xs" @click="publish"><i class="am-icon-send"></i> 发布</button>
@@ -119,10 +60,8 @@
 
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 import * as api from "public/js/netapi.js";
-// import {dateFormat} from "../../../../public/js/netapi.js";
-// import keyboardJS from "keyboardjs"
 import key from "public/js/key.js";
-
+import PostInfo from "./post-info"
 export default {
     data: function() {
         return {
@@ -135,7 +74,9 @@ export default {
             editormd,
         }
     },
-    components: {},
+    components: {
+        PostInfo
+    },
     computed: {
         postContent(){
             let height = this.contentHeight;
@@ -172,6 +113,11 @@ export default {
         ...mapActions([
             'setCurrendPostConetent', 'deleteTerm', 'merge'
         ]),
+        test(p){
+            this.saveCurrPost();
+            layer.msg("设置成功");
+            layer.close(p.index);
+        },
         // postUrl (guid){
         //
         //     return "-"
@@ -182,36 +128,7 @@ export default {
             }
             return "-";
         },
-        async unlock(){
-            // this.currentPost.post_password = ;
-            delete this.currentPost.post_password;
-            let data = await api.postUnlock(this.currentPost.id);
-            if(data.code ==0){
-                this.currentPost.ppassword = false;
-                layer.msg("已取消加密");
-            }
-        },
-        setPass(){
-            this.pass="";
-            layer.prompt({title: '输入任何口令，并确认', formType: 1,maxlength:20},(val, index)=>{
-                if(val){
-                    if(val.length<20&&val.length>=3){
-                        this.currentPost.post_password = val;
-                        this.currentPost.ppassword = true;
-                        this.saveCurrPost();
-                        layer.msg("设置成功");
-                        layer.close(index);
-                    }else{
-                        layer.msg("密码长度不符")
-                    }
-                }else{
-                    layer.close(index);
-                }
-            });
-        },
-        dateFormat(date){
-            return date?new Date(date).format('yyyy/MM/dd hh:mm'):"-";
-        },
+
         showAddTag(){
             this.isAddTagShow = !this.isAddTagShow;
             $(this.$refs.posttags).slideToggle(200);

@@ -6,7 +6,7 @@ function getEntry(globPath,webpackHotMiddlewareConfig) {
         basename, tmp, pathname;
     glob.sync(globPath).forEach((entry)=>{
         basename = path.basename(entry, path.extname(entry)).replace(/c\.|s\./,'');
-        let tmp = entry.split('/').slice(3, -1);
+        let tmp = entry.split('/').slice(2, -1);
         if (tmp[0] === 'blog')
             tmp.shift();
         if (tmp.length) {
