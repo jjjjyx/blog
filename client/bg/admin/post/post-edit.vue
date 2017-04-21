@@ -118,10 +118,10 @@
 // import "simplemde/dist/simplemde.min.css";
 
 import { mapGetters, mapActions,mapMutations } from 'vuex'
-import * as api from "../../../../public/js/netapi.js";
+import * as api from "public/js/netapi.js";
 // import {dateFormat} from "../../../../public/js/netapi.js";
 // import keyboardJS from "keyboardjs"
-import key from "../../../../public/js/key.js";
+import key from "public/js/key.js";
 
 export default {
     data: function() {

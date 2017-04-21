@@ -106,8 +106,8 @@ import {
     mapActions,
     mapMutations
 } from 'vuex'
-import * as api from "../../../../public/js/netapi.js";
-import {onValid,onInValid} from "../../../../public/js/tools.js";
+import * as api from "public/js/netapi.js";
+import {onValid,onInValid} from "public/js/tools.js";
 export default {
     data: function() {
         return {}

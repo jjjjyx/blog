@@ -332,9 +332,9 @@ export function getToken(){
  * 获取图片服务器的图片列表
  * @return {[type]} [description]
  */
-export function getImgs(){
+export function getImgs(params){
     return new Promise((resolve, reject) => {
-        $.get(`${API_SERVER}/api/img/list`).done((data) => {
+        $.get(`${API_SERVER}/api/img/list`,params).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);

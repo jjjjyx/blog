@@ -1,0 +1,99 @@
+.img-view {
+    background-color:transparent !important;
+    .am-modal-dialog {
+        width: 80%;
+        margin-top: 56px;
+        border: none;
+        background-color: rgba(0, 0, 0, 0.65);
+        border-radius: 2px;
+        border: 1px solid #252525;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.37);
+    }
+    a.am-close {
+        color: #FFF;
+        opacity: 1;
+    }
+    .am-modal-bd {
+        border-bottom-color: #252525;
+    }
+    .am-modal-bd img{
+        margin: 0 auto;
+        max-height: 100%;
+    }
+
+}
+@media screen and (max-width: 1024px){
+    .img-view {
+        .am-modal-dialog {
+            margin-top: 112px;
+        }
+    }
+}
+.imgListTable {
+    .j-img-info a{
+        float: left;
+    }
+    .j-img-info a+p {
+        margin: 0;
+    }
+}
+.am-gallery-item {
+    .j-img-p {
+        height: 200px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        border: 3px solid #FFF;
+        box-shadow: 0 0 3px rgba(0,0,0,.35);
+        img {
+            border: none;
+            box-shadow: none;
+        }
+        // &:hover img {
+        //     -webkit-filter: grayscale(1);
+        //     -moz-filter: grayscale(1);
+        //     -o-filter: grayscale(1);
+        //     filter: grayscale(1);
+        // }
+        // &:hover .j-img-desc {
+        //     opacity: 1;
+        // }
+        // &:hover::before {
+        //     opacity: .3;
+        // }
+        // &::before {
+        //     content: '';
+        //     width: 100%;
+        //     height: 100%;
+        //     background: linear-gradient(180deg,rgba(0,0,0,.01) 2%,rgba(0,0,0,.95) 100%);
+        //     transition: opacity .4s ease-in-out;
+        //     position: absolute;
+        //     opacity: 0;
+        //     z-index: 1;
+        // }
+    }
+    // .j-img-desc {
+    //     display: flex;
+    //     align-items: center;
+    //     justify-content: center;
+    //     background: rgba(0,0,0,0);
+    //     position: absolute;
+    //     top: 0;
+    //     left: 0;
+    //     width: 100%;
+    //     height: 100%;
+    //     z-index: 1;
+    //     opacity: 0;
+    //     // transition: opacity .4s ease-in-out,filter .4s ease-in-out;
+    //     // text-align: center;
+    //     // font-size: 17px;
+    //     will-change: opacity,filter,-webkit-filter,-moz-filter,-ms-filter,-o-filter;
+    //     // color: #fff;
+    //     // pointer-events: none;
+    // }
+    // .j-img-desc a {
+    //
+    //     // pointer-events: auto;
+    // }
+}

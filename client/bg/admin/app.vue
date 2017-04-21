@@ -180,7 +180,7 @@
 </template>
 <script>
 import { mapGetters, mapActions,mapMutations } from 'vuex'
-import * as api from "../../../public/js/netapi.js";
+import * as api from "public/js/netapi.js";
 import Sidebar from "./sidebar";
 import store from "../../store/index";
 export default {

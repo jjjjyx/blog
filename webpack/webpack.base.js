@@ -13,6 +13,11 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.vue'],
+        alias:{
+            'client':path.join(__dirname, '../client'),
+            'public':'client/public',
+            'components':'client/components',
+        }
     },
 
     module: {

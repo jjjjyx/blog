@@ -39,7 +39,7 @@
 </template>
 <script>
 import { mapGetters, mapActions,mapMutations } from 'vuex'
-import * as api from "../../../../public/js/netapi.js";
+import * as api from "public/js/netapi.js";
 export default {
     data: function() {
         return {

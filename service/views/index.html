@@ -9,8 +9,8 @@
 
 <body>
     <div id="preloader">
-	    <div id="preloader-inner" class="battery"></div>
-	</div>
+        <div id="preloader-inner" class="battery"></div>
+    </div>
     <div id="app">
         <blob-header :active='"index"'></blob-header>
         <!-- #masthead -->
@@ -18,7 +18,7 @@
 
         <div class="headertop bounceInDown animated">
             <div class="centerbg j-vertical-center" style="background-image:url(<%=site.background%>)">
-                <a class="avatar am-animation-scale-up " href="javascript:;"  style="animation-delay: .51s;">
+                <a class="avatar am-animation-scale-up " href="javascript:;" style="animation-delay: .51s;">
                     <img src="<%=site.avatar%>" >
                 </a>
                 <p class="avatar-p am-animation-slide-bottom " style="animation-delay: .51s;">
@@ -40,8 +40,23 @@
                         <li><a href="javascript: void(0)" @click="open('9P1TEN')" data-slug="9P1TEN">上课大纲</a></li>
                         <li><a href="javascript: void(0)" @click="open('MG1Wx9')" data-slug="MG1Wx9">毕业论文</a></li>
                     </ul>
-                    <main class="j-article-list am-tabs-bd am-tabs-bd-ofv" >
+                    <main class="j-article-list am-tabs-bd am-tabs-bd-ofv">
                         <div class="am-tab-panel  am-active" ref="articleList">
+                            <article data-node-id="115" class="have-img img-top">
+                                <a class="wrap-img" href="/p/adbb46e1a4dd" target="_blank">
+                                     <img src="//upload-images.jianshu.io/upload_images/2041831-8c345d6f3a9de7e4.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/375/h/300" alt="300">
+                                </a>
+                                <div class="content">
+                                    <h3 class="title"><a href="/p/58f1cc1251f07aedc559f511" target="_blank">17/4/15 福大补课</a></h3>
+                                    <div class="options am-fr"><a href="/p/58f1cc1251f07aedc559f511" target="_blank" class="read"><i class="am-icon-eye"></i> <span class="num">13</span></a><a href="/p/58f1cc1251f07aedc559f511#comment" target="_blank" class="comment"><i class="am-icon-comment-o"></i> <span class="num">0</span></a>
+                                        <a
+                                            class="like"><i class="am-icon-heart-o"></i> <span class="num">0</span></a>
+                                    </div>
+                                    <div class="meta am-margin-vertical-xs"><a title="酱酱酱酱油鲜" class="name">酱酱酱酱油鲜</a> 2017-04-15 15:30:26</div>
+                                    <p>servlet接收参数，输出网页在请求过程中所有的内容包括请求头，cookie，自定义属性，表单参数都包含在request中，参数分成2种，一种是由我们来存放的属性，一种由用户通过表单，url等方式传递给我们的。根据具体情况具体解决jquery 异步请求学会利用浏览器查看网络请求...</p>
+                                    <div class="j-category-tag"><a class="category">个人笔记</a><i class="am-icon-tags"></i> <a>servler</a><a>jsp</a><a>文件上传</a></div>
+                                </div>
+                            </article>
                             <%-datali%>
                         </div>
                         <div class="am-tab-panel " ref="9P1TEN">
@@ -73,7 +88,7 @@
                         </div>
                     </div>
                     <p class="load-more">
-                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore" v-if="noPost" >
+                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore" v-if="noPost">
                             <i class="am-icon-spinner am-icon-spin am-text-xs" v-if="loading"></i> {{loading?'loading...':'加载更多'}}
 
                         </button>
@@ -92,20 +107,20 @@
                             <input type="text" ref="h" v-if="enabled" autocomplete="off" v-model="keyword" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
                             <%for(item of termList){%>
                                 <%if(item.name=='java'){%>
-                                <a class="tag active" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout" target="_blank" href="/category/<%=item.slug%>">
-                                    <span class="tags-icon">
+                                    <a class="tag active" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout" target="_blank" href="/category/<%=item.slug%>">
+                                        <span class="tags-icon">
                                         <i class="<%=item.icon%>"></i>
                                     </span>
-                                    <span><%=item.name%></span></a>
-                                <%}else{%>
-                                <a class="tag" data-tag='<%=item.name%>' target="_blank" href="/category/<%=item.slug%>">
-                                    <span class="tags-icon">
+                                        <span><%=item.name%></span></a>
+                                    <%}else{%>
+                                        <a class="tag" data-tag='<%=item.name%>' target="_blank" href="/category/<%=item.slug%>">
+                                            <span class="tags-icon">
                                         <i class="<%=item.icon%>"></i>
                                     </span>
-                                    <span><%=item.name%></span>
-                                </a>
-                                <%}%>
-                            <%}%>
+                                            <span><%=item.name%></span>
+                                        </a>
+                                        <%}%>
+                                            <%}%>
                         </div>
                     </div>
                     <div class="part">
@@ -151,13 +166,13 @@
                                 <li>
                                     <a href="/archives#<%=dateFormat(item.post_date,'MMMYY')%>"><i class="am-icon-calendar-plus-o"></i> <%=item.post_date2%></a>
                                 </li>
-                            <%}%>
+                                <%}%>
                         </ul>
                     </div>
                     <div class="part">
                         <div class="j-title">
                             <h3 class="">友情链接</h3>
-                            <a  class="r btn btn-sm " style="color:#B3B3B3">
+                            <a class="r btn btn-sm " style="color:#B3B3B3">
                                 想要交换友链请联系我哦
                             </a>
                         </div>
@@ -174,31 +189,32 @@
                 </div>
             </div>
         </div>
-        <blob-footer ></blob-footer>
+        <blob-footer></blob-footer>
     </div>
     <%-footer('index')%>
-    <script type="text/javascript">
-    $(document).ready(function(){
+        <script type="text/javascript">
+            $(document).ready(function() {
 
-        var imgs = new Array();
-        imgs[0] = 'http://oht47c0d0.bkt.clouddn.com/d7d26cc0-00b2-11e7-89fa-17d9cf406414.png';
-        imgs[1] = 'http://oht47c0d0.bkt.clouddn.com/eb0065e0-00b2-11e7-89fa-17d9cf406414.png';
-        imgs[2] = 'http://oht47c0d0.bkt.clouddn.com/041a06d0-00b3-11e7-89fa-17d9cf406414.png';
-        imgs[3] = 'http://oht47c0d0.bkt.clouddn.com/0fe807a0-00b3-11e7-89fa-17d9cf406414.png';
-        imgs[4] = 'http://oht47c0d0.bkt.clouddn.com/1e498490-00b3-11e7-89fa-17d9cf406414.png';
-        imgs[5] = 'http://oht47c0d0.bkt.clouddn.com/28e60a40-00b3-11e7-89fa-17d9cf406414.png';
-        let wait = ()=>{
-            if($('.ds-avatar img[src*="duoshuo"]').length){
-                $('.ds-avatar img[src*="duoshuo"]').each(function(){
-                    var rand = Math.floor(Math.random()*imgs.length);
-                    $(this).attr("src",imgs[rand]);
-                })
-            }else{
-                setTimeout(wait,200);
-            }
-        }
-        wait();
-    });
-    </script>
+                var imgs = new Array();
+                imgs[0] = 'http://oht47c0d0.bkt.clouddn.com/d7d26cc0-00b2-11e7-89fa-17d9cf406414.png';
+                imgs[1] = 'http://oht47c0d0.bkt.clouddn.com/eb0065e0-00b2-11e7-89fa-17d9cf406414.png';
+                imgs[2] = 'http://oht47c0d0.bkt.clouddn.com/041a06d0-00b3-11e7-89fa-17d9cf406414.png';
+                imgs[3] = 'http://oht47c0d0.bkt.clouddn.com/0fe807a0-00b3-11e7-89fa-17d9cf406414.png';
+                imgs[4] = 'http://oht47c0d0.bkt.clouddn.com/1e498490-00b3-11e7-89fa-17d9cf406414.png';
+                imgs[5] = 'http://oht47c0d0.bkt.clouddn.com/28e60a40-00b3-11e7-89fa-17d9cf406414.png';
+                let wait = () => {
+                    if ($('.ds-avatar img[src*="duoshuo"]').length) {
+                        $('.ds-avatar img[src*="duoshuo"]').each(function() {
+                            var rand = Math.floor(Math.random() * imgs.length);
+                            $(this).attr("src", imgs[rand]);
+                        })
+                    } else {
+                        setTimeout(wait, 200);
+                    }
+                }
+                wait();
+            });
+        </script>
 </body>
+
 </html>

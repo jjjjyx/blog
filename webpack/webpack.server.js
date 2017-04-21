@@ -2,7 +2,7 @@ const webpack = require('webpack')
 const base = require('./webpack.base')
 const path = require('path')
 const getEntries = require('./getEntries')
-let entry = getEntries("./client/src/**/s.*.js",null);
+let entry = getEntries("./client/**/s.*.js",null);
 console.log(entry);
 module.exports = Object.assign({}, base, {
   target: 'node',

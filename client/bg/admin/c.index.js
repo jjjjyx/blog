@@ -5,8 +5,8 @@ import Vuex from "vuex"
 import VueRouter from "vue-router"
 
 import keyboardJS from "keyboardjs"
-import "../../../public/js/editormd.extent";
-import "../../../public/css/editormd.extent.less";
+import "public/js/editormd.extent";
+import "public/css/editormd.extent.less";
 
 Vue.use(VueRouter);
 Vue.config.errorHandler = function (err, vm) {
@@ -18,8 +18,8 @@ import "../static/app.less";
 
 import store from "../../store/index.js"
 
-import * as api from "../../../public/js/netapi";
-import "../../../public/js/vue.api";
+import * as api from "public/js/netapi";
+import "public/js/vue.api";
 
 // 入口
 import App from "./app.vue";
@@ -74,6 +74,10 @@ var router = new VueRouter({
                 sub:'dashboard'
             }
         },
+        // {
+        //     path:"/test",
+        //     component:Test,
+        // },
         {
             path:"/post/management",
             components:{

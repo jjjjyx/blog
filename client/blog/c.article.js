@@ -2,12 +2,12 @@
 
 import "./static/css/p.less";
 
-import BlobHeader from "../components/head.vue";
-import BlobFooter from "../components/bottom.vue";
-import {getClientHeight} from "../../public/js/tools.js";
-import * as api from "../../public/js/api.js";
-import "../../public/js/editormd.extent";
-import "../../public/css/editormd.extent.less";
+import BlobHeader from "components/head.vue";
+import BlobFooter from "components/bottom.vue";
+import {getClientHeight} from "public/js/tools.js";
+import * as api from "public/js/api.js";
+import "public/js/editormd.extent";
+import "public/css/editormd.extent.less";
 
 const app = new Vue({
     el: '#app',

@@ -11,12 +11,12 @@ Vue.config.errorHandler = function(err, vm) {
 
 // Vue.http.options.emulateJSON = true;
 
-import "../../public/js/vue.api.js"
-import * as api from "../../public/js/api.js"
+import "public/js/vue.api.js"
+import * as api from "public/js/api.js"
 import keyboardJS from "keyboardjs"
 
-import BlobHeader from "../components/head.vue";
-import BlobFooter from "../components/bottom.vue";
+import BlobHeader from "components/head.vue";
+import BlobFooter from "components/bottom.vue";
 
 const app = new Vue({
     el: '#app',

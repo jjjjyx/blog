@@ -5,7 +5,7 @@ const baseConfig = require('./webpack.base')
 const getEntries = require('./getEntries')
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
-let entry = getEntries("./client/src/**/c.*.js")
+let entry = getEntries("./client/**/c.*.js")
 let chunks = Object.keys(entry);
 const developmentConf = merge(baseConfig, {
     entry,
@@ -13,7 +13,7 @@ const developmentConf = merge(baseConfig, {
     devtool: 'cheap-module-source-map',
     plugins: [
         new CleanWebpackPlugin(['../public'],{
-            exclude: ["preloader.css","favicon.ico",'editormd','Moxie.swf']
+            exclude: ["preloader.css","favicon.ico",'editormd','Moxie.swf','lib']
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',

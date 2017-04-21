@@ -27,7 +27,7 @@
 
 </template>
 <script>
-import * as api from "../../../../public/js/netapi.js";
+import * as api from "public/js/netapi.js";
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 import marked from 'marked';
 export default {

@@ -1,7 +1,7 @@
 import "./static/css/archives.less";
 
-import BlobHeader from "../components/head.vue";
-import BlobFooter from "../components/bottom.vue";
+import BlobHeader from "components/head.vue";
+import BlobFooter from "components/bottom.vue";
 
 
 const app = new Vue({

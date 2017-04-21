@@ -86,7 +86,7 @@
 // import
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 //
-import {getAllTerm,addTerm,editTermName,deleteTerm} from "../../../../public/js/netapi.js";
+import {getAllTerm,addTerm,editTermName,deleteTerm} from "public/js/netapi.js";
 export default {
     data: function() {
         return {

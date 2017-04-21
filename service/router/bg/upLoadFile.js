@@ -14,20 +14,25 @@ const domain = C.qiUpload.Domain
 
 const uptoken = new qiniu.rs.PutPolicy(C.qiUpload.Bucket_Name);
 
+// uptoken.ReturnBody = `{ "foo": "bar", "name": $(fname), "size": $(fsize), "type": $(mimeType), "hash":
+// $(etag), "w": $(imageInfo.width), "h": $(imageInfo.height), "color":
+// $(exif.ColorSpace.val) }`
+
 let client = request.createClient(C.qiUpload.RSF_HOST);
 let client2 = request.createClient(C.qiUpload.RS_HOST);
 client.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 client2.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-
 let list = function(req, res, next){
-    let body = `/list?bucket=${C.qiUpload.Bucket_Name}&limit=50&marker=`;
+    let marker = req.query.marker||'';
+    let body = `/list?bucket=${C.qiUpload.Bucket_Name}&limit=21&marker=${marker}`;
     let uri = C.qiUpload.RSF_HOST+body;
     client.headers['Authorization'] = utils.generateAccessToken(uri);
     client.get(body,function(err, res2, d){
         res.map = {
             code :0,
             data:d.items,
-            domain:C.qiUpload.Domain
+            domain:C.qiUpload.Domain,
+            next: d.marker,
         }
         next();
     })
@@ -77,7 +82,8 @@ module.exports = function () {
             return res.status(200).json({
                 token,
                 key,
-                domain
+                domain,
+                uptoken:token
             });
         }
     });

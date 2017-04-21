@@ -53,4 +53,5 @@ kfavicon.png
 !/public/preloader.*
 !/public/favicon.ico
 !/public/editormd
+!/public/lib
 dump.rdb
