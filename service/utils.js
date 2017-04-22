@@ -286,6 +286,9 @@ module.exports.indexLi = async function(data){
         </div>
     </form>
     `;
+    let imgH = (guid,post_img)=>`<a class="wrap-img" href="/p/${guid}" target="_blank">
+         <img src="${post_img}?imageView2/1/w/375/h/300" alt="300">
+    </a>`
     let animation =['scale-up','fade','slide-left','slide-bottom'];
     //data-am-scrollspy="{animation: 'fade'}"
     let articleGuidList = data.map((item) => item.guid);
@@ -293,9 +296,10 @@ module.exports.indexLi = async function(data){
     let getB = (guid,k) => b[guid]?b[guid][k]:0;
     data.forEach((item) => {
         // <a class="am-corner-label am-orange"></a>
-        s += `
-            <article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''}" >${item.ppassword?pH(item.guid):''}
-               <div class="content">
+        s += `<article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''} ${item.post_img?'have-img img-'+item.post_img_position:''}" >
+                ${item.ppassword?pH(item.guid):''}
+                ${item.post_img?imgH(item.guid,item.post_img):''}
+                <div class="content">
                    <h3 class="title"><a href="/p/${item.guid}" target="_blank">${item.menu_order?'<span>[ 置顶 ]</span> ':''}${xss(item.post_title)}</a></h3>
                    <div class="options am-fr">
                        <a class="read" href="/p/${item.guid}" target="_blank">

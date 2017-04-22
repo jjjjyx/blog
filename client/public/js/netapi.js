@@ -316,6 +316,19 @@ export function postUnlock(id) {
     });
 }
 /**
+ * 设置文章图片
+ * @return {[type]} [description]
+ */
+export function setPostImg(params){
+   return new Promise((resolve, reject) => {
+       $.post(`${API_SERVER}/api/post/setPostImg`,params).done((data) => {
+           resolve(data);
+       }).fail(({responseJSON}) => {
+           reject([responseJSON.code, responseJSON]);
+       });
+   });
+}
+/**
  * 获取上传图片的token
  * @return {[type]} [description]
  */

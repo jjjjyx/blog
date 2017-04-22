@@ -136,9 +136,6 @@ let content = function(req, res, next){
                     map.code = -1;
                     map.msg = data || "发生未知错误，刷新后重试";
                 } else {
-                    // map.code = 0;
-                    // map.data = data;
-                    // map.msg = "删除成功";
                     map = data;
                 }
                 res.map = map;
@@ -182,10 +179,7 @@ let saveTag = function(req, res, next){
 
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
-            let map = {
-                code: 1,
-                msg: result.array()[0].msg
-            };
+            let map = { code: 1, msg: result.array()[0].msg };
             return res.status(400).json(map);
         }else{
             postDao.savePostTag(req.body.id,req.body.tagList,(err, data)=>{
@@ -208,10 +202,7 @@ let postUnlock = function(req, res, next){
     req.checkBody('id','请提交正确的id').notEmpty().isInt();
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
-            let map = {
-                code: 1,
-                msg: result.array()[0].msg
-            };
+            let map = { code: 1, msg: result.array()[0].msg };
             return res.status(400).json(map);
         }else{
             // 生成一个固定链接
@@ -235,10 +226,7 @@ let publish = function(req, res, next){
     req.checkBody('id','请提交正确的id').notEmpty().isInt();
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
-            let map = {
-                code: 1,
-                msg: result.array()[0].msg
-            };
+            let map = { code: 1, msg: result.array()[0].msg };
             return res.status(400).json(map);
         }else{
             // 生成一个固定链接
@@ -263,10 +251,7 @@ let postUnPublish = function(req, res, next){
     req.checkBody('id','请提交正确的id').notEmpty().isInt();
     req.getValidationResult().then(function(result) {
         if(!result.isEmpty()){
-            let map = {
-                code: 1,
-                msg: result.array()[0].msg
-            };
+            let map = { code: 1, msg: result.array()[0].msg };
             return res.status(400).json(map);
         }else{
             postDao.postUnPublish(req.body.id, (err, data)=>{
@@ -284,6 +269,28 @@ let postUnPublish = function(req, res, next){
             })
         }
     });
+}
+let postImg = async function(req, res, next){
+    req.checkBody('id','请提交正确的id').notEmpty().isInt();
+    let result = await req.getValidationResult()
+    if(!result.isEmpty()){
+        let map = { code: 1, msg: result.array()[0].msg };
+        return res.status(400).json(map);
+    }else{
+        try {
+            result = await postDao.asyncPostSetImg(req.body.id,req.body);
+            res.map = {
+                code:0,
+                msg:'设置成功'
+            };
+        } catch (e) {
+            res.map = {
+                code:-1,
+                msg:'设置失败'
+            };
+        }
+        next();
+    }
 }
 module.exports = function () {
     let router = new Router();
@@ -318,6 +325,9 @@ module.exports = function () {
         return res.status(200).json(res.map);
     });
     router.route("/postUnlock").post(postUnlock, function (req, res, next) {
+        return res.status(200).json(res.map);
+    });
+    router.route("/setPostImg").post(postImg, function (req, res, next) {
         return res.status(200).json(res.map);
     });
 

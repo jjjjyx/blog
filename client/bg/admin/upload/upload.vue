@@ -36,7 +36,7 @@
                         </div>
                     </div>
                     <div class="am-u-sm-12">
-                        <ul data-am-widget="gallery" class="am-gallery am-avg-sm-7 am-gallery-imgbordered" data-am-gallery="{pureview: true}" id="abcd">
+                        <ul data-am-widget="gallery" class="am-gallery am-avg-sm-4 am-avg-md-7 am-gallery-imgbordered" data-am-gallery="{pureview: true}" id="abcd">
                             <li v-for="(item,index) in imgList">
                                 <div class="am-gallery-item">
                                     <div style="" class="j-img-p">
@@ -44,7 +44,7 @@
                                     </div>
                                     <h3 class="am-gallery-title">{{item.key}}</h3>
                                     <div class="am-gallery-desc">
-                                        <i class="am-icon-cube"></i> {{formatFileSize(item.fsize)}}&nbsp;
+                                        <i class="am-icon-cube"></i> {{item.fsize|formatFileSize}}&nbsp;
                                         <i class="am-icon-clock-o"></i> {{formatDate(item.putTime)}}
                                     </div>
                                     <div class="j-img-opt am-text-center tpl-table-black-operation">
@@ -73,8 +73,8 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="am-u-lg-12 am-text-center" v-if="next">
-                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="getImgList(next)">
+                    <div class="am-u-lg-12 am-text-center" v-if="marker">
+                        <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="getImgList()">
                                 <i class="am-icon-spinner am-icon-spin am-text-xs" v-if="loading"></i> {{loading?'loading...':'加载更多'}}
                         </button>
                     </div>
@@ -107,24 +107,20 @@ import {
     mapMutations
 } from 'vuex'
 import * as api from "public/js/netapi.js";
-import {
-    formatFileSize
-} from "public/js/tools.js"
+
 export default {
     data: function() {
         return {
-            imgList: [],
             domain: '',
             src: "",
             last: '',
-            next: '',
             loading: false
         }
     },
     components: {},
     computed: {
         ...mapGetters([
-            'contentHeight'
+            'contentHeight','imgList','marker'
         ]),
         imgContent() {
             let height = this.contentHeight;
@@ -145,8 +141,11 @@ export default {
         ...mapActions([
             'mergeSite'
         ]),
-        ...mapMutations([]),
-        formatFileSize,
+        ...mapMutations([
+            'deleteImgList',
+            'addImgList',
+            'setMarker'
+        ]),
         formatDate(_time) {
             let time = new Date(_time / 10000);
             return time.format('yyyy/MM/dd hh:mm');
@@ -156,7 +155,8 @@ export default {
             let data = await api.delImg(key);
             layer.msg(data.msg);
             if (data.code == 0) {
-                this.imgList.splice(index, 1)
+                // this.imgList.splice(index, 1);
+                this.deleteImgList(index)
             }
         },
         fileInput() {
@@ -175,14 +175,16 @@ export default {
             if (data.code == 0)
                 this.mergeSite(params)
         },
-        async getImgList(marker) {
+        async getImgList() {
             this.loading = true
             let data = await api.getImgs({
-                marker
+                marker:this.marker
             });
-            this.imgList = this.imgList.concat(data.data);
+            // this.imgList = this.imgList.concat(data.data);
+            this.addImgList(data.data)
             this.domain = data.domain;
-            this.next = data.next;
+            this.setMarker(data.next)
+            // this.next = data.next;
             let fn = () => {
                 layer.msg('复制成功')
             }
@@ -203,13 +205,14 @@ export default {
         $('#category').selected({
             btnSize: 'sm'
         });
-        this.getImgList();
+        if(!this.imgList.length){
+            this.getImgList()
+        }
         // let clib = null;
 
         Qiniu.uploader({
             runtimes: 'html5,flash,html4',
             browse_button: 'pickfiles',
-            // container: 'container',
             drop_element: 'file-drop',
             max_file_size: '1000mb',
             flash_swf_url: '/Moxie.swf',
@@ -222,32 +225,12 @@ export default {
             auto_start: true,
             log_level: 5,
             init: {
-                'FilesAdded': function(up, files) {
-                    // $('table').show();
-                    // $('#success').hide();
-                    // plupload.each(files, function(file) {
-                    //     var progress = new FileProgress(file, 'fsUploadProgress');
-                    //     progress.setStatus("绛夊緟...");
-                    //     progress.bindUploadCancel(up);
-                    // });
-                    console.log(111);
-                },
+                'FilesAdded': function(up, files) {},
                 'BeforeUpload': function(up, file) {},
                 'UploadProgress': function(up, file) {},
                 'UploadComplete': function() {},
-                'FileUploaded': function(up, file, info) {
-                    console.log(info, file);
-                    let imageInfoObj = Qiniu.imageInfo(info.key);
-                    console.log(imageInfoObj)
-                },
-                'Error': function(up, err, errTip) {
-                    console.log(errTip);
-                },
-                // 'Key': function(up, file) {
-                //     var key = "123123";
-                //     // do something with key
-                //     return key
-                // }
+                'FileUploaded': function(up, file, info) { },
+                'Error': function(up, err, errTip) { },
             }
         });
 

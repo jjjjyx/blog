@@ -112,11 +112,8 @@ export default {
             'setActiveId',
             'setCurrendPost',
             'update_current_postcontent'
-        ])
-    },
-    watch: {
-        // 如果路由有变化，会再次执行该方法
-        '$route':async function(){
+        ]),
+        async fetchPostContent(){
             this.setActivePostId(this.$route.params.id);
             if(this.currentPost.id){
                 if(!this.currentPost.post_content&&!this.currentPost.postTag){
@@ -127,25 +124,18 @@ export default {
             }else{
                 this.update_current_postcontent("");
             }
-            // console.log(this.currentPost);
             setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
+        }
+    },
+    watch: {
+        // 如果路由有变化，会再次执行该方法
+        '$route':function(){
+            this.fetchPostContent()
         }
     },
     mounted:async function() {
         this.setActiveId(this.$route.params.term_id);
-        this.setActivePostId(this.$route.params.id);
-        if(this.currentPost.id){
-            if(!this.currentPost.post_content&&!this.currentPost.postTag){
-                let d = await api.postContent(this.currentPost.id);
-                this.setCurrendPost(d);
-            }
-            this.update_current_postcontent(this.currentPost.post_content);
-        }else{
-            this.update_current_postcontent("");
-        }
-        setTimeout(()=>$('.post-list [data-am-dropdown]').dropdown(),500)
-
-
+        this.fetchPostContent();
     }
 }
 </script>

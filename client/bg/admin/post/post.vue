@@ -50,7 +50,7 @@
                                 <tr v-for="item in pageList">
                                     <td>{{item.id}}</td>
                                     <td class="am-text-middle">
-                                        <img src="http://oht47c0d0.bkt.clouddn.com/0bf951d0-18dc-11e7-9c72-8fc48935afd8.png?imageView2/1/w/120/h/120" class="am-fr" />
+                                        <img :src="item.post_img+'?imageView2/1/w/120/h/120'" class="am-fr" v-if="item.post_img"/>
                                         <a class="table-post-title" v-if="item.post_status=='publish'" :href="'/p/'+item.guid" target="_blank">{{item.post_title}}</a>
                                         <p class="table-post-title" v-else>{{item.post_title}}</p>
 
@@ -96,15 +96,17 @@
             <form class="am-modal-bd am-form">
                 <post-info class="am-margin-bottom-0" :current-post="pPost" @changePost="save"></post-info>
                 <div class="j-post-img am-text-sm">
-                    <a @click="changePostImg">
-                        <img  src="http://oht47c0d0.bkt.clouddn.com/0bf951d0-18dc-11e7-9c72-8fc48935afd8.png?imageView2/1/w/120/h/120" alt="..." class="am-img-thumbnail am-radius">
+                    <a class="am-margin-bottom-sm" id="uploadfile" :class="[pPost.post_img?'j-post-img-preview':'uploadfile']">
+                        <img :src="pPost.post_img+'?imageView2/1/w/120/h/120'" alt="..." class="am-img-thumbnail am-radius" v-if="pPost.post_img">
+                        <i class="am-icon-upload" v-else></i>
                     </a>
-                    <div class="j-post-img-pa ">
+                    <a class="" @click="changePostImg">选择已有图片</a>
+                    <div class="j-post-img-pa " v-if="pPost.post_img">
                         <span>位置：</span>
-                        <select class="am-input-sm">
-                            <option value="u">顶</option>
-                            <option value="l">左</option>
-                            <option value="r">右</option>
+                        <select class="am-input-sm" v-model="pPost.post_img_position">
+                            <option value="top">顶</option>
+                            <option value="left">左</option>
+                            <option value="right">右</option>
                         </select>
                     </div>
 
@@ -112,6 +114,7 @@
             </form>
         </div>
     </div>
+    <select-img v-if="show" @close="show= !show" @select="select"></select-img>
 </div>
 </template>
 <script>
@@ -123,6 +126,7 @@ import {
 } from 'vuex'
 import * as api from "public/js/netapi.js";
 import PostInfo from "./post-info"
+import SelectImg from "../select-img"
 export default {
     data: function() {
         return {
@@ -139,13 +143,15 @@ export default {
             searchname: '',
             pPost:{},
             pass:'',
+            show:false,
         }
     },
-    components: {PostInfo},
+    components: {PostInfo,SelectImg},
     computed: {
         ...mapGetters([
             'categoryList',
             'posts',
+            'activeImg'
         ]),
         max() {
             return this.filterPosts.length
@@ -170,7 +176,7 @@ export default {
         ...mapMutations([
             'setPosts'
         ]),
-
+        ...mapActions(['merge']),
         formatDate(_time) {
             let time = new Date(_time);
             return time.format('yyyy/MM/dd hh:mm');
@@ -186,11 +192,40 @@ export default {
             if (this.currPage < this.pageNum - 1)
                 this.currPage = this.currPage + 1;
         },
-        save(p){
-            console.log(p)
+        async save({index} = {}){
+            let data = await api.savePost(this.pPost);
+            if(data.code==0)
+                this.merge(data.data);
+            if(index)
+                layer.close(index)
+            layer.msg(data.msg)
         },
-        changePostImg(){
-            
+        async changePostImg(){
+            this.show = true;
+            // api.setPostImg({
+            //     id:this.pPost.id,
+            //     imgUrl:'http://oht47c0d0.bkt.clouddn.com/0fe807a0-00b3-11e7-89fa-17d9cf406414.png',
+            //     position:'left'
+            // })
+            // layer.open({
+            //   type: 1,
+            //   skin: 'layui-layer-rim', //加上边框
+            //   area: ['420px', '240px'], //宽高
+            //   content: 'html内容'
+            // });
+        },
+        select(){
+            this.show = false;
+            let domain = 'http://oht47c0d0.bkt.clouddn.com/';
+            this.pPost.post_img = domain+"/"+this.activeImg.key;
+            this.save();
+        }
+    },
+    watch:{
+        'pPost.post_img_position':function(v){
+            if(v){
+                this.save();
+            }
         }
     },
     mounted: async function() {
@@ -209,6 +244,34 @@ export default {
             // var action = $(this).data('selected');
             self.filterCategory = $(this).val()
         });
+
+        Qiniu.uploader({
+            runtimes: 'html5,flash,html4',
+            browse_button: 'uploadfile',
+            drop_element: 'uploadfile',
+            max_file_size: '1000mb',
+            flash_swf_url: '/Moxie.swf',
+            unique_names: true,
+            dragdrop: true,
+            chunk_size: '4mb',
+            uptoken_url: "/api/img/token",
+            domain: "http://oht47c0d0.bkt.clouddn.com/",
+            get_new_uptoken: false,
+            auto_start: true,
+            log_level: 5,
+            init: {
+                'FilesAdded': function(up, files) {},
+                'BeforeUpload': function(up, file) {},
+                'UploadProgress': function(up, file) {},
+                'UploadComplete': function() {},
+                'FileUploaded': function(up, file, info) {
+                    let domain = up.getOption('domain');
+                    self.pPost.post_img = domain+"/"+ JSON.parse(info).key;
+                    self.save();
+                },
+                'Error': function(up, err, errTip) { },
+            }
+        });
     }
 }
 </script>
@@ -224,7 +287,21 @@ export default {
         }
 
     }
-    .j-post-img>a {
+    .j-post-img > a.uploadfile {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 120px;
+        height: 120px;
+        margin: 0 auto;
+        border: 3px dashed #ccc;
+        border-radius: 19px;
+        i {
+            color: #ccc;
+            font-size: 50px;
+        }
+    }
+    .j-post-img > a.j-post-img-preview {
         display: block;
         width: 120px;
         margin: 0 auto;

@@ -1,64 +1,15 @@
 const db = require("./database");
 const _ = require("lodash");
 
-// CREATE TABLE `j_posts` (
-//   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-//   `post_author` bigint(20) unsigned DEFAULT '0' COMMENT '对应作者ID',
-//   `post_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
-//   `post_content` longtext COLLATE utf8_bin COMMENT '正文',
-//   `post_title` text COLLATE utf8_bin COMMENT '标题',
-//   `post_excerpt` text COLLATE utf8_bin COMMENT '摘录',
-//   `post_status` varchar(20) COLLATE utf8_bin DEFAULT 'auto-draft' COMMENT '文章状态（publish/auto-draft/inherit/trash/delete等）',
-//   `comment_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT '评论状态（open/closed）',
-//   `ping_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT 'PING状态（open/closed）',
-//   `post_password` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '文章密码',
-//   `post_name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '文章缩略名',
-//   `term_id` bigint(20) unsigned NOT NULL COMMENT '所属分类',
-//   `pinged` text COLLATE utf8_bin COMMENT '已经PING过的链接',
-//   `post_modified` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
-//   `post_content_filtered` text COLLATE utf8_bin COMMENT '未知\n内容 过滤',
-//   `post_parent` bigint(20) unsigned DEFAULT '0' COMMENT '父文章，主要用于PAGE',
-//   `guid` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '未知',
-//   `menu_order` int(11) DEFAULT '0' COMMENT '排序ID',
-//   `post_type` varchar(20) COLLATE utf8_bin DEFAULT 'post' COMMENT '文章类型（post/page等）',
-//   `post_mime_type` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT 'MIME类型',
-//   `comment_count` bigint(20) DEFAULT '0' COMMENT '评论总数',
-//   `seq_in_nb` int(11) DEFAULT '0',
-//   PRIMARY KEY (`id`),
-//   KEY `post_name` (`post_name`),
-//   KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`id`),
-//   KEY `post_author` (`post_author`),
-//   KEY `fk_j_terms_idx` (`term_id`),
-//   CONSTRAINT `fk_j_terms` FOREIGN KEY (`term_id`) REFERENCES `j_terms` (`term_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-//   CONSTRAINT `fk_j_users` FOREIGN KEY (`post_author`) REFERENCES `j_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-// ) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-// ["id",
-// "post_author",
-// "post_date",
-// "post_content",
-// "post_title",
-// "post_excerpt",
-// "post_status",
-// "comment_status",
-// "ping_status",
-// "post_password",
-// "post_name",
-// "term_id",
-// "pinged",
-// "post_modified",
-// "post_content_filtered",
-// "post_parent",
-// "guid",
-// "menu_order",
-// "post_type",
-// "post_mime_type",
-// "comment_count",
-// "seq_in_nb"]
 class PostDao extends db.BaseDao {
     constructor() {
         super();
-        this.key = ["id","post_author","post_date","post_content","post_title","post_excerpt","post_status","comment_status","ping_status","post_password","post_name","term_id","pinged","post_modified","post_content_filtered","post_parent","guid","menu_order","post_type","post_mime_type","comment_count","seq_in_nb","delete_at","create_at","author"];
+        this.key = ["id", "post_author", "post_date", "post_content", "post_title",
+        "post_excerpt", "post_status", "comment_status", "ping_status", "post_password",
+        "post_name", "term_id", "pinged", "post_modified", "post_content_filtered",
+        "post_parent", "guid", "menu_order", "post_type", "post_mime_type",
+        "comment_count", "seq_in_nb", "delete_at", "create_at", "author", 'post_img_position', 'post_img'];
+        // this.metaKey = []
         this.selectSql = `SELECT
             jp.id,
             jp.post_date,
@@ -84,6 +35,7 @@ class PostDao extends db.BaseDao {
             ju.user_nickname as post_author,
             jp.author,
             jp.post_img,
+            jp.post_img_position,
             case when jp.post_password is null then false else true end as ppassword
         FROM
             j_posts jp left join j_users ju on jp.post_author = ju.id`
@@ -121,6 +73,7 @@ class PostDao extends db.BaseDao {
     }
     getPostInfoById(id, callback) {
         // let sql = "";
+        // 懒加载 文章的一些信息
         let sql = [{
             sql: "select post_content from j_posts where id = ?",
             params: [id],
@@ -128,6 +81,9 @@ class PostDao extends db.BaseDao {
         }, {
             sql: "select * from myblog.j_terms where term_id in (SELECT term_id FROM myblog.j_term_relationships where object_id=?)",
             params: [id],
+        },{
+            sql:'select * from `myblog`.`j_postmeta` where post_id = ?',
+            params:[id]
         }];
         this.execTrans(sql, callback);
     }
@@ -156,6 +112,7 @@ class PostDao extends db.BaseDao {
           ju.user_nickname AS post_author,
           jp.author,
           jp.post_img,
+          jp.post_img_position,
           CASE WHEN jp.post_password IS NULL  THEN FALSE  ELSE TRUE  END AS ppassword,
           GROUP_CONCAT(jtr.name) as postTag
         FROM
@@ -353,7 +310,70 @@ class PostDao extends db.BaseDao {
         })
         this.execTrans(sql, callback);
     }
+    // async asyncPostSetImg(id,{imgUrl,position = 'right'}){
+    //
+    //     // 设置 首先删除原来的
+    //     let sql = "delete FROM j_postmeta where post_id=? and meta_key = ?"
+    //     let r = await this.asyncExec(sql,[id,'imgUrl']);
+    //     sql = "INSERT INTO `myblog`.`j_postmeta` (`post_id`,`meta_key`,`meta_value`) VALUES (?,?,?)";
+    //     return this.asyncExec(sql,[id,imgUrl,position])
+    // }
 }
 
 const postDao = new PostDao();
 module.exports = postDao;
+
+// CREATE TABLE `j_posts` (
+//   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+//   `post_author` bigint(20) unsigned DEFAULT '0' COMMENT '对应作者ID',
+//   `post_date` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+//   `post_content` longtext COLLATE utf8_bin COMMENT '正文',
+//   `post_title` text COLLATE utf8_bin COMMENT '标题',
+//   `post_excerpt` text COLLATE utf8_bin COMMENT '摘录',
+//   `post_status` varchar(20) COLLATE utf8_bin DEFAULT 'auto-draft' COMMENT '文章状态（publish/auto-draft/inherit/trash/delete等）',
+//   `comment_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT '评论状态（open/closed）',
+//   `ping_status` varchar(20) COLLATE utf8_bin DEFAULT 'open' COMMENT 'PING状态（open/closed）',
+//   `post_password` varchar(20) COLLATE utf8_bin DEFAULT NULL COMMENT '文章密码',
+//   `post_name` varchar(200) COLLATE utf8_bin DEFAULT NULL COMMENT '文章缩略名',
+//   `term_id` bigint(20) unsigned NOT NULL COMMENT '所属分类',
+//   `pinged` text COLLATE utf8_bin COMMENT '已经PING过的链接',
+//   `post_modified` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '修改时间',
+//   `post_content_filtered` text COLLATE utf8_bin COMMENT '未知\n内容 过滤',
+//   `post_parent` bigint(20) unsigned DEFAULT '0' COMMENT '父文章，主要用于PAGE',
+//   `guid` varchar(255) COLLATE utf8_bin DEFAULT NULL COMMENT '未知',
+//   `menu_order` int(11) DEFAULT '0' COMMENT '排序ID',
+//   `post_type` varchar(20) COLLATE utf8_bin DEFAULT 'post' COMMENT '文章类型（post/page等）',
+//   `post_mime_type` varchar(100) COLLATE utf8_bin DEFAULT NULL COMMENT 'MIME类型',
+//   `comment_count` bigint(20) DEFAULT '0' COMMENT '评论总数',
+//   `seq_in_nb` int(11) DEFAULT '0',
+//   PRIMARY KEY (`id`),
+//   KEY `post_name` (`post_name`),
+//   KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`id`),
+//   KEY `post_author` (`post_author`),
+//   KEY `fk_j_terms_idx` (`term_id`),
+//   CONSTRAINT `fk_j_terms` FOREIGN KEY (`term_id`) REFERENCES `j_terms` (`term_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+//   CONSTRAINT `fk_j_users` FOREIGN KEY (`post_author`) REFERENCES `j_users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+// ) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+// ["id",
+// "post_author",
+// "post_date",
+// "post_content",
+// "post_title",
+// "post_excerpt",
+// "post_status",
+// "comment_status",
+// "ping_status",
+// "post_password",
+// "post_name",
+// "term_id",
+// "pinged",
+// "post_modified",
+// "post_content_filtered",
+// "post_parent",
+// "guid",
+// "menu_order",
+// "post_type",
+// "post_mime_type",
+// "comment_count",
+// "seq_in_nb"]

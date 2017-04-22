@@ -93,6 +93,7 @@ const actions = {
     setCurrendPost({commit},data){
         commit("SET_CURRENDPOST_CONETENT",data[0].post_content);
         commit("SET_CURRENDPOST_TAG",data[1]);
+        commit("SET_CURRENDPOST_META",data[2]);
     },
     update_current_postcontent({commit},content){
         commit("UPDATE_CONTENT",content);
@@ -124,6 +125,9 @@ const mutations = {
     },
     SET_CURRENDPOST_TAG(state,id){
         Vue.set(state.currentPost,'postTag',id);
+    },
+    SET_CURRENDPOST_META(state,id){
+        Vue.set(state.currentPost,'meta',id);
     },
     SET_LAST_ID(state,id){
         state.lastPostId = id;

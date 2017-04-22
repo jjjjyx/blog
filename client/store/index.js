@@ -9,6 +9,7 @@ import * as getters from "./getters";
 import account from "./modules/account";
 import post from "./modules/post";
 import site from "./modules/site";
+import img from "./modules/img";
 
 Vue.use(Vuex);
 
@@ -28,7 +29,8 @@ export default new Vuex.Store({
     modules:{
         account,
         post,
-        site
+        site,
+        img
         // notify
     }
 })
