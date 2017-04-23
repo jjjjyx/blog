@@ -8,7 +8,7 @@ let ERR_REUQEST_FAIL = -254
 
 try {
     let pri = require("../../private.js");
-    API_SERVER = pri.default.API_SERVER || API_SERVER;
+    API_SERVER = pri.default.API_SERVER;
 } catch (e) {}
 
 /**
