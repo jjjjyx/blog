@@ -283,6 +283,12 @@ export default {
             ouloadFn :async function(files,fn) {
                 let tokenK = await api.getToken();
                 self.qiniuUpload(files,tokenK,fn)
+            },
+            onfullscreen(){
+                $("#nav").slideUp();
+            },
+            onfullscreenExit(){
+                $("#nav").slideDown();
             }
         });
 

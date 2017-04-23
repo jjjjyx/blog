@@ -14,7 +14,7 @@ Vue.config.errorHandler = function(err, vm) {
 import "public/js/vue.api.js"
 import * as api from "public/js/api.js"
 import keyboardJS from "keyboardjs"
-
+import {getClientHeight} from "public/js/tools.js";
 import BlobHeader from "components/head.vue";
 import BlobFooter from "components/bottom.vue";
 
@@ -118,5 +118,13 @@ const app = new Vue({
             self.open($(this).data('slug'))
         })
         this.bindScrollspy();
+
+        $('.footer').parent().scrollspy({
+            animation: 'ss',
+        }).on('inview.scrollspy.amui', ()=> {
+            $(".j-blog").hide();
+        }).on('outview.scrollspy.amui', function() {
+            $(".j-blog").show();
+          });
     }
 })

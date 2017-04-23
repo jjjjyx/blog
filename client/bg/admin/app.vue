@@ -13,7 +13,7 @@
 <template>
     <div class="am-g tpl-g " :class="skiner">
         <!-- 头部 -->
-        <header>
+        <header id="nav">
             <!-- logo -->
             <div class="am-fl tpl-header-logo">
                 <router-link to="/" active-class='active' exact>
@@ -226,9 +226,15 @@ export default {
     mounted:async function() {
         this.skiner = localStorage.getItem('selectSkiner')||this.skiner;
         let headersHeight = 56;
-        let setH = ()=> this.setContentHeight($(window).height()-headersHeight);
-        setH();
+        let setH = ()=> this.setContentHeight(document.body.clientHeight-headersHeight);
+
         $(window).resize(setH);
+        let screenWidth = window.screen.width
+        if(screenWidth<=1366){
+            $("html").css('zoom',.8)
+        }
+        $(window).resize();
+        setH();
     }
 }
 </script>

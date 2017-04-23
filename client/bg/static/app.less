@@ -1,7 +1,7 @@
 @charset "UTF-8";
 @import url('//at.alicdn.com/t/font_rnr19q77sq5jnhfr.css');
 body, html{
-    // height: 100%;
+    height: 100%;
     overflow: hidden;
 }
 li,
@@ -19,9 +19,6 @@ a {
 header {
     z-index: 1104;
     position: relative;
-}
-.editormd-fullscreen {
-    top: 57px;
 }
 @import "post";
 @import "img";
@@ -79,20 +76,20 @@ header {
 @headersHeight: 56px;
 .tpl-header-logo {
     width: 240px;
-    height: 55px;
-    display: table;
+    height: 56px;
     text-align: center;
     position: relative;
     z-index: 1300;
+    box-sizing: content-box;
 
     a {
-        display: table-cell;
+        display: block;
         vertical-align: middle;
     }
 
     img {
         // width: 170px;
-        height: 55px;
+        height: 56px;
     }
 }
 

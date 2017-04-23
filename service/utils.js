@@ -258,7 +258,7 @@ module.exports.getPostsCounts = function(articleGuidList)  {
 }
 
 // 为了将markdown 的内容全部提取出来 不包含符号
-const textChar = (text) => text || "";
+const textChar = (text) => text || " ";
 const emptyChar = () => '';
 for (let i in renderer) {
     renderer[i] = textChar
@@ -266,9 +266,10 @@ for (let i in renderer) {
 renderer.list = emptyChar
 renderer.hr = emptyChar
 renderer.tablerow = emptyChar
-renderer.table = emptyChar
-renderer.image = (href, title, text) => title || "";
-renderer.link = (href, title, text) => title || "";
+renderer.table = emptyChar;
+renderer.code = (code, lang, escaped) => '[code] '
+renderer.image = (href, title, text) => '[图片] ';
+renderer.link = (href, title, text) => '[link] ';
 
 module.exports.indexLi = async function(data){
     let s = "";
