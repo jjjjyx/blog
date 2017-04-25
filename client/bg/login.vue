@@ -8,14 +8,16 @@
 </form>
 </template>
 <script>
-import {login,userGetInfo,logOut} from "../../public/js/netapi.js";
+
+import { login, userGetInfo, logOut } from "../public/js/netapi";
+
 export default {
     data() {
         return {
-            username: '',
-            password: '',
-            token: '',
-        }
+            username: "",
+            password: "",
+            token: ""
+        };
     },
     components: {},
     computed: {
@@ -23,27 +25,23 @@ export default {
     },
     methods: {
         async login() {
-            let [code, data] = await login(this.username, this.password)
-                // cookie.set("access_token",data.token)
-                // cookie.set("access_token",data.token,+new Date(Date.now()+1000*60*60*24*7),"/","localhost:3878")
-
+            await login(this.username, this.password);
+            // cookie.set("access_token",data.token)
+            // cookie.set("access_token",data.token,+new Date(Date.now()+1000*60*60*24*7),"/","localhost:3878")
         },
         async verify() {
             try {
-                let s = await userGetInfo()
-                console.log(s, 1);
+                await userGetInfo();
             } catch (e) {
             }
-
         },
         async logout() {
-            let s = await logOut()
-            console.log(s);
+            await logOut();
         }
     },
-    mounted: function() {
+    mounted() {
         // console.log("login");
-        $("#preloader").fadeOut(1000,()=>$("#preloader").remove())
+        $("#preloader").fadeOut(1000, () => $("#preloader").remove());
     }
-}
+};
 </script>
