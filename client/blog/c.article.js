@@ -1,5 +1,7 @@
 import BlobHeader from "components/head.vue"
-import BlobFooter from "components/bottom.vue"
+// import BlobFooter from "components/footer.vue"
+import FGotop from "components/gotop";
+// import BlobFooter from "components/bottom.vue"
 
 import { getClientHeight } from "public/js/tools.js"
 
@@ -22,7 +24,7 @@ const app = new Vue({
     },
     components: {
         BlobHeader,
-        BlobFooter
+        FGotop
     },
     computed: {
 
@@ -63,17 +65,17 @@ const app = new Vue({
                 falg = false
                 api.read()
             }
-            if (s > (zh - kh - bh)) {
-                if (this.$refs['article-tocm']) {
-                    $(this.$refs['article-tocm']).css({
-                        top: `${- (s - (zh - kh - bh))}px`
-                    })
-                }
-            } else if (this.$refs['article-tocm']) {
-                $(this.$refs['article-tocm']).css({
-                    top: '0px'
-                })
-            }
+            // if (s > (zh - kh - bh)) {
+            //     if (this.$refs['article-tocm']) {
+            //         $(this.$refs['article-tocm']).css({
+            //             top: `${- (s - (zh - kh - bh))}px`
+            //         })
+            //     }
+            // } else if (this.$refs['article-tocm']) {
+            //     $(this.$refs['article-tocm']).css({
+            //         top: '0px'
+            //     })
+            // }
         })
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
     }

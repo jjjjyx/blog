@@ -1,9 +1,12 @@
 <template>
-    <div>
+<div>
     <f-footer></f-footer>
     <f-copyright></f-copyright>
-    <f-gotop></f-gotop>
+    <div class="gotop" id="gotop" >
+        <f-gotop></f-gotop>
+        <a href="javascript:;" title="不知道为什么就想放个代码在这里" class="icon-faq icon-btn am-icon-code"></a>
     </div>
+</div>
 </template>
 <script>
 import FCopyright from "./copyright";

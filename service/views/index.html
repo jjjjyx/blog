@@ -90,7 +90,6 @@
                     <p class="load-more">
                         <button class="am-btn am-round gray btn-bordered am-btn-sm" @click="loadMore" v-if="noPost">
                             <i class="am-icon-spinner am-icon-spin am-text-xs" v-if="loading"></i> {{loading?'loading...':'加载更多'}}
-
                         </button>
                         <span v-else>没有更多了</span>
                     </p>
@@ -109,18 +108,19 @@
                                 <%if(item.name=='java'){%>
                                     <a class="tag active" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout" target="_blank" href="/category/<%=item.slug%>">
                                         <span class="tags-icon">
-                                        <i class="<%=item.icon%>"></i>
-                                    </span>
-                                        <span><%=item.name%></span></a>
-                                    <%}else{%>
-                                        <a class="tag" data-tag='<%=item.name%>' target="_blank" href="/category/<%=item.slug%>">
-                                            <span class="tags-icon">
-                                        <i class="<%=item.icon%>"></i>
-                                    </span>
-                                            <span><%=item.name%></span>
-                                        </a>
-                                        <%}%>
-                                            <%}%>
+                                            <i class="<%=item.icon%>"></i>
+                                        </span>
+                                        <span><%=item.name%></span>
+                                    </a>
+                                <%}else{%>
+                                    <a class="tag" data-tag='<%=item.name%>' target="_blank" href="/category/<%=item.slug%>">
+                                        <span class="tags-icon">
+                                            <i class="<%=item.icon%>"></i>
+                                        </span>
+                                        <span><%=item.name%></span>
+                                    </a>
+                                <%}%>
+                            <%}%>
                         </div>
                     </div>
                     <div class="part">
@@ -161,7 +161,7 @@
                             <h3 class="">文章归档</h3>
                             <!-- <span class="gapline">|</span> -->
                         </div>
-                        <ul class="j-list">
+                        <ul class="j-list ">
                             <%for(item of groupList){%>
                                 <li>
                                     <a href="/archives#<%=dateFormat(item.post_date,'MMMYY')%>"><i class="am-icon-calendar-plus-o"></i> <%=item.post_date2%></a>

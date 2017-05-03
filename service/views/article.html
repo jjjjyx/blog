@@ -17,21 +17,41 @@
 	    <div id="preloader-inner" class="battery"></div>
 	</div>
     <div id="app">
-        <blob-header @sabit="togglehead" :active='"index"'></blob-header>
-        <div class="blank"></div>
-        <section class="wrapper">
-            <div class="am-container article-page <%if(tocm){%>tocm<%}%>">
-                <%if(tocm){%>
-                <aside class="article-tocm" ref="article-tocm" :class="{padTop:aside}">
-                    <h1>目  录</h1>
-                    <!-- <a class="btn-fold-menu"title="收起" >
-                        <i class="am-icon-angle-double-left"></i>
-                    </a> -->
-                    <section class=" markdown-body editormd-preview-container" id="custom-toc-container">
-                    </section>
-                </aside>
-                <%}%>
-                <article>
+        <blob-header @sabit="togglehead" :active='"index"' class="am-show-sm-only"></blob-header>
+        <div class="blank am-show-sm-only"></div>
+        <header class="panel-cover am-show-sm-up">
+            <h1><%-name%></h1>
+            <hr/>
+            <p><%-sign%></p>
+            <hr/>
+            <ul class="social-ul">
+                <li>
+                    <a href="http://wpa.qq.com/msgrd?v=3&uin=871839012&site=qq&menu=yes" target="_blank"><i class="am-icon-qq"></i></a>
+                </li>
+                <li>
+                    <a href="https://github.com/xsq871839012" target="_blank"><i class="am-icon-github"></i></a>
+                </li>
+                <li>
+                    <a href="http://weibo.com/5403878645" target="_blank"><i class="am-icon-weibo"></i></a>
+                </li>
+                <li>
+                    <a href="javascript:;" data-am-modal="{target: '#weixin-modal'}"><i class="am-icon-weixin"></i></a>
+                </li>
+                <li>
+                    <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net" target="_blank"><i class="am-icon-envelope"></i></a>
+                </li>
+            </ul>
+            <hr/>
+            <ul class="nav-ul list-unstyled">
+                <li><a href="/"><i class="am-icon-home"></i> 首页</a></li>
+                <li><a href="archives"><i class="am-icon-bars"></i> 归档</a></li>
+                <li><a href="author"><i class="am-icon-info-circle"></i> 关于</a></li>
+            </ul>
+        </header>
+        <section class="wrapper am-container article-page">
+
+            <article>
+                <header>
                     <h1><%=post_title%></h1>
                     <%if(postTag.length){%>
                     <div>
@@ -51,11 +71,10 @@
                             <span class="views-count">阅读 <%=eye_count%></span>
                         </p>
                     </div>
-                    <div class="inner" ref="inner" id="article-inner">
-                        <textarea style="display:none;" name="article-markdown-doc"><%=post_content%></textarea>
-                    </div>
-                </article>
-
+                </header>
+                <section class="inner" ref="inner" id="article-inner">
+                    <textarea style="display:none;" name="article-markdown-doc"><%=post_content%></textarea>
+                </section>
                 <footer id="post-footer" >
                     <!-- <div class="post-footer-tags">
 
@@ -65,13 +84,15 @@
                             本文系作者
                             <a target="_blank" title="<%=author%>" class="am-text-secondary">
                                 <%=author%>
-                            </a> 转载请注明出处、作者和<a href="/p/<%=guid%>" title="<%=post_title%>" class="am-text-secondary">本文链接</a>。
+                            </a>原创文章, 转载请注明出处。<br>
+                            《<%=post_title%>》 <a href="/p/<%=guid%>" title="<%=post_title%>" class="am-text-secondary">http://www.mbdoge.cn/p/<%=guid%></a>
+                            <!-- 、作者和<a href="/p/<%=guid%>" title="<%=post_title%>" class="am-text-secondary">本文链接</a> -->
                         </div>
                         <!-- 文章分类 相关推荐 -->
-                        <!-- <div class="post-like am-fr am-margin-left-xs">
+                        <div class="post-like am-fr am-margin-left-xs">
                             <a class="am-btn am-round am-btn-xs am-btn-logo"><i class="am-icon-heart"></i> 喜欢 | 0</a>
-                        </div> -->
-                        <!-- <div class="post-share am-fr">
+                        </div>
+                        <div class="post-share am-fr">
                             <ul class="sharehidden">
                                 <li>
                                     <a href="http://www.jiathis.com/send/?webid=weixin&amp;url=http://www.mbdoge.cn/p/<%=guid%>&amp;title=<%=post_title%>" onclick="window.open(this.href, 'renren-share', 'width=490,height=700');return false;" class="s-weixin"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/wechat.png"></a>
@@ -87,28 +108,47 @@
                                 </li>
                             </ul>
                             <a class="am-btn am-round am-btn-xs am-btn-secondary"><i class="am-icon-share"></i> 分享</a>
-                        </div> -->
+                        </div>
                     </div>
                 </footer>
-                <div class="ds-thread" data-thread-key="<%=guid%>" data-title="<%=post_title%>" data-url="www.mbdoge.cn/p/<%=guid%>"></div>
-                <script type="text/javascript">
-                    var duoshuoQuery = { short_name: "\x6a\x6a\x6a\x6a\x79\x78"};
-                    (function() {
-                        var ds = document.createElement('script');
-                        ds.type = 'text/javascript';
-                        ds.async = true;
-                        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-                        ds.charset = 'UTF-8';
-                        (document.getElementsByTagName('head')[0] ||
-                            document.getElementsByTagName('body')[0]).appendChild(ds);
-                    })();
-                </script>
-                <aside id="comment">
-                </aside>
-            </div>
+            </article>
+            <!-- 多说就这么完了么 -->
+            <!-- <div class="ds-thread" data-thread-key="<%=guid%>" data-title="<%=post_title%>" data-url="www.mbdoge.cn/p/<%=guid%>"></div>
+            <script type="text/javascript">
+                var duoshuoQuery = { short_name: "\x6a\x6a\x6a\x6a\x79\x78"};
+                (function() {
+                    var ds = document.createElement('script');
+                    ds.type = 'text/javascript';
+                    ds.async = true;
+                    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+                    ds.charset = 'UTF-8';
+                    (document.getElementsByTagName('head')[0] ||
+                        document.getElementsByTagName('body')[0]).appendChild(ds);
+                })();
+            </script>
+            <aside id="comment">
+            </aside> -->
+
+            <!-- <blob-footer ></blob-footer> -->
+            <footer>
+
+            </footer>
         </section>
-        <blob-footer ></blob-footer>
+        <%if(tocm){%>
+        <div id="doc-oc-demo3" class="am-offcanvas am-active " ref="article-tocm" :class="{padTop:aside}">
+          <div class="am-offcanvas-bar am-offcanvas-bar-flip am-offcanvas-bar-overlay am-offcanvas-bar-active">
+             <h1>目录</h1>
+            <section class="am-offcanvas-content markdown-body editormd-preview-container" id="custom-toc-container">>
+            </section>
+          </div>
+        </div>
+        <%}%>
+        <div class="gotop" id="gotop" >
+            <f-gotop></f-gotop>
+            <a href="javascript:;" title="不知道为什么就想放个代码在这里" class="icon-faq icon-btn am-icon-bars" ></a>
+        </div>
     </div>
+
     <%-footer('article')%>
     <script type="text/javascript">
     $(document).ready(function(){

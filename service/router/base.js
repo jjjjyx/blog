@@ -17,6 +17,8 @@ module.exports = function(app){
         app.locals['baiduVerification'] = global.SITE.baiduVerification;
         app.locals['googleVerification'] = global.SITE.googleVerification;
         app.locals['statistical'] = global.SITE.statistical;
+        app.locals['name'] = global.SITE.name;
+        app.locals['sign'] = global.SITE.sign;
         app.locals['dateFormat'] = function(time,f){
             return moment(time).format(f);
         };

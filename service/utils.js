@@ -80,31 +80,15 @@ module.exports.fetch = function (headers) {
 };
 
 module.exports.create = function (user, req, res, next) {
-
     debug("Create token");
-
-    if (_.isEmpty(user)) {
-        return next(new Error('User data cannot be empty.'));
-    }
+    if (_.isEmpty(user))  return next(new Error('User data cannot be empty.'));
 
     var data = {
-        id: user.id,
-        user_login: user.user_login,
-        user_nickname: user.user_nickname,
-        user_email: user.user_email,
-        user_url: user.user_url,
-        user_registered: user.user_registered,
-        user_status: user.user_status,
-        display_name: user.display_name,
+        id: user.id, user_login: user.user_login, user_nickname: user.user_nickname, user_email: user.user_email, user_url: user.user_url,
+        user_registered: user.user_registered, user_status: user.user_status, display_name: user.display_name,
         token: jsonwebtoken.sign({
-            _id: user._id,
-            user_login: user.user_login,
-            user_email: user.user_email,
-            user_status: user.user_status,
-            display_name: user.display_name,
-        }, C.secret, {
-            expiresIn: "5d"
-        })
+            _id: user._id, user_login: user.user_login, user_email: user.user_email, user_status: user.user_status, display_name: user.display_name,
+        }, C.secret, { expiresIn: "5d" })
     };
 
     var decoded = jsonwebtoken.decode(data.token);
@@ -117,17 +101,13 @@ module.exports.create = function (user, req, res, next) {
     client.set(data.token, JSON.stringify(data), function (err, reply) {
         if (err) {
             return next(new Error(err));
-        }
-        if (reply) {
+        }else if (reply) {
             client.expire(data.token, TOKEN_EXPIRATION_SEC, function (err, reply) {
                 if (err) {
                     return next(new Error("Can not set the expire value for the token key"));
-                }
-                if (reply) {
+                } else if (reply) {
                     res.map = {
-                        code: 0,
-                        msg: "Token generated",
-                        data
+                        code: 0, msg: "Token generated", data
                     }
                     res.cookie("u", data.token, {maxAge: 60000*60*24*5,httpOnly:true});
                     next(); // we have succeeded
@@ -139,9 +119,7 @@ module.exports.create = function (user, req, res, next) {
             return next(new Error('Token not set in redis'));
         }
     });
-
     return data;
-
 };
 module.exports.retrieve = function (id, done) {
 
@@ -287,9 +265,7 @@ module.exports.indexLi = async function(data){
         </div>
     </form>
     `;
-    let imgH = (guid,post_img)=>`<a class="wrap-img" href="/p/${guid}" target="_blank">
-         <img src="${post_img}?imageView2/1/w/375/h/300" alt="300">
-    </a>`
+    let imgH = (guid,post_img)=>`<a class="wrap-img" href="/p/${guid}" target="_blank"><img src="${post_img}?imageView2/1/w/375/h/300" alt="300"></a>`
     let animation =['scale-up','fade','slide-left','slide-bottom'];
     //data-am-scrollspy="{animation: 'fade'}"
     let articleGuidList = data.map((item) => item.guid);
@@ -327,8 +303,5 @@ module.exports.indexLi = async function(data){
             </article>
         `
     })
-    return {
-        data,
-        html:s.split("\n").map((s)=>s.trim()).join('')
-    }
+    return { data, html:s.split("\n").map((s)=>s.trim()).join('') }
 }

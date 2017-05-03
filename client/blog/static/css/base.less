@@ -33,7 +33,7 @@ a {
 ol, ul {
     padding: 0;
     margin: 0;
-    list-style: none;
+    // list-style: none;
 }
 * {
     outline: none;
@@ -75,6 +75,34 @@ ol, ul {
     &.am-corner-label{
         border-color: #f26202!important;
         color: #fff!important;
+    }
+}
+
+.social-ul li{
+    list-style: none;
+    margin: 0px 5px 0 0;
+    line-height: normal;
+    display: inline-block;
+    border-bottom: none;
+}
+.social-ul li a {
+    height: 28px;
+    width: 28px;
+    line-height: 28px;
+    font-size: 14px;
+    color: #fff;
+    border-radius: 2px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background-color: transparent;
+    display: block;
+    overflow: hidden;
+    transition: all 0.17s ease-in-out;
+    &:hover {
+        border-color: #263241;
+        background-color: #263241;
+        i {
+            animation:toTopFromBottom .2s forwards;
+        }
     }
 }
 .am-corner-label{
@@ -517,7 +545,6 @@ header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
 }
 #gotop {
     position: fixed;
-
     right: 120px;
     bottom: 20px;
     z-index: 9999;
