@@ -17,39 +17,40 @@
 	    <div id="preloader-inner" class="battery"></div>
 	</div>
     <div id="app">
-        <blob-header @sabit="togglehead" :active='"index"' class="am-show-sm-only"></blob-header>
-        <div class="blank am-show-sm-only"></div>
-        <header class="panel-cover am-show-sm-up">
-            <h1><%-name%></h1>
-            <hr/>
-            <p><%-sign%></p>
-            <hr/>
-            <ul class="social-ul">
-                <li>
-                    <a href="http://wpa.qq.com/msgrd?v=3&uin=871839012&site=qq&menu=yes" target="_blank"><i class="am-icon-qq"></i></a>
-                </li>
-                <li>
-                    <a href="https://github.com/xsq871839012" target="_blank"><i class="am-icon-github"></i></a>
-                </li>
-                <li>
-                    <a href="http://weibo.com/5403878645" target="_blank"><i class="am-icon-weibo"></i></a>
-                </li>
-                <li>
-                    <a href="javascript:;" data-am-modal="{target: '#weixin-modal'}"><i class="am-icon-weixin"></i></a>
-                </li>
-                <li>
-                    <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net" target="_blank"><i class="am-icon-envelope"></i></a>
-                </li>
-            </ul>
-            <hr/>
-            <ul class="nav-ul list-unstyled">
-                <li><a href="/"><i class="am-icon-home"></i> 首页</a></li>
-                <li><a href="archives"><i class="am-icon-bars"></i> 归档</a></li>
-                <li><a href="author"><i class="am-icon-info-circle"></i> 关于</a></li>
-            </ul>
+        <blob-header @sabit="togglehead" :active='"index"' class="am-show-md-down"></blob-header>
+        <div class="blank am-show-md-down"></div>
+        <header class="j-left-container am-show-lg-up">
+            <div class="j-left-wrapper">
+                <h1><%-name%></h1>
+                <hr/>
+                <p><%-sign%></p>
+                <hr/>
+                <ul class="social-ul">
+                    <li>
+                        <a href="http://wpa.qq.com/msgrd?v=3&uin=871839012&site=qq&menu=yes" target="_blank"><i class="am-icon-qq"></i></a>
+                    </li>
+                    <li>
+                        <a href="https://github.com/xsq871839012" target="_blank"><i class="am-icon-github"></i></a>
+                    </li>
+                    <li>
+                        <a href="http://weibo.com/5403878645" target="_blank"><i class="am-icon-weibo"></i></a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" data-am-modal="{target: '#weixin-modal'}"><i class="am-icon-weixin"></i></a>
+                    </li>
+                    <li>
+                        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net" target="_blank"><i class="am-icon-envelope"></i></a>
+                    </li>
+                </ul>
+                <hr/>
+                <ul class="nav-ul list-unstyled">
+                    <li><a href="/"><i class="am-icon-home"></i> 首页</a></li>
+                    <li><a href="archives"><i class="am-icon-bars"></i> 归档</a></li>
+                    <li><a href="author"><i class="am-icon-info-circle"></i> 关于</a></li>
+                </ul>
+            </div>
         </header>
-        <section class="wrapper am-container article-page">
-
+        <section class="am-container article-page">
             <article>
                 <header>
                     <h1><%=post_title%></h1>
@@ -135,7 +136,7 @@
             </footer>
         </section>
         <%if(tocm){%>
-        <div id="doc-oc-demo3" class="am-offcanvas am-active " ref="article-tocm" :class="{padTop:aside}">
+        <div id="doc-oc-demo3" class="am-offcanvas am-active am-hide-lg-down" ref="article-tocm" :class="{padTop:aside}">
           <div class="am-offcanvas-bar am-offcanvas-bar-flip am-offcanvas-bar-overlay am-offcanvas-bar-active">
              <h1>目录</h1>
             <section class="am-offcanvas-content markdown-body editormd-preview-container" id="custom-toc-container">>

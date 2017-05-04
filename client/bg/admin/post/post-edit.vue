@@ -250,6 +250,7 @@ export default {
             path              : '/static/editormd/lib/',
             emoji             : true,
             imageUpload       : true,
+            taskList          : true,
             toolbarIcons:()=> [
                 "undo", "redo", "|",
                 "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",

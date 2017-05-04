@@ -40,7 +40,7 @@ const app = new Vue({
         this.editormdView = editormd.markdownToHTML("article-inner", {
             htmlDecode: "style,script,iframe", // you can filter tags decode
             emoji: true,
-            taskList: false,
+            taskList: true,
             tex: false, // 默认不解析
             flowChart: false, // 默认不解析
             sequenceDiagram: false, // 默认不解析

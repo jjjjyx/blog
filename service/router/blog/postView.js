@@ -45,6 +45,9 @@ let loadArticleInfo = [
     // }
 ]
 let read = function(req, res, next){
+    res.set({
+        'ETag': +new Date()
+    })
     req.checkParams('guid','链接不正确').isAlphanumeric().len(24);
     let map = {
         code:-1,
