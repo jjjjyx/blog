@@ -36,6 +36,11 @@ const app = new Vue({
         }
     },
     mounted: function () {
+        const img = new Image();
+        img.src = "http://oht47c0d0.bkt.clouddn.com/dcbcc560-2fbe-11e7-9caa-358d0aec432f.png?imageView2/0/w/1000";
+        img.onload = ()=> {
+            this.$refs.leftWrapper.style.backgroundImage = `url(${img.src})`;
+        }
         editormd.emoji.path = "http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/";
         this.editormdView = editormd.markdownToHTML("article-inner", {
             htmlDecode: "style,script,iframe", // you can filter tags decode

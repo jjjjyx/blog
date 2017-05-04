@@ -249,7 +249,7 @@ renderer.code = (code, lang, escaped) => '[code] '
 renderer.image = (href, title, text) => '[图片] ';
 renderer.link = (href, title, text) => '[link] ';
 
-module.exports.indexLi = async function(data){
+module.exports.indexLi = function(data){
     let s = "";
     let pH =(guid)=>
         `<form class="password dimmer inverted " method="post" action="/p/${guid}" target="_blank">
@@ -269,8 +269,7 @@ module.exports.indexLi = async function(data){
     let animation =['scale-up','fade','slide-left','slide-bottom'];
     //data-am-scrollspy="{animation: 'fade'}"
     let articleGuidList = data.map((item) => item.guid);
-    let b = await module.exports.getPostsCounts(articleGuidList);
-    let getB = (guid,k) => b[guid]?b[guid][k]:0;
+
     data.forEach((item) => {
         // <a class="am-corner-label am-orange"></a>
         s += `<article data-node-id='${item.id}' class="${item.ppassword?'blurring  dimmable':''} ${item.post_img?'have-img img-'+item.post_img_position:''}" >
@@ -283,10 +282,10 @@ module.exports.indexLi = async function(data){
                            <i class="am-icon-eye"></i> <span class="num">${item.eye_count||0}</span>
                        </a>
                        <a class="comment" href="/p/${item.guid}#comment" target="_blank">
-                           <i class="am-icon-comment-o"></i> <span class="num">${getB(item.guid,'comments')}</span>
+                           <i class="am-icon-comment-o"></i> <span class="num">0</span>
                        </a>
                        <a class="like" >
-                           <i class="am-icon-heart-o"></i> <span class="num">${getB(item.guid,'likes')}</span>
+                           <i class="am-icon-heart-o"></i> <span class="num">0</span>
                        </a>
                    </div>
                    <div class="meta am-margin-vertical-xs">

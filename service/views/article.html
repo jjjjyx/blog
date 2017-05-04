@@ -20,7 +20,7 @@
         <blob-header @sabit="togglehead" :active='"index"' class="am-show-md-down"></blob-header>
         <div class="blank am-show-md-down"></div>
         <header class="j-left-container am-show-lg-up">
-            <div class="j-left-wrapper">
+            <div class="j-left-wrapper" ref="leftWrapper">
                 <h1><%-name%></h1>
                 <hr/>
                 <p><%-sign%></p>
@@ -136,10 +136,10 @@
             </footer>
         </section>
         <%if(tocm){%>
-        <div id="doc-oc-demo3" class="am-offcanvas am-active am-hide-lg-down" ref="article-tocm" :class="{padTop:aside}">
+        <div id="doc-oc-demo3" class="am-offcanvas am-active am-hide-lg-down" ref="article-tocm">
           <div class="am-offcanvas-bar am-offcanvas-bar-flip am-offcanvas-bar-overlay am-offcanvas-bar-active">
              <h1>目录</h1>
-            <section class="am-offcanvas-content markdown-body editormd-preview-container" id="custom-toc-container">>
+            <section class="am-offcanvas-content markdown-body editormd-preview-container" id="custom-toc-container">
             </section>
           </div>
         </div>
