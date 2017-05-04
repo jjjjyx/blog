@@ -311,6 +311,10 @@ ol, ul {
 header .am-container {
     position: relative;
     z-index: 3;
+    transition: background 0.4s ease-in-out;
+    &.active {
+        background-color: #fff;
+    }
 }
 
 header.am-topbar.bootsnav{
@@ -322,11 +326,23 @@ header.am-topbar.bootsnav{
     transition: all .4s ease;
     background-color: #FFF;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1);
-}
 
-header.am-topbar.bootsnav ul.am-nav > li > a{
-    color: #6f6f6f;
-    background-color: transparent !important;
+    .am-topbar-brand {
+        padding: 0;
+        & > img {
+            height: 50px;
+        }
+    }
+
+    .attr-nav a i,
+    .am-nav a {
+        color: @mainTitleColor;
+        background-color: transparent !important;
+        font-size: 1.4rem;
+        &:hover {
+            color: @logoColor;
+        }
+    }
 }
 
 header.am-topbar.bootsnav ul.am-nav li.megamenu-fw > a:hover,
@@ -346,7 +362,7 @@ header.am-topbar.bootsnav ul.am-nav li.active > a{
     }
 }
 header.am-topbar.bootsnav .am-topbar-toggle{
-    background-color: #fff !important;
+    background-color: transparent;
     color: #000;
     border: none;
     padding: 0;
@@ -367,8 +383,119 @@ header.am-topbar.bootsnav ul.am-nav .dropdown-menu .dropdown-menu{
 header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
     white-space:normal;
 }
+header.bootsnav.brand-center {
+    .am-navbar-header {
+        display: flex;
+        width: 100%;
+        height: 87px;
+        position: absolute;
+        text-align: center;
+        top: 0;
+        left: 0;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        pointer-events: none;
+    }
+    .am-topbar-brand {
+        float: none;
+        display: inline-block;
+        width: 45px;
+        overflow: hidden;
+        pointer-events: all;
+    }
+    button {
+        pointer-events: all;
+        background-color: transparent;
+    }
+    .navbar-brand {
+        float: none;
+        display:inline-block;
+    }
 
 
+}
+@media (min-width: 992px){
+    header.bootsnav.brand-center {
+        .col-half {
+            width: 50%;
+            float: left;
+            display: block;
+        }
+        .col-half.left {
+            text-align: right;
+            padding-right: 80px;
+            li {
+                float: right;
+            }
+        }
+        .col-half.right {
+            text-align: left;
+            padding-left: 80px;
+        }
+        .am-collapse {
+            text-align: center;
+            display: inline-block;
+            padding-left: 0;
+            padding-right: 0;
+        }
+    }
+}
+@media (max-width: 992px){
+    header.bootsnav.brand-center {
+        .am-navbar-header {
+            position: static;
+        }
+        .am-topbar-collapse {
+            padding: 0;
+        }
+        // 与 妹子宽度设置不一致需要重写
+        .am-collapse {
+            display: none !important;
+            max-height: 365px;
+            border: none;
+            margin-bottom: 20px;
+            overflow: visible;
+        }
+        .am-collapse.am-in {
+            display: block !important;
+        }
+        ul.col-half {
+            margin-bottom: 0px !important;
+            width: 100%;
+            float: none;
+            display: block;
+            padding: 0 !important;
+            text-align: left;
+            li {
+                float: none;
+                padding: 0 !important;
+                margin-left: 0;
+            }
+            a {
+                line-height:1;
+                border-top: none;
+                padding: 10px 0;
+                margin-bottom: -1px;
+                border-bottom: solid 1px #e0e0e0;
+            }
+        }
+        .col-half.left {
+            margin-bottom: 0;
+        }
+    }
+    .am-topbar-toggle {
+        display: inline-block;
+        right: -41px;
+        top: 0px !important;
+        width: 37px;
+        height: 50px;
+        z-index: 5;
+        margin: 0;
+        text-align: center;
+        opacity: 0;
+    }
+}
 
 /* Atribute Navigation
 =================================*/
@@ -614,22 +741,7 @@ header.am-topbar.bootsnav ul.am-nav ul.dropdown-menu > li > a{
 }
 #app {
     // padding-top: 50px;
-    .am-topbar-brand {
-        padding: 0;
 
-        & > img {
-            height: 50px;
-        }
-    }
-
-    .attr-nav a i,
-    .am-nav.am-topbar-nav a {
-        color: @mainTitleColor;
-        font-size: 1.4rem;
-        &:hover {
-            color: @logoColor;
-        }
-    }
 }
 
 .yya {

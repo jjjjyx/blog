@@ -14,17 +14,48 @@
     <div id="app">
         <!-- <blob-header :active='"author"'></blob-header>
         <div class="blank"></div> -->
+        <header class="am-topbar am-topbar-fixed-top bootsnav brand-center">
+            <div class="am-container">
+                <!-- 通过设置  pointer-events: all;  将icon 可以点击 -->
+                <div class="am-navbar-header">
+                    <button class="am-topbar-btn am-topbar-toggle am-btn am-btn-sm am-btn-success " @click="navBg" data-am-collapse="{target: '#doc-topbar-collapse'}">
+                        <span class="am-sr-only">导航切换</span>
+                        <span class="am-icon-bars"></span>
+                    </button>
+                    <a href="/" class="am-topbar-brand" title="回到首页">
+                      <!-- <a href="#" class="am-text-ir">Amaze UI</a> -->
+                      <img src="http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png" class="logo" alt="">
+                    </a>
+                </div>
+
+                <div class="am-collapse am-topbar-collapse am-animation-slide-top" id="doc-topbar-collapse">
+                    <ul class="am-nav am-nav-pills am-topbar-nav col-half left">
+                        <li><a href="#1">关于网站</a></li>
+                        <li><a href="#2">网站技能表</a></li>
+                        <li><a href="#3">更新记录</a></li>
+                    </ul>
+                    <ul class="am-nav am-nav-pills am-topbar-nav col-half right">
+                        <li><a href="#4">关于我</a></li>
+                        <li><a href="#5">我的技能表</a></li>
+                        <li><a href="#6">联系方式</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
         <main>
+            <div class="j-page" style="background-color:rgb(75, 191, 195)">建设中。。。</div>
+
+            <div class="j-page" style="background-color:rgb(255, 127, 80)">3</div>
             <div class="j-page" style="background-color:rgb(27, 188, 155)">
-                建设中。。。
+                2
                 <!-- <h1>酱酱酱酱油鲜</h1>
                 <p>手持两把锟斤拷，口中疾呼烫烫烫。<br>
 脚踏千朵屯屯屯，笑看万物锘锘锘。</p>
 <img src="" alt=""> -->
             </div>
-            <div class="j-page" style="background-color:rgb(255, 127, 80)">2</div>
-            <div class="j-page" style="background-color:rgb(75, 191, 195)">3</div>
             <div class="j-page" style="background-color:rgb(255, 153, 0)">4</div>
+            <div class="j-page" style="background-color:rgb(49, 148, 164)">6</div>
+            <div class="j-page" style="background-color:rgb(19, 35, 50)">5</div>
         </main>
         <!-- <blob-footer ></blob-footer> -->
     </div>

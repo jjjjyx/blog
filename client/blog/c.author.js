@@ -24,6 +24,9 @@ const app = new Vue({
 
     },
     methods: {
+        navBg (){
+            $(".am-topbar>.am-container").toggleClass("active");
+        }
         // mousewheel(event,delta){
         //     this.deltaOfInterest = delta;
         //     let timeNow = new Date().getTime();
@@ -67,5 +70,9 @@ const app = new Vue({
             sectionContainer: '.j-page',
         });
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
+        $(".col-half a").click(function (){
+            const id = $(this).attr('href').replace("#",'');
+            $('main').moveTo(id);
+        })
     }
 })

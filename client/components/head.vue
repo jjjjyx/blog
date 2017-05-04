@@ -4,17 +4,16 @@
 
 <header class="am-topbar am-topbar-fixed-top bootsnav">
     <div class="top-search" :class="{active:isSearchShow}">
-            <div class="am-container">
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="am-icon-search"></i></span>
-                    <input type="text" class="form-control" placeholder="Search">
-                    <span class="input-group-addon close-search" @click="isSearchShow = false"><i class="am-icon-times"></i></span>
-                </div>
+        <div class="am-container">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="am-icon-search"></i></span>
+                <input type="text" class="form-control" placeholder="Search">
+                <span class="input-group-addon close-search" @click="isSearchShow = false"><i class="am-icon-times"></i></span>
             </div>
         </div>
+    </div>
     <div class="am-container">
         <a href="/" class="am-topbar-brand">
-          <!-- <a href="#" class="am-text-ir">Amaze UI</a> -->
           <img src="http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png" class="logo" alt="">
         </a>
 
