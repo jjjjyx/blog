@@ -58,8 +58,9 @@ header.am-topbar.bootsnav  {
     background-color: rgba(255,255,255, 0.2);
     background-image: linear-gradient(140deg,rgba(0,0,0, 0.6) 20%, rgba(0,0,0, 0.3));
 }
+@authorfontColor:#fff;
 .j-fp1-txt {
-    color: #fff;
+    color: @authorfontColor;
     // width: 40%;
 }
 
@@ -82,7 +83,6 @@ header.am-topbar.bootsnav  {
         line-height: 80px;
         font-weight: 500;
         margin-bottom: 45px;
-        // color: #333;
         margin: 10px 0;
         text-transform: uppercase;
         font-family: Nunito-Regular;
@@ -91,7 +91,168 @@ header.am-topbar.bootsnav  {
 }
 // 网站技能表
 .j-fullpage2 {
-    background: url(http://oht47c0d0.bkt.clouddn.com/85559590-3176-11e7-a772-3734af15197f?imageView2/2/w/1928/format/jpg) center bottom no-repeat;
+    background: url(http://oht47c0d0.bkt.clouddn.com/8d028420-3170-11e7-a772-3734af15197f?imageView2/2/w/1928/format/jpg) center bottom no-repeat;
+    background-size: cover;
+    .j-fp-con {
+        padding-top: 87px !important;
+        margin: 0 auto;
+        max-width: 1200px;
+        min-width: 320px;
+    }
+    .j-fp-title {
+        color: @authorfontColor;
+        text-align: right;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    .j-fp-title h1 {
+        font-size: 25px;
+        margin: 0 0 10px;
+    }
+    .j-fp-title p {
+        font-size: 14px;
+        margin: 0px;
+    }
+    .j-fp-content {
+        margin-top: 40px;
+        height: 450px;
+        display: flex;
+    }
+    .j-fp-content-block {
+        display: inline-block;
+        width: 16.6667%;
+        padding-left: 10px;
+        padding-right: 10px;
+        background-color: #fff;
+        border-top: 4px solid #d9d9d9;
+        border-right: 1px solid #d9d9d9;
+        padding-bottom: 40px;
+        position: relative;
+        height: 350px;
+        transition: all .3s cubic-bezier(.4,0,.2,1),z-index 0s .12s;
+        min-height: 0;
+        overflow: hidden;
+        &.active {
+            padding-left: 0;
+            padding-right: 0;
+            min-height: 0;
+            width: 33.3333%;
+            height: 426px;
+            border-top: 4px solid #2277e6;
+            margin-top: -30px;
+            border-left: 1px solid #2277e6;
+            border-right: 1px solid #2277e6;
+            border-bottom: 1px solid #2277e6;
+            padding-bottom: 20px;
+            box-shadow: 0 3px 20px rgba(0,0,0,.1);
+            transform: translate3d(0,-2px,0);
+        }
+        &.active .j-pt-overview {
+            transition: all .12s cubic-bezier(.4,0,.2,1) 0s;
+            display: block;
+            opacity: 0;
+        }
+        &.active .j-pt-detail {
+            visibility: visible;
+            transition: all .12s cubic-bezier(.4,0,.2,1) .18s;
+            opacity: 1;
+        }
+    }
+    .j-unit-box {
+        .j-pt-detail {
+            visibility: visible;
+            transition: all .12s cubic-bezier(.4,0,.2,1) 0s;
+            opacity: 0;
+            text-align: left;
+            z-index: 10;
+            position: relative;
+        }
+
+        .j-pt-detail-name{
+            padding: 20px 0;
+            margin-right: 15px;
+            margin-left: 15px;
+            border-bottom: 1px solid #d9d9d9;
+            position: relative;
+        }
+        .j-pt-detail-name i{
+            color: #2277e6;
+            margin-bottom: 0;
+            margin-right: 10px;
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 32px;
+        }
+        .j-pt-detail-name h3 {
+            margin-bottom: 0;
+            color: #2277e6;
+            font-size: 18px;
+            font-weight: 400;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .j-pt-overview {
+            display: block;
+            transition: all .12s cubic-bezier(.4,0,.2,1) .18s;
+            opacity: 1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            text-align: center;
+            z-index: 5;
+        }
+
+
+        .j-pt-overview-name{
+            padding-top: 30px;
+            padding-bottom: 30px;
+            position: relative;
+            text-align: center;
+            &::after {
+                content: "";
+                width: 40px;
+                height: 1px;
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                margin-left: -20px;
+                background-color: #d9d9d9;
+            }
+        }
+        .j-pt-overview-name i {
+            display: block;
+            width: 32px;
+            height: 32px;
+            font-size: 32px;
+            margin: 0 auto 15px;
+            &::before{
+                position: relative;
+                top: -11px;
+            }
+        }
+        .j-pt-overview-name h3{
+            font-size: 18px;
+            color: #000;
+            font-weight: 400;
+            position: relative;
+            margin: 0;
+        }
+        .j-pt-overview-sub-menu {
+            margin-top: 20px;
+            height: 200px;
+            li {
+                list-style: none;
+            }
+            li > div {
+                font-size: 14px;
+                color: #666;
+                line-height: 42px;
+            }
+        }
+    }
+
 }
 //http://oht47c0d0.bkt.clouddn.com/85559590-3176-11e7-a772-3734af15197f 技能表
 //

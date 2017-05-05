@@ -3,6 +3,13 @@ import "./static/css/author.less";
 import BlobHeader from "components/head.vue";
 import BlobFooter from "components/bottom.vue";
 
+import BlobEditor from "./author/editor.vue";
+import BlobFront from "./author/front.vue";
+import BlobPlugin from "./author/plugin.vue";
+import BlobRear from "./author/rear.vue";
+import BlobServer from "./author/server.vue";
+
+
 const app = new Vue({
     el: '#app',
     // delimiters:['[[%','%]]'],
@@ -14,11 +21,18 @@ const app = new Vue({
             deltaOfInterest: null,
             lastAnimation: null,
             active: 0,
+            toInsert: ['blob-front','blob-rear','blob-plugin','blob-server','blob-editor'],
+            active: 'blob-rear'
         }
     },
     components: {
         BlobHeader,
-        BlobFooter
+        BlobFooter,
+        BlobEditor,
+        BlobFront,
+        BlobPlugin,
+        BlobRear,
+        BlobServer
     },
     computed: {
 
@@ -26,6 +40,10 @@ const app = new Vue({
     methods: {
         navBg (){
             $(".am-topbar>.am-container").toggleClass("active");
+        },
+        mouseover(item){
+            console.log(item)
+            this.active = item;
         }
         // mousewheel(event,delta){
         //     this.deltaOfInterest = delta;

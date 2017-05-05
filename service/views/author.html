@@ -31,7 +31,7 @@
                 <div class="am-collapse am-topbar-collapse am-animation-slide-top" id="doc-topbar-collapse">
                     <ul class="am-nav am-nav-pills am-topbar-nav col-half left">
                         <li><a href="#1">关于网站</a></li>
-                        <li><a href="#2">网站技能表</a></li>
+                        <li><a href="#2">网站出装表</a></li>
                         <li><a href="#3">更新记录</a></li>
                     </ul>
                     <ul class="am-nav am-nav-pills am-topbar-nav col-half right">
@@ -69,12 +69,20 @@
             </div>
             <!-- 网站技能表 -->
             <div class="j-page" style="background-color:rgb(255, 127, 80)">
-                <div class="j-fullpage j-fullpage2 ">
+                <div class="j-fullpage j-fullpage2 j-fullpage-fill">
                     <div class="j-fp-con">
-                        <div class="j-fp1-img">
-                            <!-- <img src="http://oht47c0d0.bkt.clouddn.com/12f4cd10-3174-11e7-a772-3734af15197f" alt=""> -->
+                        <div class="j-fp-title">
+                            <h1>
+                                网站出装表
+                            </h1>
+                            <p>关于我的个人博客开发所使用到技术，描述的很详细哦</p>
                         </div>
-                        <div class="j-fp1-txt"></div>
+                        <!-- 前端 -->
+                        <div class="j-fp-content">
+                            <div class="j-fp-content-block"  @mouseover="mouseover(item)" v-for="item in toInsert" :class="{active:active==item}">
+                                <component v-bind:is="item" ></component>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
