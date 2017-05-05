@@ -77,7 +77,7 @@ module.exports = function () {
         res.header("Cache-Control", "max-age=0, private, must-revalidate");
         res.header("Pragma", "no-cache");
         res.header("Expires", 0);
-        let key = uuid.v1()+'.png';
+        let key = uuid.v1();
         if (token) {
             return res.status(200).json({
                 token,

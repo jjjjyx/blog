@@ -1,5 +1,12 @@
 @charset "UTF-8";
 @import url('//at.alicdn.com/t/font_rnr19q77sq5jnhfr.css');
+
+
+@font-face {
+  font-family: Nunito-Regular;
+  src: url('../fonts/Nunito-Regular.ttf') format('truetype');
+}
+
 body,
 html {
     height: 100%;
@@ -438,6 +445,21 @@ header.bootsnav.brand-center {
             display: inline-block;
             padding-left: 0;
             padding-right: 0;
+        }
+        ul.am-nav > li {
+            padding: 25px 1px;
+        }
+        ul.am-nav > li > a {
+            line-height: 1;
+            padding: 5px 12px;
+            letter-spacing:1px;
+            font-size: 1.6rem;
+            // font-weight:600;
+            border: 1px solid transparent;
+            color: #fff !important;
+            &:hover,&.active {
+                border-color:rgba(255, 255, 255, 0.5);
+            }
         }
     }
 }

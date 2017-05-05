@@ -29,34 +29,74 @@ header.am-topbar.bootsnav  {
             content: none;
         }
     }
-    .am-container{
-        transition: background 0.4s ease-in-out;
-    }
-    .am-container.active {
-        background-color: #fff;
-    }
 }
 @media (min-width: 992px){
     header.am-topbar.bootsnav  {
         .am-animation-slide-top{
             animation-name: am-slide-top;
             animation-duration: .4s;
-            animation-timing-function:cubic-bezier(0.7, 1, 0.7, 1);
-        }
-        ul.am-nav > li {
-            padding: 25px 1px
-        }
-        ul.am-nav > li > a {
-            line-height: 1;
-            padding: 5px 12px;
-            letter-spacing:1px;
-            font-size: 1.6rem;
-            // font-weight:600;
-            border: 1px solid transparent;
-            color: #fff !important;
-            &:hover {
-                border-color:rgba(255, 255, 255, 0.5);
-            }
+            animation-timing-function: cubic-bezier(0.7, 1, 0.7, 1);
         }
     }
+}
+.j-fullpage {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    z-index: 0;
+
+
+}
+.j-fullpage-fill::after{
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255,255,255, 0.2);
+    background-image: linear-gradient(140deg,rgba(0,0,0, 0.6) 20%, rgba(0,0,0, 0.3));
+}
+.j-fp1-txt {
+    color: #fff;
+    // width: 40%;
+}
+
+// 网站介绍
+.j-fullpage1 {
+    background: url(http://oht47c0d0.bkt.clouddn.com/d112ff60-3174-11e7-a772-3734af15197f?imageView2/2/w/1928/format/jpg) center 60% no-repeat;
+    .j-fp-con{
+        // http://oht47c0d0.bkt.clouddn.com/12f4cd10-3174-11e7-a772-3734af15197f
+        width: 75%;
+        padding-top: 27vh !important;
+        margin: 0 auto;
+    }
+    .site-info {
+        position: relative;
+        width: 40%;
+        float: right;
+    }
+    .site-info h1 {
+        font-size: 80px;
+        line-height: 80px;
+        font-weight: 500;
+        margin-bottom: 45px;
+        // color: #333;
+        margin: 10px 0;
+        text-transform: uppercase;
+        font-family: Nunito-Regular;
+        letter-spacing: 5px;
+    }
+}
+// 网站技能表
+.j-fullpage2 {
+    background: url(http://oht47c0d0.bkt.clouddn.com/85559590-3176-11e7-a772-3734af15197f?imageView2/2/w/1928/format/jpg) center bottom no-repeat;
+}
+//http://oht47c0d0.bkt.clouddn.com/85559590-3176-11e7-a772-3734af15197f 技能表
+//
+// 关于我
+.j-fullpage4 {
+    background: url(http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/format/jpg) center no-repeat;
+    background-size: cover;
 }

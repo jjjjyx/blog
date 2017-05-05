@@ -37,7 +37,7 @@ const app = new Vue({
     },
     mounted: function () {
         const img = new Image();
-        img.src = "http://oht47c0d0.bkt.clouddn.com/dcbcc560-2fbe-11e7-9caa-358d0aec432f.png?imageView2/0/w/1000";
+        img.src = "http://oht47c0d0.bkt.clouddn.com/ba5d1c60-3192-11e7-bcd4-93a9b0d59ff6.png?imageView2/0/w/1000/format/jpg";
         img.onload = ()=> {
             this.$refs.leftWrapper.style.backgroundImage = `url(${img.src})`;
         }

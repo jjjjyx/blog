@@ -68,9 +68,18 @@ const app = new Vue({
         // $(window).resize(setH);
         $('main').onepage_scroll({
             sectionContainer: '.j-page',
+            loop:false,
+            afterMove(index){
+                $(`.col-half a`).removeClass('active')
+                $(`.col-half a[href='#${index}']`).addClass('active')
+            }
         });
+        let id = window.location.hash||"#1";
+        $(`.col-half a[href='${id}']`).addClass('active')
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
         $(".col-half a").click(function (){
+            $(`.col-half a`).removeClass('active')
+            $(this).addClass("active")
             const id = $(this).attr('href').replace("#",'');
             $('main').moveTo(id);
         })
