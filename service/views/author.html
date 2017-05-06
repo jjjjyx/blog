@@ -46,7 +46,7 @@
             <!-- 网站介绍 -->
             <div class="j-page" style="background-color:rgb(75, 191, 195)">
                 <div class="j-fullpage j-fullpage1 j-fullpage-fill">
-                    <div class="j-fp-con">
+                    <div class="j-fp-con j-fp-vertical-c">
                         <div class="j-fp1-img">
                             <!-- <img src="http://oht47c0d0.bkt.clouddn.com/12f4cd10-3174-11e7-a772-3734af15197f" alt=""> -->
                         </div>
@@ -69,7 +69,7 @@
             </div>
             <!-- 网站技能表 -->
             <div class="j-page" style="background-color:rgb(255, 127, 80)">
-                <div class="j-fullpage j-fullpage2 j-fullpage-fill">
+                <div class="j-fullpage j-fullpage2 j-fullpage-fill white">
                     <div class="j-fp-con">
                         <div class="j-fp-title">
                             <h1>
@@ -78,33 +78,66 @@
                             <p>关于我的个人博客开发所使用到技术，描述的很详细哦</p>
                         </div>
                         <!-- 前端 -->
-                        <div class="j-fp-content">
-                            <div class="j-fp-content-block"  @mouseover="mouseover(item)" v-for="item in toInsert" :class="{active:active==item}">
-                                <component v-bind:is="item" ></component>
-                            </div>
-                        </div>
+                        <blob-to-insert></blob-to-insert>
                     </div>
                 </div>
             </div>
-            <!-- 关于网站 -->
+            <!-- 网站更新记录 -->
             <div class="j-page" style="background-color:rgb(27, 188, 155)">
-                2
-                <!-- <h1>酱酱酱酱油鲜</h1>
-                <p>手持两把锟斤拷，口中疾呼烫烫烫。<br>
-脚踏千朵屯屯屯，笑看万物锘锘锘。</p>
-<img src="" alt=""> -->
+                <div class="j-fullpage j-fullpage3 ">
+                    <div class="j-fp-con j-fp-vertical-c">
+                        <div class="j-fp-title">
+                            <h1>
+                                还没有想好怎么做呀
+                            </h1>
+                            <p>敬请期待</p>
+                            <p>看下一栏</p>
+                            <a href="javascript:;$('main').moveTo(4);" style="font-size:50px;"><i class="am-icon-angle-double-down"></i></a>
+                            <!--  -->
+                        </div>
+                        <!-- 前端 -->
+                    </div>
+                </div>
             </div>
             <!-- 关于我 -->
             <div class="j-page" style="background-color:rgb(255, 153, 0)">
                 <div class="j-fullpage j-fullpage4 j-fullpage-fill">
-                    <div class="j-fp-con">
+                    <div class="j-fp-con j-fp-vertical-c">
                         <div class="j-fp1-img"></div>
-                        <div class="j-fp1-txt"></div>
+                        <div class="j-fp1-txt">
+                            <h1>酱酱酱酱油鲜's blog</h1>
+                            <hr>
+                            <p>
+                                我，码农一只，是一个前端的码农。从VB入门，Java 出道，转战Javascript。满打满算学习编程大概有2年多。<br>
+                                在最初的刚入大学的时候，每天沉迷游戏，天天修仙 <del>那时候应该是能修到元婴期</del><br>
+                                没什么特别的爱好，不爱运动，不喜游戏，不善交际，诶说的好伤心  (ಥ_ಥ) 太失败了。<br>
+                                不过现在好了，喜欢上了编程，编写网页，搭建个人网站。编程能够给我带来创作感，在编程的过程能够充实自己。
+                            </p>
+                            <small class="am-fr">
+                                —— 解决不了的问题，就要解决提出问题的人
+                            </small>
+                            <!-- <dl>
+                                <dt>name</dt>
+                                <dd>jjjjyx</dd>
+                            </dl> -->
+                        </div>
                     </div>
                 </div>
             </div>
             <!-- 技能表 -->
-            <div class="j-page" style="background-color:rgb(49, 148, 164)">6</div>
+            <div class="j-page" style="background-color:rgb(49, 148, 164)">
+                <div class="j-fullpage j-fullpage5 j-fullpage-fill ">
+                    <div class="j-fp-con">
+                        <div class="j-fp-title">
+                            <h1>
+                                我的技能表
+                            </h1>
+                            <p>装逼如风常伴吾身</p>
+                            <blob-skill></blob-skill>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- 联系方式 -->
             <div class="j-page" style="background-color:rgb(19, 35, 50)">5</div>
         </main>

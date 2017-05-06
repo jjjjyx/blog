@@ -44,8 +44,12 @@ header.am-topbar.bootsnav  {
     width: 100%;
     position: relative;
     z-index: 0;
-
-
+}
+.j-fullpage-fill.white{
+    color: #333;
+    &::after{
+        background-image: linear-gradient(140deg,rgba(255,255,255, 0.6) 20%, rgba(255,255,255, 0.3));
+    }
 }
 .j-fullpage-fill::after{
     content: "";
@@ -63,15 +67,17 @@ header.am-topbar.bootsnav  {
     color: @authorfontColor;
     // width: 40%;
 }
-
+.j-fp-vertical-c {
+    width: 75%;
+    padding-top: 27vh !important;
+    margin: 0 auto;
+}
 // 网站介绍
 .j-fullpage1 {
     background: url(http://oht47c0d0.bkt.clouddn.com/d112ff60-3174-11e7-a772-3734af15197f?imageView2/2/w/1928/format/jpg) center 60% no-repeat;
     .j-fp-con{
         // http://oht47c0d0.bkt.clouddn.com/12f4cd10-3174-11e7-a772-3734af15197f
-        width: 75%;
-        padding-top: 27vh !important;
-        margin: 0 auto;
+
     }
     .site-info {
         position: relative;
@@ -90,9 +96,7 @@ header.am-topbar.bootsnav  {
     }
 }
 // 网站技能表
-.j-fullpage2 {
-    background: url(http://oht47c0d0.bkt.clouddn.com/8d028420-3170-11e7-a772-3734af15197f?imageView2/2/w/1928/format/jpg) center bottom no-repeat;
-    background-size: cover;
+.j-fullpage5,.j-fullpage2{
     .j-fp-con {
         padding-top: 87px !important;
         margin: 0 auto;
@@ -100,8 +104,7 @@ header.am-topbar.bootsnav  {
         min-width: 320px;
     }
     .j-fp-title {
-        color: @authorfontColor;
-        text-align: right;
+        color: inherit;
         margin-left: 10px;
         margin-right: 10px;
     }
@@ -112,6 +115,13 @@ header.am-topbar.bootsnav  {
     .j-fp-title p {
         font-size: 14px;
         margin: 0px;
+    }
+}
+.j-fullpage2 {
+    background: url(http://oht47c0d0.bkt.clouddn.com/8d028420-3170-11e7-a772-3734af15197f?imageView2/2/w/1928/format/jpg) center bottom no-repeat;
+    background-size: cover;
+    .j-fp-title {
+        text-align: right;
     }
     .j-fp-content {
         margin-top: 40px;
@@ -239,25 +249,74 @@ header.am-topbar.bootsnav  {
             position: relative;
             margin: 0;
         }
+        li {
+            list-style: none;
+        }
         .j-pt-overview-sub-menu {
             margin-top: 20px;
             height: 200px;
-            li {
-                list-style: none;
-            }
-            li > div {
+
+            .j-title {
                 font-size: 14px;
                 color: #666;
                 line-height: 42px;
             }
         }
+        .j-pt-detail-sub-menu {
+            li {
+                min-height: 73px;
+                padding: 5px 20px 8px;
+            }
+            .j-title {
+                font-weight: 400;
+                color: #000;
+                line-height: 30px;
+                font-size: 14px;
+                text-transform: capitalize;
+                cursor: pointer;
+            }
+            .j-des-text {
+                font-size: 12px;
+                color: #666;
+                line-height: 1.5;
+                // margin-right: 33%;
+            }
+        }
     }
 
+}
+.j-fullpage3 {
+    .j-fp-con {
+        padding-top: 28vh;
+        text-align: center;
+    }
+    h1{
+
+    }
 }
 //http://oht47c0d0.bkt.clouddn.com/85559590-3176-11e7-a772-3734af15197f 技能表
 //
 // 关于我
 .j-fullpage4 {
-    background: url(http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/format/jpg) center no-repeat;
+    background: url(http://oht47c0d0.bkt.clouddn.com/o_1bfdor3kv4gapds16ip1gtq1vo0a.jpg?imageView2/2/format/jpg) center 20% no-repeat;
     background-size: cover;
+    .j-fp1-txt {
+        position: relative;
+        width: 40%;
+    }
+    .j-fp1-txt hr {
+        width: 50px;
+        border-color: @logoColor;
+    }
+}
+.j-fullpage5 {
+    background: url(http://oht47c0d0.bkt.clouddn.com/036a67a0-3210-11e7-bcd4-93a9b0d59ff6.png?imageView2/2/format/jpg) center 20% no-repeat;
+    background-size: cover;
+    .j-fp-con {
+        padding-top: 87px !important;
+        margin: 0 auto;
+        max-width: 1200px;
+        min-width: 320px;
+        color: @authorfontColor;
+    }
 }

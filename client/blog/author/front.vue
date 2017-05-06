@@ -8,10 +8,10 @@
         </div>
         <div class="j-pt-overview-sub-menu">
             <li v-for="item in subMenu">
-                <div>{{item}}</div>
+                <div class="title">{{item}}</div>
             </li>
             <li>
-                <div>...</div>
+                <div class="title">...</div>
             </li>
         </div>
     </div>
@@ -20,6 +20,11 @@
         <div class="j-pt-detail-name">
             <i class="iconfont" :class="icon"></i>
             <h3>{{title}}</h3>
+        </div>
+        <div class="j-pt-detail-sub-menu">
+            <li v-for="item in subMenu">
+                <div class="title">{{item}}</div>
+            </li>
         </div>
     </div>
 </div>
