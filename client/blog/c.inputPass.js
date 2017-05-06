@@ -1,6 +1,6 @@
 
 
-import "./static/css/p.less";
+import "./static/css/article.less";
 
 import BlobHeader from "components/head.vue";
 import BlobFooter from "components/bottom.vue";

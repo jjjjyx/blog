@@ -9,7 +9,7 @@ import * as api from "public/js/api.js"
 import "public/js/editormd.extent"
 import "public/css/editormd.extent.less"
 
-import "./static/css/p.less"
+import "./static/css/article.less"
 
 const app = new Vue({
     el: '#app',

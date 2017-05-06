@@ -22,6 +22,7 @@ module.exports = function(app){
         app.locals['dateFormat'] = function(time,f){
             return moment(time).format(f);
         };
+        //${!isDev?'<link href="/static/vendor.css" rel="stylesheet" >':''}
         app.locals['head'] = function(name,{title,keyword,description} = {}){
             return `
     <meta charset="utf-8">
@@ -42,7 +43,6 @@ module.exports = function(app){
     <link href="${global.SITE.amazeuiCDN}/css/amazeui.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
     <link href="//at.alicdn.com/t/font_edjjcrh4mmxz85mi.css" rel="stylesheet">
-    ${!isDev?'<link href="/static/vendor.css" rel="stylesheet" >':''}
     <link href="/static/${name}.css" rel="stylesheet">
     <script src="${global.SITE.CDN}/jquery/3.1.1/jquery.min.js"></script>
     <script src="${global.SITE.amazeuiCDN}/js/amazeui.min.js"></script>

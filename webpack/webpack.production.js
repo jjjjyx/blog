@@ -18,7 +18,7 @@ const developmentConf = merge(baseConfig, {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             chunks: chunks.filter((item) => item.indexOf('bg') != 0), // chunks是需要提取的模块
-            minChunks: 2
+            minChunks: 3
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'bg.vendor',

@@ -8,6 +8,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 let entry = getEntries("./client/**/c.*.js",webpackHotMiddlewareConfig)
 console.log("entry:",entry)
+let chunks = Object.keys(entry);
 const developmentConf = merge(baseConfig, {
     entry,
     plugins: [

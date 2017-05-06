@@ -41,21 +41,18 @@ ol, ul {
     margin: 0;
     // list-style: none;
 }
-* {
-    outline: none;
-    // font-size: 1.4rem;
-}
-.h1, .h2, .h3, h1, h2, h3 {
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
 
-.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
-    font-family: inherit;
-    font-weight: 500;
-    line-height: 1.1;
-    color: inherit;
-}
+// .h1, .h2, .h3, h1, h2, h3 {
+//     margin-top: 20px;
+//     margin-bottom: 10px;
+// }
+//
+// .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+//     font-family: inherit;
+//     font-weight: 500;
+//     line-height: 1.1;
+//     color: inherit;
+// }
 #preloader {
     opacity: 1;
 }
@@ -760,10 +757,6 @@ header.bootsnav.brand-center {
 .btn-bordered{
     border: 1px solid;
 }
-#app {
-    // padding-top: 50px;
-
-}
 
 .yya {
     position: fixed;
@@ -817,6 +810,89 @@ header.bootsnav.brand-center {
     }
     0% {
         transform: scale(1.2, 0.8)
+    }
+}
+
+.j-vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.nono-user-select {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.j-blog {
+    color: #fff;
+    background-color: @logoColor !important;
+    border-color: @logoColor !important;
+    &.am-btn:hover {
+        color: #fff;
+        border-color: @auxiliaryColor-2 !important;
+        background-color:  @auxiliaryColor-2 !important;
+    }
+}
+
+
+@keyframes toTopFromBottom {
+    49% {
+        transform: translateY(-100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translateY(100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
+
+@keyframes toBottomFromTop {
+    49% {
+        transform: translateY(100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translateY(-100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
+
+@keyframes toRightFromLeft {
+    49% {
+        transform: translate(100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translate(-100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}
+
+@keyframes toLeftFromRight {
+    49% {
+        transform: translate(-100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translate(100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
     }
 }
 /*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
