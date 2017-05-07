@@ -22,9 +22,9 @@
                         <span class="am-sr-only">导航切换</span>
                         <span class="am-icon-bars"></span>
                     </button>
-                    <a href="/" class="am-topbar-brand" title="回到首页">
+                    <a href="/" class="am-topbar-brand nono-user-select" title="回到首页">
                       <!-- <a href="#" class="am-text-ir">Amaze UI</a> -->
-                      <img src="http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png" class="logo" alt="">
+                      <img src="http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png" class="logo nono-user-select" alt="">
                     </a>
                 </div>
 
@@ -42,6 +42,7 @@
                 </div>
             </div>
         </header>
+        <f-wei-model></f-wei-model>
         <main>
             <!-- 网站介绍 -->
             <div class="j-page" style="background-color:rgb(75, 191, 195)">
@@ -106,7 +107,7 @@
                         <div class="j-fp1-img"></div>
                         <div class="j-fp1-txt">
                             <h1>酱酱酱酱油鲜's blog</h1>
-                            <hr>
+                            <hr class="j-fp-stripb">
                             <p>
                                 我，码农一只，是一个前端的码农。从VB入门，Java 出道，转战Javascript。满打满算学习编程大概有2年多。<br>
                                 在最初的刚入大学的时候，每天沉迷游戏，天天修仙 <del>那时候应该是能修到元婴期</del><br>
@@ -141,10 +142,50 @@
             <!-- 联系方式 -->
             <div class="j-page" style="background-color:rgb(19, 35, 50)">
                 <div class="j-fullpage j-fullpage6 ">
+                    <div class="j-navbg"></div>
                     <div class="j-fp-con ">
                         <div class="am-container">
-                            <div class="j-fp-title">
-                                关于我们
+                            <div class="am-u-sm-6">
+                                <!-- data-animated-delay="" -->
+                                <h2 class="animated " data-animated="bounceInDown" >
+                                    联系方式
+                                </h2>
+                                <hr class="j-fp-stripb animated " data-animated="bounceInDown">
+                                <!--
+                                qq
+                                微信
+                                微博 - 不常用
+                                邮箱
+                            -->
+                                <p class="animated " data-animated="bounceInDown">
+                                    QQ : 871839012 <br>
+                                    微信 : jjjjyx_ (jjjjyx被占用好气哦)<br>
+                                    微博 : 叫我寄生虫 (不常用)<br>
+                                    邮箱 : jyx@rpgame.net<br>
+                                </p>
+                                <!-- 这里好空 感觉可以放点什么 -->
+                                <!-- 放上最喜欢的康纳酱 -->
+                                <img src="http://oht47c0d0.bkt.clouddn.com/52716200-331d-11e7-a76b-6f60d66d8e36" alt="康纳" class="am-img-thumbnail nono-user-select animated " width="170" data-animated="flipInX">
+                            </div>
+                            <!-- 跳转到bug 吐槽 -->
+                            <div class="am-u-sm-6">
+                                <h2 class="animated"  data-animated="bounceInRight">
+                                    给我留言
+                                </h2>
+                                <hr class="j-fp-stripb animated" data-animated="bounceInRight">
+                                <!-- 暂时没有 -->
+                                <form action="" @submit.prevent class="am-form animated" data-animated="bounceInRight">
+                                    <div class="am-form-group" style="width:30%;">
+                                      <input type="text" class="am-form-field" id="doc-ipt-name-1" placeholder="name">
+                                    </div>
+                                    <div class="am-form-group" style="width:50%;">
+                                      <input type="email" class="am-form-field" id="doc-ipt-email-1" placeholder="email*">
+                                    </div>
+                                    <div class="am-form-group" style="width:70%;">
+                                      <textarea class="am-form-field" rows="3" id="doc-ta-1" placeholder="message*"></textarea>
+                                    </div>
+                                    <button type="submit" class="am-btn am-btn-default">๑乛◡乛๑</button>
+                                </form>
                             </div>
                         </div>
                     </div>

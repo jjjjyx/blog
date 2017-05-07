@@ -77,11 +77,6 @@ module.exports = function(app){
                         <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net" target="_blank"><i class="am-icon-envelope"></i></a>
                     </li>
                 </div>
-                <div class="am-modal am-modal-no-btn" tabindex="-1" id="weixin-modal">
-                  <div class="am-modal-dialog" style="    background: transparent;">
-                    <img src="http://oht47c0d0.bkt.clouddn.com/64807460-27ea-11e7-a8e7-a53b0973c884.png" alt="weixin" width="300">
-                  </div>
-                </div>
             </div>
             `
         }

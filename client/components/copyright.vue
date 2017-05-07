@@ -24,19 +24,23 @@
                             <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net" target="_blank"><i class="am-icon-envelope"></i></a>
                         </li>
                     </ul>
+                    <f-wei-model></f-wei-model>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
+import FWeiModel from "./weimodel.vue";
 export default {
     data: () => {
         return {
 
         }
     },
-
+    components:{
+        FWeiModel
+    },
     methods: {
     }
 }

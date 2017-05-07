@@ -3,6 +3,7 @@ import "./static/css/author.less";
 import BlobHeader from "components/head.vue";
 import BlobFooter from "components/bottom.vue";
 import FCopyright from "components/copyright.vue";
+import FWeiModel from "components/weimodel.vue";
 
 import BlobToInsert from "./author/to-insert.vue";
 import BlobSkill from "./author/skill.vue";
@@ -32,7 +33,8 @@ const app = new Vue({
         BlobFooter,
         BlobToInsert,
         BlobSkill,
-        FCopyright
+        FCopyright,
+        FWeiModel
         // BlobEditor,
         // BlobFront,
         // BlobPlugin,
@@ -86,16 +88,34 @@ const app = new Vue({
         // let setH = ()=> $('main .j-page').height($(window).height()-this.headersHeight);
         // setH();
         // $(window).resize(setH);
+        //
+        const refanimated = function(index){
+            const d = $(`main .j-page:eq(${index}) [data-animated]`);
+            d.each(function(){
+                const className = $(this).data('animated');
+                $(this).addClass(className).one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+                  $(this).removeClass(className);
+                });
+            })
+        }
+        const addActive = function(index){
+            $(`.col-half a`).removeClass('active')
+            $(`.col-half a[href='#${index}']`).addClass('active')
+            $(`main .j-page .j-fp-con`).hide();
+            console.log(`main .j-page:eq(${index-1}) .j-fp-con`)
+            $(`main .j-page:eq(${index-1}) .j-fp-con`).show();
+        }
         $('main').onepage_scroll({
             sectionContainer: '.j-page',
             loop:false,
             afterMove(index){
-                $(`.col-half a`).removeClass('active')
-                $(`.col-half a[href='#${index}']`).addClass('active')
+                addActive(`${index}`)
+                refanimated(index-1)
             }
         });
-        let id = window.location.hash||"#1";
-        $(`.col-half a[href='${id}']`).addClass('active')
+        let id = (window.location.hash || "#1").replace("#",'')*1;
+        addActive(id)
+        refanimated(id-1)
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
         $(".col-half a").click(function (){
             $(`.col-half a`).removeClass('active')
