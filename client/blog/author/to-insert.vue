@@ -57,8 +57,7 @@ export default {
                         },
                         {
                             title:'vuex+vue-router',
-                            des:`很好奇，好像我的博客中没有见到过。
-                            这是当然咯，这个用来构建单页应用的东西博客当然用不到，你们看不到的后台管理就是单页应用~`
+                            des:`单页应用组合拳，比如我的后台管理就是使用的单页应用技术。`
                         },
                         {
                             title:'其他小件',
@@ -75,7 +74,7 @@ export default {
                     subMenu:[
                         {
                             title:'nodejs',
-                            des:`后端采用的是nodejs 开发，使用的^7.0,nodejs特性不在累赘，
+                            des:`后端采用的是nodejs 开发，
                             在^7.0以上版本加入了async/await 的支持，告别了层层回调。`
                         },
                         {

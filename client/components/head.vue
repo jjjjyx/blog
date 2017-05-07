@@ -29,7 +29,14 @@
         <div class="am-collapse am-topbar-collapse" id="doc-topbar-collapse">
 
             <ul class="am-nav am-nav-pills am-topbar-nav am-topbar-right">
-                <li v-for="item in menuList"><a :href="'/'+item.href" :class="{active:active==item.f}" >{{item.name}}</a></li>
+                <li v-for="item in menuList">
+                    <a :href="'/'+item.href" :class="{active:active==item.f}" v-if="!item.del">
+                        {{item.name}}
+                    </a>
+                    <a v-else @click="no">
+                        <del >{{item.name}}</del>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -51,8 +58,8 @@ export default {
                 {name:'标签',href:'category',f:'category'},
                 {name:'归档',href:'archives',f:'archives'},
                 {name:'关于我',href:'author',f:'author'},
-                {name:'作品',href:'javascript:;',f:'works'},
-                {name:'BUG集锦',href:'javascript:;',f:'bug'}
+                {name:'作品',href:'javascript:;',f:'works',del:true},
+                {name:'BUG集锦',href:'javascript:;',f:'bug',del:true}
             ]
         }
     },
@@ -83,6 +90,11 @@ export default {
                 ss = s;
             }
         });
+    },
+    methods:{
+        no(){
+            layer.msg("建设中,敬请期待~")
+        }
     }
 }
 

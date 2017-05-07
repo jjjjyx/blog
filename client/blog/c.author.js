@@ -2,6 +2,7 @@ import "./static/css/author.less";
 
 import BlobHeader from "components/head.vue";
 import BlobFooter from "components/bottom.vue";
+import FCopyright from "components/copyright.vue";
 
 import BlobToInsert from "./author/to-insert.vue";
 import BlobSkill from "./author/skill.vue";
@@ -30,7 +31,8 @@ const app = new Vue({
         BlobHeader,
         BlobFooter,
         BlobToInsert,
-        BlobSkill
+        BlobSkill,
+        FCopyright
         // BlobEditor,
         // BlobFront,
         // BlobPlugin,
