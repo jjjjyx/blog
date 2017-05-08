@@ -102,7 +102,6 @@ const app = new Vue({
             $(`.col-half a`).removeClass('active')
             $(`.col-half a[href='#${index}']`).addClass('active')
             $(`main .j-page .j-fp-con`).hide();
-            console.log(`main .j-page:eq(${index-1}) .j-fp-con`)
             $(`main .j-page:eq(${index-1}) .j-fp-con`).show();
         }
         $('main').onepage_scroll({
