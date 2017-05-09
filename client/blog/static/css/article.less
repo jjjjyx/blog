@@ -4,7 +4,7 @@
 #app {
     background-color: #fff;
 }
-.ds-powered-by {
+.ds-powered-by,.ds-alert {
     display: none !important;
 }
 .j-left-wrapper {
@@ -87,11 +87,13 @@
     }
 }
 
-@media (min-width: 1300px){
+@media (min-width: 1024px){
     .am-container.article-page {
         margin-left: 350px;
     }
 }
+
+
 .article-page {
     display: block;
     position: relative;
@@ -100,15 +102,63 @@
     padding: 40px 0;
     color: #333;
     padding-bottom: 70px;
-    &.tocm {
-        width: auto;
-        padding: 40px 0 40px 300px ;
-        margin: 0
-    }
-    article {
+    // &.tocm {
+    //     // width: auto;
+    //     // padding: 40px 0 40px 300px ;
+    //     // margin: 0
+    //     margin-right: 300px;
+    // }
+    article,.ds-thread {
         margin: 0 10%;
     }
+    .ds-thread {
+
+    }
 }
+.j-post-directory {
+    position: fixed;
+    right: 0;
+    left: auto;
+    transform: translateX(100%);
+    &.am-active {
+        transform: translateX(0%);
+    }
+}
+@media only screen and (max-width: 1024px){
+    .am-container.article-page{
+        width: 100%;
+    }
+}
+@media only screen and (max-width: 641px){
+    // .article-tocm {
+    //     left: -280px;
+    // }
+    // .article-tocm.active {
+    //     overflow: auto;
+    // }
+    .am-container.article-page {
+        padding: 40px 0;
+        width: 100%;
+        article,footer,footer~div {
+            // padding-left:20px;
+            // padding-right:0px;
+        }
+        article .editormd-html-preview{
+            padding: 0;
+        }
+    }
+}
+// .j-post-directory.am-offcanvas .am-offcanvas-bar{
+//     // display: none ;
+//     right:-280px;
+// }
+//
+@media (max-width: 1524px){
+    .j-post-directory,.j-post-directory.am-active{
+        transform: translateX(100%);
+    }
+}
+
 #article-inner {
     padding:20px 0 ;
 }
@@ -147,10 +197,9 @@ h1+.post-info {
     }
     &>h1 {
         font-size: 1.6rem;
-        padding-bottom: 15px;
-        padding-left: 15px;
+        padding: 15px;
         border-bottom: 1px solid #999;
-        margin-bottom: 20px;
+        margin-bottom: 0px;
     }
     .markdown-toc-list a {
         color: #999;
@@ -199,26 +248,7 @@ h1+.post-info {
         z-index: 100;
     }
 }
-@media only screen and (max-width: 641px){
-    .article-tocm {
-        left: -280px;
-    }
-    .article-tocm.active {
-        overflow: auto;
-    }
-    .am-container.article-page {
-        &.tocm {
-            padding: 40px 0;
-        }
-        article,footer,footer~div {
-            padding-left:20px;
-            padding-right:20px;
-        }
-        article .editormd-html-preview{
-            padding: 0;
-        }
-    }
-}
+
 #post-footer{
     &>div{
         padding:15px 0px;

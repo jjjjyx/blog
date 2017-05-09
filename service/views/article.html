@@ -52,7 +52,7 @@
                 </div>
             </div>
         </header>
-        <section class="am-container article-page">
+        <section class="am-container article-page <%if(tocm){%>tocm<%}%>">
             <article>
                 <header>
                     <h1><%=post_title%></h1>
@@ -116,7 +116,7 @@
                 </footer>
             </article>
             <!-- 多说就这么完了么 -->
-            <!-- <div class="ds-thread" data-thread-key="<%=guid%>" data-title="<%=post_title%>" data-url="www.mbdoge.cn/p/<%=guid%>"></div>
+            <div class="ds-thread" data-thread-key="<%=guid%>" data-title="<%=post_title%>" data-url="www.mbdoge.cn/p/<%=guid%>"></div>
             <script type="text/javascript">
                 var duoshuoQuery = { short_name: "\x6a\x6a\x6a\x6a\x79\x78"};
                 (function() {
@@ -130,7 +130,7 @@
                 })();
             </script>
             <aside id="comment">
-            </aside> -->
+            </aside>
 
             <!-- <blob-footer ></blob-footer> -->
             <footer>
@@ -138,17 +138,15 @@
             </footer>
         </section>
         <%if(tocm){%>
-        <div id="doc-oc-demo3" class="am-offcanvas am-active am-hide-lg-down" ref="article-tocm">
-          <div class="am-offcanvas-bar am-offcanvas-bar-flip am-offcanvas-bar-overlay am-offcanvas-bar-active">
-             <h1>目录</h1>
-            <section class="am-offcanvas-content markdown-body editormd-preview-container" id="custom-toc-container">
-            </section>
-          </div>
+            <!-- am-offcanvas-bar-flip -->
+        <div class="am-offcanvas-bar j-post-directory" :class="{'am-active':showPostDirectory}">
+            <h1>目录</h1>
+            <section class="am-offcanvas-content markdown-body editormd-preview-container" id="custom-toc-container"></section>
         </div>
         <%}%>
         <div class="gotop" id="gotop" >
             <f-gotop></f-gotop>
-            <a href="javascript:;" title="不知道为什么就想放个代码在这里" class="icon-faq icon-btn am-icon-bars" ></a>
+            <a href="javascript:;" title="不知道为什么就想放个代码在这里" class="icon-faq icon-btn am-icon-bars" @click="togglePostDirectory"></a>
         </div>
         <f-wei-model></f-wei-model>
     </div>

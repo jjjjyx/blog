@@ -20,7 +20,8 @@ const app = new Vue({
             message: 'hello',
             post_contentLength: 0,
             editormdView: null,
-            aside: false
+            aside: false,
+            showPostDirectory:true
         }
     },
     components: {
@@ -35,6 +36,10 @@ const app = new Vue({
         togglehead(s) {
             this.aside = s;
             // console.log(111);
+        },
+        togglePostDirectory (){
+            console.log(123);
+            this.showPostDirectory = !this.showPostDirectory;
         }
     },
     mounted: function () {
