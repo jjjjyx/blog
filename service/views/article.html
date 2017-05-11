@@ -93,7 +93,7 @@
                         </div>
                         <!-- 文章分类 相关推荐 -->
                         <div class="post-like am-fr am-margin-left-xs">
-                            <a class="am-btn am-round am-btn-xs am-btn-logo"><i class="am-icon-heart"></i> 喜欢 | 0</a>
+                            <a class="am-btn am-round am-btn-xs am-btn-logo"><i class="am-icon-heart"></i> 0</a>
                         </div>
                         <div class="post-share am-fr">
                             <ul class="sharehidden">
@@ -110,13 +110,13 @@
                                     <a href="http://www.jiathis.com/send/?webid=douban&amp;url=http://www.mbdoge.cn/p/<%=guid%>&amp;title=<%=post_title%>" onclick="window.open(this.href, 'renren-share', 'width=490,height=600');return false;" class="s-douban"><img src="http://dailinhua.com/wp-content/themes/Siren-master/images/sns/douban.png"></a>
                                 </li>
                             </ul>
-                            <a class="am-btn am-round am-btn-xs am-btn-secondary"><i class="am-icon-share"></i> 分享</a>
+                            <a class="am-btn am-round am-btn-xs am-btn-secondary"><i class="iconfont icon-share" style="line-height: 11px;position: relative;top: 2px;"></i> 分享</a>
                         </div>
                     </div>
                 </footer>
             </article>
             <!-- 多说就这么完了么 -->
-            <div class="ds-thread" data-thread-key="<%=guid%>" data-title="<%=post_title%>" data-url="www.mbdoge.cn/p/<%=guid%>"></div>
+            <!-- <div class="ds-thread" data-thread-key="<%=guid%>" data-title="<%=post_title%>" data-url="www.mbdoge.cn/p/<%=guid%>"></div>
             <script type="text/javascript">
                 var duoshuoQuery = { short_name: "\x6a\x6a\x6a\x6a\x79\x78"};
                 (function() {
@@ -128,10 +128,10 @@
                     (document.getElementsByTagName('head')[0] ||
                         document.getElementsByTagName('body')[0]).appendChild(ds);
                 })();
-            </script>
-            <aside id="comment">
-            </aside>
-
+            </script> -->
+            <blog-comment :posts-id="'<%=guid%>'">
+                <h1>asdasdasdas</h1>
+            </blog-comment>
             <!-- <blob-footer ></blob-footer> -->
             <footer>
 

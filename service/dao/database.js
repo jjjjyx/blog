@@ -30,8 +30,7 @@ class BaseDao {
     execCallBack(sql,data,callback,resultFormat){
         exports.pool.getConnection(function (err, connection) {
             if (err) {
-                callback(true);
-                return;
+                return callback(true);
             }
             connection.query(sql,data,async function(err, result){
                 if (err) {

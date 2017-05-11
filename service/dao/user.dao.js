@@ -8,21 +8,27 @@ class UserDao extends db.BaseDao{
     }
     getUserByLoginName(username, callback) {
         let sql = "select * from j_users where user_login = ?";
-        db.pool.getConnection(function (err, connection) {
-            if (err) {
-                callback(true);
-                return;
-            }
-            connection.query(sql, [username], (err, result) => {
-                connection.release();
-                if (err || !result.length) {
-                    callback(true);
-                }else{
-                    callback(false, new UserBean(result[0]));
-                }
-            })
-        });
+        // db.pool.getConnection(function (err, connection) {
+        //     if (err) {
+        //         return callback(true);
+        //     }
+        //     connection.query(sql, [username], (err, result) => {
+        //         connection.release();
+        //         if (err || !result.length) {
+        //             callback(true);
+        //         }else{
+        //             callback(false, new UserBean(result[0]));
+        //         }
+        //     })
+        // });
+        this.execCallBack(sql,[username],callback,(result)=>new UserBean(result[0]))
     }
+
+    asyncGetUser(username){
+        let sql = "select * from j_users where user_login = ?";
+        return this.asyncExec(sql,[username],(result)=>new UserBean(result[0]));
+    }
+
     updata(user, data, callback, ban = ['id','user_login','user_registered']){
         let keys = _.intersection(this.key, Object.keys(data));
         let cc = [];

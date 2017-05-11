@@ -9,7 +9,7 @@ let updata = function(req, res,next){
     let map = {
         msg:'ok'
     };
-
+    console.log(req.body)
     siteDao.update(req.body,(err,data)=>{
         if (err) {
             map.code = -1;
@@ -21,7 +21,7 @@ let updata = function(req, res,next){
                 let site = {}
                 data.forEach((item)=>{
                     site[item.key] = item.value
-                })
+                });
                 global.SITE = site;
             });
         }

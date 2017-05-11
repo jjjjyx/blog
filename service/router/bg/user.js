@@ -9,7 +9,7 @@ let debug = require('debug')('app:routes:user' + process.pid),
     userDao = require("../../dao/user.dao");
 
 
-let authenticate = function (req, res, next) {
+let authenticate =async function (req, res, next) {
     // debug("Processing authenticate middleware");
     var username = req.body.username,
         password = req.body.password;
@@ -20,41 +20,31 @@ let authenticate = function (req, res, next) {
     // console.log( req.connection.remoteAddress , req.route.path)
     req.checkBody('username','账号不符').notEmpty().len(3,20);
     req.checkBody('password','请输入一个正常的密码').notEmpty().len(3,20);
-    req.getValidationResult().then(function(result) {
-        if(!result.isEmpty()){
-            let map = {
-                code: 1,
-                msg: result.array()[0].msg
-            };
-            return res.status(400).json(map);
-        }else{
 
-            process.nextTick(() =>{
-                userDao.getUserByLoginName(username,(err,user)=>{
-                    if (err || !user) {
-                        res.map = {
-                            code: 1,
-                            msg: "账号不存在",
-                        }
-                        next();
-                    }else{
-                        let isMatch = bcrypt.compareSync(password, user.user_pass);
-                        if(isMatch){
-                            debug("User authenticated, generating token");
-                            utils.create(user, req, res, next);
-                        }else{
-                            res.map = {
-                                code: 2,
-                                msg: "密码错误"
-                            }
-                            next();
-                        }
-                    }
-
-                })
-            });
+    let result = await req.getValidationResult()
+    if(!result.isEmpty()){
+        let map = { code: 1, msg: result.array()[0].msg };
+        return res.status(400).json(map);
+    }else{
+        try {
+            result = await userDao.asyncGetUser(username);
+            // 验证密码
+            let isMatch = bcrypt.compareSync(password, result.user_pass);
+            if(isMatch){
+                debug("User authenticated, generating token");
+                result = await utils.create(result,['user_pass']);
+                res.map = { code: 0, msg: "Token generated", result }
+                res.cookie("u", result.token, {maxAge: 60000*60*24*5,httpOnly:true});
+            }else{
+                res.map = { code: 2, msg: "密码错误" }
+            }
+        } catch (e) {
+            res.map = { code: 1, msg: e.message, }
+        } finally {
+            next();
         }
-    });
+    }
+
 
 };
 function ipAndRoute(req) {

@@ -13,8 +13,8 @@ const debug = require('debug')('app:utils:' + process.pid),
     xss = require('xss'),
     marked = require("marked"),
     renderer = new marked.Renderer(),
-    TOKEN_EXPIRATION = 60,
-    TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5;
+    TOKEN_EXPIRATION = 60, // 单位秒
+    TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5; //
 // UnauthorizedAccessError = require(path.join(__dirname, 'errors', 'UnauthorizedAccessError.js'));
 
 
@@ -79,70 +79,63 @@ module.exports.fetch = function (headers) {
     }
 };
 
-module.exports.create = function (user, req, res, next) {
+module.exports.create = async function (obj, ban, expiresIn = TOKEN_EXPIRATION_SEC) {
     debug("Create token");
-    if (_.isEmpty(user))  return next(new Error('User data cannot be empty.'));
+    if (_.isEmpty(obj)) throw new Error('Data cannot be empty.');
+    let data = {};
+    _.assign(data,obj);
+    if(ban instanceof Array){
+        for(let k of ban){
+            delete data[k];
+        }
+    }else
+        delete data[ban];
+    data.token = jsonwebtoken.sign(data,C.secret,{ expiresIn })
 
-    var data = {
-        id: user.id, user_login: user.user_login, user_nickname: user.user_nickname, user_email: user.user_email, user_url: user.user_url,
-        user_registered: user.user_registered, user_status: user.user_status, display_name: user.display_name,
-        token: jsonwebtoken.sign({
-            _id: user._id, user_login: user.user_login, user_email: user.user_email, user_status: user.user_status, display_name: user.display_name,
-        }, C.secret, { expiresIn: "5d" })
-    };
-
-    var decoded = jsonwebtoken.decode(data.token);
-
+    const decoded = jsonwebtoken.decode(data.token);
     data.token_exp = decoded.exp;
     data.token_iat = decoded.iat;
 
     debug("Token generated for user: %s, token: %s", data.user_login, data.token);
-
-    client.set(data.token, JSON.stringify(data), function (err, reply) {
-        if (err) {
-            return next(new Error(err));
-        }else if (reply) {
-            client.expire(data.token, TOKEN_EXPIRATION_SEC, function (err, reply) {
-                if (err) {
-                    return next(new Error("Can not set the expire value for the token key"));
-                } else if (reply) {
-                    res.map = {
-                        code: 0, msg: "Token generated", data
+    return new Promise((resolve, reject) => {
+        client.set(data.token, JSON.stringify(data), function (err, reply) {
+            if (err) {
+                return reject(err);
+            }else if (reply) {
+                client.expire(data.token, expiresIn, (err, reply)=>{
+                    if (err) {
+                        return reject(new Error("Can not set the expire value for the token key"));
+                    } else if (reply) {
+                        resolve(data)
+                    } else {
+                        return reject(new Error('Expiration not set on redis'));
                     }
-                    res.cookie("u", data.token, {maxAge: 60000*60*24*5,httpOnly:true});
-                    next(); // we have succeeded
-                } else {
-                    return next(new Error('Expiration not set on redis'));
-                }
-            });
-        } else {
-            return next(new Error('Token not set in redis'));
-        }
+                });
+            } else {
+                return reject(new Error('Token not set in redis'));
+            }
+        });
     });
-    return data;
-};
+}
+
 module.exports.retrieve = function (id, done) {
 
     debug("Calling retrieve for token: %s", id);
 
     if (_.isNull(id)) {
-        return done(new Error("token_invalid"), {
-            "message": "Invalid token"
-        });
+        return done(new Error("token_invalid"), { "message": "Invalid token" });
     }
+    // 先验证toke
+    // jsonwebtoken.verify(id,C.secret,(err,p)=>{
+    //     console.log(err,p);
+    // })
 
     client.get(id, function (err, reply) {
         if (err) {
-            return done(err, {
-                code:200,
-                "message": err
-            });
+            return done(err, { code:200, "message": err });
         }
         if (_.isNull(reply)) {
-            return done(new Error("token_invalid"), {
-                code:200,
-                "msg": "Token doesn't exists, are you sure it hasn't expired or been revoked?"
-            });
+            return done(new Error("token_invalid"), { code:200, "msg": "Token doesn't exists, are you sure it hasn't expired or been revoked?" });
         } else {
             var data = JSON.parse(reply);
             debug("User data fetched from redis store for user: %s", data.user_login);
