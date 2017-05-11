@@ -4,14 +4,12 @@ class SiteDao extends db.BaseDao{
     constructor() {
         super();
         this.keys = ['key',"value"];
-        this.siteKey = [
-            'title',
-            'keyword',
-            'description',
-            'sign',
-            'background',
-            'avatar'
-        ]
+        let sql = "select a.key from j_site a";
+        const fn = (err,result)=>{
+            if(err) return this.execCallBack(sql,null,fn);
+            this.siteKey = result.map((item)=>item.key);
+        }
+        this.execCallBack(sql,null,fn);
     }
     get(callback){
         let sql = "select * from j_site";
