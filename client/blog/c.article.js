@@ -2,6 +2,7 @@ import BlobHeader from "components/head.vue"
 // import BlobFooter from "components/footer.vue"
 import FGotop from "components/gotop";
 import FWeiModel from "components/weimodel";
+import BlogComment from "components/comment";
 // import BlobFooter from "components/bottom.vue"
 
 import { getClientHeight } from "public/js/tools.js"
@@ -27,7 +28,8 @@ const app = new Vue({
     components: {
         BlobHeader,
         FGotop,
-        FWeiModel
+        FWeiModel,
+        BlogComment
     },
     computed: {
 

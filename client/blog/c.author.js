@@ -92,22 +92,22 @@ const app = new Vue({
         const refanimated = function(index){
             const d = $(`main .j-page:eq(${index}) [data-animated]`);
             d.each(function(){
-                const className = $(this).data('animated');
+                const className = 'animated '+$(this).data('animated');
                 $(this).addClass(className).one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
-                  $(this).removeClass(className);
+                    $(this).removeClass(className);
                 });
             })
         }
         const addActive = function(index){
             $(`.col-half a`).removeClass('active')
             $(`.col-half a[href='#${index}']`).addClass('active')
-            $(`main .j-page .j-fp-con`).hide();
-            $(`main .j-page:eq(${index-1}) .j-fp-con`).show();
+            // $(`main .j-page .j-fp-con`).hide();
+            // $(`main .j-page:eq(${index-1}) .j-fp-con`).show();
         }
         $('main').onepage_scroll({
             sectionContainer: '.j-page',
             loop:false,
-            afterMove(index){
+            beforeMove(index){
                 addActive(`${index}`)
                 refanimated(index-1)
             }

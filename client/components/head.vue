@@ -32,6 +32,7 @@
                 <li v-for="item in menuList">
                     <a :href="'/'+item.href" :class="{active:active==item.f}" v-if="!item.del">
                         {{item.name}}
+                        <sup class="j-badge j-badge-fixed j-badge-dot" v-if="item.isNew" ></sup>
                     </a>
                     <a v-else @click="no">
                         <del >{{item.name}}</del>
@@ -57,7 +58,7 @@ export default {
                 {name:'首页',href:'',f:'index'},
                 {name:'标签',href:'category',f:'category'},
                 {name:'归档',href:'archives',f:'archives'},
-                {name:'关于我',href:'author',f:'author'},
+                {name:'关于我',href:'author',f:'author',isNew: "new"},
                 {name:'作品',href:'javascript:;',f:'works',del:true},
                 {name:'BUG集锦',href:'javascript:;',f:'bug',del:true}
             ]

@@ -121,3 +121,18 @@ export function read(){
         });
     });
 }
+
+/**
+ * 评论文章
+ * @param  {[type]} params [description]
+ * @return {[type]}      [description]
+ */
+export function comment(params){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/p/comment`,params).done((data) => {
+            resolve(data);
+        }).fail(({responseJSON}) => {
+            reject([responseJSON.code, responseJSON]);
+        });
+    });
+}

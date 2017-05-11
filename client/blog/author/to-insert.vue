@@ -1,6 +1,6 @@
 <template>
 <div class="j-fp-content">
-    <div class="j-fp-content-block"  @mouseover="mouseover(item)" v-for="item in obj" :class="{active:active==item.name}">
+    <div class="j-fp-content-block" @mouseover="mouseover(item)" v-for="(item,index) in obj" :class="{active:active==item.name}" :data-animated="index%2?'slideInDown':'slideInUp'">
         <div class="j-unit-box">
             <!-- 概览 -->
             <div class="j-pt-overview">
