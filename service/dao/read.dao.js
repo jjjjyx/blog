@@ -8,7 +8,7 @@ class Reads extends db.BaseDao {
                 params: [ip,new Date(),guid,useragent]
             },
             {
-                sql:"UPDATE `myblog`.`j_posts` SET `eye_count`=eye_count+1 WHERE `guid`= ?;",
+                sql:"UPDATE `myblog`.`j_posts` SET `eye_count`= eye_count+1 WHERE `guid`= ?;",
                 params: [guid]
             }
         ];

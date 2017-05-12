@@ -1,4 +1,7 @@
+
+// import { Message } from 'element-ui'
 import BlobHeader from "components/head.vue"
+
 // import BlobFooter from "components/footer.vue"
 import FGotop from "components/gotop";
 import FWeiModel from "components/weimodel";
@@ -6,12 +9,14 @@ import BlogComment from "components/comment";
 // import BlobFooter from "components/bottom.vue"
 
 import { getClientHeight } from "public/js/tools.js"
-
+import "public/js/vue.api"
 import * as api from "public/js/api.js"
 import "public/js/editormd.extent"
 import "public/css/editormd.extent.less"
 
 import "./static/css/article.less"
+
+// Vue.prototype.$message = Message
 
 const app = new Vue({
     el: '#app',

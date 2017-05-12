@@ -9,6 +9,7 @@
     <script src="/static/editormd/lib/marked.min.js"></script>
     <script src="/static/editormd/lib/prettify.min.js"></script>
     <script src="/static/editormd/editormd.min.js"></script>
+    <script src="https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js"></script>
     <%-statistical%>
 </head>
 
@@ -82,6 +83,11 @@
                     <!-- <div class="post-footer-tags">
 
                     </div> -->
+                    <div class="am-text-center">
+                        <a class="effect effect-5 heart" href="#" title="分享">喜欢</a>
+                        <!-- <a class="effect effect-5" href="#" title="Learn More">分享</a> -->
+                        <a class="effect effect-2 share" href="#" title="分享">分享</a>
+                    </div>
                     <div class="post-footer-arthur am-cf">
                         <div class="sm">
                             本文系作者
@@ -92,7 +98,7 @@
                             <!-- 、作者和<a href="/p/<%=guid%>" title="<%=post_title%>" class="am-text-secondary">本文链接</a> -->
                         </div>
                         <!-- 文章分类 相关推荐 -->
-                        <div class="post-like am-fr am-margin-left-xs">
+                        <!-- <div class="post-like am-fr am-margin-left-xs">
                             <a class="am-btn am-round am-btn-xs am-btn-logo"><i class="am-icon-heart"></i> 0</a>
                         </div>
                         <div class="post-share am-fr">
@@ -111,7 +117,7 @@
                                 </li>
                             </ul>
                             <a class="am-btn am-round am-btn-xs am-btn-secondary"><i class="iconfont icon-share" style="line-height: 11px;position: relative;top: 2px;"></i> 分享</a>
-                        </div>
+                        </div> -->
                     </div>
                 </footer>
             </article>
@@ -129,8 +135,9 @@
                         document.getElementsByTagName('body')[0]).appendChild(ds);
                 })();
             </script> -->
-            <blog-comment :posts-id="'<%=guid%>'">
-                <h1>asdasdasdas</h1>
+
+            <blog-comment :posts-id="'<%=guid%>'" author="<%=cookies.comment_author%>" email="<%=cookies.comment_author_email%>" url="<%=cookies.comment_author_url%>">
+                <h1 slot="header">asdasdasdas</h1>
             </blog-comment>
             <!-- <blob-footer ></blob-footer> -->
             <footer>

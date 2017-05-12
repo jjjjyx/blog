@@ -63,8 +63,8 @@ export function login(username, password) {
             password
         }).done((data) => {
             resolve(data);
-        }).fail(({responseJSON={code:401}}) => {
-            reject([responseJSON.code, responseJSON]);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
         });
     });
 }
@@ -73,8 +73,8 @@ export function logOut() {
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/user/logout`).done((data) => {
             resolve(data);
-        }).fail(({responseJSON}) => {
-            reject([responseJSON.code, responseJSON]);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
         });
     });
 }
@@ -83,8 +83,8 @@ export function userGetInfo() {
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/api/user/auth`).done((data) => {
             resolve(data);
-        }).fail(({responseJSON}) => {
-            reject([responseJSON.code, responseJSON]);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
         });
     });
 }
@@ -92,8 +92,8 @@ export function loadArticleList(params) {
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/`,params,null).done((data) => {
             resolve(data);
-        }).fail(({responseJSON}) => {
-            reject([500]);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
         });
     });
 }
@@ -101,8 +101,8 @@ export function loadArticleInfo(params){
     return new Promise((resolve, reject) => {
         $.post("./",params,null).done((data) => {
             resolve(data);
-        }).fail(({responseJSON}) => {
-            reject([500]);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
         });
     });
 }
@@ -116,8 +116,8 @@ export function read(){
     return new Promise((resolve, reject) => {
         $.get(`${API_SERVER}/p/read${pathname}`).done((data) => {
             resolve(data);
-        }).fail(({responseJSON}) => {
-            reject([responseJSON.code, responseJSON]);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
         });
     });
 }
@@ -131,8 +131,23 @@ export function comment(params){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/p/comment`,params).done((data) => {
             resolve(data);
-        }).fail(({responseJSON}) => {
-            reject([responseJSON.code, responseJSON]);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
+        });
+    });
+}
+
+/**
+ * 评论文章
+ * @param  {[type]} params [description]
+ * @return {[type]}      [description]
+ */
+export function getComments(comment_post_id){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/p/comments`,{comment_post_id}).done((data) => {
+            resolve(data);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
         });
     });
 }
