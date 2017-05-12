@@ -111,10 +111,10 @@ export function loadArticleInfo(params){
  * @param  {[type]} guid [description]
  * @return {[type]}      [description]
  */
-export function read(){
-    let pathname = window.location.pathname.replace("/p","");
+export function read(guid){
+    // let pathname = window.location.pathname.replace("/p","");
     return new Promise((resolve, reject) => {
-        $.get(`${API_SERVER}/p/read${pathname}`).done((data) => {
+        $.get(`${API_SERVER}/p/read/${guid}`).done((data) => {
             resolve(data);
         }).fail((err) => {
             reject({code:500, data:err.responseJSON});
@@ -145,6 +145,21 @@ export function comment(params){
 export function getComments(comment_post_id){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/p/comments`,{comment_post_id}).done((data) => {
+            resolve(data);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
+        });
+    });
+}
+
+/**
+ * 评论文章
+ * @param  {[type]} params [description]
+ * @return {[type]}      [description]
+ */
+export function heart(guid){
+    return new Promise((resolve, reject) => {
+        $.post(`${API_SERVER}/p/heart`,{guid}).done((data) => {
             resolve(data);
         }).fail((err) => {
             reject({code:500, data:err.responseJSON});

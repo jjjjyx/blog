@@ -27,7 +27,9 @@ const app = new Vue({
             post_contentLength: 0,
             editormdView: null,
             aside: false,
-            showPostDirectory:true
+            showPostDirectory:true,
+            guid:'',
+            banHeart:true
         }
     },
     components: {
@@ -45,11 +47,44 @@ const app = new Vue({
             // console.log(111);
         },
         togglePostDirectory (){
-            console.log(123);
             this.showPostDirectory = !this.showPostDirectory;
+        },
+        heart(event){
+            if(this.banHeart){
+                api.heart(this.guid).then((data)=>{
+                    if(data.code!=0) layer.msg('您已经赞过了,实在喜欢就分享一下吧~')
+                    else if(data.code==0) {
+                        if(this.$refs.heart){
+                            const span = $(this.$refs.heart).addClass("active").find("span")
+                            span.text(span.text()*1+1);
+                            this.banHeart = false;
+                        }
+                    }
+                });
+            }
+            let i = $("<i>").addClass("am-icon-heart nono-user-select");
+            i.css({
+                'position': 'absolute',
+                'z-index': '98999',
+                'color': 'rgb(233,79,6)',
+                'font-size': '13px',
+                'top':`${event.pageY}px`,
+                'left':`${event.pageX}px`,
+            }).appendTo($('body')).animate({
+                top:`${event.pageY-100}px`,
+                opacity: 0,
+            },1200,function(){$(this).remove()})
+
+            // .addClass("am-animation-slide-top am-animation-reverse").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+            //     $(this).remove()
+            // });
+        },
+        share(){
+            // api.share(this.guid);
         }
     },
     mounted: function () {
+        this.guid = this.$refs.guid.value;
         const img = new Image();
         img.src = "http://oht47c0d0.bkt.clouddn.com/ba5d1c60-3192-11e7-bcd4-93a9b0d59ff6.png?imageView2/0/w/1000/format/jpg";
         img.onload = ()=> {
@@ -82,7 +117,7 @@ const app = new Vue({
             bh = $(".footer").outerHeight() + $(".copyright").outerHeight()
             if (falg && s > 200) {
                 falg = false
-                api.read()
+                api.read(this.guid)
             }
             // if (s > (zh - kh - bh)) {
             //     if (this.$refs['article-tocm']) {

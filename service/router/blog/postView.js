@@ -153,7 +153,8 @@ let comments = async function(req, res, next){
                 // console.log(useragent.parse(item.comment_agent).device)
                 // console.log(useragent.parse(item.comment_agent).os)
                 item.comment_agent = useragent.parse(item.comment_agent).os.family;
-                item.comment_date = moment(item.comment_date).format('YYYY/MM/DD HH:mm:ss')
+                item.comment_date = moment(item.comment_date).format('YYYY/MM/DD HH:mm:ss');
+                item.comment_content = xss(item.comment_content);
                 return item;
             })
             res.map = { code :0, data }
@@ -164,11 +165,41 @@ let comments = async function(req, res, next){
         }
     }
 }
+let heart = async function(req, res, next){
+    req.checkBody('guid', '喜欢的文章呢？！').isAlphanumeric().len(24);
+    let result = await req.getValidationResult()
+    if(!result.isEmpty()){
+        let map = { code: 1, msg: result.array()[0].msg };
+        return res.status(400).json(map);
+    }else{
+        const guid = req.body.guid;
+        const maxAge = 365*5*60000*60*24,
+              httpOnly = true;
+        if(req.cookies[`heart_${guid}`]){
+            res.map = {
+                code:-1,
+                msg:'刷赞可耻~拒绝刷赞'
+            }
+        }else{
+            res.cookie(`heart_${guid}`, guid, {maxAge , httpOnly });
+            postDao.updateHeart(guid);
+            res.map = {
+                code:0,
+                msg:'success'
+            }
+        }
+        next()
+    }
+}
 module.exports = function() {
     let router = new Router();
     router.route("/read/:guid").get(read,function (req, res, next) {
         return res.status(200).json(res.map);
     });
+
+    router.route("/heart").post(heart, function (req, res, next) {
+        return res.status(200).json(res.map);
+    })
     // router.route("/commentCallback").post(commentCallback);
     router.route("/comment").post(comment, function (req, res, next) {
         return res.status(200).json(res.map);

@@ -8,7 +8,10 @@
         <textarea id="comment" class="j-comment_content" ref="comment_content" name="name" rows="8" cols="80" v-model="parame.comment_content" placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。">
         </textarea>
         <div class="j-emoji-block ">
-            <a href="javascrip:;" class="j-btn nono-user-select"><i class="iconfont icon-biaoqing"></i> 表情</a>
+            <div class="am-dropdown" data-am-dropdown>
+                <a href="javascrip:;" class="j-btn nono-user-select am-dropdown-toggle"><i class="iconfont icon-biaoqing"></i> 表情</a>
+                <f-emoji class="am-dropdown-content" @selectEmoji="selectEmoji"></f-emoji>
+            </div>
             <span class="nono-user-select">Ctrl+Return 发表</span>
 
             <div class="am-fr" v-if="parame.comment_author&&parame.comment_author_email">
@@ -54,6 +57,7 @@
 
 <script lang="">
 import * as api from "public/js/api.js"
+import FEmoji from "./emoji.vue";
 export default {
     data () {
         return {
@@ -67,8 +71,14 @@ export default {
             edit: false,
         }
     },
+    components:{
+        FEmoji
+    },
     props:['postsId','author','email','url','avatar'],
     methods: {
+        selectEmoji(item){
+            this.parame.comment_content +=item;
+        },
         async comment(){
 
             const authorForm = $("#my-prompt").show(); // 这个元素必须显示出来才能验证表单

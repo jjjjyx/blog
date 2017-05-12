@@ -278,7 +278,7 @@ module.exports.indexLi = function(data){
                            <i class="am-icon-comment-o"></i> <span class="num">${item.comment_count}</span>
                        </a>
                        <a class="like">
-                           <i class="am-icon-heart-o"></i> <span class="num">0</span>
+                           <i class="am-icon-heart-o"></i> <span class="num">${item.likes_count}</span>
                        </a>
                    </div>
                    <div class="meta am-margin-vertical-xs">

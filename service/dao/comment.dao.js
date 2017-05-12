@@ -25,7 +25,7 @@ class CommentDao extends db.BaseDao{
     // INSERT INTO `myblog`.`j_comments` (`comment_post_id`, `comment_author`, `comment_author_email`, `comment_author_url`, `comment_author_ip`, `comment_date`, `comment_content`, `comment_agent`, `comment_parent`, `user_id`,`comment_karma`)
     // VALUES('59113d2cf28c514eeb90bcb5', '123', '123', '123', '123', '123','123', '123',NULL, 1,(SELECT temp.comment_karma FROM (SELECT COUNT(*)+1 AS comment_karma FROM `myblog`.`j_comments` WHERE comment_post_id = '59113d2cf28c514eeb90bcb5') AS temp))
     asyncGetCommentsByPosts (comment_post_id){
-        let sql = "select * from `myblog`.`j_comments` where comment_post_id = :comment_post_id order by comment_karma desc";
+        let sql = "select * from `myblog`.`j_comments` where comment_post_id = :comment_post_id and comment_approved = 1 order by comment_karma desc";
         return this.asyncExec(sql,{comment_post_id})
     }
 

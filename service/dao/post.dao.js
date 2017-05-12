@@ -8,7 +8,7 @@ class PostDao extends db.BaseDao {
         "post_excerpt", "post_status", "comment_status", "ping_status", "post_password",
         "post_name", "term_id", "pinged", "post_modified", "post_content_filtered",
         "post_parent", "guid", "menu_order", "post_type", "post_mime_type",
-        "comment_count", "seq_in_nb", "delete_at", "create_at", "author", 'post_img_position', 'post_img'];
+        "comment_count", "seq_in_nb", "delete_at", "create_at", "author", 'post_img_position', 'post_img','likes_count'];
         // this.metaKey = []
         this.selectSql = `SELECT
             jp.id,
@@ -26,6 +26,8 @@ class PostDao extends db.BaseDao {
             jp.post_type,
             jp.post_mime_type,
             jp.comment_count,
+            jp.eye_count,
+            jp.likes_count,
             jp.term_id,
             jp.guid,
             jp.seq_in_nb,
@@ -59,7 +61,8 @@ class PostDao extends db.BaseDao {
                   post_status,
                   post_excerpt,
                   post_password,
-                  eye_count
+                  eye_count,
+                  likes_count
                 FROM
                   j_posts  where guid = ? and post_status = 'publish'`,
             params: [guid],
@@ -105,6 +108,7 @@ class PostDao extends db.BaseDao {
           jp.post_type,
           jp.comment_count,
           jp.eye_count,
+          jp.likes_count,
           jt.name AS term_id,
           jp.menu_order,
           jp.guid,
@@ -152,6 +156,7 @@ class PostDao extends db.BaseDao {
           jp.post_type,
           jp.comment_count,
           jp.eye_count,
+          jp.likes_count,
           jt.name AS term_id,
           jp.menu_order,
           jp.guid,
@@ -271,6 +276,10 @@ class PostDao extends db.BaseDao {
     postUnlock(id,callback){
         let sql = "UPDATE `j_posts` SET post_password = null WHERE `id`= :id";
         this.execCallBack(sql,{id},callback);
+    }
+    updateHeart(comment_post_id){
+        let sql = "UPDATE `myblog`.`j_posts` SET likes_count = likes_count+1 where guid=:comment_post_id";
+        return this.asyncExec(sql,{comment_post_id});
     }
     // 这里很机智的写法
     update(id, data, callback, ban = ['comment_count', 'id', 'create_at', 'delete_at', 'post_author','post_date', 'post_status', 'guid']) {
