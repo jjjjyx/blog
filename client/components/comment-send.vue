@@ -1,14 +1,19 @@
 <template>
 <form action="" class="j-comment-send" @submit.prevent>
     <div class="j-user-avatar">
-        <img :src="parame.comment_author_avatar" alt="user-avatar">
+        <img :src="$parent.parame.comment_author_avatar" alt="user-avatar">
     </div>
     <div class="j-textarea-container">
-        <button class="j-comment-submit nono-user-select" @click="$emit('comment')">发表评论</button>
+        <button class="j-comment-submit nono-user-select" @click="$emit('comment',currentValue)">发表评论</button>
         <textarea id="comment" class="j-comment_content"
-            name="name" rows="8" cols="80" v-model="$parent.commentContent"
-            placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。">
-        </textarea>
+            name="name" rows="8" cols="80"
+            ref="textarea"
+            :value="currentValue"
+            @input="handleInput"
+            @focus="handleFocus"
+            @blur="handleBlur"
+           placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。">
+       </textarea>
         <div class="j-emoji-block ">
             <div class="am-dropdown" data-am-dropdown>
                 <a href="javascrip:;" class="j-btn nono-user-select am-dropdown-toggle"><i class="iconfont icon-biaoqing"></i> 表情</a>
@@ -22,6 +27,7 @@
                     <i class="am-icon-cog"></i> 修改资料
                 </span>
             </div>
+            <a v-if="showCancel" class="am-fr j-btn-link am-btn-link" @click="$emit('cancelReply')">取消</a>
         </div>
     </div>
 </form>
@@ -30,18 +36,17 @@
 <script lang="">
 import * as api from "public/js/api.js"
 import FEmoji from "./emoji.vue";
-import { mapGetters } from 'vuex'
 export default {
     data () {
         return {
-
+            currentValue:this.value
         }
     },
     components:{
         FEmoji
     },
     computed: {
-        ...mapGetters(['count']),
+
     },
     // props:['postsId','author','email','url','avatar'],
     props:{
@@ -59,11 +64,41 @@ export default {
                     comment_author_avatar: ''
                 }
             }
+        },
+        value: [String, Number],
+        showCancel:{
+            type:Boolean,
+            default:false
+        }
+        // content: {
+        //     type: String,
+        //     default: ''
+        // },
+    },
+    watch: {
+        'value'(val, oldValue) {
+            this.setCurrentValue(val);
         }
     },
     methods: {
+        handleBlur(event) {
+            this.$emit('blur', event);
+        },
+        handleFocus(event) {
+            this.$emit('focus', event);
+        },
+        handleInput(event,v) {
+            const value = v || event.target.value;
+            this.$emit('input', value);
+            this.setCurrentValue(value);
+            this.$emit('change', value);
+        },
+        setCurrentValue(value) {
+            if (value === this.currentValue) return;
+            this.currentValue = value;
+        },
         selectEmoji(item){
-            this.$parent.commentContent +=item;
+            this.handleInput(null,this.currentValue+item);
         },
 
         editInfo(){
@@ -73,20 +108,10 @@ export default {
         },
 
 
-        async changgeAvatar(){
-            try {
-                const data  = await api.randomAvatar();
-                if(data.code==0){
-                    this.parame.comment_author_avatar = data.url;
-                }
-            } catch (e) {
-                layer.msg("不可频繁切换");
-            }
-        }
+
     },
     mounted(){
-        if(!this.parame.comment_author_avatar)
-            this.changgeAvatar()
+
     }
 }
 </script>

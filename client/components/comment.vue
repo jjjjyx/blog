@@ -1,8 +1,11 @@
 <template>
 <aside class="comment-wrapper">
-    <blog-comment-send :posts-id="postsId" :parame.sync="parame" @comment="addComment" @editInfo="edit = true"></blog-comment-send>
+    <blog-comment-send :posts-id="postsId"
+        :parame.sync="parame"
+        @comment="addComment" @editInfo="edit = true" v-model="content">
+    </blog-comment-send>
     <div class="j-comment-head">
-        <span v-if="commentList.length">{{commentList.length}} 条评论</span>
+        <span v-if="commentIdList.length">{{commentIdList.length}} 条评论</span>
         <span v-else>暂无评论</span>
         <ul class="am-fr">
             <li v-for="item in sortList" :class="{'am-active':sort==item.d}" @click="sort=item.d"><a href="javascript:;">{{item.name}}</a></li>
@@ -12,7 +15,7 @@
         <div class="loading" v-if="loading">
             <i class="am-icon-spinner am-icon-spin"></i>
         </div>
-        <div class="j-comment-empty" v-else-if="!msg&&!commentList.length">
+        <div class="j-comment-empty" v-else-if="!msg&&!commentIdList.length">
             <img src="http://oht47c0d0.bkt.clouddn.com/e449de40-36bb-11e7-8052-f5dac1b1035e" alt="">
             <div class="am-inline-block">智慧如你，不想<span @click="toComment('#comment',800)">发表一点想法</span>咩~</div>
         </div>
@@ -21,36 +24,46 @@
         </div>
         <li class="j-reply-wrap" v-for="item in pageList">
             <a href="javascript:;" class="j-user-avatar">
-                <img :src="item.comment_author_avatar" alt="user-avatar">
+                <img :src="commentObj[item.comment_id].comment_author_avatar" alt="user-avatar">
             </a>
             <div class="am-comment-main">
                 <header>
-                    <a class="name">{{item.comment_author}}</a>
-                    <a v-if="item.user_id" class="admin" title="管理员"><i class="icon-guanliyuan iconfont "></i></a>
-                    <span class="am-fr">#{{item.comment_karma}}</span>
+                    <a class="name">{{commentObj[item.comment_id].comment_author}}</a>
+                    <a v-if="commentObj[item.comment_id].user_id" class="admin" title="管理员"><i class="icon-guanliyuan iconfont "></i></a>
+                    <span class="am-fr">#{{commentObj[item.comment_id].comment_karma}}</span>
                 </header>
-                <div class="am-comment-bd" v-html="emoji(item.comment_content)">
+                <div class="am-comment-bd" v-html="emoji(commentObj[item.comment_id])">
                 </div>
                 <footer class="am-comment-info">
-                    <i class="iconfont" :class="'icon-'+item.comment_agent.split(' ')[0].toLowerCase()"></i>
-                    <span style="">{{item.comment_agent}}</span>
+                    <i class="iconfont" :class="'icon-'+commentObj[item.comment_id].comment_agent.split(' ')[0].toLowerCase()"></i>
+                    <span style="">{{commentObj[item.comment_id].comment_agent}}</span>
                     <i class="iconfont icon-shijian"></i>
                     <span style="">{{item.comment_date}}</span>
-                    <span class="j-reply j-btn-hover j-btn">回复</span>
-                    <span class="am-fr j-report" v-if="!item.user_id">举报</span>
+                    <span class="j-reply j-btn-hover j-btn" @click="reply(item.comment_id)">回复</span>
+                    <span class="am-fr j-report" v-if="!commentObj[item.comment_id].user_id">举报</span>
                 </footer>
+                <transition name="custom-classes-transition" enter-active-class="animated fadeInDown">
+                    <blog-comment-send v-if="parame.comment_parent==item.comment_id" class="j-reply-box" @cancelReply="parame.comment_parent = null"
+                        :posts-id="postsId"
+                        v-model="replyContent" :show-cancel="true" @comment="addComment">
+                    </blog-comment-send>
+                </transition>
             </div>
         </li>
-        <f-page :all="pageNum" :cur="currPage" @toPage="toPage" v-if="commentList.length"></f-page>
+        <f-page :groups="groupNum" :all="pageNum" :cur="currPage" @toPage="toPage" v-if="commentIdList.length"></f-page>
     </ul>
     <!-- :author.sync="author"
     :email.sync="email"
-    :url.sync="url"
+    :url.sync="url" v-model="content"
     :avatar.sync="avatar" -->
-    <blog-comment-send v-if="commentList.length>=10"
+    <blog-comment-send v-if="commentIdList.length>=10"
         :posts-id="postsId"
         :parame.sync="parame"
-        @comment="addComment" style="margin-top:30px;"></blog-comment-send>
+        v-model="content"
+        @comment="addComment" @editInfo="edit = true" style="margin-top:30px;">
+    </blog-comment-send>
+    <!-- <f-test label="Price" v-model="price"></f-test>
+    <f-test label="Price" v-model="price" style="margin-top:30px;"></f-test> -->
     <!-- <slot></slot> -->
 
     <div class="am-modal am-modal-prompt" tabindex="-1" id="my-prompt">
@@ -90,20 +103,25 @@
 import * as api from "public/js/api.js"
 import BlogCommentSend from "./comment-send.vue"
 import FPage from "./page.vue"
+// import FTest from "./testInput.vue"
 
 
 const emojiReg = /:([\w\+-]+):/g
 export default {
     data() {
         return {
+
             parame:{
                 comment_author:this.author,
                 comment_author_email:this.email,
                 comment_author_url:this.url,
-                comment_author_avatar: this.avatar
+                comment_author_avatar: this.avatar,
+                comment_parent: null
             },
-            commentContent: '',
-            commentList: [],
+            content: '',
+            replyContent: '',
+            commentIdList: [],
+            commentObj: {},
             msg: '',
             loading: true,
             sortList: [{
@@ -119,6 +137,7 @@ export default {
             sort: 'desc',
             currPage: 1,
             rowsNum: 10,
+            groupNum:3,
             emojiPath:'http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/',
             ext:'.png',
         }
@@ -126,11 +145,12 @@ export default {
     props: ['postsId', 'author', 'email', 'url', 'avatar'],
     components: {
         BlogCommentSend,
-        FPage
+        FPage,
+        // FTest
     },
     computed: {
         list() {
-            return _.orderBy(this.commentList, ['comment_date'], this.sort)
+            return _.orderBy(this.commentIdList, ['comment_date'], this.sort)
         },
         max() {
             return this.list.length;
@@ -146,34 +166,45 @@ export default {
         // addComment(d) {
         //     this.commentList.splice(0, 0, d);
         // },
-        async addComment(){
+        reply(comment_id){
+            if(this.parame.comment_parent==comment_id){
+                this.parame.comment_parent = null;
+            }else
+                this.parame.comment_parent = comment_id
+        },
+        replyComment(){
+
+        },
+        async addComment(content){
             const authorForm = $("#my-prompt").show(); // 这个元素必须显示出来才能验证表单
             // 不想想验证代码，我已经使用amazeui 的验证框架了在写有点多余
             const vaild = $("#comment_author").validator('isFormValid');
             authorForm.hide();
-
             if(vaild) {
-                if(this.commentContent&&this.commentContent.length<=300){
+                if(content&&content.length<=300){
                     try {
                         let r = await api.comment({
                             ...this.parame,
-                            comment_content:this.commentContent,
+                            comment_content:content,
                             posts_id:this.postsId
                         });
-                        if(r.code ==0) {
+                        if(r.code == 0) {
                             let data = r.data;
-                            // this.$emit('comment',data)
-                            this.commentList.splice(0,0,data)
-                            this.commentContent = '';
-                            layer.msg(r.msg);
+                            this.commentIdList.splice(0,0,data);
+                            // 参数复位
+                            this.content = '';
                         }
+                        if(r.code == 100){
+                            this.replyContent = '';
+                            this.parame.comment_parent = null;
+                        }
+                        layer.msg(r.msg);
                     } catch (e) {
                         layer.msg(e.data.msg);
                     }
                 }else {
                     this.tips();
                 }
-
             } else {
                 authorForm.modal({width:320,closeOnConfirm:false});
             }
@@ -195,14 +226,14 @@ export default {
             this.toComment('.j-comment-list', 800)
             this.currPage = page;
         },
-        emoji(text) {
-            let matchs = text.match(emojiReg);
+        emoji({comment_content,comment_parent}) {
+            let matchs = comment_content.match(emojiReg);
             if (!matchs ) {
-               return text;
+               return comment_content;
             }
             let self = this;
             for (let i = 0, len = matchs.length; i < len; i++) {
-                text = text.replace(new RegExp(matchs[i]), function($1, $2) {
+                comment_content = comment_content.replace(new RegExp(matchs[i]), function($1, $2) {
                     let name = $1.replace(/:/g, "");
 
                     let src = (name === "+1") ? "plus1" : name;
@@ -211,7 +242,7 @@ export default {
                     return `<img src="${self.emojiPath}${src}${self.ext}" title="${name}" alt="${name}" width="24"/>`
                 });
             }
-            return text;
+            return comment_content;
         },
         vaild(){
             if($("#comment_author").validator('isFormValid')){
@@ -223,15 +254,29 @@ export default {
                     this.edit = false;
                 }
             }
+        },
+        async changgeAvatar(){
+            try {
+                const data  = await api.randomAvatar();
+                if(data.code==0){
+                    this.parame.comment_author_avatar = data.url;
+                }
+            } catch (e) {
+                layer.msg("不可频繁切换");
+            }
         }
-
     },
     async mounted() {
         // 获取评论列表
+        if(!this.parame.comment_author_avatar)
+            this.changgeAvatar();
         try {
             const r = await api.getComments(this.postsId)
-            // console.log(r);
-            this.commentList = r.data
+            console.log(r);
+            this.commentObj = r.comments;
+            this.commentIdList = r.keys;
+            this.groupNum = r.groupNum;
+            this.rowsNum = r.rowsNum;
         } catch (e) {
             this.msg = e.data.msg;
         } finally {
@@ -461,11 +506,15 @@ export default {
     .j-emoji-block .j-btn {
         cursor: pointer;
     }
-    .j-emoji-block span {
+    .j-emoji-block span,.j-btn-link {
         color: @fontColor2;
         font-size: 12px;
         cursor: default;
-
+    }
+    .j-btn-link {
+        cursor: pointer;
+        position: relative;
+        right: -57px;
     }
 }
 .j-comment-head {

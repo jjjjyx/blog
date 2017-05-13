@@ -49,8 +49,8 @@ const app = new Vue({
         togglePostDirectory (){
             this.showPostDirectory = !this.showPostDirectory;
         },
-        heart(event){
-            if(this.banHeart){
+        heart(event,isHeart){
+            if(this.banHeart&&isHeart){
                 api.heart(this.guid).then((data)=>{
                     if(data.code!=0) layer.msg('您已经赞过了,实在喜欢就分享一下吧~')
                     else if(data.code==0) {
@@ -62,7 +62,9 @@ const app = new Vue({
                     }
                 });
             }
+
             let i = $("<i>").addClass("am-icon-heart nono-user-select");
+            console.log(i);
             i.css({
                 'position': 'absolute',
                 'z-index': '98999',

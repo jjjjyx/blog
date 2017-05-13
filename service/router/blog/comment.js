@@ -46,7 +46,7 @@ let comment = async function(req, res, next){
             comment_author_url = req.body.comment_author_url,
             comment_author_avatar = req.body.comment_author_avatar,
             comment_content = req.body.comment_content,
-            comment_parent = req.body.comment_parent,
+            comment_parent = req.body.comment_parent||undefined,
             comment_agent = req.headers['user-agent'],
             comment_author_ip = utils.getClientIp(req);
             // user_id = null;
@@ -65,10 +65,14 @@ let comment = async function(req, res, next){
             result.comment_agent = useragent.parse(result.comment_agent).os.family;
             result.comment_date = moment(result.comment_date).format('YYYY/MM/DD HH:mm:ss')
             res.map = { code :0, msg:'评论成功', data:result }
+            if(comment_parent) {
+                res.map.code = 100;
+                res.map.msg = "回复成功";
+            }
 
             // TODO: 验证码机制
         } catch (e) {
-            res.map = { code: 1, msg: e.message, }
+            res.map = { code: 1, msg: "啊哦！发生错误咯！我会尽快修复的！", }
         } finally {
             next();
         }
@@ -84,9 +88,9 @@ let comments = async function(req, res, next){
         const comment_post_id = req.body.comment_post_id;
         try {
             result = await commentDao.asyncGetCommentsByPosts(comment_post_id)
-            let data = result.map((item)=>{
-                // console.log(useragent.parse(item.comment_agent).device)
-                // console.log(useragent.parse(item.comment_agent).os)
+            let comments = {}
+            let keys= [];
+            result.forEach((item)=>{
                 item.comment_agent = useragent.parse(item.comment_agent).os.family;
                 item.comment_date = moment(item.comment_date).format('YYYY/MM/DD HH:mm:ss');
                 switch (item.comment_approved) {
@@ -100,12 +104,13 @@ let comments = async function(req, res, next){
                     default:
                         item.comment_content = xss(item.comment_content);
                 }
-
-                return item;
+                comments[item.comment_id] = item;
+                keys.push({comment_date:item.comment_date,comment_id:item.comment_id})
             })
-            res.map = { code :0, data }
+            //  = Object.keys(comments);
+            res.map = { code :0, comments,keys, groupNum:3, rows:10 }
         } catch (e) {
-            res.map = { code: 1, msg: e.message, }
+            res.map = { code: 1, msg: "啊哦！发生错误咯！我会尽快修复的！", }
         } finally {
             next();
         }
