@@ -105,11 +105,21 @@ let comments = async function(req, res, next){
                         item.comment_content = xss(item.comment_content);
                 }
                 comments[item.comment_id] = item;
-                keys.push({comment_date:item.comment_date,comment_id:item.comment_id})
-            })
+                if(item.comment_parent){
+                    let parent = comments[item.comment_parent];
+                    if(!parent.replyList){
+                        parent.replyList = []
+                    }
+                    parent.replyList.push(item);
+                }else {
+                    keys.push(item);
+                }
+                // keys.push({comment_date:item.comment_date,comment_id:item.comment_id})
+            });
             //  = Object.keys(comments);
-            res.map = { code :0, comments,keys, groupNum:3, rows:10 }
+            res.map = { code :0, data:keys, groupNum:3, rows:10 }
         } catch (e) {
+            console.log(e);
             res.map = { code: 1, msg: "啊哦！发生错误咯！我会尽快修复的！", }
         } finally {
             next();

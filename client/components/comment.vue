@@ -5,7 +5,7 @@
         @comment="addComment" @editInfo="edit = true" v-model="content">
     </blog-comment-send>
     <div class="j-comment-head">
-        <span v-if="commentIdList.length">{{commentIdList.length}} 条评论</span>
+        <span v-if="commentList.length">{{commentList.length}} 条评论</span>
         <span v-else>暂无评论</span>
         <ul class="am-fr">
             <li v-for="item in sortList" :class="{'am-active':sort==item.d}" @click="sort=item.d"><a href="javascript:;">{{item.name}}</a></li>
@@ -15,33 +15,50 @@
         <div class="loading" v-if="loading">
             <i class="am-icon-spinner am-icon-spin"></i>
         </div>
-        <div class="j-comment-empty" v-else-if="!msg&&!commentIdList.length">
+        <div class="j-comment-empty" v-else-if="!msg&&!commentList.length">
             <img src="http://oht47c0d0.bkt.clouddn.com/e449de40-36bb-11e7-8052-f5dac1b1035e" alt="">
             <div class="am-inline-block">智慧如你，不想<span @click="toComment('#comment',800)">发表一点想法</span>咩~</div>
         </div>
         <div class="j-comment-empty" v-else-if="msg">
             评论加载失败..
         </div>
-        <li class="j-reply-wrap" v-for="item in pageList">
-            <a href="javascript:;" class="j-user-avatar">
-                <img :src="commentObj[item.comment_id].comment_author_avatar" alt="user-avatar">
+        <li class="j-comment-wrap" v-for="item in pageList">
+            <a href="javascript:;" class="j-user-avatar" :data-id="item.comment_id">
+                <img :src="item.comment_author_avatar" alt="user-avatar">
             </a>
             <div class="am-comment-main">
                 <header>
-                    <a class="name">{{commentObj[item.comment_id].comment_author}}</a>
-                    <a v-if="commentObj[item.comment_id].user_id" class="admin" title="管理员"><i class="icon-guanliyuan iconfont "></i></a>
-                    <span class="am-fr">#{{commentObj[item.comment_id].comment_karma}}</span>
+                    <a class="name">{{item.comment_author}}</a>
+                    <a v-if="item.user_id" class="admin" title="管理员"><i class="icon-guanliyuan iconfont "></i></a>
+                    <span class="am-fr">#{{item.comment_karma}}</span>
                 </header>
-                <div class="am-comment-bd" v-html="emoji(commentObj[item.comment_id])">
+                <div class="am-comment-bd" v-html="emoji(item)">
                 </div>
                 <footer class="am-comment-info">
-                    <i class="iconfont" :class="'icon-'+commentObj[item.comment_id].comment_agent.split(' ')[0].toLowerCase()"></i>
-                    <span style="">{{commentObj[item.comment_id].comment_agent}}</span>
+                    <i class="iconfont" :class="'icon-'+item.comment_agent.split(' ')[0].toLowerCase()"></i>
+                    <span style="">{{item.comment_agent}}</span>
                     <i class="iconfont icon-shijian"></i>
                     <span style="">{{item.comment_date}}</span>
-                    <span class="j-reply j-btn-hover j-btn" @click="reply(item.comment_id)">回复</span>
-                    <span class="am-fr j-report" v-if="!commentObj[item.comment_id].user_id">举报</span>
+                    <span class="j-reply-btn j-btn-hover j-btn" @click="reply(item.comment_id)">回复</span>
+                    <span class="am-fr j-report" v-if="!item.user_id">举报</span>
                 </footer>
+                <ul class="j-reply-list-box">
+                    <li v-for="item2 in item.replyList" class="j-reply-item">
+                        <a href="javascript:;" class="j-user-avatar" :data-id="item2.comment_id">
+                            <img :src="item2.comment_author_avatar" alt="user-avatar">
+                        </a>
+                        <div class="j-reply-main">
+                            <div class="j-reply-msg">
+                                <a >{{item2.comment_author}}</a>
+                                <span v-html="emoji(item2)" class="j-reply-text"></span>
+                            </div>
+                            <div class="j-reply-info">
+                                <span style="">{{item.comment_date}}</span>
+                                <span class="j-reply-btn j-btn-hover j-btn" @click="reply(item.comment_id,item2)">回复</span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
                 <transition name="custom-classes-transition" enter-active-class="animated fadeInDown">
                     <blog-comment-send v-if="parame.comment_parent==item.comment_id" class="j-reply-box" @cancelReply="parame.comment_parent = null"
                         :posts-id="postsId"
@@ -50,13 +67,13 @@
                 </transition>
             </div>
         </li>
-        <f-page :groups="groupNum" :all="pageNum" :cur="currPage" @toPage="toPage" v-if="commentIdList.length"></f-page>
+        <f-page :groups="groupNum" :all="pageNum" :cur="currPage" @toPage="toPage" v-if="commentList.length"></f-page>
     </ul>
     <!-- :author.sync="author"
     :email.sync="email"
     :url.sync="url" v-model="content"
     :avatar.sync="avatar" -->
-    <blog-comment-send v-if="commentIdList.length>=10"
+    <blog-comment-send v-if="commentList.length>=10"
         :posts-id="postsId"
         :parame.sync="parame"
         v-model="content"
@@ -120,8 +137,7 @@ export default {
             },
             content: '',
             replyContent: '',
-            commentIdList: [],
-            commentObj: {},
+            commentList: [],
             msg: '',
             loading: true,
             sortList: [{
@@ -150,7 +166,7 @@ export default {
     },
     computed: {
         list() {
-            return _.orderBy(this.commentIdList, ['comment_date'], this.sort)
+            return _.orderBy(this.commentList, ['comment_date'], this.sort)
         },
         max() {
             return this.list.length;
@@ -166,7 +182,10 @@ export default {
         // addComment(d) {
         //     this.commentList.splice(0, 0, d);
         // },
-        reply(comment_id){
+        reply(comment_id,{comment_id:comment_id2,comment_author} = {}){
+            if(comment_id2){
+                this.replyContent = `@${comment_author} `;
+            }
             if(this.parame.comment_parent==comment_id){
                 this.parame.comment_parent = null;
             }else
@@ -190,16 +209,20 @@ export default {
                         });
                         if(r.code == 0) {
                             let data = r.data;
-                            this.commentIdList.splice(0,0,data);
+                            this.commentList.splice(0,0,data);
                             // 参数复位
                             this.content = '';
                         }
                         if(r.code == 100){
                             this.replyContent = '';
+                            let i = this.commentList.findIndex((item)=>item.comment_id==this.parame.comment_parent)
+                            this.commentList[i].replyList = this.commentList[i].replyList||[]
+                            this.commentList[i].replyList.push(r.data);
                             this.parame.comment_parent = null;
                         }
                         layer.msg(r.msg);
                     } catch (e) {
+                        console.log(e);
                         layer.msg(e.data.msg);
                     }
                 }else {
@@ -273,10 +296,10 @@ export default {
         try {
             const r = await api.getComments(this.postsId)
             console.log(r);
-            this.commentObj = r.comments;
-            this.commentIdList = r.keys;
+            // this.commentObj = r.comments;
+            this.commentList = r.data;
             this.groupNum = r.groupNum;
-            this.rowsNum = r.rowsNum;
+            this.rowsNum = r.rows;
         } catch (e) {
             this.msg = e.data.msg;
         } finally {
@@ -285,7 +308,8 @@ export default {
     }
 }
 </script>
-<style lang="less">@fontColor: #6d757a;
+<style lang="less">
+@fontColor: #6d757a;
 @fontColor2: #99a2aa;
 @fontColor3: #00a1d6;
 @borderColor2: #e5e9ef;
@@ -392,13 +416,6 @@ export default {
             margin-right: 20px;
             vertical-align: top;
         }
-        .j-reply {
-            padding: 0 5px;
-            border-radius: 4px;
-            margin-right: 15px;
-            cursor: pointer;
-            display: inline-block;
-        }
         .j-report {
             display: none;
             cursor: pointer;
@@ -410,7 +427,56 @@ export default {
     .am-comment-bd {
         padding: 0;
     }
-
+    .j-reply-btn {
+        padding: 0 5px;
+        border-radius: 4px;
+        margin-right: 15px;
+        cursor: pointer;
+        display: inline-block;
+    }
+    .j-reply-list-box {
+        .j-reply-item {
+            padding: 10px 0;
+        }
+        .j-user-avatar {
+            margin: 5px 0 0;
+        }
+        .j-user-avatar img {
+            width: 24px;
+            height: 24px;
+        }
+        .j-reply-main {
+            margin-left: 34px;
+        }
+        .j-reply-main .j-reply-msg{
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 18px;
+            padding-bottom: 4px;
+            display: block;
+            word-wrap: break-word;
+        }
+        .j-reply-main .j-reply-msg>a{
+            color: @fontColor;
+            vertical-align: middle;
+            &::after {
+                content: '：';
+            }
+        }
+        .j-reply-main .j-reply-text{
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+        }
+        .j-reply-info {
+            color: #99a2aa;
+            line-height: 26px;
+            font-size: 12px;
+        }
+        .j-reply-info >span {
+            margin-right: 20px;
+        }
+    }
 }
 .j-btn-hover {
     &:hover {
@@ -500,7 +566,7 @@ export default {
             vertical-align: middle;
         }
         &:hover {
-            color: #6d757a;
+            color: @fontColor;
         }
     }
     .j-emoji-block .j-btn {
@@ -537,40 +603,4 @@ export default {
     }
 }
 
-//     export default {
-//         // Options / Data
-//         // data () { return {} },
-//         // props: [],
-//         // propsData: {},
-//         // computed: {},
-//         // methods: {},
-//         // watch: {},
-//         // Options / DOM
-//         // el () {},
-//         // template: '',
-//         // render () {},
-//         // Options / Lifecycle Hooks
-//         // beforeCreate () {},
-//         // created () {},
-//         // beforeMount () {},
-//         // mounted () {},
-//         // beforeUpdate () {},
-//         // updated () {},
-//         // activated () {},
-//         // deactivated () {},
-//         // beforeDestroy () {},
-//         // destroyed () {},
-//         // Options / Assets
-//         // directives: {},
-//         // filters: {},
-//         // components: {},
-//         // Options / Misc
-//         // parent: null,
-//         // mixins: [],
-//         // name: '',
-//         // extends: {},
-//         // delimiters: [ '{{', '}}' ],
-//         // functional: false
-//     }
-//
 </style>

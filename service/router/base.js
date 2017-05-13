@@ -52,6 +52,38 @@ module.exports = function(app){
             return `
             <script src="${global.SITE.CDN}/vue/2.3.2/vue.min.js"></script>${!isDev?'<script type="text/javascript" src="/static/vendor.js"></script>':''}
             <script type="text/javascript" src="/static/${name}.js"></script>
+            <script type="text/javascript">
+                if (window.layer) {
+                    var fn = function (){
+                        var d = new Date();d.setFullYear(d.getFullYear()+10)
+                        $.AMUI.utils.cookie.set("closeNotice",true,d,'/')
+                    }
+                    var isOpen = $.AMUI.utils.cookie.get('closeNotice');
+                    !isOpen&&layer.open({
+                        type: 1,
+                        title: false //不显示标题栏
+                            ,
+                        closeBtn: false,
+                        area: '300px;',
+                        shade: 0.8,
+                        id: 'JJJjyx' //设定一个id，防止重复弹出
+                            ,
+                        resize: false,
+                        btn: ['火速围观', '残忍拒绝'],
+                        btnAlign: 'c',
+                        moveType: 1, //拖拽模式，0或者1
+                        content: \`
+                        <div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
+                            更新啦~~<br />
+                            * 加入游客随机评论头像，访问本站随机设置一个水果(coding)头像 有几率抽到康纳~<br />
+                            * 加入回复功能<br />
+                            * 加入emoji 表情<br />
+                            * 修复上下输入框不同步问题等..<br />
+                        </div>\`,
+                        yes:fn,btn2:fn
+                    });
+                }
+            </script>
             `
         }
         app.locals['part'] = {
