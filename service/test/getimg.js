@@ -19,13 +19,13 @@ function download ( url,callback ) {
     })
 }
 
-let outPath = path.join(__dirname,"coding-project");
+let outPath = path.join(__dirname,"coding-avatar");
 if(!fs.existsSync(outPath)){
     fs.mkdirSync(outPath,0755);
 }
 for(let i = 1;i<=24;i++){
     // let url = `http://dn-coding-net-production-avatar.qbox.me/Fruit-${i}.png?imageMogr2/thumbnail/128`
-    let url = `https://coding.net/static/project_icon/scenery-${i}.png`
+    let url = `https://dn-coding-net-production-avatar.qbox.me/Fruit-${i}.png`
     https.get(url,function(res){
         var imgData="";
         res.setEncoding("binary");
@@ -33,7 +33,7 @@ for(let i = 1;i<=24;i++){
             imgData += chunk;
         });
         res.on("end",function(){
-            fs.writeFile(path.join(__dirname , "coding-project",`scenery-${i}.png`),imgData,"binary",function(err,c){
+            fs.writeFile(path.join(__dirname , "coding-avatar",`avatar-${i}.png`),imgData,"binary",function(err,c){
                 // console.log(err);
                 if(err){
                     console.log(err);

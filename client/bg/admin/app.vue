@@ -230,9 +230,9 @@ export default {
 
         $(window).resize(setH);
         let screenWidth = window.screen.width
-        if(screenWidth<=1366){
-            $("html").css('zoom',.8)
-        }
+        // if(screenWidth<=1366){
+        //     $("html").css('zoom',.8)
+        // }
         $(window).resize();
         setH();
     }

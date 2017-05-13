@@ -129,13 +129,14 @@ export function read(guid){
  */
 export function comment(params){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/p/comment`,params).done((data) => {
+        $.post(`${API_SERVER}/comment/comment`,params).done((data) => {
             resolve(data);
         }).fail((err) => {
             reject({code:500, data:err.responseJSON});
         });
     });
 }
+
 
 /**
  * 评论文章
@@ -144,7 +145,7 @@ export function comment(params){
  */
 export function getComments(comment_post_id){
     return new Promise((resolve, reject) => {
-        $.post(`${API_SERVER}/p/comments`,{comment_post_id}).done((data) => {
+        $.post(`${API_SERVER}/comment/comments`,{comment_post_id}).done((data) => {
             resolve(data);
         }).fail((err) => {
             reject({code:500, data:err.responseJSON});
@@ -153,13 +154,29 @@ export function getComments(comment_post_id){
 }
 
 /**
- * 评论文章
+ * 获取评论
  * @param  {[type]} params [description]
  * @return {[type]}      [description]
  */
 export function heart(guid){
     return new Promise((resolve, reject) => {
         $.post(`${API_SERVER}/p/heart`,{guid}).done((data) => {
+            resolve(data);
+        }).fail((err) => {
+            reject({code:500, data:err.responseJSON});
+        });
+    });
+}
+
+
+/**
+ * 随机头像
+ * @param  {[type]} params [description]
+ * @return {[type]}      [description]
+ */
+export function randomAvatar(){
+    return new Promise((resolve, reject) => {
+        $.get(`${API_SERVER}/comment/getAvatar`).done((data) => {
             resolve(data);
         }).fail((err) => {
             reject({code:500, data:err.responseJSON});

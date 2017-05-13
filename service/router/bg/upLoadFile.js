@@ -3,6 +3,7 @@ const qiniu = require("qiniu"),
     Router = require("express").Router,
     path = require('path'),
     utils = require('../../utils'),
+    _ = require("lodash"),
     uuid = require("node-uuid"),
     request = require('request-json');
 
@@ -72,20 +73,35 @@ let delImg = function(req, res, next){
 }
 module.exports = function () {
     let router = new Router();
-    router.route("/token").get(function (req, res, next) {
-        var token = uptoken.token();
-        res.header("Cache-Control", "max-age=0, private, must-revalidate");
-        res.header("Pragma", "no-cache");
-        res.header("Expires", 0);
-        let key = uuid.v1();
-        if (token) {
-            return res.status(200).json({
-                token,
-                key,
-                domain,
-                uptoken:token
-            });
+    router.route("/token").get(async function (req, res, next) {
+        req.checkQuery('md5', '未提交文件MD5').notEmpty().isLength(32);
+
+        let result = await req.getValidationResult();
+        if(!result.isEmpty()){
+            let map = { code: 1, msg: result.array()[0].msg };
+            return res.status(400).json(map);
+        }else{
+            let token = uptoken.token();
+            res.header("Cache-Control", "max-age=0, private, must-revalidate");
+            res.header("Pragma", "no-cache");
+            res.header("Expires", 0);
+
+            let name = req.query.name;
+            let ext = req.query.ext;
+            let md5 = req.query.md5;
+
+            ext = _.last(ext.split("/")) || path.extname(name)
+
+            if (token) {
+                return res.status(200).json({
+                    token,
+                    key:md5+'.'+(ext||"png"),
+                    domain,
+                    uptoken:token
+                });
+            }
         }
+
     });
 
     router.route("/list").get(list,function (req, res, next) {

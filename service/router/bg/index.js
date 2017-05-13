@@ -1,4 +1,4 @@
-const debug = require('debug')('app:routes:blog/index' + process.pid),
+const debug = require('debug')('app:routes:gb/index' + process.pid),
     Router = require("express").Router;
 
 

@@ -332,9 +332,9 @@ export function setPostImg(params){
  * 获取上传图片的token
  * @return {[type]} [description]
  */
-export function getToken(){
+export function getToken(params){
     return new Promise((resolve, reject) => {
-        $.get(`${API_SERVER}/api/img/token`).done((data) => {
+        $.get(`${API_SERVER}/api/img/token`,params).done((data) => {
             resolve(data);
         }).fail(({responseJSON}) => {
             reject([responseJSON.code, responseJSON]);

@@ -104,6 +104,8 @@
 
                             if (alt === "") {
                                 cm.setCursor(cursor.line, cursor.ch + 2);
+                            }else {
+                                cm.setCursor(cursor.line+2, cursor.ch);
                             }
 
                             this.hide().lockScreen(false).hideMask();
@@ -150,9 +152,11 @@
                     var submitHandler = function() {
                         var files = fileInput[0].files
                         if (files.length > 0) {
+                            //  loading(false)
                             //Qiniu_upload(files, files.length, 0)
-                            settings.ouloadFn(files[0],(key,domain)=>{
+                            settings.ouloadFn(files[0],(key,domain,file)=>{
                                 // console.log(key,domain)
+                                $("[data-alt]").val(file.name);
                                 $('[data-url]').val(domain + key)
                                 loading(false);
                             })
@@ -162,7 +166,7 @@
                         return false
                     };
 
-                    dialog.find("[type=\"submit\"]").bind("click", submitHandler).trigger("click");
+                    dialog.find("[type=\"submit\"]").one("click", submitHandler).trigger("click");
 				});
             }
 			dialog = editor.find("." + dialogName);

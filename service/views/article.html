@@ -9,7 +9,7 @@
     <script src="/static/editormd/lib/marked.min.js"></script>
     <script src="/static/editormd/lib/prettify.min.js"></script>
     <script src="/static/editormd/editormd.min.js"></script>
-    <script src="https://cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js"></script>
+    <script src="//cdn.bootcss.com/lodash.js/4.17.4/lodash.min.js"></script>
     <%-statistical%>
 </head>
 
@@ -161,8 +161,12 @@
                 })();
             </script> -->
             <input type="hidden" ref="guid" value="<%=guid%>">
-            <blog-comment :posts-id="'<%=guid%>'" author="<%=cookies.comment_author%>" email="<%=cookies.comment_author_email%>" url="<%=cookies.comment_author_url%>">
-                <h1 slot="header">asdasdasdas</h1>
+            <blog-comment posts-id="<%=guid%>"
+                author="<%=cookies.comment_author%>"
+                email="<%=cookies.comment_author_email%>"
+                url="<%=cookies.comment_author_url%>"
+                avatar="<%=cookies.comment_author_avatar%>">
+                <!-- <h1 slot="header">asdasdasdas</h1> -->
             </blog-comment>
             <!-- <blob-footer ></blob-footer> -->
             <footer>

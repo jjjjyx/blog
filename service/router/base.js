@@ -50,7 +50,7 @@ module.exports = function(app){
         }
         app.locals['footer'] = function (name){
             return `
-            <script src="${global.SITE.CDN}/vue/2.2.1/vue.min.js"></script>${!isDev?'<script type="text/javascript" src="/static/vendor.js"></script>':''}
+            <script src="${global.SITE.CDN}/vue/2.3.2/vue.min.js"></script>${!isDev?'<script type="text/javascript" src="/static/vendor.js"></script>':''}
             <script type="text/javascript" src="/static/${name}.js"></script>
             `
         }

@@ -5,7 +5,7 @@ import BlobHeader from "components/head.vue"
 // import BlobFooter from "components/footer.vue"
 import FGotop from "components/gotop";
 import FWeiModel from "components/weimodel";
-import BlogComment from "components/comment";
+import BlogComment from "components/comment.vue";
 // import BlobFooter from "components/bottom.vue"
 
 import { getClientHeight } from "public/js/tools.js"

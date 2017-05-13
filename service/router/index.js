@@ -37,6 +37,7 @@ module.exports = function (app) {
     });
     app.use('/', require('./blog/index.js')());
     app.use('/p', require('./blog/postView.js')());
+    app.use('/comment', require('./blog/comment.js')());
     app.use('/category', require('./blog/category.js')());
     app.use('/archives', require('./blog/archives.js')());
     app.use('/author',   require('./blog/author.js')());

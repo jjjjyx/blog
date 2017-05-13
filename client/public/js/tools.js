@@ -1,3 +1,5 @@
+import SparkMD5 from 'spark-md5'
+
 /**
  * 时间格式化
  * @param format
@@ -191,6 +193,27 @@ export function getClientHeight() {
         var clientHeight = (document.body.clientHeight > document.documentElement.clientHeight) ? document.body.clientHeight : document.documentElement.clientHeight;
     }
     return clientHeight;
+}
+
+export function file_md5(file) {
+    return new Promise((resolve, reject)=>{
+        // let file = file_blob.file;
+        let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+            chunkSize = 1024 * 128, // Read in chunks of 1M
+            spark = new SparkMD5.ArrayBuffer(),
+            fileReader = new FileReader()
+        fileReader.onload = function(e) {
+
+            spark.append(e.target.result); // Append array buffer
+            resolve(spark.end());
+            // console.log(file_blob.md5)
+        };
+        fileReader.onerror = function() {
+            console.warn('oops, something went wrong.');
+            reject(false);
+        };
+        fileReader.readAsArrayBuffer(blobSlice.call(file, 0, chunkSize));
+    });
 }
 
 ///格式化文件大小

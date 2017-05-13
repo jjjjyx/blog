@@ -60,6 +60,7 @@
 
 import { mapGetters, mapActions,mapMutations } from 'vuex'
 import * as api from "public/js/netapi.js";
+import {file_md5} from "public/js/tools.js";
 import key from "public/js/key.js";
 import PostInfo from "./post-info"
 export default {
@@ -209,24 +210,31 @@ export default {
                 layer.msg(data.msg);
             }
         },
-        qiniuUpload(file ,{token,key,domain},fn){
+        async qiniuUpload(file ,fn){
+            let tokenK = await api.getToken({
+                name:file.name,
+                ext:file.type,
+                md5:await file_md5(file)
+            });
+            console.log(tokenK)
+            // ###
             let xhr = new XMLHttpRequest();
             //创建表单
             xhr.open('POST', 'http://up-z2.qiniu.com/', true);
-            var formData;
+            let formData;
             formData = new FormData();
-            formData.append('key', key);
-            formData.append('token', token);
+            formData.append('key', tokenK.key);
+            formData.append('token', tokenK.token);
             formData.append('file', file);
             formData.append('mimeType', "image/jpeg");
             xhr.onreadystatechange = function(response) {
                 if (xhr.readyState == 4 && xhr.status == 200 && xhr.responseText) {
-                    fn(key,domain)
+                    fn(tokenK.key,tokenK.domain,file)
                 } else {
                     console.log("failed...");
                 }
             }
-            //提交数据
+            // //提交数据
             xhr.send(formData);
         }
 
@@ -265,14 +273,14 @@ export default {
             },
             onload:()=>{
                 this.editormd.cm.getInputField().addEventListener("paste", async function (e) {
-                    var clipboardData = event.clipboardData || window.clipboardData;
+                    var clipboardData = e.clipboardData;
                     if (clipboardData) {
                          for (var i = 0, len = e.clipboardData.items.length; i < len; i++) {
-                            var item = e.clipboardData.items[i];
+                            let item = e.clipboardData.items[i];
                             if (item.kind === "file" && item.type == 'image/png') {
-                                var pasteFile = item.getAsFile();
-                                let tokenK = await api.getToken();
-                                self.qiniuUpload(pasteFile,tokenK,(key,domain)=>{
+                                let pasteFile = item.getAsFile();
+                                console.log(pasteFile)
+                                self.qiniuUpload(pasteFile,(key,domain)=>{
                                     let img = `![](${domain}${key})\n`;
                                     self.editormd.insertValue(img);
                                 })
@@ -281,9 +289,8 @@ export default {
                     }
                 });
             },
-            ouloadFn :async function(files,fn) {
-                let tokenK = await api.getToken();
-                self.qiniuUpload(files,tokenK,fn)
+            ouloadFn :function(files,fn) {
+                self.qiniuUpload(files,fn)
             },
             onfullscreen(){
                 $("#nav").slideUp();

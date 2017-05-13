@@ -1,6 +1,6 @@
 <template>
 <aside class="comment-wrapper">
-    <blog-comment-send :posts-id="postsId" :author="author" :email="email" :url="url" @comment="addComment"></blog-comment-send>
+    <blog-comment-send :posts-id="postsId" :parame.sync="parame" @comment="addComment" @editInfo="edit = true"></blog-comment-send>
     <div class="j-comment-head">
         <span v-if="commentList.length">{{commentList.length}} 条评论</span>
         <span v-else>暂无评论</span>
@@ -21,7 +21,7 @@
         </div>
         <li class="j-reply-wrap" v-for="item in pageList">
             <a href="javascript:;" class="j-user-avatar">
-                <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" alt="user-avatar">
+                <img :src="item.comment_author_avatar" alt="user-avatar">
             </a>
             <div class="am-comment-main">
                 <header>
@@ -42,33 +42,67 @@
             </div>
         </li>
         <f-page :all="pageNum" :cur="currPage" @toPage="toPage" v-if="commentList.length"></f-page>
-        <!-- <ul class="am-pagination am-pagination-centered">
-          <li class="am-disabled"><a href="#">&laquo;</a></li>
-          <li class="am-active"><a href="#">1</a></li>
-          <li><a href="#">2</a></li>
-          <li><a href="#">3</a></li>
-          <li><a href="#">4</a></li>
-          <li><a href="#">5</a></li>
-          <li><a href="#">&raquo;</a></li>
-        </ul> -->
     </ul>
-    <!-- <slot name="header"></slot>
-    <slot name="header"></slot> -->
-    <blog-comment-send v-if="commentList.length>=10" :posts-id="postsId" :author="author" :email="email" :url="url" @comment="addComment" style="margin-top:30px;"></blog-comment-send>
+    <!-- :author.sync="author"
+    :email.sync="email"
+    :url.sync="url"
+    :avatar.sync="avatar" -->
+    <blog-comment-send v-if="commentList.length>=10"
+        :posts-id="postsId"
+        :parame.sync="parame"
+        @comment="addComment" style="margin-top:30px;"></blog-comment-send>
     <!-- <slot></slot> -->
+
+    <div class="am-modal am-modal-prompt" tabindex="-1" id="my-prompt">
+      <div class="am-modal-dialog">
+        <div class="am-modal-hd">游客信息</div>
+        <form class="am-modal-bd am-form am-form-horizontal" @submit.prevent id="comment_author">
+            <div class="am-form-group">
+              <label for="doc-text-3" class="am-u-sm-2 am-form-label">昵称 <span class="am-text-danger">*</span></label>
+              <div class="am-u-sm-10">
+                <input type="text" id="doc-text-3" placeholder="昵称"  v-model="parame.comment_author" required minlength="2" maxlength="18" >
+              </div>
+            </div>
+            <div class="am-form-group">
+              <label for="doc-ipt-3" class="am-u-sm-2 am-form-label">邮箱 <span class="am-text-danger">*</span></label>
+              <div class="am-u-sm-10">
+                <input type="email" id="doc-ipt-3" placeholder="邮箱" v-model="parame.comment_author_email" required >
+              </div>
+            </div>
+            <div class="am-form-group">
+              <label for="doc-url-3" class="am-u-sm-2 am-form-label">网址 </label>
+              <div class="am-u-sm-10">
+                <input type="url" id="doc-url-3" placeholder="http://" v-model="parame.comment_author_url">
+              </div>
+            </div>
+            您必须要提供这些信息才能评论呢~
+        </form>
+        <div class="am-modal-footer">
+          <span class="am-modal-btn" data-am-modal-cancel>取消</span>
+          <span class="am-modal-btn" @click="vaild" data-am-modal-confirm>提交</span>
+        </div>
+      </div>
+    </div>
 </aside>
 </template>
 <script>
+
 import * as api from "public/js/api.js"
 import BlogCommentSend from "./comment-send.vue"
 import FPage from "./page.vue"
-// const useragent = require('useragent')
-// emoji         : /:([\w\+-]+):/g,
+
 
 const emojiReg = /:([\w\+-]+):/g
 export default {
     data() {
         return {
+            parame:{
+                comment_author:this.author,
+                comment_author_email:this.email,
+                comment_author_url:this.url,
+                comment_author_avatar: this.avatar
+            },
+            commentContent: '',
             commentList: [],
             msg: '',
             loading: true,
@@ -81,6 +115,7 @@ export default {
                     d: 'asc'
                 },
             ],
+            edit: false,
             sort: 'desc',
             currPage: 1,
             rowsNum: 10,
@@ -92,9 +127,6 @@ export default {
     components: {
         BlogCommentSend,
         FPage
-    },
-    filters: {
-
     },
     computed: {
         list() {
@@ -111,8 +143,47 @@ export default {
         }
     },
     methods: {
-        addComment(d) {
-            this.commentList.splice(0, 0, d);
+        // addComment(d) {
+        //     this.commentList.splice(0, 0, d);
+        // },
+        async addComment(){
+            const authorForm = $("#my-prompt").show(); // 这个元素必须显示出来才能验证表单
+            // 不想想验证代码，我已经使用amazeui 的验证框架了在写有点多余
+            const vaild = $("#comment_author").validator('isFormValid');
+            authorForm.hide();
+
+            if(vaild) {
+                if(this.commentContent&&this.commentContent.length<=300){
+                    try {
+                        let r = await api.comment({
+                            ...this.parame,
+                            comment_content:this.commentContent,
+                            posts_id:this.postsId
+                        });
+                        if(r.code ==0) {
+                            let data = r.data;
+                            // this.$emit('comment',data)
+                            this.commentList.splice(0,0,data)
+                            this.commentContent = '';
+                            layer.msg(r.msg);
+                        }
+                    } catch (e) {
+                        layer.msg(e.data.msg);
+                    }
+                }else {
+                    this.tips();
+                }
+
+            } else {
+                authorForm.modal({width:320,closeOnConfirm:false});
+            }
+        },
+        // null 提示
+        tips(){
+            $(".j-comment_content").addClass('am-animation-shake').one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
+                $(this).removeClass('am-animation-shake');
+                layer.tips('评论内容不可为空', '.j-comment_content');
+            });
         },
         toComment(el, s) {
             $('html, body').animate({
@@ -123,13 +194,6 @@ export default {
         toPage(page) {
             this.toComment('.j-comment-list', 800)
             this.currPage = page;
-        },
-        HTMLEncode(html) {
-            let temp = document.createElement("div");
-            (temp.textContent != null) ? (temp.textContent = html) : (temp.innerText = html);
-            var output = temp.innerHTML;
-            temp = null;
-            return output;
         },
         emoji(text) {
             let matchs = text.match(emojiReg);
@@ -148,6 +212,17 @@ export default {
                 });
             }
             return text;
+        },
+        vaild(){
+            if($("#comment_author").validator('isFormValid')){
+                $("#my-prompt").modal('close')
+
+                if(!this.edit)
+                    this.addComment();
+                else{
+                    this.edit = false;
+                }
+            }
         }
 
     },
