@@ -74,7 +74,8 @@ module.exports = function(app){
                         moveType: 1, //拖拽模式，0或者1
                         content: \`
                         <div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">
-                            更新啦~~<br />
+                            更新啦！！~~<br />
+                            * 优化手机界面，更加友好移动端
                             * 加入游客随机评论头像，访问本站随机设置一个水果(coding)头像 有几率抽到康纳~<br />
                             * 加入回复功能<br />
                             * 加入emoji 表情<br />

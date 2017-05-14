@@ -36,7 +36,7 @@
                 </div>
                 <footer class="am-comment-info">
                     <i class="iconfont" :class="'icon-'+item.comment_agent.split(' ')[0].toLowerCase()"></i>
-                    <span style="">{{item.comment_agent}}</span>
+                    <span class="">{{item.comment_agent}}</span>
                     <i class="iconfont icon-shijian"></i>
                     <span style="">{{item.comment_date}}</span>
                     <span class="j-reply-btn j-btn-hover j-btn" @click="reply(item.comment_id)">回复</span>
@@ -69,19 +69,14 @@
         </li>
         <f-page :groups="groupNum" :all="pageNum" :cur="currPage" @toPage="toPage" v-if="commentList.length"></f-page>
     </ul>
-    <!-- :author.sync="author"
-    :email.sync="email"
-    :url.sync="url" v-model="content"
-    :avatar.sync="avatar" -->
+
     <blog-comment-send v-if="commentList.length>=10"
         :posts-id="postsId"
         :parame.sync="parame"
         v-model="content"
         @comment="addComment" @editInfo="edit = true" style="margin-top:30px;">
     </blog-comment-send>
-    <!-- <f-test label="Price" v-model="price"></f-test>
-    <f-test label="Price" v-model="price" style="margin-top:30px;"></f-test> -->
-    <!-- <slot></slot> -->
+
 
     <div class="am-modal am-modal-prompt" tabindex="-1" id="my-prompt">
       <div class="am-modal-dialog">
@@ -434,6 +429,11 @@ export default {
         cursor: pointer;
         display: inline-block;
     }
+    .j-reply-box {
+        .j-user-avatar {
+            margin: 12px 0 0 5px;
+        }
+    }
     .j-reply-list-box {
         .j-reply-item {
             padding: 10px 0;
@@ -602,5 +602,16 @@ export default {
         color: #131313;
     }
 }
+@media only screen and (max-width: 640px) {
+    .j-comment-wrap {
 
+    }
+    .j-user-avatar img {
+        width: 30px;
+        height: 30px;
+    }
+    .j-textarea-container {
+        margin-left: 55px;
+    }
+}
 </style>

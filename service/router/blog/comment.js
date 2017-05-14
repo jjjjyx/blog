@@ -63,7 +63,7 @@ let comment = async function(req, res, next){
             };
             result = await commentDao.asyncInsert(data)
             result.comment_agent = useragent.parse(result.comment_agent).os.family;
-            result.comment_date = moment(result.comment_date).format('YYYY/MM/DD HH:mm:ss')
+            result.comment_date = moment(result.comment_date).format('YY/MM/DD H:mm:ss')
             res.map = { code :0, msg:'评论成功', data:result }
             if(comment_parent) {
                 res.map.code = 100;
@@ -92,7 +92,7 @@ let comments = async function(req, res, next){
             let keys= [];
             result.forEach((item)=>{
                 item.comment_agent = useragent.parse(item.comment_agent).os.family;
-                item.comment_date = moment(item.comment_date).format('YYYY/MM/DD HH:mm:ss');
+                item.comment_date = moment(item.comment_date).format('YY/MM/DD H:mm:ss');
                 switch (item.comment_approved) {
                     case 1:
                         item.comment_content = "评论没有被删除！"

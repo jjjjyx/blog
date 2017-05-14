@@ -282,9 +282,9 @@ module.exports.indexLi = function(data){
                        </a>
                    </div>
                    <div class="meta am-margin-vertical-xs">
-                       <a title="${xss(item.post_author)}" class="name" >${xss(item.post_author)}</a> ${new Date(item.post_date).format("yyyy-MM-dd hh:mm:ss")}
+                       <a title="${xss(item.post_author)}" class="name" >${xss(item.post_author)}</a> ${new Date(item.post_date).format("yy/M/d hh:mm")}
                    </div>
-                   <p class="">
+                   <p class="intro am-show-md-up">
                         ${xss(marked(item.post_content,{renderer}).substring(0,140))}...
                    </p>
                    <div class="j-category-tag">

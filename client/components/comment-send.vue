@@ -15,8 +15,8 @@
            placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。">
        </textarea>
         <div class="j-emoji-block ">
-            <div class="am-dropdown" data-am-dropdown>
-                <a href="javascrip:;" class="j-btn nono-user-select am-dropdown-toggle"><i class="iconfont icon-biaoqing"></i> 表情</a>
+            <div class="am-dropdown" data-am-dropdown ref="j-emoji-down">
+                <a href="javascrip:;" class="j-btn nono-user-select am-dropdown-toggle" @click="openEmojiDown"><i class="iconfont icon-biaoqing"></i> 表情</a>
                 <f-emoji class="am-dropdown-content" @selectEmoji="selectEmoji"></f-emoji>
             </div>
             <span class="nono-user-select">Ctrl+Return 发表</span>
@@ -81,6 +81,9 @@ export default {
         }
     },
     methods: {
+        openEmojiDown(){
+            $(this.$refs['j-emoji-down']).dropdown('open')
+        },
         handleBlur(event) {
             this.$emit('blur', event);
         },
