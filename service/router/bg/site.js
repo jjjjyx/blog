@@ -9,7 +9,6 @@ let updata = function(req, res,next){
     let map = {
         msg:'ok'
     };
-    console.log(req.body)
     siteDao.update(req.body,(err,data)=>{
         if (err) {
             map.code = -1;

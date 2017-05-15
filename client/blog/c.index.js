@@ -17,6 +17,7 @@ import keyboardJS from "keyboardjs"
 import {getClientHeight} from "public/js/tools.js";
 import BlobHeader from "components/head.vue";
 import BlobFooter from "components/bottom.vue";
+import "jquery-stickit/build/jquery.stickit.min";
 
 const app = new Vue({
     el: '#app',
@@ -107,7 +108,7 @@ const app = new Vue({
         let tagHover = ()=>{
             let next = $(".tag.active").removeClass('active').next('.tag');
             if(!next.length){
-                next=$(".tag:eq(0)")
+                next = $(".tag:eq(0)")
             }
             next.addClass("active");
         }
@@ -118,13 +119,6 @@ const app = new Vue({
             self.open($(this).data('slug'))
         })
         this.bindScrollspy();
-
-        $('.footer').parent().scrollspy({
-            animation: 'ss',
-        }).on('inview.scrollspy.amui', ()=> {
-            $(".j-blog").hide();
-        }).on('outview.scrollspy.amui', function() {
-            $(".j-blog").show();
-          });
+        $('.sidebar').stickit({screenMinWidth: 641})
     }
 })

@@ -53,7 +53,7 @@
                                 <span v-html="emoji(item2)" class="j-reply-text"></span>
                             </div>
                             <div class="j-reply-info">
-                                <span style="">{{item.comment_date}}</span>
+                                <span style="">{{item2.comment_date}}</span>
                                 <span class="j-reply-btn j-btn-hover j-btn" @click="reply(item.comment_id,item2)">回复</span>
                             </div>
                         </div>

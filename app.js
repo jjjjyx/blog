@@ -103,11 +103,11 @@ app.use(function (req, res, next) {
 })
 /*错误处理器*/
 app.use(function (err, req, res, next) {
-    console.log(err.message);
+
     if (err.name === 'UnauthorizedError') {
         return res.status(200).send({code:401,msg:'invalid token...'});
     }
-    console.log(err);
+
     return res.status(500).json({
         code: 500,
         msg: err.message

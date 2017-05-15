@@ -22,6 +22,7 @@ class CommentDao extends db.BaseDao {
         data.comment_id = temp.insertId;
         sql = "UPDATE `myblog`.`j_posts` SET comment_count = comment_count+1 where guid=:comment_post_id";
         this.asyncExec(sql, data);
+        
         return data;
     }
     // INSERT INTO `myblog`.`j_comments` (`comment_post_id`, `comment_author`, `comment_author_email`, `comment_author_url`, `comment_author_ip`, `comment_date`, `comment_content`, `comment_agent`, `comment_parent`, `user_id`,`comment_karma`)

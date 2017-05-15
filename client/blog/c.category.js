@@ -2,7 +2,7 @@ import "./static/css/category.less";
 
 import BlobHeader from "components/head.vue";
 import BlobFooter from "components/bottom.vue";
-
+import "jquery-stickit/build/jquery.stickit.min";
 
 const app = new Vue({
     el: '#app',
@@ -27,5 +27,6 @@ const app = new Vue({
     },
     mounted: function() {
         $("#preloader").fadeOut(1000, () => $("#preloader").remove());
+        $('.sidebar').stickit && $('.sidebar').stickit({screenMinWidth: 641})
     }
 })

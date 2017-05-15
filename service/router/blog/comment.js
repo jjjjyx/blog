@@ -63,16 +63,21 @@ let comment = async function(req, res, next){
             };
             result = await commentDao.asyncInsert(data)
             result.comment_agent = useragent.parse(result.comment_agent).os.family;
-            result.comment_date = moment(result.comment_date).format('YY/MM/DD H:mm:ss')
+            result.comment_date = moment(result.comment_date).format('YY/MM/DD H:mm:ss');
+            let tmp = result.comment_author_ip.split(/\.|:/)
+            if(tmp.length==4){
+                tmp[1] = "*";
+                tmp[2] = "*";
+            }
+            result.comment_author_ip = tmp.join(".")
             res.map = { code :0, msg:'评论成功', data:result }
             if(comment_parent) {
                 res.map.code = 100;
                 res.map.msg = "回复成功";
             }
-
             // TODO: 验证码机制
         } catch (e) {
-            res.map = { code: 1, msg: "啊哦！发生错误咯！我会尽快修复的！", }
+            res.map = { code: 1, msg: "啊哦！发生错误咯！我会尽快修复的！" }
         } finally {
             next();
         }
@@ -93,6 +98,12 @@ let comments = async function(req, res, next){
             result.forEach((item)=>{
                 item.comment_agent = useragent.parse(item.comment_agent).os.family;
                 item.comment_date = moment(item.comment_date).format('YY/MM/DD H:mm:ss');
+                let tmp = item.comment_author_ip.split(/\.|:/)
+                if(tmp.length==4){
+                    tmp[1] = "*";
+                    tmp[2] = "*";
+                }
+                item.comment_author_ip = tmp.join(".")
                 switch (item.comment_approved) {
                     case 1:
                         item.comment_content = "评论没有被删除！"
@@ -117,7 +128,7 @@ let comments = async function(req, res, next){
                 // keys.push({comment_date:item.comment_date,comment_id:item.comment_id})
             });
             //  = Object.keys(comments);
-            res.map = { code :0, data:keys, groupNum:3, rows:10 }
+            res.map = { code :0, data:keys, groupNum:3, rows: 10 }
         } catch (e) {
             console.log(e);
             res.map = { code: 1, msg: "啊哦！发生错误咯！我会尽快修复的！", }
@@ -139,7 +150,7 @@ module.exports = function () {
         res.status(200).json({code:0,url:comment_author_url});
     });
     // router.route("/commentCallback").post(commentCallback);
-    router.route("/comment").post(comment, function (req, res, next) {
+    router.route("/comment").post(rateLimiter.middleware({redis: client, key: 'ip', rate: '5/minute'}),comment, function (req, res, next) {
         return res.status(200).json(res.map);
     })
     router.route("/comments").post(comments, function (req, res, next) {

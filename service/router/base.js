@@ -1,5 +1,6 @@
 const siteDao = require("../dao/site.dao"),
-    moment = require("moment");
+    moment = require("moment")
+    parts = require("./part/parts");
 let isDev = NODE_ENV !== 'production';
 module.exports = function(app){
     siteDao.get((err, data) => {
@@ -61,13 +62,11 @@ module.exports = function(app){
                     var isOpen = $.AMUI.utils.cookie.get('closeNotice');
                     !isOpen&&layer.open({
                         type: 1,
-                        title: false //不显示标题栏
-                            ,
+                        title: false, //不显示标题栏
                         closeBtn: false,
                         area: '300px;',
                         shade: 0.8,
-                        id: 'JJJjyx' //设定一个id，防止重复弹出
-                            ,
+                        id: 'JJJjyx', //设定一个id，防止重复弹出
                         resize: false,
                         btn: ['火速围观', '残忍拒绝'],
                         btnAlign: 'c',
@@ -87,32 +86,6 @@ module.exports = function(app){
             </script>
             `
         }
-        app.locals['part'] = {
-            blog:(sticky)=>`
-            <div class="part j-blog am-padding-vertical-sm" style="text-align:center;"  ${sticky?'data-am-scrollspynav="{offsetTop: 45}" data-am-sticky="{top:80}"':''}>
-                <img src="${site.avatar}" alt="avatar" class="am-circle am-img-thumbnail am-margin-top-sm" height="90" width="90">
-                <h3>酱酱酱酱油鲜</h3>
-                <p>${site.sign}</p>
-                <div class="social-ul">
-                    <li>
-                        <a href="http://wpa.qq.com/msgrd?v=3&uin=871839012&site=qq&menu=yes" target="_blank"><i class="am-icon-qq"></i></a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/xsq871839012" target="_blank"><i class="am-icon-github"></i></a>
-                    </li>
-                    <li>
-                        <a href="http://weibo.com/5403878645" target="_blank"><i class="am-icon-weibo"></i></a>
-                    </li>
-                    <li>
-                        <a href="javascript:;" data-am-modal="{target: '#weixin-modal'}"><i class="am-icon-weixin"></i></a>
-                    </li>
-                    <li>
-                        <a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net" target="_blank"><i class="am-icon-envelope"></i></a>
-                    </li>
-                </div>
-            </div>
-            `
-        }
-
+        app.locals['part'] = parts
     });
 }
