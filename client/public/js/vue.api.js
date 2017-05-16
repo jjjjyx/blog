@@ -1,6 +1,4 @@
 
-import Vue from "vue";
-
 import {dateFormat, getTimeText,formatFileSize} from "./tools"
 
 Vue.filter('dateFormat', dateFormat);

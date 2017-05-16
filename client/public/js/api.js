@@ -1,5 +1,5 @@
 
-let API_SERVER = "http://localhost:3878"
+let API_SERVER = ""
 
 let REQUEST_TIMEOUT = 3000
 
