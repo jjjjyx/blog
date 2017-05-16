@@ -13,6 +13,7 @@ const debug = require('debug')('app:utils:' + process.pid),
     xss = require('xss'),
     marked = require("marked"),
     renderer = new marked.Renderer(),
+    visitorsDao = require("./dao/visitors.dao"),
     TOKEN_EXPIRATION = 60, // 单位秒
     TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5; //
 // UnauthorizedAccessError = require(path.join(__dirname, 'errors', 'UnauthorizedAccessError.js'));
@@ -226,6 +227,45 @@ module.exports.getPostsCounts = function(articleGuidList)  {
             resolve(body.response||{});
         });
     });
+}
+module.exports.visitorsfilter = function(req,res,next){
+    let originalUrl = req.originalUrl;
+
+    let ip = exports.getClientIp(req);
+    let userName ;
+    let token = req.cookies.u;
+
+    // console.log(req.cookies.u)
+    if(token){
+        let decoded = jsonwebtoken.decode(token);
+        userName = decoded.user_login;
+    }else {
+        let comment_author = req.cookies.comment_author
+        if(comment_author)
+            userName = `# ${comment_author}`;
+    }
+    // visitorsDao.getVisitorsByIP(ip,(err,data)=>{
+    //     let last = data[0];
+    //     let jet = true;
+    //     if(last){
+    //         let last_at = new Date(last.create_at);
+    //         jet = ((new Date().getTime() - last_at.getTime())/(1000*60*30))>1;
+    //     }
+    //     if(jet){
+
+    exports.getIpInfo(ip).then((e)=>{
+        let address = "invaild ip.";
+        let isp = "";
+        if(e.code == 0){
+            address =e.data.country+e.data.region+e.data.city+e.data.county
+            isp = e.data.isp;
+        }
+        visitorsDao.add({ip,userName,address,isp,originalUrl},()=>{})
+    })
+    //     }
+    // })
+
+    next()
 }
 
 // 为了将markdown 的内容全部提取出来 不包含符号

@@ -216,7 +216,6 @@ export default {
                 ext:file.type,
                 md5:await file_md5(file)
             });
-            console.log(tokenK)
             // ###
             let xhr = new XMLHttpRequest();
             //创建表单
@@ -279,7 +278,6 @@ export default {
                             let item = e.clipboardData.items[i];
                             if (item.kind === "file" && item.type == 'image/png') {
                                 let pasteFile = item.getAsFile();
-                                console.log(pasteFile)
                                 self.qiniuUpload(pasteFile,(key,domain)=>{
                                     let img = `![](${domain}${key})\n`;
                                     self.editormd.insertValue(img);

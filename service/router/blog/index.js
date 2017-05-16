@@ -82,7 +82,7 @@ let getIndexData = [
 
 module.exports = function() {
     let router = new Router();
-    router.route("/").get(getIndexData,function(req, res) {
+    router.route("/").get(utils.visitorsfilter, getIndexData, function(req, res) {
         if(!_.isEmpty(req.renderData)){
             res.render('index', req.renderData)
         }

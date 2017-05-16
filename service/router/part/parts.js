@@ -1,5 +1,30 @@
-
+const debug = require('debug')('app:routes:blog/parts' + process.pid),
+    _ = require("lodash"),
+    utils = require('../../utils'),
+    postDao = require("../../dao/post.dao"),
+    termDao = require("../../dao/term.dao"),
+    siteDao = require("../../dao/site.dao"),
+    visitorsDao = require("../../dao/visitors.dao");
 //${sticky?'data-am-scrollspynav="{offsetTop: 45}" data-am-sticky="{top:80}"':''}
+//${
+const loopLi = function(li,data,mini){
+    let str = `return \`${li}\`${mini?".split('\\n').map((s)=>s.trim()).join('')":""};`;
+    return data.map((item)=>{
+        return (new Function('item',str))(item)
+    }).join("");
+}
+
+// >>  loopLi('hello ${item.name}',[{name:'world'},{name:'test'}])//
+
+// let data = [{name:'world'},{name:'test'}];
+// `<ul class="social-ul">${loopLi(
+//         `<li>
+//             <a href="#">\${item.name}</a>
+//         </li>`,data,true)}</ul>`
+// >> <ul class="social-ul">
+//     <li> <a href="#">world</a> </li>
+//     <li> <a href="#">test</a> </li>
+// </ul>
 module.exports = {
     blog:(sticky)=>`
         <div class="part j-blog am-padding-vertical-sm" style="text-align:center;"  >
@@ -24,5 +49,52 @@ module.exports = {
                 </li>
             </div>
         </div>
+        `,
+    archives:async function(cb){
+        let data = await postDao.asyncGetPostsGroup();
+        // req.renderData.groupList = data;
+        // <input type="text" ref="h" v-if="enabled" autocomplete="off" v-model="keyword" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
+        // <%for(item of termList){%>
+        //     <%if(item.name=='java'){%>
+        //         <a class="tag active" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout" target="_blank" href="/category/<%=item.slug%>">
+        //             <span class="tags-icon">
+        //                 <i class="<%=item.icon%>"></i>
+        //             </span>
+        //             <span><%=item.name%></span>
+        //         </a>
+        //     <%}else{%>
+        //         <a class="tag" data-tag='<%=item.name%>' target="_blank" href="/category/<%=item.slug%>">
+        //             <span class="tags-icon">
+        //                 <i class="<%=item.icon%>"></i>
+        //             </span>
+        //             <span><%=item.name%></span>
+        //         </a>
+        //     <%}%>
+        // <%}%>
+        let k = `
+        <div class="part">
+            <div class="j-title">
+                <h3 class="">标签</h3>
+                <a href="/category" class="r btn btn-sm " style="color:#B3B3B3">
+                    全部 &nbsp;&nbsp;<i class="am-icon-angle-right"></i>
+                </a>
+            </div>
+            <div class="tags">
+                ${loopLi(`<a class="tag" data-tag='${item.name}' target="_blank" href="/category/${item.slug}">
+                    <span class="tags-icon">
+                        <i class="${item.icon}"></i>
+                    </span>
+                    <span>${item.name}</span>
+                </a>`,data)}
+            </div>
+        </div>
         `
+        return cb(k)
+    }
 }
+
+// <!-- <%-(async function (){return await part.archives()})()%> -->
+// <!-- <%(async function (){%>
+//     <%-"adasd"%>
+//     <%-await part.archives()%>
+// <%})()%> -->
