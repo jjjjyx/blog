@@ -13,11 +13,21 @@
   不过有考虑加入用户，让其他用户能够评论，在我这里投稿 <img src="http://oht47c0d0.bkt.clouddn.com/public/16-12-10/35946736.jpg" width = "20" height = "20" alt="doge" style=""/>
 
 ## 链接  
-  ~~酱酱酱酱油鲜的博客 [www.mbdoge.cn](http://www.mbdoge.cn)~~
+  酱酱酱酱油鲜的博客 [www.mbdoge.cn](http://www.mbdoge.cn)
 
 ![doge抱小鱼](http://oht47c0d0.bkt.clouddn.com/public/16-12-10/92276663.jpg)
 
 ## Change log
+##### 2018年4月17日
+重新归来，一波重构，说明一下
+> 感觉自己有病  哈哈
+- 升级webpack 到4.5
+- 升级全部依赖
+- 项目结构调整 功能暂时保持不变
+
+
+~~-不采用前后端分离了，还是使用后端渲染的方式~~
+
 ##### 2017年6月23日
 - 移动loading效果css 位置
 
