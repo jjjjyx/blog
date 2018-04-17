@@ -9,7 +9,6 @@ const debug = require('debug')('app:routes:blog/index' + process.pid),
     postDao = require("../../dao/post.dao"),
     imgList = require("./avatar.json");
 
-
 let loadArticleInfo = [
     function(req, res, next){
         req.checkParams('guid','链接不正确').isAlphanumeric().len(24);
@@ -102,10 +101,6 @@ let heart = async function(req, res, next){
     }
 }
 
-
-
-
-
 module.exports = function() {
     let router = new Router();
     router.route("/read/:guid").get(read,function (req, res, next) {
@@ -116,7 +111,7 @@ module.exports = function() {
         return res.status(200).json(res.map);
     })
 
-    router.route("/:guid").get(loadArticleInfo).post(function(req, res, next){
+    router.route("/:guid").get(utils.visitorsfilter,loadArticleInfo).post(function(req, res, next){
         req.post_password = req.body.post_password;
         next();
     },loadArticleInfo);

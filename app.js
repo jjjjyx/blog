@@ -11,11 +11,10 @@ let isDev = NODE_ENV !== 'production';
 
 debug("Starting application");
 
+global.C = require("./service/config");
 let unless = require('express-unless');
 let expressJwt = require('express-jwt');
-let config = require("./service/config");
 let utils = require("./service/utils");
-global.C = config;
 
 // app.engine('html', consolidate.ejs);
 
@@ -103,7 +102,7 @@ app.use(function (req, res, next) {
 })
 /*错误处理器*/
 app.use(function (err, req, res, next) {
-
+    
     if (err.name === 'UnauthorizedError') {
         return res.status(200).send({code:401,msg:'invalid token...'});
     }

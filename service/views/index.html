@@ -4,6 +4,7 @@
 <head>
     <%-head('index')%>
     <script src="//cdn.bootcss.com/layer/3.0.1/layer.min.js"></script>
+    <!-- <script src="/static/lib/layer.extent.js"></script> -->
     <%-statistical%>
 </head>
 
@@ -42,21 +43,6 @@
                     </ul>
                     <main class="j-article-list am-tabs-bd am-tabs-bd-ofv">
                         <div class="am-tab-panel  am-active" ref="articleList">
-                            <!-- <article data-node-id="115" class="have-img img-top">
-                                <a class="wrap-img" href="/p/adbb46e1a4dd" target="_blank">
-                                     <img src="//upload-images.jianshu.io/upload_images/2041831-8c345d6f3a9de7e4.jpg?imageMogr2/auto-orient/strip|imageView2/1/w/375/h/300" alt="300">
-                                </a>
-                                <div class="content">
-                                    <h3 class="title"><a href="/p/58f1cc1251f07aedc559f511" target="_blank">17/4/15 福大补课</a></h3>
-                                    <div class="options am-fr"><a href="/p/58f1cc1251f07aedc559f511" target="_blank" class="read"><i class="am-icon-eye"></i> <span class="num">13</span></a><a href="/p/58f1cc1251f07aedc559f511#comment" target="_blank" class="comment"><i class="am-icon-comment-o"></i> <span class="num">0</span></a>
-                                        <a
-                                            class="like"><i class="am-icon-heart-o"></i> <span class="num">0</span></a>
-                                    </div>
-                                    <div class="meta am-margin-vertical-xs"><a title="酱酱酱酱油鲜" class="name">酱酱酱酱油鲜</a> 2017-04-15 15:30:26</div>
-                                    <p>servlet接收参数，输出网页在请求过程中所有的内容包括请求头，cookie，自定义属性，表单参数都包含在request中，参数分成2种，一种是由我们来存放的属性，一种由用户通过表单，url等方式传递给我们的。根据具体情况具体解决jquery 异步请求学会利用浏览器查看网络请求...</p>
-                                    <div class="j-category-tag"><a class="category">个人笔记</a><i class="am-icon-tags"></i> <a>servler</a><a>jsp</a><a>文件上传</a></div>
-                                </div>
-                            </article> -->
                             <%-datali%>
                         </div>
                         <div class="am-tab-panel " ref="9P1TEN">
@@ -133,7 +119,8 @@
                             </a>
                             <!-- <span class="gapline">|</span> -->
                         </div>
-                        <ul class="ds-top-threads j-list" data-range="monthly" data-num-items="10"></ul>
+                        <!--逝去的多说 -->
+                        <!-- <ul class="ds-top-threads j-list" data-range="monthly" data-num-items="10"></ul>
                         <script type="text/javascript">
                             var duoshuoQuery = {
                                 short_name: "\x6a\x6a\x6a\x6a\x79\x78"
@@ -147,14 +134,15 @@
                                 (document.getElementsByTagName('head')[0] ||
                                     document.getElementsByTagName('body')[0]).appendChild(ds);
                             })();
-                        </script>
+                        </script> -->
                     </div>
                     <div class="part">
                         <div class="j-title">
                             <h3 class="">近期评论</h3>
                             <!-- <span class="gapline">|</span> -->
                         </div>
-                        <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="1" data-show-time="1" data-show-admin="1" data-excerpt-length="70"></ul>
+                        <!--逝去的多说 -->
+                        <!-- <ul class="ds-recent-comments" data-num-items="10" data-show-avatars="1" data-show-time="1" data-show-admin="1" data-excerpt-length="70"></ul> -->
                     </div>
                     <div class="part">
                         <div class="j-title">
@@ -166,7 +154,7 @@
                                 <li>
                                     <a href="/archives#<%=dateFormat(item.post_date,'MMMYY')%>"><i class="am-icon-calendar-plus-o"></i> <%=item.post_date2%></a>
                                 </li>
-                                <%}%>
+                            <%}%>
                         </ul>
                     </div>
                     <div class="part">

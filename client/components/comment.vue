@@ -78,7 +78,7 @@
     </blog-comment-send>
 
 
-    <div class="am-modal am-modal-prompt" tabindex="-1" id="my-prompt">
+    <!-- <div class="am-modal am-modal-prompt" tabindex="-1" id="my-prompt">
       <div class="am-modal-dialog">
         <div class="am-modal-hd">游客信息</div>
         <form class="am-modal-bd am-form am-form-horizontal" @submit.prevent id="comment_author">
@@ -107,7 +107,7 @@
           <span class="am-modal-btn" @click="vaild" data-am-modal-confirm>提交</span>
         </div>
       </div>
-    </div>
+    </div> -->
 </aside>
 </template>
 <script>
@@ -308,6 +308,30 @@ export default {
 @fontColor2: #99a2aa;
 @fontColor3: #00a1d6;
 @borderColor2: #e5e9ef;
+
+// .t-decoration {
+//     position: relative;
+//     text-decoration: none;
+//     &:hover {
+//         &:before {
+//             transform: scaleX(1);
+//             background-color: #2C76BF;
+//         }
+//     }
+//     &:before {
+//         position: absolute;
+//         top: auto;
+//         bottom: -1px;
+//         left: 0;
+//         width: 100%;
+//         height: 1px;
+//         content: '';
+//         transition: all 0.2s;
+//         transform: scaleX(0);
+//         background-color: #4183C4;
+//         backface-visibility: hidden;
+//     }
+// }
 .comment-wrapper {
     }
 #my-prompt {

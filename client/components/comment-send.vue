@@ -20,13 +20,19 @@
                 <f-emoji class="am-dropdown-content" @selectEmoji="selectEmoji"></f-emoji>
             </div>
             <span class="nono-user-select">Ctrl+Return 发表</span>
-
-            <div class="am-fr" v-if="parame.comment_author&&parame.comment_author_email">
+            <div class="am-fr">
+                <span class="j-btn">您的身份</span><span>:</span>
+                <span class="am-margin-right-xs">{{parame.comment_author ||'游客'}}</span>
+                <!-- <span class="j-btn" @click="editInfo">
+                    <i class="am-icon-cog"></i> 修改资料
+                </span> -->
+            </div>
+            <!-- <div class="am-fr" v-if="parame.comment_author&&parame.comment_author_email">
                 <span class="am-margin-right-xs">{{parame.comment_author}}</span>
                 <span class="j-btn" @click="editInfo">
                     <i class="am-icon-cog"></i> 修改资料
                 </span>
-            </div>
+            </div> -->
             <a v-if="showCancel" class="am-fr j-btn-link am-btn-link" @click="$emit('cancelReply')">取消</a>
         </div>
     </div>
@@ -109,8 +115,6 @@ export default {
             const authorForm = $("#my-prompt");
             authorForm.modal({width:320});
         },
-
-
 
     },
     mounted(){

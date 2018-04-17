@@ -38,7 +38,7 @@ Date.prototype.format = function(format){
     }
     return format;
 }
-
+exports.maxAge = 365*5*60000*60*24;
 exports.db = db;
 exports.APP_PORT = 3878;
 exports.secret = "$2a$10$5A/Wb/EnCwdS2Yxdk0ouGe4beJn7ZTpPD9ofzMdaLc45EgIZwURg6"

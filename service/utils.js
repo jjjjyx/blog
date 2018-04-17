@@ -14,6 +14,7 @@ const debug = require('debug')('app:utils:' + process.pid),
     marked = require("marked"),
     renderer = new marked.Renderer(),
     visitorsDao = require("./dao/visitors.dao"),
+    uuid = require("node-uuid"),
     TOKEN_EXPIRATION = 60, // 单位秒
     TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5; //
 // UnauthorizedAccessError = require(path.join(__dirname, 'errors', 'UnauthorizedAccessError.js'));
@@ -138,7 +139,7 @@ module.exports.retrieve = function (id, done) {
         if (_.isNull(reply)) {
             return done(new Error("token_invalid"), { code:200, "msg": "Token doesn't exists, are you sure it hasn't expired or been revoked?" });
         } else {
-            var data = JSON.parse(reply);
+            let data = JSON.parse(reply);
             debug("User data fetched from redis store for user: %s", data.user_login);
 
             if (_.isEqual(data.token, id)) {
@@ -154,9 +155,14 @@ module.exports.retrieve = function (id, done) {
     });
 };
 
+/**
+ * 注销 token
+ * @param  {[type]} req [description]
+ * @return {[type]}     [description]
+ */
 module.exports.expire = function (req) {
 
-    var token = req.cookies.u;
+    let token = req.cookies.u;
 
     debug("Expiring token: %s", token);
 
@@ -167,11 +173,13 @@ module.exports.expire = function (req) {
     return token !== null;
 
 };
-
+/**
+ * 验证token
+ * @return {[type]} [description]
+ */
 module.exports.middleware = function () {
-
-    var func = function (req, res, next) {
-        var token = req.cookies.u;
+    let func = function (req, res, next) {
+        let token = req.cookies.u;
         // console.log("u",token);
         exports.retrieve(token, function (err, data) {
 
@@ -179,9 +187,11 @@ module.exports.middleware = function () {
                 req.user = undefined;
                 // next(new UnauthorizedAccessError("invalid_token", data))
                 return res.status(200).json(data);
-            } else {
+            } else if(data.role == 100){
                 req.user = _.merge(req.user, data);
                 next();
+            }else {
+                return res.status(200).json({ code:-2, msg:'您没有权限访问' });
             }
 
         });
@@ -229,20 +239,25 @@ module.exports.getPostsCounts = function(articleGuidList)  {
     });
 }
 module.exports.visitorsfilter = function(req,res,next){
+
     let originalUrl = req.originalUrl;
 
     let ip = exports.getClientIp(req);
     let userName ;
     let token = req.cookies.u;
 
-    // console.log(req.cookies.u)
+    // console.log(req.cookies.u) //如果是管理员 记录管理身份
     if(token){
         let decoded = jsonwebtoken.decode(token);
         userName = decoded.user_login;
     }else {
         let comment_author = req.cookies.comment_author
-        if(comment_author)
-            userName = `# ${comment_author}`;
+        if(comment_author){ // 如果有游客信息 则记录 没有则生成一个游客信息
+            userName = comment_author;
+        } else {
+            userName = `游客-${uuid.v1()}` //基于时间生成
+            res.cookie("comment_author", userName, {maxAge:C.maxAge , httpOnly:true });
+        }
     }
     // visitorsDao.getVisitorsByIP(ip,(err,data)=>{
     //     let last = data[0];

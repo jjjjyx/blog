@@ -111,7 +111,6 @@
                                 </ul>
                             </div>
                         </div>
-
                     </div>
                     <div class="post-footer-arthur am-cf">
                         <div class="sm">
@@ -141,8 +140,23 @@
                 })();
             </script> -->
             <input type="hidden" ref="guid" value="<%=guid%>">
+            <%
+                let comment_author = cookies.comment_author,
+                    comment_author_email = cookies.comment_author_email,
+                    comment_author_url = cookies.comment_author_url,
+                    comment_author_avatar = cookies.comment_author_avatar;
+                if(cookies.u) {
+                    let userInfo = decodeToken(cookies.u);
+                    comment_author = cookies.comment_author;
+                    comment_author_email = cookies.comment_author_email;
+                    comment_author_url = cookies.comment_author_url;
+                    comment_author_avatar = cookies.comment_author_avatar;
+                <%}else{%>
+
+                
+                }%>
             <blog-comment posts-id="<%=guid%>"
-                author="<%=cookies.comment_author%>"
+                author="<%=comment_author%>"
                 email="<%=cookies.comment_author_email%>"
                 url="<%=cookies.comment_author_url%>"
                 avatar="<%=cookies.comment_author_avatar%>">

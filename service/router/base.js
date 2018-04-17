@@ -1,5 +1,6 @@
 const siteDao = require("../dao/site.dao"),
-    moment = require("moment")
+    moment = require("moment"),
+    jsonwebtoken = require("jsonwebtoken"),
     parts = require("./part/parts");
 let isDev = NODE_ENV !== 'production';
 module.exports = function(app){
@@ -9,7 +10,10 @@ module.exports = function(app){
             site[item.key] = item.value
         })
         global.SITE = site;
-
+        app.locals['decodeToken'] = function(token){
+            // const decoded = jsonwebtoken.decode(token);
+            return token&&jsonwebtoken.decode(token)
+        }
         // console.log(global.SITE)
         app.locals['hello'] = function(){ return 'hello'; };
         app.locals['title'] = global.SITE.title;
@@ -40,7 +44,7 @@ module.exports = function(app){
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link href="/static/preloader.min.css" rel="stylesheet">
+    <link href="/static/lib/preloader${!isDev?'.min':''}.css" rel="stylesheet">
     <link href="${global.SITE.amazeuiCDN}/css/amazeui.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
     <link href="${global.SITE.iconUrl}" rel="stylesheet">

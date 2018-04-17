@@ -52,25 +52,6 @@ module.exports = {
         `,
     archives:async function(cb){
         let data = await postDao.asyncGetPostsGroup();
-        // req.renderData.groupList = data;
-        // <input type="text" ref="h" v-if="enabled" autocomplete="off" v-model="keyword" style="opacity: 0;position: absolute;top: 33px;background: transparent;outline: transparent;border: transparent;color: transparent;">
-        // <%for(item of termList){%>
-        //     <%if(item.name=='java'){%>
-        //         <a class="tag active" data-tag='<%=item.name%>' @mouseover="mouseover" @mouseout="mouseout" target="_blank" href="/category/<%=item.slug%>">
-        //             <span class="tags-icon">
-        //                 <i class="<%=item.icon%>"></i>
-        //             </span>
-        //             <span><%=item.name%></span>
-        //         </a>
-        //     <%}else{%>
-        //         <a class="tag" data-tag='<%=item.name%>' target="_blank" href="/category/<%=item.slug%>">
-        //             <span class="tags-icon">
-        //                 <i class="<%=item.icon%>"></i>
-        //             </span>
-        //             <span><%=item.name%></span>
-        //         </a>
-        //     <%}%>
-        // <%}%>
         let k = `
         <div class="part">
             <div class="j-title">

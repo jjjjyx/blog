@@ -13,7 +13,7 @@ let loadArchivesDate = [
 
 module.exports = function() {
     let router = new Router();
-    router.route("/").get(loadArchivesDate,function(req, res) {
+    router.route("/").get(utils.visitorsfilter,loadArchivesDate,function(req, res) {
         res.render('author',req.renderData)
     });
     router.unless = require("express-unless");

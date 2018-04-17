@@ -52,3 +52,17 @@
     0%{box-shadow: inset 0px 0px 0px #fff;}
     100%{box-shadow: inset 30px 0px 0px #21ff00;}
 }
+
+/*.j-alert.am-alert {
+    box-shadow: 0 2px 4px rgba(0,0,0,.12),0 0 6px rgba(0,0,0,.04);
+    min-width: 300px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    border-radius: 2px;
+    margin: 0;
+    overflow: hidden;
+    background-color: #fff;
+}
+.j-alert-info {
+
+}*/

@@ -35,12 +35,8 @@ let errorHandler = function({status,responseJSON}){
         case 500:
         case 0:
         default:
-            data.msg = "发生未知错误,请刷新后稍后重试！";
-            layer.alert(data.msg, {
-                closeBtn: 0
-            },()=>{
-                location.reload();
-            });
+            data.msg = data.msg||"发生未知错误,请刷新后稍后重试！";
+            layer.msg(data.msg);
     }
     return data
 }

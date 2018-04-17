@@ -11,7 +11,7 @@ let debug = require('debug')('app:routes:user' + process.pid),
 
 let authenticate =async function (req, res, next) {
     // debug("Processing authenticate middleware");
-    var username = req.body.username,
+    const username = req.body.username,
         password = req.body.password;
     // var limit = new Limiter({ id: username, db: client,max:10});
     // limit.get(function(err, limit) {
@@ -27,16 +27,21 @@ let authenticate =async function (req, res, next) {
         return res.status(400).json(map);
     }else{
         try {
-            result = await userDao.asyncGetUser(username);
-            // 验证密码
-            let isMatch = bcrypt.compareSync(password, result.user_pass);
-            if(isMatch){
-                debug("User authenticated, generating token");
-                result = await utils.create(result,['user_pass']);
-                res.map = { code: 0, msg: "Token generated", result }
-                res.cookie("u", result.token, {maxAge: 60000*60*24*5,httpOnly:true});
-            }else{
-                res.map = { code: 2, msg: "密码错误" }
+            let role = 100;
+            result = await userDao.asyncGetUser(username,role);
+            if(result){
+                // 验证密码
+                let isMatch = bcrypt.compareSync(password, result.user_pass);
+                if(isMatch){
+                    debug("User authenticated, generating token");
+                    result = await utils.create(result,['user_pass']);
+                    res.map = { code: 0, msg: "Token generated", result }
+                    res.cookie("u", result.token, {maxAge: 60000*60*24*5,httpOnly:true});
+                }else{
+                    res.map = { code: 2, msg: "账号或密码错误~" }
+                }
+            }else {
+                res.map = { code: 2, msg: "账号或密码错误！" }
             }
         } catch (e) {
             res.map = { code: 1, msg: e.message, }

@@ -52,10 +52,10 @@ let loadPostBySlug = [
 
 module.exports = function() {
     let router = new Router();
-    router.route("/").get(loadCategoryDate,function(req, res) {
+    router.route("/").get(utils.visitorsfilter,loadCategoryDate,function(req, res) {
         res.render('category',req.renderData)
     });
-    router.route("/:slug").get(loadPostBySlug,function(req, res) {
+    router.route("/:slug").get(utils.visitorsfilter,loadPostBySlug,function(req, res) {
         res.render('list',req.renderData)
     });
     router.unless = require("express-unless");

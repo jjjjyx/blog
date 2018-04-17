@@ -10,14 +10,16 @@ section.wrapper{
     position: relative;
 }
 .j-banner{
-    background-position: center center;
-    background-attachment: fixed;
+    background-position: center 30%;
     background-size: cover;
     background-repeat: no-repeat;
     color: #fff;
     padding: 90px 0;
     margin-bottom: 2rem;
 }
+
+
+
 .j-archives-times {
     // width: 700px;
     padding: 2rem 1.5rem;
@@ -96,4 +98,18 @@ section.wrapper{
     .j-article-info .am-img-thumbnail {
         padding: 1px;
     }
+}
+
+@media only screen and (max-width: 1024px) {
+    .j-banner{
+        h1 {
+            text-align: center;
+        }
+        p {
+            text-align: center;
+        }
+    }
+    // .j-archives-times {
+    //     background-color: transparent;
+    // }
 }

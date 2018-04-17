@@ -4,7 +4,6 @@ const qiniu = require("qiniu"),
     path = require('path'),
     utils = require('../../utils'),
     _ = require("lodash"),
-    uuid = require("node-uuid"),
     request = require('request-json');
 
 //需要填写你的 Access Key 和 Secret Key
