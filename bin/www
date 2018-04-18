@@ -3,34 +3,41 @@
 /**
  * Module dependencies.
  */
-
+// const dataSource = require("../src/models");
 const app = require('../app');
 const debug = require('debug')('app:server');
 const http = require('http');
+const models = require('../src/models');
+
 
 /**
  * Get port from environment and store in Express.
  */
 
-let  {APP_PORT:port} = config;
-
+let {appPort: port} = config;
 app.set('port', port);
+console.log()
 
-/**
- * Create HTTP server.
- */
+models.sequelize.sync().then(()=>{
+    debug("Loading Mysql Database");
+    listen()
+});
 
-var server = http.createServer(app);
+let server = http.createServer(app);
+function listen() {
+    /**
+     * Create HTTP server.
+     */
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+    server.listen(port);
 
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
-
-
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+    server.on('error', onError);
+    server.on('listening', onListening);
+}
+// dataSource.on()
 /**
  * Event listener for HTTP server "error" event.
  */
@@ -40,7 +47,7 @@ function onError(error) {
         throw error;
     }
 
-    var bind = typeof port === 'string'
+    let bind = typeof port === 'string'
         ? 'Pipe ' + port
         : 'Port ' + port;
 
@@ -64,9 +71,12 @@ function onError(error) {
  */
 
 function onListening() {
-    var addr = server.address();
+    let addr = server.address();
+    let host = addr.address;
+    let port = addr.port;
     var bind = typeof addr === 'string'
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
+    console.log(`app (${IS_DEV?'dev':'production'}) listening at  http://localhost:${port}`);
 }

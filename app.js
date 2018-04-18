@@ -1,12 +1,12 @@
-const debug = require('debug')('app:' + process.pid);
+const debug = require('debug')('app:main:' + process.pid);
 const express = require('express');
 const path = require('path');
 const favicon = require('serve-favicon');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const compression = require('compression'); // 压缩
-
-
+const unless = require('express-unless');
+const expressValidator = require('express-validator');
 global.config = require("./src/config");
 
 // global.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -14,17 +14,22 @@ global.config = require("./src/config");
 debug("Starting application");
 const app = express();
 const IS_DEV = app.get('env') === 'development';
+global.IS_DEV = IS_DEV;
 
 // app.engine('.html', ejs.__express);
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 app.set('views', path.resolve(__dirname, './src/views'));
 
-app.use(bodyParser.json()); // for parsing application/json
+
+debug("Attaching plugins");
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.json()); // for parsing application/json
 // 好像没有使用文件上传的操作
 // app.use(multer()); // for parsing multipart/form-data
+app.use(cookieParser());
 app.use(compression());
+app.use(expressValidator())
 
 
 
@@ -42,13 +47,16 @@ app.use(function (req, res, next) {
 
 
 // 指定静态目录
-app.use(express.static(path.join(__dirname, 'static')));
+let static_dir = express.static(path.join(__dirname, 'static'));
+static_dir.unless = unless;
+app.use(static_dir.unless({ method: 'OPTIONS' }));
 
 
+require('./src/routers')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
+    let err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
@@ -57,6 +65,11 @@ app.use(function(req, res, next) {
 // no stacktraces leaked to user unless in development environment
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
+
+    if (err.name === 'UnauthorizedError') {
+        return res.send('invalid token...');
+    }
+
     res.render('error', {
         message: err.message,
         error: IS_DEV ? err : {}
