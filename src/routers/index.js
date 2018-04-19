@@ -1,8 +1,10 @@
 'use strict';
+
+
 const debug = require("debug")("app:routers")
 const expressJwt = require('express-jwt');
 const unless = require('express-unless');
-const _ = require("lodash")
+// const _ = require("lodash");
 
 
 // const paths = [
@@ -31,19 +33,6 @@ const jwtCheck = expressJwt({
 });
 jwtCheck.unless = unless;
 
-function retrieve(id, done){
-    debug("Calling retrieve for token: %s", id);
-
-    if (_.isNull(id)) {
-        return done(new Error("token_invalid"), { "message": "Invalid token" });
-    }
-}
-
-function middleware(req, res, next){
-    // console.log(req.user,22222)
-}
-
-middleware.unless = unless;
 
 module.exports = function (app) {
     // 指定权限验证路径

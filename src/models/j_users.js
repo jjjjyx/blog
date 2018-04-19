@@ -29,11 +29,6 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(100),
             allowNull: true
         },
-        // user_registered: {
-        //     type: DataTypes.DATE,
-        //     allowNull: true,
-        //     defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-        // },
         user_activation_key: {
             type: DataTypes.STRING(60),
             allowNull: true

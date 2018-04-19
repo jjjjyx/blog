@@ -10,8 +10,8 @@ const _ = require("lodash")
 
 const TOKEN_EXPIRATION = 60; // 单位秒
 // 5天
-// const TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5;
-const TOKEN_EXPIRATION_SEC = 10;
+const TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60*24*5;
+// const TOKEN_EXPIRATION_SEC = 10;
 
 const {secret} = config
 let redis = new Redis();

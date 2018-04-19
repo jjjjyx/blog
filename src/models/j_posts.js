@@ -17,7 +17,7 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'id'
             }
         },
-        post_date: {
+        post_date: { // 发布时间
             type: DataTypes.DATE,
             allowNull: true
         },
