@@ -118,7 +118,7 @@ const update_pass = [
 ]
 
 router.route('/login')
-	.get((req, res, next) => res.send('你以为我会放一个登录界面吗?,不存在的！'))
+	.get((req, res, next) => res.send('你以为会有一个登录界面吗?,不存在的！'))
 	.post(login)
 
 router.route('/auth')
