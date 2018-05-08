@@ -4,6 +4,9 @@
     ".git",
     "doc",
     "src/views",
+    "src/webapp",
+    "webpack",
+    "static",
     "node_modules/**/node_modules"
   ],
   "verbose": true,
