@@ -31,43 +31,63 @@ app.use(compression())
 app.use(expressValidator())
 
 app.use(function (req, res, next) {
-	res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
-	res.setHeader('Access-Control-Max-Age', 1000)
-	res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization,Set-Cookie') // ×
-	res.setHeader('Access-Control-Allow-Credentials', true)
-	res.setHeader('X-Powered-By', 'jjjjyx')
-	res.setHeader('Server', 'jjjjyx')
-	// res.setHeader("Content-Type", "application/json;charset=utf-8");
-	next()
+  res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  res.setHeader('Access-Control-Max-Age', 1000)
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization,Set-Cookie') // ×
+  res.setHeader('Access-Control-Allow-Credentials', true)
+  res.setHeader('X-Powered-By', 'jjjjyx')
+  res.setHeader('Server', 'jjjjyx')
+  // res.setHeader("Content-Type", "application/json;charset=utf-8");
+  next()
 })
 
 // 指定静态目录
-let static_dir = express.static(path.join(__dirname, 'static'))
-static_dir.unless = unless
-app.use(static_dir.unless({method: 'OPTIONS'}))
+
+if (IS_DEV) {
+  let webpack = require('webpack'),
+    webpackDevMiddleware = require('webpack-dev-middleware'),
+    webpackHotMiddleware = require('webpack-hot-middleware'),
+    webpackDevConfig = require('./webpack/webpack.dev.conf')
+  // static_dir = express.static(path.join(__dirname, 'static'))
+  let compiler = webpack(webpackDevConfig)
+  // attach to the compiler & the server
+  app.use('/static', webpackDevMiddleware(compiler, {
+    // public path should be the same with webpack config
+    publicPath: webpackDevConfig.output.publicPath,
+    noInfo: true,
+    stats: {colors: true}
+  }))
+  app.use('/static', webpackHotMiddleware(compiler))
+} else {
+  let static_dir = express.static(path.join(__dirname, 'static'))
+  static_dir.unless = unless
+  app.use(static_dir.unless({method: 'OPTIONS'}))
+}
+
+
 
 require('./src/routers')(app)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-	let err = new Error('Not Found')
-	err.status = 404
-	next(err)
+  let err = new Error('Not Found')
+  err.status = 404
+  next(err)
 })
 
 // error handler
 // no stacktraces leaked to user unless in development environment
 app.use(function (err, req, res, next) {
-	res.status(err.status || 500)
-	
-	if (err.name === 'UnauthorizedError') {
-		return res.send('invalid token...')
-	}
-	
-	res.render('error', {
-		message: err.message,
-		error: IS_DEV ? err : {}
-	})
+  res.status(err.status || 500)
+  
+  if (err.name === 'UnauthorizedError') {
+    return res.send('invalid token...')
+  }
+  
+  res.render('error', {
+    message: err.message,
+    error: IS_DEV ? err : {}
+  })
 })
 module.exports = app

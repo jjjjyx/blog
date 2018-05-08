@@ -36,11 +36,14 @@ jwtCheck.unless = unless;
 
 
 module.exports = function (app) {
+    
+    // 管理部分页面的访问控制交到页面完成 由api 完成验证
+	app.use('/jyx-a', require('./admin.js'));
+	
     // 指定权限验证路径
     // /api 下全是需要登录才可以访问
     app.use("/api",jwtCheck.unless(unless_path))
     // app.use("/api",middleware.unless(unless_path))
-
 
     app.use("/api/user", require("./user.js"));
 
