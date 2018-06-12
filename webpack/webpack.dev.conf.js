@@ -24,13 +24,13 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   plugins: [
 
     new webpack.HotModuleReplacementPlugin(),
-    
+
     // https://github.com/ampedandwired/html-webpack-plugin
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      template: 'index.html',
-      inject: true
-    }),
+    // new HtmlWebpackPlugin({
+    //   filename: 'admin.html',
+    //   template: 'admin.html',
+    //   inject: true
+    // }),
     // copy custom static assets
     // new CopyWebpackPlugin([
     //   {

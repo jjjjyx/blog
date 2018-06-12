@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "DEBUG=app:* nodemon bin/www",
+    "start": "cross-env DEBUG=app:* nodemon bin/www",
     "start_old": "cross-env NODE_ENV=production webpack --config webpack/webpack.production.js -p & node app",
     "changelog_old": "conventional-changelog -p angular -i CHANGELOG.md -w -r 0",
     "build:old": "node webpack/build.js",
@@ -33,13 +33,16 @@
     "express-unless": "^0.5.0",
     "express-validator": "^5.1.2",
     "ioredis": "^3.2.2",
+    "iview": "^2.14.2",
     "jwt-redis": "^3.1.0",
     "lodash": "^4.17.5",
     "mysql2": "^1.5.3",
     "node-uuid": "^1.4.7",
+    "normalize.css": "^8.0.0",
     "sequelize": "^4.37.6",
     "serve-favicon": "^2.5.0",
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^8.2.0",

@@ -2,9 +2,9 @@ const fs = require('fs');
 
 module.exports = {
     development: {
-        username: 'blogjyx',
+        username: 'blog',
         password: 'C9XyX5dWd9CQjHwu',
-        database: 'myblog',
+        database: 'blog',
         host: '127.0.0.1',
         dialect: 'mysql',
         // timestamps: false,

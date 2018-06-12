@@ -30,6 +30,7 @@ app.use(cookieParser())
 app.use(compression())
 app.use(expressValidator())
 
+app.use(favicon(path.join(__dirname, 'favicon.ico')))
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -52,15 +53,15 @@ if (IS_DEV) {
   // static_dir = express.static(path.join(__dirname, 'static'))
   let compiler = webpack(webpackDevConfig)
   // attach to the compiler & the server
-  app.use('/static', webpackDevMiddleware(compiler, {
+  app.use('/', webpackDevMiddleware(compiler, {
     // public path should be the same with webpack config
     publicPath: webpackDevConfig.output.publicPath,
     noInfo: true,
     stats: {colors: true}
   }))
-  app.use('/static', webpackHotMiddleware(compiler))
+  app.use('/', webpackHotMiddleware(compiler))
 } else {
-  let static_dir = express.static(path.join(__dirname, 'static'))
+  let static_dir = express.static(path.join(__dirname, './'))
   static_dir.unless = unless
   app.use(static_dir.unless({method: 'OPTIONS'}))
 }
@@ -80,11 +81,11 @@ app.use(function (req, res, next) {
 // no stacktraces leaked to user unless in development environment
 app.use(function (err, req, res, next) {
   res.status(err.status || 500)
-  
+
   if (err.name === 'UnauthorizedError') {
     return res.send('invalid token...')
   }
-  
+
   res.render('error', {
     message: err.message,
     error: IS_DEV ? err : {}

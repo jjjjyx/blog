@@ -29,10 +29,6 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(100),
             allowNull: true
         },
-        user_activation_key: {
-            type: DataTypes.STRING(60),
-            allowNull: true
-        },
         user_status: {
             type: DataTypes.INTEGER(11),
             allowNull: true,

@@ -1,12 +1,10 @@
-'use strict';
+'use strict'
 
 
-const debug = require("debug")("app:routers")
-const expressJwt = require('express-jwt');
-const unless = require('express-unless');
+const debug = require('debug')('app:routers')
+const expressJwt = require('express-jwt')
+const unless = require('express-unless')
 // const _ = require("lodash");
-
-
 // const paths = [
 //     '/',
 //     '/p',
@@ -22,29 +20,28 @@ const unless_path = {
 }
 const jwtCheck = expressJwt({
     secret: config.secret,
-    getToken:function fromHeaderOrQuerystring (req) {
+    getToken: function fromHeaderOrQuerystring (req) {
         if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
-            return req.headers.authorization.split(' ')[1];
-        // } else if (req.query && req.query.token) {
-        //     return req.query.token;
-            
-        }
-        return null;
-    }
-});
-jwtCheck.unless = unless;
+            return req.headers.authorization.split(' ')[1]
+            // } else if (req.query && req.query.token) {
+            //     return req.query.token;
 
+        }
+        return null
+    }
+})
+jwtCheck.unless = unless
 
 module.exports = function (app) {
-    
+
     // 管理部分页面的访问控制交到页面完成 由api 完成验证
-	app.use('/jyx-a', require('./admin.js'));
-	
+    app.use('/',  require('./home.js'));
+    app.use('/jyx-admin', require('./admin.js'))
     // 指定权限验证路径
     // /api 下全是需要登录才可以访问
-    app.use("/api",jwtCheck.unless(unless_path))
+    app.use('/api', jwtCheck.unless(unless_path))
     // app.use("/api",middleware.unless(unless_path))
 
-    app.use("/api/user", require("./user.js"));
+    app.use('/api/user', require('./user.js'))
 
 }
