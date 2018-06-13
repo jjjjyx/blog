@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser')
 const compression = require('compression') // 压缩
 const unless = require('express-unless')
 const expressValidator = require('express-validator')
+const Result = require('./src/common/resultUtils')
 global.config = require('./src/config')
 
 // global.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -33,9 +34,9 @@ app.use(expressValidator())
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
   res.setHeader('Access-Control-Max-Age', 1000)
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization,Set-Cookie') // ×
+  res.setHeader('Access-Control-Allow-Headers', 'Authorization') // ×
   res.setHeader('Access-Control-Allow-Credentials', true)
   res.setHeader('X-Powered-By', 'jjjjyx')
   res.setHeader('Server', 'jjjjyx')
@@ -79,12 +80,23 @@ app.use(function (req, res, next) {
 
 // error handler
 // no stacktraces leaked to user unless in development environment
+// api 的错误拦截器 返回值都是json
+app.use('/api/', function (err, req, res, next) {
+    res.status(err.status || 500)
+
+    if (err.name === 'UnauthorizedError') {
+        return res.json(Result.error('invalid token...'))
+    } else {
+        return res.json(Result.error())
+    }
+})
+
 app.use(function (err, req, res, next) {
   res.status(err.status || 500)
-
   if (err.name === 'UnauthorizedError') {
     return res.send('invalid token...')
   }
+  // 如果是 /api/* 的路由的错误
 
   res.render('error', {
     message: err.message,

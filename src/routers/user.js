@@ -23,7 +23,6 @@ const login = [
         }
         let {username, password} = req.body
         // 取数据验证
-
         let user = await userDao.findOne({
             where: {user_login: username}
         })

@@ -4,13 +4,13 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import iView from 'iview'
-
 import 'normalize.css'
 import 'iview/dist/styles/iview.css'
 import './main.scss'
 
-Vue.config.productionTip = false
 Vue.use(iView)
+
+Vue.config.productionTip = false
 
 function appInit () {
     /* eslint-disable no-new */
@@ -24,3 +24,9 @@ function appInit () {
 }
 
 appInit()
+// // 初始化数据
+// function initData(){
+//     return new Promise((resolve, reject)=>{
+//
+//     })
+// }

@@ -20,6 +20,7 @@ body {
     width: 100%;
     height: 100%;
     box-sizing: border-box;
+    font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
 }
 
 #app {
@@ -30,79 +31,115 @@ body {
 
 .wrapper {
     background: #eee;
-    padding: 1px;
     height: 100%;
 }
 
 
 .wrapper-content {
-    min-height: 100%;
-    height: 100%;
-    position: relative;
-    &:after {
-        content: "";
-        display: block;
-        width: 1px;
-        background: #d7dde4;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: -1px;
-    }
-
-    & > .ivu-layout {
-        height: 100%;
-        padding: 0 24px 24px;
-    }
-    & > .ivu-layout .ivu-breadcrumb {
+    //padding: 0 24px 24px;
+    > .ivu-breadcrumb {
         flex-shrink:0;
-        padding: 24px 0;
+        padding: 24px 24px;
     }
-    & > .ivu-layout .ivu-layout-content {
-        height: 100%;
-        overflow-y: auto;
-        padding: 24px 24px 0;
-        background: #fff;
+    > .ivu-layout-content {
+        margin: 24px;
+        background: rgb(255, 255, 255);
         border-radius: 6px;
-        box-shadow: 0 0 2px #ccc;
+        padding: 24px 24px 0;
+        //box-shadow: 0 0 2px #ccc;
     }
-
-    .filter-form .ivu-form-item {
-        margin-bottom: 0;
-        &:last-child .ivu-form-item-content {
-            margin-left: 0 !important;
-        }
-    }
-    .table-buttons{
-        text-align: right;
-        font-size: 0;
-    }
-    .table-buttons button {
-        &:focus {
-            outline: none;
-            box-shadow: none;
-        }
-        i {
-            font-size: 18px;
-        }
-    }
-    .table-buttons .ivu-select-dropdown {
-        text-align: left;
-    }
-    .ivu-table {
-        height: inherit;
-    }
-    .ivu-table-wrapper, .page-bar{
-        margin-top: 15px;
-    }
-    .page-bar {
-        display: flex;
-        align-items: center;
-    }
-
+}
+$sider-bg-color : #282d2f;
+$sider-bg-deep-color : #1f2224;
+.ivu-layout-sider, .ivu-menu-dark {
+    background-color: $sider-bg-color;
+}
+.wrapper-header .ivu-menu-dark {
+    background-color: #2f3638;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened {
+    background-color: $sider-bg-color;
 }
 
+.ivu-layout-sider .sidebar-user-panel {
+    background-color: $sider-bg-deep-color;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened .ivu-menu-submenu-title {
+    background-color: $sider-bg-deep-color;
+}
+
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu),
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):hover,
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu),
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu):hover {
+    background-color: $sider-bg-deep-color !important;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item:hover,
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+    background-color: $sider-bg-deep-color;
+}
+
+.ivu-layout-sider-children {
+    display: flex;
+    flex-direction: column;
+    .ivu-menu {
+        height: 100%;
+        overflow-y: auto;
+    }
+}
+
+// 侧边栏
+.sidebar-user-panel {
+    //text-align: center;
+    width:auto;
+    padding: 15px;
+    //border-right: 1px solid #dddee1;
+    //border-top: 1px solid #000;
+    margin-top: -1px;
+
+    &:after {
+        //content: ' ';
+        height: 1px;
+        margin-top: 15px;
+        width: 100%;
+        background-color: #000;
+        display: block;
+    }
+    .user-panel-profile-picture{
+        border-radius: 50%;
+        width: 82px;
+        height: 82px;
+        overflow: hidden;
+        //margin: 0 10px 10px;
+        margin-bottom: 10px;
+    }
+    .user-panel-profile-picture img {
+        width: auto;
+        height: 100%;
+        vertical-align: middle;
+    }
+    .user-panel-logged-in-text {
+        display: block;
+        color: #cfcfcf;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    .user-panel-action-link {
+        color: #6d787c;
+        font-size: 12px;
+        &:hover {
+            color: #a2aaad;
+        }
+    }
+}
+
+
+
+
+
+
 @import "assets/sass/nav";
+@import "assets/sass/cm";
 
 
 $scrollbar-border-color:#2d8cf0;
@@ -121,6 +158,6 @@ $scrollbar-bg-color:#2d8cf0;
 }
 /*定义滑块 内阴影+圆角*/
 ::-webkit-scrollbar-thumb {
-    border-radius: 0px;
+    border-radius: 6px;
     background-color: $scrollbar-bg-color;
 }

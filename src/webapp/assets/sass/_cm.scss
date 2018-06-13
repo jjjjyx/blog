@@ -1,0 +1,81 @@
+
+
+// 内容管理工具栏部分
+.filter-form {
+    float: left;
+    margin-right: 20px;
+}
+.filter-form .ivu-form-item {
+    margin-bottom: 0;
+    &:last-child .ivu-form-item-content {
+        margin-left: 0 !important;
+    }
+}
+.table-buttons{
+    text-align: right;
+    font-size: 0;
+}
+.table-buttons button {
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    i {
+        font-size: 18px;
+    }
+}
+.table-buttons .ivu-select-dropdown {
+    text-align: left;
+}
+.ivu-table {
+    height: inherit;
+}
+.ivu-table-wrapper, .page-bar{
+    margin-top: 15px;
+}
+.page-bar {
+    display: flex;
+    align-items: center;
+}
+
+.cm-container {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+}
+.cm-header {
+    position: relative;
+    font-size: 12px;
+    margin-top: 15px;
+    .ivu-breadcrumb-item-link {
+        font-size: 12px;
+    }
+
+    .ivu-breadcrumb {
+        //position: absolute;
+        //top: 0;
+        //left: 10px;
+    }
+}
+
+.cm-wrapper {
+    margin: 15px -24px 0;
+    height: 100%;
+    position: relative;
+    flex: auto;
+
+    .cm-list-table {
+        border: none;
+        margin-top: 0;
+    }
+    .cm-list-table tr>th:first-child .ivu-table-cell, .cm-list-table tr>td:first-child .ivu-table-cell {
+        padding-left: 20px;
+        padding-right: 0;
+        .ivu-checkbox-wrapper {
+            margin-right: 0;
+        }
+    }
+    .cm-list-table .ivu-table:after {
+        width: 0;
+    }
+}
