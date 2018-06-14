@@ -8,7 +8,8 @@ const debug = require('debug')('app:routers:admin')
 
 router.get('/', function(req, res) {
     // ejs
-	res.render('admin');
+    // res.render('admin');
+    res.redirect("/jyx-admin/admin.html")
 });
 
 module.exports = router

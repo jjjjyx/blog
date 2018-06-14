@@ -42,7 +42,7 @@ body {
         padding: 24px 24px;
     }
     > .ivu-layout-content {
-        margin: 24px;
+        margin: 0 24px;
         background: rgb(255, 255, 255);
         border-radius: 6px;
         padding: 24px 24px 0;
@@ -133,6 +133,10 @@ $sider-bg-deep-color : #1f2224;
     }
 }
 
+.layout-footer-center {
+    margin: 24px 24px;
+    text-align: center;
+}
 
 
 

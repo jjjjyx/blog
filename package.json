@@ -6,10 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env DEBUG=app:* nodemon bin/www",
-    "start_old": "cross-env NODE_ENV=production webpack --config webpack/webpack.production.js -p & node app",
-    "changelog_old": "conventional-changelog -p angular -i CHANGELOG.md -w -r 0",
-    "build:old": "node webpack/build.js",
-    "dev:old": "webpack-dev-server --inline --progress --config webpack/webpack.dev.conf.js"
+    "build": "webpack --mode=production --config=webpack/webpack.prod.conf.js"
   },
   "repository": "git@git.coding.net:jyx-/MyBlog.git",
   "keywords": [

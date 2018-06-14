@@ -4,7 +4,10 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import iView from 'iview'
 import Index from '@/components/index.vue'
-import postManagement from '@/components/post/post-management.vue'
+import postManagement from '@/components/post/post-management'
+import postWriter from '@/components/post/post-writer'
+import NotFound from '../404'
+
 import store from '../store'
 import api from '../utils/api'
 // import filter from '@/components/filter.vue'
@@ -41,7 +44,13 @@ const routes = [
         path: '/post/management',
         name: 'post_management',
         component: postManagement
-    }
+    },
+    {
+        path: '/post/writer',
+        name: 'post_writer',
+        component: postWriter
+    },
+    {path: '*', component: NotFound, name: '*'}
 ]
 
 const router = new Router({

@@ -29,7 +29,7 @@
                             <Menu-Item name="post_management">
                                 <Icon type="document"></Icon>
                                 <span>所有文章</span></Menu-Item>
-                            <Menu-Item name="post_category">
+                            <Menu-Item name="post_writer">
                                 <Icon type="document"></Icon>
                                 <span>撰写文章</span></Menu-Item>
                             <Menu-Item name="menu">
@@ -142,6 +142,9 @@
                 <keep-alive>
                     <router-view class="ivu-layout-content wrapper-content"></router-view>
                 </keep-alive>
+                <footer class="layout-footer-center">
+                    皖ICP备18009045号-1 &copy;2018 jjjjyx 版权所有 E-mail: <a href="mailto:#">jyx@rpgame.net</a>
+                </footer>
             </layout>
 
         </layout>

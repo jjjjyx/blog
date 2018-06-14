@@ -12,12 +12,15 @@
   说白就是搞个人空间 <img src="http://oht47c0d0.bkt.clouddn.com/public/16-12-10/35946736.jpg" width = "20" height = "20" alt="doge" style=""/>
   不过有考虑加入用户，让其他用户能够评论，在我这里投稿 <img src="http://oht47c0d0.bkt.clouddn.com/public/16-12-10/35946736.jpg" width = "20" height = "20" alt="doge" style=""/>
 
-## 链接  
+## 链接
   酱酱酱酱油鲜的博客 [www.mbdoge.cn](http://www.mbdoge.cn)
 
 ![doge抱小鱼](http://oht47c0d0.bkt.clouddn.com/public/16-12-10/92276663.jpg)
 
 ## Change log
+##### 2018年6月14日
+调整了策略，webpack 的作用仅用于打包后台管理模块，以及各页面所需的静态资源，并且在路由中添加了对后台管理的重定向功能，不过这个重定向产生的url 让我很不爽
+
 ##### 2018年4月17日
 重新归来，一波重构，说明一下
 > 感觉自己有病  哈哈

@@ -26,11 +26,14 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     new webpack.HotModuleReplacementPlugin(),
 
     // https://github.com/ampedandwired/html-webpack-plugin
-    // new HtmlWebpackPlugin({
-    //   filename: 'admin.html',
-    //   template: 'admin.html',
-    //   inject: true
-    // }),
+    new HtmlWebpackPlugin({
+      filename: 'jyx-admin/admin.html',
+      template: 'admin.html',
+      inject: true,
+        chunks:['vendors','app'],
+        // necessary to consistently work with multiple chunks via CommonsChunkPlugin
+        chunksSortMode: 'dependency'
+    }),
     // copy custom static assets
     // new CopyWebpackPlugin([
     //   {
