@@ -96,10 +96,7 @@
                                 <Menu-Group title="Signed in as jjjjyx" style="width: 200px;overflow: hidden">
                                     <Menu-Item name="3-1">个人资料</Menu-Item>
                                     <Menu-Item name="3-2">活跃分析</Menu-Item>
-                                    <Menu-Item name="3-3" @click.native="out" class="ivu-menu-item-divided">
-                                        <Icon type="log-out" size="20"></Icon>
-                                        退出登录
-                                    </Menu-Item>
+                                    <Menu-Item name="3-3" @click.native="out" class="ivu-menu-item-divided"><Icon type="log-out" size="20"></Icon>退出登录</Menu-Item>
                                 </Menu-Group>
                             </Submenu>
                         </div>
@@ -178,7 +175,7 @@ export default {
                 content: '<p>确认退出系统吗？</p>',
                 onOk: function onOk () {
                     // api.npost("api/oauth/out").then(function () {
-                    //     alert("成功退出登录");
+                    
                     //     location.reload();
                     // });
                 },

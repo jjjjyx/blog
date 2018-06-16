@@ -29,6 +29,7 @@
     "express-jwt": "^5.3.1",
     "express-unless": "^0.5.0",
     "express-validator": "^5.1.2",
+    "glob": "^7.1.2",
     "ioredis": "^3.2.2",
     "iview": "^2.14.2",
     "jwt-redis": "^3.1.0",

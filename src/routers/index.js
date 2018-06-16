@@ -32,10 +32,42 @@ const jwtCheck = expressJwt({
 })
 jwtCheck.unless = unless
 
-module.exports = function (app) {
 
-    // 管理部分页面的访问控制交到页面完成 由api 完成验证
+
+// 如果是生产环境 那么所有的静态文件都有webpack 编译，就无需指定页面的跳转路由
+
+module.exports = function (app, compiler) {
+    // app.get("*", (req, res, next) =>{
+    //     const filename = path.join(DIST_DIR, 'index.html');
+    //
+    //     complier.outputFileSystem.readFile(filename, (err, result) =>{
+    //         if(err){
+    //             return(next(err))
+    //         }
+    //         res.set('content-type', 'text/html')
+    //         res.send(result)
+    //         res.end()
+    //     })
+    // })
+    if (IS_DEV) {
+        let webpack = require('webpack'),
+            webpackDevMiddleware = require('webpack-dev-middleware'),
+            webpackHotMiddleware = require('webpack-hot-middleware'),
+            webpackDevConfig = require('../../webpack/webpack.dev.conf')
+        // static_dir = express.static(path.join(__dirname, 'static'))
+        let compiler = webpack(webpackDevConfig)
+        // attach to the compiler & the server
+        app.use('/', webpackDevMiddleware(compiler, {
+            // public path should be the same with webpack config
+            publicPath: webpackDevConfig.output.publicPath,
+            noInfo: true,
+            stats: {colors: true}
+        }))
+        app.use('/', webpackHotMiddleware(compiler))
+    }
+
     app.use('/',  require('./home.js'));
+    app.use('/category',  require('./category.js'));
     app.use('/jyx-admin', require('./admin.js'))
     // 指定权限验证路径
     // /api 下全是需要登录才可以访问

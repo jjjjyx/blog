@@ -33,49 +33,32 @@ app.use(expressValidator())
 
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
-  res.setHeader('Access-Control-Max-Age', 1000)
-  res.setHeader('Access-Control-Allow-Headers', 'Authorization') // ×
-  res.setHeader('Access-Control-Allow-Credentials', true)
-  res.setHeader('X-Powered-By', 'jjjjyx')
-  res.setHeader('Server', 'jjjjyx')
-  // res.setHeader("Content-Type", "application/json;charset=utf-8");
-  next()
+    res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
+    res.setHeader('Access-Control-Max-Age', 1000)
+    res.setHeader('Access-Control-Allow-Headers', 'Authorization') // ×
+    res.setHeader('Access-Control-Allow-Credentials', true)
+    res.setHeader('X-Powered-By', 'jjjjyx')
+    res.setHeader('Server', 'jjjjyx')
+    // res.setHeader("Content-Type", "application/json;charset=utf-8");
+    next()
 })
 
 // 指定静态目录
-
-if (IS_DEV) {
-  let webpack = require('webpack'),
-    webpackDevMiddleware = require('webpack-dev-middleware'),
-    webpackHotMiddleware = require('webpack-hot-middleware'),
-    webpackDevConfig = require('./webpack/webpack.dev.conf')
-  // static_dir = express.static(path.join(__dirname, 'static'))
-  let compiler = webpack(webpackDevConfig)
-  // attach to the compiler & the server
-  app.use('/', webpackDevMiddleware(compiler, {
-    // public path should be the same with webpack config
-    publicPath: webpackDevConfig.output.publicPath,
-    noInfo: true,
-    stats: {colors: true}
-  }))
-  app.use('/', webpackHotMiddleware(compiler))
-} else {
-  let static_dir = express.static(path.join(__dirname, './'))
-  static_dir.unless = unless
-  app.use(static_dir.unless({method: 'OPTIONS'}))
+// let compiler
+if (!IS_DEV) {
+    let static_dir = express.static(path.join(__dirname, './'))
+    static_dir.unless = unless
+    app.use(static_dir.unless({method: 'OPTIONS'}))
 }
-
-
 
 require('./src/routers')(app)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  let err = new Error('Not Found')
-  err.status = 404
-  next(err)
+    let err = new Error('Not Found')
+    err.status = 404
+    next(err)
 })
 
 // error handler
@@ -92,15 +75,15 @@ app.use('/api/', function (err, req, res, next) {
 })
 
 app.use(function (err, req, res, next) {
-  res.status(err.status || 500)
-  if (err.name === 'UnauthorizedError') {
-    return res.send('invalid token...')
-  }
-  // 如果是 /api/* 的路由的错误
+    res.status(err.status || 500)
+    if (err.name === 'UnauthorizedError') {
+        return res.send('invalid token...')
+    }
+    // 如果是 /api/* 的路由的错误
 
-  res.render('error', {
-    message: err.message,
-    error: IS_DEV ? err : {}
-  })
+    res.render('error', {
+        message: err.message,
+        error: IS_DEV ? err : {}
+    })
 })
 module.exports = app
