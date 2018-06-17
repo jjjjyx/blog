@@ -3,10 +3,12 @@ const path = require('path')
 const utils = require('./utils')
 const config = require('./config')
 const vueLoaderConfig = require('./vue-loader.conf')
+const getEntries = require('./getEntries')
 
 function resolve (dir) {
     return path.join(__dirname, '..', dir)
 }
+const entry = getEntries("./src/webapp/*.js")
 
 const createLintingRule = () => ({
     test: /\.(js|vue)$/,
@@ -21,10 +23,7 @@ const createLintingRule = () => ({
 
 module.exports = {
     context: path.resolve(__dirname, '../src/webapp'),
-    entry: {
-        app: './main.js',
-        home: './home.js'
-    },
+    entry: entry,
     output: {
         path: config.build.assetsRoot,
         filename: utils.assetsPath('js/[name].js'),

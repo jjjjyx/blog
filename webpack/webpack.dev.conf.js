@@ -30,7 +30,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       filename: 'jyx-admin/admin.html',
       template: 'admin.html',
       inject: true,
-        chunks:['vendors','app'],
+        chunks:['vendors','cms'],
         // necessary to consistently work with multiple chunks via CommonsChunkPlugin
         chunksSortMode: 'dependency'
     }),

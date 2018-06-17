@@ -49,22 +49,6 @@ module.exports = function (app, compiler) {
     //         res.end()
     //     })
     // })
-    if (IS_DEV) {
-        let webpack = require('webpack'),
-            webpackDevMiddleware = require('webpack-dev-middleware'),
-            webpackHotMiddleware = require('webpack-hot-middleware'),
-            webpackDevConfig = require('../../webpack/webpack.dev.conf')
-        // static_dir = express.static(path.join(__dirname, 'static'))
-        let compiler = webpack(webpackDevConfig)
-        // attach to the compiler & the server
-        app.use('/', webpackDevMiddleware(compiler, {
-            // public path should be the same with webpack config
-            publicPath: webpackDevConfig.output.publicPath,
-            noInfo: true,
-            stats: {colors: true}
-        }))
-        app.use('/', webpackHotMiddleware(compiler))
-    }
 
     app.use('/',  require('./home.js'));
     app.use('/category',  require('./category.js'));

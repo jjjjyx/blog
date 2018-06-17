@@ -3,12 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>home</title>
+    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
 </head>
 <body>
+<div id="app">
     <form action="/api/user/login" method="post">
         <input type="text" name="username">
         <input type="text" name="password">
         <input type="submit">
     </form>
+</div>
+<script src="/static/js/home.js"></script>
 </body>
 </html>

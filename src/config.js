@@ -22,10 +22,9 @@ const CONFIG = {
 
 try {
 	let pri = require('../private.js')
-	
+
 	_.merge(CONFIG, pri)
-	console.log(CONFIG)
-	debug('Loading private configuration')
+	debug('Loading private configuration', pri)
 } catch (e) {
 	debug('Failed to load private configuration!')
 }

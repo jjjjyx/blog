@@ -8,6 +8,7 @@ const compression = require('compression') // 压缩
 const unless = require('express-unless')
 const expressValidator = require('express-validator')
 const Result = require('./src/common/resultUtils')
+
 global.config = require('./src/config')
 
 // global.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -46,7 +47,23 @@ app.use(function (req, res, next) {
 
 // 指定静态目录
 // let compiler
-if (!IS_DEV) {
+if (IS_DEV) {
+    let webpack = require('webpack'),
+        webpackDevMiddleware = require('webpack-dev-middleware'),
+        webpackHotMiddleware = require('webpack-hot-middleware'),
+        webpackDevConfig = require('./webpack/webpack.dev.conf')
+    // static_dir = express.static(path.join(__dirname, 'static'))
+    let compiler = webpack(webpackDevConfig)
+    // attach to the compiler & the server
+    app.use('/', webpackDevMiddleware(compiler, {
+        // public path should be the same with webpack config
+        publicPath: webpackDevConfig.output.publicPath,
+        noInfo: true,
+        stats: {colors: true}
+    }))
+    app.use('/', webpackHotMiddleware(compiler))
+
+}else {
     let static_dir = express.static(path.join(__dirname, './'))
     static_dir.unless = unless
     app.use(static_dir.unless({method: 'OPTIONS'}))

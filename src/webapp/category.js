@@ -3,7 +3,7 @@
 // import Vue from 'vue'
 import 'normalize.css'
 // import './main.scss'
-
+/* eslint-disable no-undef */
 Vue.config.productionTip = false
 
 function appInit () {

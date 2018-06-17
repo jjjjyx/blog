@@ -1,18 +1,17 @@
 'use strict'
 
-import Vue from 'vue'
-import home from './home'
+// import Vue from 'vue'
+// import home from './home.vue'
 import 'normalize.css'
-import './main.scss'
-
+import './cms-main.scss'
+import './components/test'
+/* eslint-disable no-unused-vars,no-undef  */
 Vue.config.productionTip = false
 
 function appInit () {
-    /* eslint-disable no-new */
-    new Vue({
+    /* eslint-disable no-unused-vars  */
+    const app = new Vue({
         el: '#app',
-        components: {home},
-        template: '<home/>'
     })
     // window.fulfilLoading()
 }

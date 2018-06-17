@@ -6,19 +6,12 @@ function getEntry(globPath, webpackHotMiddlewareConfig) {
         basename, tmp, pathname;
     glob.sync(globPath).forEach((entry)=>{
         basename = path.basename(entry, path.extname(entry));
-        console.log(entry, basename)
-        let tmp = entry.split('/').slice(2, -1);
-        if (tmp[0] === 'blog')
-            tmp.shift();
-        if (tmp.length) {
-            pathname = tmp.join("/") + '/' + basename;
-        } else {
-            pathname = basename;
-        }
+        pathname = basename;
+        tmp = `./${basename}.js`
         if (webpackHotMiddlewareConfig) {
-            entries[pathname] = [webpackHotMiddlewareConfig, entry]
+            entries[pathname] = [webpackHotMiddlewareConfig, tmp]
         } else {
-            entries[pathname] = entry;
+            entries[pathname] = tmp;
         }
 
     });

@@ -175,7 +175,6 @@ export default {
                 content: '<p>确认退出系统吗？</p>',
                 onOk: function onOk () {
                     // api.npost("api/oauth/out").then(function () {
-                    
                     //     location.reload();
                     // });
                 },
