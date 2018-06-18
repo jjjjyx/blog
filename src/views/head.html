@@ -1,0 +1,13 @@
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<%-locals.site.metaKey%>
+<%-locals.site.metaDescription%>
+<%-locals.site.googleVerification%>
+<title><% if(locals.title) {%> <%-locals.title%> | <%}%><%-locals.site.title%></title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<link rel="icon" type="image/x-icon" href="/favicon.ico" rel="shortcut icon">
+<!--<link href="<%-locals.site.iconUrl%>" rel="stylesheet">-->
+<% if(!locals.dev) {%><link href="/static/css/<%=name%>.css?_=<%=locals.hash%>" rel="stylesheet"><%}%>
+<script src="<%=locals.cdn('vue/2.5.16/vue.min.js')%>"></script>

@@ -9,17 +9,27 @@ const debug = require('debug')('app:server');
 const http = require('http');
 const models = require('../src/models');
 
-
 /**
  * Get port from environment and store in Express.
  */
 
 let {appPort: port} = config;
 app.set('port', port);
-console.log()
 
-models.sequelize.sync().then(()=>{
+models.sequelize.sync().then(async ()=>{
     debug("Loading Mysql Database");
+
+    const siteDao = require('../src/models').site
+
+    let siteList = await siteDao.findAll()
+    let site = {}
+    siteList.forEach((item)=>{
+        site[item.key] = item.value
+    })
+    // 将全部 全局设置更新到全局变量
+    global.SITE = site;
+
+    require('../src/base.js')(app)
     listen()
 });
 

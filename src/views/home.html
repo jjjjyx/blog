@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+<% var data = {name: 'home'} %>
 <head>
-    <meta charset="UTF-8">
-    <title>home</title>
-    <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+    <%- include('head.html', data); %>
+    <%-statistical%>
 </head>
 <body>
 <div id="app">
@@ -13,6 +13,6 @@
         <input type="submit">
     </form>
 </div>
-<script src="/static/js/home.js"></script>
+<%- include('footer.html', data); %>
 </body>
 </html>

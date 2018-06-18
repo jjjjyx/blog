@@ -36,7 +36,7 @@ jwtCheck.unless = unless
 
 // 如果是生产环境 那么所有的静态文件都有webpack 编译，就无需指定页面的跳转路由
 
-module.exports = function (app, compiler) {
+module.exports = function (app) {
     // app.get("*", (req, res, next) =>{
     //     const filename = path.join(DIST_DIR, 'index.html');
     //

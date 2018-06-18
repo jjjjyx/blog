@@ -3,6 +3,7 @@
 const debug = require('debug')('app:config')
 const _ = require('lodash')
 
+// 启动参数，与site 无关
 const CONFIG = {
 	appPort: 3878,
 	allowOrigin: 'http://localhost:3879',
