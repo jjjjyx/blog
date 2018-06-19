@@ -1,13 +1,13 @@
 'use strict'
 
 import Vue from 'vue'
-import App from './cms.vue'
+import App from './components/cms-app.vue'
 import router from './router'
 import iView from 'iview'
 import 'normalize.css'
 import 'iview/dist/styles/iview.css'
-import './cms-main.scss'
-import './components/test'
+import './assets/cms-main.scss'
+
 Vue.use(iView)
 
 Vue.config.productionTip = false

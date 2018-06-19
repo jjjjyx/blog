@@ -51,7 +51,7 @@ const webpackConfig = merge(baseWebpackConfig, {
         // extract css into its own file
         new MiniCssExtractPlugin({
             filename: utils.assetsPath('css/[name].css'),
-            chunkFilename: 'css/app.[contenthash:12].css',
+            // chunkFilename: 'css/app.[contenthash:12].css',
             // Setting the following option to `false` will not extract CSS from codesplit chunks.
             // Their CSS will instead be inserted dynamically with style-loader when the codesplit chunk has been loaded by webpack.
             // It's currently set to `true` because we are seeing that sourcemaps are included in the codesplit bundle as well when it's `false`,

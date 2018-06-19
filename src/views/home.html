@@ -7,11 +7,12 @@
 </head>
 <body>
 <div id="app">
-    <form action="/api/user/login" method="post">
-        <input type="text" name="username">
-        <input type="text" name="password">
-        <input type="submit">
-    </form>
+    <div class="wrapper">
+        <%- include('nav.html', data); %>
+        <i-button @click="show">Click me!</i-button>
+        <Icon type="arrow-return-right"></Icon>
+        <Modal v-model="visible" title="Welcome">欢迎使用 iView</Modal>
+    </div>
 </div>
 <%- include('footer.html', data); %>
 </body>

@@ -1,19 +1,26 @@
 'use strict'
 
-// import Vue from 'vue'
-// import home from './home.vue'
 import 'normalize.css'
-import './cms-main.scss'
-import './components/test'
+import 'iview/dist/styles/iview.css'
+import './assets/home.scss'
+
 /* eslint-disable no-unused-vars,no-undef  */
 Vue.config.productionTip = false
 
 function appInit () {
     /* eslint-disable no-unused-vars  */
     const app = new Vue({
-        el: '#app'
+        el: '#app',
+        data: {
+            visible: false
+        },
+        methods: {
+            show: function () {
+                this.visible = true
+            }
+        }
     })
-    // window.fulfilLoading()
+    window.fulfilLoading && window.fulfilLoading()
 }
 
 appInit()
