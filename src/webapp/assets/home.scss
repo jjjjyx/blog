@@ -4,3 +4,169 @@
 .wrapper-header .container{
     height: inherit;
 }
+.header-top {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    .center-bg {
+        width: 100%;
+        z-index: 0;
+        height:420px;
+        background: no-repeat fixed center center;
+        background-size: cover;
+        // background-image: url("http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png");
+        // filter: blur(0px);
+    }
+    .center-bg .avatar {
+        display: block;
+        text-align: center;
+        cursor: default;
+        //margin-top: -120px;
+    }
+    .center-bg .avatar > img {
+        width: 120px;
+        cursor: pointer;
+        height: auto;
+        border-radius: 50%;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+    }
+    .center-bg .avatar-p {
+        text-align: center;
+        width: 450px;
+        margin:30px auto 0;
+        font-size: 14px;
+        color: #EAEADF;
+        background: rgba(0, 0, 0, 0.66);
+        padding: 20px 30px;
+        //font-family: miranafont, "Hiragino Sans GB", STXihei, "Microsoft YaHei", SimSun, sans-serif;
+        letter-spacing: 1px;
+        line-height: 20px;
+        white-space: nowrap;
+    }
+
+}
+.slant {
+    background-color: $app-body-background-color;
+    width: 101%;
+    position: absolute;
+    bottom: -65px;
+    right: 48%;
+    height: 150px;
+    transform: rotate(3deg);
+}
+
+.slant.right {
+    left: auto;
+    left: 48%;
+    transform: rotate(-3deg);
+}
+.articles {
+    padding: 0;
+
+}
+.j-article-list {
+    border-color: transparent;
+    z-index: 0;
+    .blog {
+        position: relative;
+        width: 100%;
+        margin: 0 0 3rem;
+        padding: 3rem;
+        border-bottom: 1px solid #f0f0f0;
+        word-wrap: break-word;
+        border-radius: 2px;
+        background-color: #fff;
+        &.blurring.dimmable:hover {
+            &>:not(.dimmer){
+                -webkit-filter: blur(2px) grayscale(.7);
+                filter: blur(5px) grayscale(.7);
+                transition: .8s filter ease,.8s -webkit-filter ease;
+            }
+            .dimmer {
+                opacity: 1;
+                visibility: visible;
+            }
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+    }
+
+    .blog .title {
+        margin: 0px 0 4px;
+        display: inherit;
+        font-size: 1.4rem;
+        font-family: -apple-system,SF UI Display,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+        font-weight: 700;
+        line-height: 1.5;
+        a {
+            color: inherit;
+            &:visited {
+                color: #969696;
+            }
+        }
+        span{
+            color: #3989C1;
+            font-weight: 100;
+        }
+    }
+    .blog .abstract {
+        margin: 0 0 8px;
+        font-size: 13px;
+        line-height: 24px;
+    }
+    .blog .meta {
+        padding-right: 0 !important;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 20px;
+        color: #b4b4b4;
+        a::after{
+            content: '•';
+            margin: 0 5px;
+            color: #b4b4b4;
+        }
+    }
+    .blog .options a {
+        color: #808080;
+        margin-left: 5px;
+        &:hover{
+            color: $logo-color;
+        }
+    }
+    .blog .options i {
+        font-size: 1.6rem;
+        vertical-align: middle;
+    }
+    .blog .options .num {
+        margin-left: 5px;
+    }
+    .blog .intro {
+        line-height: 1.4rem;
+        margin-bottom: 15px;
+        margin-top: 0px;
+        font-size: 1.2rem;
+    }
+    .blog .j-category-tag {
+        .category {
+            color: $info-color !important;
+            border: 1px solid $info-color !important;
+            vertical-align: middle;
+        }
+        font-size: 1.1rem;
+        i, a:not(.category) {
+            vertical-align: middle;
+            margin-left:7px;
+            color: #787878;
+            opacity: .8;
+            &:hover{
+                opacity: 1;
+            }
+        }
+
+    }
+}
+

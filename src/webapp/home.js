@@ -3,6 +3,7 @@
 import 'normalize.css'
 import 'iview/dist/styles/iview.css'
 import './assets/home.scss'
+import 'animate.css'
 
 /* eslint-disable no-unused-vars,no-undef  */
 Vue.config.productionTip = false

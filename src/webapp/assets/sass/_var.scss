@@ -1,0 +1,14 @@
+$css-prefix             : 'j-';
+
+
+$white :#fff;
+$app-body-background-color: #fafafa;
+$logo-color: #ec5c51;
+$link-color: $logo-color;
+$link-hover-color       : mix($link-color, $white, 80%);
+$link-active-color      : mix($link-color, $white, 95%);
+
+// 次要颜色
+$info-color: #0793C6;
+//@auxiliaryColor-2:#D82425;
+$auxiliary-color:$info-color

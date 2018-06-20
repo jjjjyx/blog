@@ -7,12 +7,62 @@
 </head>
 <body>
 <div id="app">
-    <div class="wrapper">
-        <%- include('nav.html', data); %>
-        <i-button @click="show">Click me!</i-button>
-        <Icon type="arrow-return-right"></Icon>
-        <Modal v-model="visible" title="Welcome">欢迎使用 iView</Modal>
+    <!--<div class="wrapper">-->
+    <%- include('nav.html', data); %>
+    <div class="header-top bounceInDown animated">
+        <div class="center-bg j-vertical-center" style="background-image:url('http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/1928/format/jpg');background-position: 0 -235px">
+            <a class="avatar am-animation-scale-up " href="javascript:;" style="animation-delay: .51s;">
+                <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" >
+            </a>
+            <p class="avatar-p am-animation-slide-bottom " style="animation-delay: .51s;">
+                手持两把锟斤拷，口中疾呼烫烫烫。<br>脚踏千朵屯屯屯，笑看万物锘锘锘。
+            </p>
+        </div>
+        <div class="slant left"></div>
+        <div class="slant right"></div>
     </div>
+    <row class="container" style="margin-top: 70px;">
+        <i-col span="16" class="articles">
+            <tabs size="small">
+                <tab-pane label="最新文章" class="j-article-list">
+                    <article data-node-id='${item.id}' class="blog" >
+                        <!--${item.ppassword?pH(item.guid):''}-->
+                        <!--${item.post_img?imgH(item.guid,item.post_img):''}-->
+                        <div class="content">
+                            <h3 class="title"><a href="/p/${item.guid}" target="_blank"><span>[ 置顶 ]</span> 文章标题</a></h3>
+                            <div class="options float-right">
+                                <a class="read" href="/p/${item.guid}" target="_blank">
+                                    <Icon type="ios-eye-outline" ></Icon><span class="num">56</span>
+                                </a>
+                                <a class="comment" href="/p/${item.guid}#comment" target="_blank">
+                                    <Icon type="ios-chatbubble-outline" ></Icon><span class="num">88</span>
+                                </a>
+                                <a class="like">
+                                    <Icon type="ios-heart-outline" ></Icon><span class="num">46</span>
+                                </a>
+                            </div>
+                            <div class="meta mt-2 mb-4">
+                                <a title="${xss(item.post_author)}" class="name" >酱酱酱酱油鲜</a> 2018/6/20 22:37
+                            </div>
+                            <p class="intro am-show-md-up">
+                                边栏菜单插件。该则跌侧边栏采用扁平化设计，通过折叠可以展开和收缩多级菜单，适合用于制作网站后台的侧边栏。...
+                            </p>
+                            <div class="j-category-tag">
+                                <a class="category">1235</a>
+                                <Icon type="pricetag"></Icon> <a href="">vue</a>
+                                <!--${item.postTag ? `<i class="am-icon-tags"></i> <a>${item.postTag.replace(/,/g,"</a><a>")}</a>`:''}-->
+                            </div>
+                        </div>
+                    </article>
+                </tab-pane>
+                <tab-pane label="上课大纲">标签二的内容</tab-pane>
+                <tab-pane label="毕业论文">标签三的内容</tab-pane>
+            </tabs>
+        </i-col>
+        <i-col span="8">2</i-col>
+    </row>
+    <!--</div>-->
+
 </div>
 <%- include('footer.html', data); %>
 </body>

@@ -1,5 +1,54 @@
-.ivu-layout-header {
+@import "functions";
+@import "variables";
+@import "var";
+@import "mixins";
+@import "utilities";
+
+html {
+    font-size: 12px;
 }
+// 主体
+body {
+    background-color: $app-body-background-color;
+    //font-size: 1.4rem;
+}
+
+a {
+    color: $logo-color;
+    background: 0 0;
+    text-decoration: none;
+    outline: 0;
+    cursor: pointer;
+    transition: color 0.2s ease-out,border 0.2s ease-out,opacity 0.2s ease-out;
+}
+a:hover {
+    color: $link-hover-color
+}
+a:active {
+    color: $link-active-color
+}
+a:active,a:hover {
+    outline: 0;
+    text-decoration: none
+}
+// 导航主题颜色
+.ivu-menu-light.ivu-menu-horizontal .ivu-menu-item-active, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu-active, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu:hover {
+    color: $logo-color;
+    border-bottom: 2px solid $logo-color;
+}
+
+.ivu-tabs-ink-bar {
+    background-color: $logo-color;
+}
+.ivu-tabs-nav .ivu-tabs-tab-active {
+    color: $logo-color;
+}
+.ivu-tabs-nav .ivu-tabs-tab:hover {
+    color: $logo-color;
+}
+
+
+// 导航部分
 .wrapper-header {
     //background-color: white;
     padding: 0;
@@ -100,3 +149,21 @@
         width:1170px
     }
 }
+
+// 公共样式
+
+.category {
+    padding: 2px 6px;
+    color: $logo-color ;
+    border: 1px solid lighten($logo-color, 70%);
+    border-radius: 3px;
+    margin: 0;
+}
+
+
+.j-vertical-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
