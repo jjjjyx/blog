@@ -56,6 +56,20 @@ a:active,a:hover {
     transition: all .4s ease;
     background-color: #FFF;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1);
+
+    &.top {
+        background-color: transparent;
+        box-shadow: none;
+    }
+    &.top .ivu-menu-item:not(.ivu-menu-item-active) a{
+        color: $app-body-background-color;
+    }
+    &.top .ivu-menu-item-active a,
+    &.top .ivu-menu-item:hover a{
+    //&.top .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu-active,
+    //&.top .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu:hover
+        color: $logo-color;
+    }
 }
 
 .wrapper-header-nav {
@@ -94,9 +108,22 @@ a:active,a:hover {
     }
 }
 
+.yya {
+    position: fixed;
+    left: 0;
+    top: 0;
+}
 
+.gizle {
+    //@extend .fixed-top;
+    top: -66px;
+}
 
-
+.sabit {
+    box-shadow: 0 0 15px 0 rgba(0,0,0,.2);
+    top: 0;
+    z-index: 9999;
+}
 
 @media (max-width: 991px) {
     .wrapper-header-nav .layout-nav {
@@ -150,7 +177,12 @@ a:active,a:hover {
     }
 }
 
+// 侧边栏
+
+
+
 // 公共样式
+
 
 .category {
     padding: 2px 6px;
@@ -161,9 +193,127 @@ a:active,a:hover {
 }
 
 
+// 页面底部
+.footer {
+    background: #202020;
+    padding: 35px 0 0;
+    width: 100%;
+    border-top: 1px solid #373a3c;
+    color: rgba(236, 235, 231, 0.5);
+    .widget {
+        padding: 0px 30px;
+    }
+    .widget .title{
+        color: #ffffff;
+        border-bottom: 1px solid $main-title-color;
+    }
+    .widget .recent-post .recent-single-post {
+        border-bottom: 1px dashed $main-title-color;
+        .post-title{
+            color: $main-title-sub-color;
+            &:hover {
+                color: $logo-color;
+                text-decoration: none;
+            }
+        }
+        .date {
+            color: $main-font-color;
+            font-size: 1.2rem;
+        }
+    }
+    ul>li {
+        margin-bottom: 4px;
+    }
+    ul>li>a {
+        color:$main-font-color;
+        border-bottom: dotted 1px $main-font-color;
+        &:hover{
+            text-decoration: none;
+            border-bottom: solid 1px $main-font-color;
+        }
+    }
+}
+.copyright {
+    background: #111;
+    font-size: 13px;
+    color: $main-font-color;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    border-top: 1px solid $main-title-color;
+    a {
+        color: $main-title-sub-color;
+    }
+    span {
+        margin: 0 .5em;
+    }
+
+}
+.widget{
+    margin-bottom: 35px;
+    .title {
+        margin-top: 0;
+        padding-bottom: 7px;
+        border-bottom: 1px solid #ebebeb;
+        margin-bottom: 21px;
+        position: relative;
+        &::after {
+            content: "";
+            width: 90px;
+            height: 1px;
+            background: $logo-color;
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+        }
+    }
+    .recent-post .recent-single-post {
+        border-bottom: 1px dashed #ebebeb;
+        padding-bottom: 14px;
+        margin-bottom: 14px;
+        .post-title {
+            color: $main-title-sub-color;
+            transition: all 0.2s ease;
+        }
+    }
+}
+
+
 .j-vertical-center {
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
+.list-unstyled {
+    padding-left: 0;
+    list-style: none;
+}
+.list-inline {
+    padding-left: 0;
+    margin-left: -5px;
+    list-style: none;
+}
+.list-inline>li {
+    display: inline-block;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+
+
+/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    background-color: #B9B9B9;
+}
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: #B9B9B9;
+}
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: $auxiliary-color;
+}

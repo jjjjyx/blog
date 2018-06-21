@@ -25,7 +25,7 @@
         <i-col span="16" class="articles">
             <tabs size="small">
                 <tab-pane label="最新文章" class="j-article-list">
-                    <article data-node-id='${item.id}' class="blog" >
+                    <article data-node-id='${item.id}' class="blog" v-for="i in 2" :key="i">
                         <!--${item.ppassword?pH(item.guid):''}-->
                         <!--${item.post_img?imgH(item.guid,item.post_img):''}-->
                         <div class="content">
@@ -55,14 +55,26 @@
                         </div>
                     </article>
                 </tab-pane>
-                <tab-pane label="上课大纲">标签二的内容</tab-pane>
-                <tab-pane label="毕业论文">标签三的内容</tab-pane>
+                <!--<tab-pane label="上课大纲">标签二的内容</tab-pane>-->
+                <!--<tab-pane label="毕业论文">标签三的内容</tab-pane>-->
             </tabs>
         </i-col>
-        <i-col span="8">2</i-col>
+        <i-col span="7" offset="1">
+            <div class="part">
+                <div class="j-title">
+                    <h3 class="">标签</h3>
+                    <a href="/category" class="r btn btn-sm " style="color:#B3B3B3">
+                        全部 &nbsp;&nbsp;<i class="am-icon-angle-right"></i>
+                    </a>
+                </div>
+                <div class="tags">
+
+                </div>
+            </div>
+        </i-col>
     </row>
     <!--</div>-->
-
+    <%- include('bottom.html', data); %>
 </div>
 <%- include('footer.html', data); %>
 </body>

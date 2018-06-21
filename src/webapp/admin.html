@@ -23,38 +23,9 @@
 <div id="preloader">
     <div id="preloader-inner" class="battery"></div>
 </div>
-<script id="load-script" type="application/javascript"> +(function (root) {
-    var $preloader = document.getElementById('preloader')
-    var $load = document.getElementById('load-script')
-
-    function whichTransitionEvent () {
-        var t, el = document.createElement('surface'), transitions = {
-            'animation': 'animationend',
-            'OAnimation': 'oanimationend',
-            'MozAnimation': 'mozAnimationEnd',
-            'WebkitAnimation': 'webkitAnimationEnd'
-        }
-        for (t in transitions) {
-            if (el.style[t] !== undefined) {
-                return transitions[t]
-            }
-        }
-    }
-
-    function fulfilLoading () {
-        $preloader.className = 'fadeOut'
-        var transitionEvent = whichTransitionEvent()
-        if (transitionEvent) {
-            $preloader.addEventListener(transitionEvent, function () {
-                document.body.removeChild($preloader)
-                document.body.removeChild($load)
-                $preloader.removeEventListener(transitionEvent, arguments.callee, false)
-            })
-        }
-    }
-
-    root.fulfilLoading = fulfilLoading
-})(window)</script>
+<script id="load-script" type="application/javascript">+function(d){function e(){var a,b=document.createElement("surface"),c={animation:"animationend",OAnimation:"oanimationend",MozAnimation:"mozAnimationEnd",WebkitAnimation:"webkitAnimationEnd"};for(a in c)if(void 0!==b.style[a])return c[a]}var b=document.getElementById("preloader"),f=document.getElementById("load-script");d.fulfilLoading=function(){b.className="fadeOut";var a=e();a&&b.addEventListener(a,function(){document.body.removeChild(b);document.body.removeChild(f);b.removeEventListener(a,arguments.callee,
+        !1)})}}(window);
+</script>
 <div id="app"></div>
 </body>
 </html>

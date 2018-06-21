@@ -2,62 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95d361ca-240e-45f8-a670-cc1d909bf7d8" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/_functions.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/_mixins.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/_utilities.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/_var.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/_variables.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_alert.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_background-variant.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_badge.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_border-radius.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_box-shadow.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_breakpoints.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_buttons.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_caret.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_clearfix.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_float.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_forms.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_gradients.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_grid-framework.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_grid.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_hover.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_image.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_list-group.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_lists.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_nav-divider.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_pagination.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_reset-text.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_resize.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_screen-reader.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_size.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_table-row.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_text-emphasis.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_text-hide.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_text-truncate.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_transition.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/mixins/_visibility.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_align.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_background.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_borders.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_clearfix.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_display.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_embed.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_flex.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_float.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_position.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_screenreaders.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_shadows.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_sizing.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_spacing.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_text.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/utilities/_visibility.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/views/bottom.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/webapp/assets/sass/_article.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/home.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/home.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/nav.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/nav.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/webapp/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/admin.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/webapp/assets/home.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/assets/home.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/webapp/assets/sass/_public.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/assets/sass/_public.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/home.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/home.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/webapp/assets/sass/_var.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/assets/sass/_var.scss" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -71,23 +24,24 @@
       <file leaf-file-name="home.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/views/home.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="438">
-              <caret line="51" column="80" lean-forward="true" selection-start-line="51" selection-start-column="80" selection-end-line="51" selection-end-column="80" />
+            <state relative-caret-position="1750">
+              <caret line="70" selection-start-line="70" selection-end-line="70" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#a#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#row#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#a#0;n#div#0;n#div#0;n#i-col#1;n#row#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="e#3625#3631#0" expanded="true" />
+                <element signature="e#3631#3637#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="home.scss" pinned="false" current-in-tab="true">
+      <file leaf-file-name="home.scss" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/webapp/assets/home.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="650">
-              <caret line="158" column="26" lean-forward="true" selection-start-line="158" selection-start-column="26" selection-end-line="158" selection-end-column="26" />
+            <state relative-caret-position="50">
+              <caret line="2" column="19" lean-forward="true" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -95,8 +49,26 @@
       <file leaf-file-name="_public.scss" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_public.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="632">
-              <caret line="157" column="48" lean-forward="true" selection-start-line="157" selection-start-column="48" selection-end-line="157" selection-end-column="48" />
+            <state relative-caret-position="4600">
+              <caret line="184" selection-start-line="184" selection-end-line="184" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="_article.scss" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_article.scss">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1140">
+              <caret line="111" column="34" lean-forward="true" selection-start-line="111" selection-start-column="34" selection-end-line="111" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="bottom.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/views/bottom.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1250">
+              <caret line="50" column="16" lean-forward="true" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -104,26 +76,8 @@
       <file leaf-file-name="_var.scss" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_var.scss">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="250">
-              <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="_variables.scss" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_variables.scss">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="246">
-              <caret line="75" column="5" selection-start-line="75" selection-end-line="75" selection-end-column="5" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="_functions.scss" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_functions.scss">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="17" column="20" lean-forward="true" selection-start-line="17" selection-start-column="20" selection-end-line="17" selection-end-column="20" />
+            <state relative-caret-position="100">
+              <caret line="4" selection-start-line="4" selection-end-line="4" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -131,8 +85,26 @@
       <file leaf-file-name="nav.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/views/nav.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="407">
-              <caret line="52" column="35" selection-start-line="52" selection-start-column="35" selection-end-line="52" selection-end-column="35" />
+            <state relative-caret-position="2550">
+              <caret line="102" lean-forward="true" selection-start-line="102" selection-end-line="102" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="admin.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/webapp/admin.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="675">
+              <caret line="27" column="9" lean-forward="true" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="load.js.bak" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/webapp/utils/load.js.bak">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="275">
+              <caret line="11" column="46" lean-forward="true" selection-end-line="35" selection-end-column="10" />
             </state>
           </provider>
         </entry>
@@ -140,8 +112,8 @@
       <file leaf-file-name="home.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/webapp/home.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="8" column="32" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
+            <state>
+              <caret selection-end-line="1" />
               <folding>
                 <element signature="e#14#36#0" expanded="true" />
               </folding>
@@ -155,19 +127,15 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Vue Single File Component" />
-        <option value="JavaScript File" />
-        <option value="HTML File" />
         <option value="Sass File" />
         <option value="SCSS File" />
+        <option value="HTML File" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>paramSerialize</find>
-      <find>encode</find>
-      <find>wrapper-header-nav-search</find>
-      <find>sidebar-user-panel</find>
       <find>header-brands</find>
       <find>wrapper-header</find>
       <find>wrapper-content</find>
@@ -194,16 +162,22 @@
       <find>size=&quot;14&quot;</find>
       <find>options</find>
       <find>size=&quot;16&quot;</find>
+      <find>@mainTitleColor</find>
+      <find>widget</find>
+      <find>j-article-list</find>
+      <find>color-yiq</find>
     </findStrings>
     <replaceStrings>
       <replace />
       <replace>size=&quot;16&quot;</replace>
+      <replace>$main-title-color</replace>
     </replaceStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/webpack</dir>
       <dir>G:\18-workspace\19.bolg\src</dir>
       <dir>G:\18-workspace\19.bolg</dir>
       <dir>G:\18-workspace\19.bolg\webpack</dir>
+      <dir>G:\18-workspace\19.bolg\src\webapp\assets\sass</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -212,11 +186,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/webapp/components/post-management.vue" />
-        <option value="$PROJECT_DIR$/src/webapp/utils/dom.js" />
-        <option value="$PROJECT_DIR$/src/webapp/components/post/post-management.vue" />
-        <option value="$PROJECT_DIR$/src/webapp/assets/sass/_cm.scss" />
-        <option value="$PROJECT_DIR$/src/webapp/404.vue" />
         <option value="$PROJECT_DIR$/src/webapp/components/post/post-writer.vue" />
         <option value="$PROJECT_DIR$/src/webapp/router/index.js" />
         <option value="$PROJECT_DIR$/src/webapp/main.scss" />
@@ -231,7 +200,6 @@
         <option value="$PROJECT_DIR$/src/webapp/App.vue" />
         <option value="$PROJECT_DIR$/src/routers/dev_static.js" />
         <option value="$PROJECT_DIR$/src/db_config.js" />
-        <option value="$PROJECT_DIR$/src/webapp/admin.html" />
         <option value="$PROJECT_DIR$/src/routers/admin.js" />
         <option value="$PROJECT_DIR$/src/routers/html.js" />
         <option value="$PROJECT_DIR$/app.js" />
@@ -255,14 +223,20 @@
         <option value="$PROJECT_DIR$/src/webapp/assets/home.scss.sass" />
         <option value="$PROJECT_DIR$/src/webapp/cms.js" />
         <option value="$PROJECT_DIR$/src/webapp/assets/_public.scss" />
-        <option value="$PROJECT_DIR$/src/webapp/home.js" />
-        <option value="$PROJECT_DIR$/src/views/nav.html" />
         <option value="$PROJECT_DIR$/src/webapp/assets/sass/_mixins.scss" />
         <option value="$PROJECT_DIR$/src/webapp/assets/sass/_utilities.scss" />
         <option value="$PROJECT_DIR$/src/webapp/assets/sass/_var.scss" />
-        <option value="$PROJECT_DIR$/src/webapp/assets/sass/_public.scss" />
+        <option value="$PROJECT_DIR$/src/views/bottom.html" />
+        <option value="$PROJECT_DIR$/src/webapp/home.js" />
+        <option value="$PROJECT_DIR$/src/webapp/utils/load.js.bak.js" />
+        <option value="$PROJECT_DIR$/src/webapp/utils/load.js.bak" />
+        <option value="$PROJECT_DIR$/src/webapp/admin.html" />
+        <option value="$PROJECT_DIR$/src/views/nav.html" />
         <option value="$PROJECT_DIR$/src/views/home.html" />
+        <option value="$PROJECT_DIR$/src/webapp/assets/sass/_article.js" />
         <option value="$PROJECT_DIR$/src/webapp/assets/home.scss" />
+        <option value="$PROJECT_DIR$/src/webapp/assets/sass/_public.scss" />
+        <option value="$PROJECT_DIR$/src/webapp/assets/sass/_article.scss" />
       </list>
     </option>
   </component>
@@ -289,8 +263,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
+    <option name="x" value="216" />
+    <option name="y" value="82" />
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
@@ -299,31 +273,12 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
             <path>
               <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
               <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="dist" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="dist" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="dist" type="462c0819:PsiDirectoryNode" />
-              <item name="static" type="462c0819:PsiDirectoryNode" />
-              <item name="css" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
@@ -368,14 +323,13 @@
               <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="assets" type="462c0819:PsiDirectoryNode" />
-              <item name="sass" type="462c0819:PsiDirectoryNode" />
-              <item name="utilities" type="462c0819:PsiDirectoryNode" />
+              <item name="utils" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -538,12 +492,14 @@
       <workItem from="1529238825829" duration="10120000" />
       <workItem from="1529324185234" duration="7693000" />
       <workItem from="1529409528894" duration="9985000" />
-      <workItem from="1529499461632" duration="7911000" />
+      <workItem from="1529499461632" duration="8622000" />
+      <workItem from="1529545980691" duration="8188000" />
+      <workItem from="1529562134905" duration="957000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="129672000" />
+    <option name="totallyTimeSpent" value="139528000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
@@ -553,16 +509,17 @@
       <window_info id="DB Browser" order="2" />
       <window_info anchor="bottom" id="DB Execution Console" order="12" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info id="npm" order="6" sideWeight="0.33253205" side_tool="true" visible="true" weight="0.1577476" />
       <window_info anchor="bottom" id="Version Control" order="11" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.23515053" />
-      <window_info id="npm" order="6" sideWeight="0.33088234" side_tool="true" weight="0.15295528" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.23515053" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.31244916" />
       <window_info anchor="right" id="FAQ Robot" order="3" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6691176" visible="true" weight="0.15455271" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.66746795" visible="true" weight="0.1577476" />
       <window_info id="Project Explorer" order="3" sideWeight="0.4987745" weight="0.3298722" />
       <window_info id="Job Explorer" order="4" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Console" order="8" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3295362" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="5" side_tool="true" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
@@ -572,7 +529,6 @@
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3295362" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -587,27 +543,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/routers/home.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="9" column="48" selection-start-line="9" selection-start-column="48" selection-end-line="9" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/routers/user.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="10" selection-start-line="10" selection-end-line="10" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/j_site.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="475">
-          <caret line="19" column="27" lean-forward="true" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/private.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
@@ -643,13 +578,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/admin.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="11" column="37" lean-forward="true" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/bin/www">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
@@ -682,13 +610,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="56" selection-start-column="56" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/views/footer.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="72" selection-start-column="72" selection-end-column="72" />
         </state>
       </provider>
     </entry>
@@ -756,16 +677,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/home.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="8" column="32" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
-          <folding>
-            <element signature="e#14#36#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/mixins/_grid.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="282">
@@ -816,9 +727,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/utilities/_position.scss">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/utilities/_float.scss">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -857,13 +765,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/views/nav.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="407">
-          <caret line="52" column="35" selection-start-line="52" selection-start-column="35" selection-end-line="52" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_functions.scss">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
@@ -876,42 +777,102 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_variables.scss">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
+        <state relative-caret-position="1875">
           <caret line="75" column="5" selection-start-line="75" selection-end-line="75" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/views/footer.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/views/bottom.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1250">
+          <caret line="50" column="16" lean-forward="true" selection-start-line="50" selection-start-column="16" selection-end-line="50" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/utilities/_position.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="18" column="10" lean-forward="true" selection-start-line="18" selection-start-column="10" selection-end-line="18" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/home.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret selection-end-line="1" />
+          <folding>
+            <element signature="e#14#36#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/utils/load.js.bak">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="275">
+          <caret line="11" column="46" lean-forward="true" selection-end-line="35" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/admin.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="675">
+          <caret line="27" column="9" lean-forward="true" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/views/nav.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2550">
+          <caret line="102" lean-forward="true" selection-start-line="102" selection-end-line="102" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_var.scss">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+        <state relative-caret-position="100">
+          <caret line="4" selection-start-line="4" selection-end-line="4" selection-end-column="26" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/views/home.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="438">
-          <caret line="51" column="80" lean-forward="true" selection-start-line="51" selection-start-column="80" selection-end-line="51" selection-end-column="80" />
+        <state relative-caret-position="1750">
+          <caret line="70" selection-start-line="70" selection-end-line="70" />
           <folding>
             <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#p#0;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#row#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#div#0;n#div#0;n#i-col#1;n#row#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="e#3625#3631#0" expanded="true" />
+            <element signature="e#3631#3637#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_public.scss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="632">
-          <caret line="157" column="48" lean-forward="true" selection-start-line="157" selection-start-column="48" selection-end-line="157" selection-end-column="48" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/assets/home.scss">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="650">
-          <caret line="158" column="26" lean-forward="true" selection-start-line="158" selection-start-column="26" selection-end-line="158" selection-end-column="26" />
+        <state relative-caret-position="50">
+          <caret line="2" column="19" lean-forward="true" selection-start-line="2" selection-start-column="19" selection-end-line="2" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_public.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4600">
+          <caret line="184" selection-start-line="184" selection-end-line="184" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/assets/sass/_article.scss">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1140">
+          <caret line="111" column="34" lean-forward="true" selection-start-line="111" selection-start-column="34" selection-end-line="111" selection-end-column="34" />
         </state>
       </provider>
     </entry>
