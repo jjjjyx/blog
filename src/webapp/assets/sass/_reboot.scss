@@ -1,0 +1,26 @@
+html {
+    font-size: 12px;
+}
+// 主体
+body {
+    background-color: $app-body-background-color;
+}
+
+a {
+    color: $logo-color;
+    background: 0 0;
+    text-decoration: none;
+    outline: 0;
+    cursor: pointer;
+    transition: color 0.2s ease-out,border 0.2s ease-out,opacity 0.2s ease-out;
+}
+a:hover {
+    color: $link-hover-color
+}
+a:active {
+    color: $link-active-color
+}
+a:active,a:hover {
+    outline: 0;
+    text-decoration: none
+}

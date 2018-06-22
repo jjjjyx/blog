@@ -1,6 +1,7 @@
 
 @import "./sass/public";
 @import "./sass/article";
+
 .wrapper-header .container{
     height: inherit;
 }
@@ -56,7 +57,6 @@
 }
 
 .slant.right {
-    left: auto;
     left: 48%;
     transform: rotate(-3deg);
 }

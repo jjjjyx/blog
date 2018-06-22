@@ -1,0 +1,15 @@
+// 导航主题颜色
+.ivu-menu-light.ivu-menu-horizontal .ivu-menu-item-active, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu-active, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu:hover {
+    color: $logo-color;
+    border-bottom: 2px solid $logo-color;
+}
+
+.ivu-tabs-ink-bar {
+    background-color: $logo-color;
+}
+.ivu-tabs-nav .ivu-tabs-tab-active {
+    color: $logo-color;
+}
+.ivu-tabs-nav .ivu-tabs-tab:hover {
+    color: $logo-color;
+}

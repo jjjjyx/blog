@@ -1,0 +1,45 @@
+
+// 侧边栏
+.sidebar-user-panel {
+    //text-align: center;
+    width:auto;
+    padding: 15px;
+    //border-right: 1px solid #dddee1;
+    //border-top: 1px solid #000;
+    margin-top: -1px;
+
+&:after {
+        //content: ' ';
+        height: 1px;
+        margin-top: 15px;
+        width: 100%;
+        background-color: #000;
+        display: block;
+    }
+.user-panel-profile-picture{
+        border-radius: 50%;
+        width: 82px;
+        height: 82px;
+        overflow: hidden;
+        //margin: 0 10px 10px;
+        margin-bottom: 10px;
+    }
+.user-panel-profile-picture img {
+        width: auto;
+        height: 100%;
+        vertical-align: middle;
+    }
+.user-panel-logged-in-text {
+        display: block;
+        color: #cfcfcf;
+        font-size: 14px;
+        cursor: pointer;
+    }
+.user-panel-action-link {
+        color: #6d787c;
+        font-size: 12px;
+    &:hover {
+            color: #a2aaad;
+        }
+    }
+}

@@ -1,157 +1,15 @@
+// 公共样式 - 针对除后台的部分
 @import "functions";
 @import "variables";
 @import "var";
 @import "mixins";
 @import "utilities";
+@import "reboot";
+@import "overload-iview";
+@import "nav";
+@import "footer";
+@import "scrollbar";
 
-html {
-    font-size: 12px;
-}
-// 主体
-body {
-    background-color: $app-body-background-color;
-    //font-size: 1.4rem;
-}
-
-a {
-    color: $logo-color;
-    background: 0 0;
-    text-decoration: none;
-    outline: 0;
-    cursor: pointer;
-    transition: color 0.2s ease-out,border 0.2s ease-out,opacity 0.2s ease-out;
-}
-a:hover {
-    color: $link-hover-color
-}
-a:active {
-    color: $link-active-color
-}
-a:active,a:hover {
-    outline: 0;
-    text-decoration: none
-}
-// 导航主题颜色
-.ivu-menu-light.ivu-menu-horizontal .ivu-menu-item-active, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu-active, .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu:hover {
-    color: $logo-color;
-    border-bottom: 2px solid $logo-color;
-}
-
-.ivu-tabs-ink-bar {
-    background-color: $logo-color;
-}
-.ivu-tabs-nav .ivu-tabs-tab-active {
-    color: $logo-color;
-}
-.ivu-tabs-nav .ivu-tabs-tab:hover {
-    color: $logo-color;
-}
-
-
-// 导航部分
-.wrapper-header {
-    //background-color: white;
-    padding: 0;
-    border: none;
-    transition: all .4s ease;
-    background-color: #FFF;
-    box-shadow: 0 0 0 1px rgba(0,0,0,.1);
-
-    &.top {
-        background-color: transparent;
-        box-shadow: none;
-    }
-    &.top .ivu-menu-item:not(.ivu-menu-item-active) a{
-        color: $app-body-background-color;
-    }
-    &.top .ivu-menu-item-active a,
-    &.top .ivu-menu-item:hover a{
-    //&.top .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu-active,
-    //&.top .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu:hover
-        color: $logo-color;
-    }
-}
-
-.wrapper-header-nav {
-    background-color: transparent;
-    //float: right;
-    .layout-nav {
-        float: right;
-    }
-    .ivu-menu-item a {
-        color: inherit;
-    }
-}
-.ivu-menu-horizontal {
-    line-height: 64px;
-    height: 64px;
-}
-.nav-toggle {
-    float: right;
-    cursor: pointer;
-    position: relative;
-    color: white;
-    font-size: 24px;
-    //padding: 9px 10px;
-    margin-top: 8px;
-    margin-right: 15px;
-    border: 1px solid transparent;
-    border-radius: 4px;
-}
-.wrapper-header-nav-logo {
-    display: inline-block;
-    height: 64px;
-    font-size: 18px;
-    img {
-        height: 50px;
-        vertical-align: middle;
-    }
-}
-
-.yya {
-    position: fixed;
-    left: 0;
-    top: 0;
-}
-
-.gizle {
-    //@extend .fixed-top;
-    top: -66px;
-}
-
-.sabit {
-    box-shadow: 0 0 15px 0 rgba(0,0,0,.2);
-    top: 0;
-    z-index: 9999;
-}
-
-@media (max-width: 991px) {
-    .wrapper-header-nav .layout-nav {
-        display: none;
-    }
-}
-@media (min-width: 768px) {
-    .wrapper-header-nav {
-        display: block!important;
-        height: auto!important;
-        padding-bottom: 0;
-        overflow: visible!important;
-    }
-    .wrapper-header-brand {
-        float: left;
-    }
-    .nav-toggle {
-        display: none;
-    }
-}
-@media (max-width: 991px) and (min-width: 768px) {
-    .wrapper-header-brand {
-        width: 100%;
-    }
-    .nav-toggle {
-        display: block;
-    }
-}
 .container {
     padding-right: 15px;
     padding-left: 15px;
@@ -177,13 +35,6 @@ a:active,a:hover {
     }
 }
 
-// 侧边栏
-
-
-
-// 公共样式
-
-
 .category {
     padding: 2px 6px;
     color: $logo-color ;
@@ -191,92 +42,6 @@ a:active,a:hover {
     border-radius: 3px;
     margin: 0;
 }
-
-
-// 页面底部
-.footer {
-    background: #202020;
-    padding: 35px 0 0;
-    width: 100%;
-    border-top: 1px solid #373a3c;
-    color: rgba(236, 235, 231, 0.5);
-    .widget {
-        padding: 0px 30px;
-    }
-    .widget .title{
-        color: #ffffff;
-        border-bottom: 1px solid $main-title-color;
-    }
-    .widget .recent-post .recent-single-post {
-        border-bottom: 1px dashed $main-title-color;
-        .post-title{
-            color: $main-title-sub-color;
-            &:hover {
-                color: $logo-color;
-                text-decoration: none;
-            }
-        }
-        .date {
-            color: $main-font-color;
-            font-size: 1.2rem;
-        }
-    }
-    ul>li {
-        margin-bottom: 4px;
-    }
-    ul>li>a {
-        color:$main-font-color;
-        border-bottom: dotted 1px $main-font-color;
-        &:hover{
-            text-decoration: none;
-            border-bottom: solid 1px $main-font-color;
-        }
-    }
-}
-.copyright {
-    background: #111;
-    font-size: 13px;
-    color: $main-font-color;
-    padding-top: 28px;
-    padding-bottom: 28px;
-    border-top: 1px solid $main-title-color;
-    a {
-        color: $main-title-sub-color;
-    }
-    span {
-        margin: 0 .5em;
-    }
-
-}
-.widget{
-    margin-bottom: 35px;
-    .title {
-        margin-top: 0;
-        padding-bottom: 7px;
-        border-bottom: 1px solid #ebebeb;
-        margin-bottom: 21px;
-        position: relative;
-        &::after {
-            content: "";
-            width: 90px;
-            height: 1px;
-            background: $logo-color;
-            position: absolute;
-            left: 0;
-            bottom: -1px;
-        }
-    }
-    .recent-post .recent-single-post {
-        border-bottom: 1px dashed #ebebeb;
-        padding-bottom: 14px;
-        margin-bottom: 14px;
-        .post-title {
-            color: $main-title-sub-color;
-            transition: all 0.2s ease;
-        }
-    }
-}
-
 
 .j-vertical-center {
     display: flex;
@@ -297,23 +62,4 @@ a:active,a:hover {
     display: inline-block;
     padding-right: 5px;
     padding-left: 5px;
-}
-
-
-
-/*定义滚动条高宽及背景 高宽分别对应横竖滚动条的尺寸*/
-::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-    background-color: #B9B9B9;
-}
-/*定义滚动条轨道 内阴影+圆角*/
-::-webkit-scrollbar-track {
-    border-radius: 10px;
-    background-color: #B9B9B9;
-}
-/*定义滑块 内阴影+圆角*/
-::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background-color: $auxiliary-color;
 }

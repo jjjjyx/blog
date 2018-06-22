@@ -14,6 +14,7 @@
 .table-buttons{
     text-align: right;
     font-size: 0;
+    flex-shrink: 0;
 }
 .table-buttons button {
     &:focus {
@@ -22,6 +23,7 @@
     }
     i {
         font-size: 18px;
+        line-height: 1;
     }
 }
 .table-buttons .ivu-select-dropdown {

@@ -1,0 +1,84 @@
+// 编辑文章页面
+.post-writer-content {
+    display: flex;
+    flex-direction: row;
+    padding: 0 !important;
+    flex: 1;
+}
+
+// 左侧
+.post-body-content {
+    position: relative;
+    flex-basis: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding-right: 15px;
+}
+.post-title-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+
+    input.title {
+        width: 100%;
+        height: 50px;
+        padding: 0 20px;
+        margin-bottom: 0;
+        border: none;
+        // border-bottom: 1px solid #d9d9d9;
+        font-size: 25px;
+        font-weight: normal;
+        line-height: 30px;
+        box-shadow: none;
+        outline: none;
+        -webkit-appearance: none;
+    }
+}
+.post-tag-wrap {
+    flex-shrink: 0;
+    padding: 0 20px;
+    cursor: default;
+    color: #868E8E;
+
+    .input-tag{
+        display: inline-block;
+        position: static;
+        padding: 0;
+        width: 8.2em;
+        line-height: 1.21428571em;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        color: #000;
+        outline: 0;
+        -webkit-tap-highlight-color: rgba(255,255,255,0);
+        z-index: 2;
+    }
+}
+
+.saving-notice {
+    position: absolute;
+    top: 0;
+    right: 7px;
+    z-index: 1140;
+}
+
+.post-markdown-wrap {
+    flex-basis: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+// 右侧
+.postbox-container {
+    flex-basis: 300px;
+    flex-shrink: 0;
+}
+
+// _overload-markdown
+.v-note-wrapper .v-note-op.shadow,
+.v-note-wrapper .v-note-panel.shadow{
+    box-shadow: none !important;
+}
+

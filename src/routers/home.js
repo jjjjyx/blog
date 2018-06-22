@@ -10,5 +10,10 @@ router.get('/', function(req, res, next) {
     // console.log("========== next ==========")
     // next()
 });
+router.get('/test', function(req, res, next) {
+    res.render('test');
+    // console.log("========== next ==========")
+    // next()
+});
 
 module.exports = router

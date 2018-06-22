@@ -1,0 +1,85 @@
+// 页面底部
+.footer {
+    background: #202020;
+    padding: 35px 0 0;
+    width: 100%;
+    border-top: 1px solid #373a3c;
+    color: rgba(236, 235, 231, 0.5);
+    .widget {
+        padding: 0px 30px;
+    }
+    .widget .title {
+        color: #ffffff;
+        border-bottom: 1px solid $main-title-color;
+    }
+    .widget .recent-post .recent-single-post {
+        border-bottom: 1px dashed $main-title-color;
+        .post-title {
+            color: $main-title-sub-color;
+            &:hover {
+                color: $logo-color;
+                text-decoration: none;
+            }
+        }
+        .date {
+            color: $main-font-color;
+            font-size: 1.2rem;
+        }
+    }
+    ul > li {
+        margin-bottom: 4px;
+    }
+    ul > li > a {
+        color: $main-font-color;
+        border-bottom: dotted 1px $main-font-color;
+        &:hover {
+            text-decoration: none;
+            border-bottom: solid 1px $main-font-color;
+        }
+    }
+}
+
+.copyright {
+    background: #111;
+    font-size: 13px;
+    color: $main-font-color;
+    padding-top: 28px;
+    padding-bottom: 28px;
+    border-top: 1px solid $main-title-color;
+    a {
+        color: $main-title-sub-color;
+    }
+    span {
+        margin: 0 .5em;
+    }
+
+}
+
+.widget {
+    margin-bottom: 35px;
+    .title {
+        margin-top: 0;
+        padding-bottom: 7px;
+        border-bottom: 1px solid #ebebeb;
+        margin-bottom: 21px;
+        position: relative;
+        &::after {
+            content: "";
+            width: 90px;
+            height: 1px;
+            background: $logo-color;
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+        }
+    }
+    .recent-post .recent-single-post {
+        border-bottom: 1px dashed #ebebeb;
+        padding-bottom: 14px;
+        margin-bottom: 14px;
+        .post-title {
+            color: $main-title-sub-color;
+            transition: all 0.2s ease;
+        }
+    }
+}

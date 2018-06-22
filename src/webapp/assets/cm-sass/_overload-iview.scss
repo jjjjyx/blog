@@ -1,0 +1,40 @@
+.ivu-layout-sider, .ivu-menu-dark {
+    background-color: $sider-bg-color;
+}
+.wrapper-header .ivu-menu-dark {
+    background-color: #2f3638;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened {
+    background-color: $sider-bg-color;
+}
+
+.ivu-layout-sider .sidebar-user-panel {
+    background-color: $sider-bg-deep-color;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened .ivu-menu-submenu-title {
+    background-color: $sider-bg-deep-color;
+}
+
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu),
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu):hover,
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu),
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu):hover {
+    background-color: $sider-bg-deep-color !important;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item:hover,
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+    background-color: $sider-bg-deep-color;
+}
+
+.ivu-layout-sider-children {
+    display: flex;
+    flex-direction: column;
+    .ivu-menu {
+        height: 100%;
+        overflow-y: auto;
+    }
+}
+.ivu-tooltip-popper,.ivu-poptip-popper {
+    z-index: 1501; // 比markdown 查看要低
+}
+
