@@ -1,6 +1,6 @@
 <template>
     <div>
-        文章版本
+        版本列表
     </div>
 </template>
 

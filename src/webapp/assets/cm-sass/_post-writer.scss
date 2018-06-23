@@ -101,6 +101,26 @@
 .postbox .ivu-card-extra {
     top: 10px;
 }
+.postbox .postbox-options {
+    border-top: 1px solid $gray-300;
+    font-size: 12px;
+    padding: 10px 0 0;
+}
+
+.j-collapse {
+    font-size: 13px;
+}
+.j-collapse-item {
+    margin-bottom: 5px;
+}
+.j-collapse-body {
+    padding: 5px;
+}
+.j-collapse-item .j-collapse-header i {
+    font-size: 16px;
+    width: 16px;
+    margin-right: 5px;
+}
 
 // _overload-markdown
 .v-note-wrapper .v-note-op.shadow,
