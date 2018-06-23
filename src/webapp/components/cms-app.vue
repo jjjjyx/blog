@@ -19,59 +19,33 @@
                             <span> 账号设置</span></a>
                     </div>
                 </div>
-                <i-Menu  width="auto" accordion :active-name="1" class="menu-item" @on-select="handleSelectRouter" ref="sidebar" theme="dark">
-                    <MenuGroup title="内容管理">
-                        <Submenu name="2">
-                            <template slot="title">
-                                <Icon type="document"></Icon>
-                                <span>文章管理</span>
+                <!--@on-select="handleSelectRouter"-->
+                <i-Menu  width="auto" accordion :active-name="activeName" class="menu-item"  ref="sidebar" :open-names="openedNames" theme="dark">
+                    <menu-group v-for="(group, index) in sidebarGroups" v-bind:key="index" :title="group.title">
+                        <template v-for="(item, item_index) in group.items">
+                            <template v-if="item.subMenus">
+                                <submenu :name="item.name" v-bind:key="item_index">
+                                    <template slot="title">
+                                        <i v-if="item.className" :class="item.className"></i>
+                                        <Icon :type="item.icon" v-else></Icon>
+                                        <span>{{item.title}}</span>
+                                    </template>
+                                    <Menu-Item :name="menu.name || `${index}_${item_index}_${menu_index}`"
+                                               v-for="(menu, menu_index) in item.subMenus" v-bind:key="menu_index"
+                                               @click.native="handleSelectRouter(menu, item)">
+                                        <i v-if="menu.className" :class="menu.className"></i>
+                                        <Icon v-else :type="menu.icon" ></Icon>
+                                        <span>{{menu.title}}</span>
+                                    </Menu-Item>
+                                </submenu>
                             </template>
-                            <Menu-Item name="post_management">
-                                <Icon type="document"></Icon>
-                                <span>所有文章</span></Menu-Item>
-                            <Menu-Item name="post_writer">
-                                <Icon type="document"></Icon>
-                                <span>撰写文章</span></Menu-Item>
-                            <Menu-Item name="menu">
-                                <Icon type="document"></Icon>
-                                <span>分类管理</span>
+                            <Menu-Item v-else :name="item.name || `${index}_${item_index}`"  v-bind:key="item_index" @click.native="handleSelectRouter(item)">
+                                <i v-if="item.className" :class="menu.className"></i>
+                                <Icon v-else :type="item.icon" ></Icon>
+                                <span>{{item.title}}</span>
                             </Menu-Item>
-                            <Menu-Item name="post_trash">
-                                <Icon type="document"></Icon>
-                                <span>回收站</span></Menu-Item>
-                        </Submenu>
-                        <Menu-Item name="3">
-                            <Icon type="document"></Icon>
-                            <span>分类管理</span>
-                        </Menu-Item>
-                        <Menu-Item name="4">
-                            <Icon type="document"></Icon>
-                            <span>标签管理</span>
-                        </Menu-Item>
-                        <Menu-Item name="5">
-                            <Icon type="document"></Icon>
-                            <span>图片管理</span>
-                        </Menu-Item>
-                        <Menu-Item name="6">
-                            <Icon type="document"></Icon>
-                            <span>留言管理</span>
-                        </Menu-Item>
-                    </MenuGroup>
-                    <MenuGroup title="系统">
-                        <Menu-Item name="7">
-                            <Icon type="document"></Icon>
-                            <span>访客管理</span>
-                        </Menu-Item>
-                        <Menu-Item name="8">
-                            <Icon type="document"></Icon>
-                            <span>用户管理</span>
-                        </Menu-Item>
-
-                        <Menu-Item name="9">
-                            <Icon type="document"></Icon>
-                            <span>网站设置</span>
-                        </Menu-Item>
-                    </MenuGroup>
+                        </template>
+                    </menu-group>
                 </i-Menu>
             </sider>
             <layout :style="{marginLeft: '240px', minWidth:'1100px'}" class="wrapper-content">
@@ -165,7 +139,38 @@ export default {
                 {
                     title: '问题',
                     children: [{title: 'iView UI 有多好', count: 60100}, {title: 'iView 是啥', count: 30010}]
-                }, {title: '文章', children: [{title: 'iView 是一个设计语言', count: 100000}]}]
+                }, {title: '文章', children: [{title: 'iView 是一个设计语言', count: 100000}]}],
+            activeName: null,
+            openedNames: [],
+            sidebarGroups: [
+                {
+                    title: '内容管理',
+                    items: [
+                        {
+                            title: '文章管理',
+                            name: 'post',
+                            className: 'iconfont icon-guanliwenzhang',
+                            subMenus: [ // 有subMenus 必须有name
+                                {title: '所有文章', name: 'post_management', className: 'iconfont icon-guanliwenzhang'},
+                                {title: '撰写文章', name: 'post_writer', className: 'iconfont icon-fabuwenzhang'},
+                                {title: '分类管理', name: 'post_category', className: 'iconfont icon-combinedshapecopy2'},
+                                {title: '标签', name: 'post_tags', className: 'iconfont icon-ziyuan1'},
+                                {title: '回收站', name: 'post_trash', icon: 'ios-trash'}
+                            ]
+                        },
+                        {title: '媒体管理', name: '', icon: 'camera'},
+                        {title: '留言管理', name: '', icon: 'ios-chatbubble-outline'}
+                    ]
+                },
+                {
+                    title: '系统',
+                    items: [
+                        {title: '访客管理', name: '', icon: 'coffee'},
+                        {title: '用户管理', name: '', icon: 'ios-people-outline'},
+                        {title: '网站设置', name: '', icon: 'levels'}
+                    ]
+                }
+            ]
         }
     },
     methods: {
@@ -185,9 +190,29 @@ export default {
         handleSelect: function handleSelect (name) {
             // console.log(name);
         },
-        handleSelectRouter: function (name) {
+        handleSelectRouter: function (menu, parent) {
+            let name = menu.name
             this.$router.push({name})
         }
+    },
+    watch: {
+        '$route': function (val) {
+            if (val) {
+                this.activeName = val.name
+                let ar = val.name.split('_')
+                if (ar.length > 1) {
+                    this.openedNames = [ar[0]]
+                }
+                this.$nextTick(() => {
+                    this.$refs.sidebar.updateOpened()
+                })
+            }
+        }
+    },
+    mounted () {
+        // this.$nextTick(()=>{
+        //     console.log(this.$router.history.current)
+        // })
     }
 }
 </script>

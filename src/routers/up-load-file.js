@@ -9,11 +9,15 @@ const Result = require('../common/resultUtils')
 const _ = require('lodash')
 const qiniu = require('qiniu')
 
-// qiniu.conf.ACCESS_KEY = C.qiUpload.ACCESS_KEY;
-// qiniu.conf.SECRET_KEY = C.qiUpload.SECRET_KEY;
 
-const domain = C.qiUpload.Domain
-const uptoken = new qiniu.rs.PutPolicy(C.qiUpload.Bucket_Name)
+const domain = config.qiUpload.Domain
+const qiniuOption = {
+    scope: config.qiUpload.Bucket_Name,
+    expires: 600, // 10 分钟
+    returnBody: '{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}'
+}
+const mac = new qiniu.auth.digest.Mac(config.qiUpload.ACCESS_KEY, config.qiUpload.SECRET_KEY);
+const putPolicy = new qiniu.rs.PutPolicy(qiniuOption)
 
 
 const token = [
@@ -27,7 +31,7 @@ const token = [
         res.header('Cache-Control', 'max-age=0, private, must-revalidate')
         res.header('Pragma', 'no-cache')
         res.header('Expires', 0)
-        let token = uptoken.token()
+        let token = putPolicy.uploadToken(mac);
         let {name, ext, md5} = req.query
 
         ext = _.last(ext.split('/')) || path.extname(name)
@@ -37,7 +41,7 @@ const token = [
                 token,
                 domain,
                 key: md5 + '.' + (ext || 'png'),
-                uptoken: token
+                // uptoken: token
             }
             return res.status(200).json(Result.success(r));
         } else {

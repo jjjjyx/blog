@@ -34,7 +34,18 @@
         overflow-y: auto;
     }
 }
+
+.ivu-menu-submenu-title span>i, .ivu-menu-submenu-title>i,
+.ivu-menu-item>i{ // icon 宽度不一致
+    font-size: 18px;
+    min-width: 18px;
+    text-align: center;
+}
+
 .ivu-tooltip-popper,.ivu-poptip-popper {
     z-index: 1501; // 比markdown 查看要低
 }
 
+.iconfont {
+    font-size: inherit;
+}

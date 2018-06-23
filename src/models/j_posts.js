@@ -1,5 +1,22 @@
 /* jshint indent: 2 */
 
+/*
+关于
+此表用户记录与维护文章，以及文章的历史版本信息
+
+创建文章            -> 自动草稿
+编辑部分进行保存    -> 草稿
+发布
+    重新创建一个    -> publish
+    原文章          -> inherit // 记录
+编辑文章执行保存
+    如果不存在自动保存记录
+    在次创建一个    -> inherit
+编辑文章更新
+    修改publish状态的内容
+    重新创建一个    -> inherit
+ */
+
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('j_posts', {
         id: {
@@ -68,24 +85,15 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: true
         },
-        // post_modified: {
+        // post_modified: { 使用 updatedAt
         //     type: DataTypes.DATE,
         //     allowNull: true
         // },
-        post_content_filtered: {
-            type: DataTypes.TEXT,
-            allowNull: true
-        },
-        post_parent: {
-            type: DataTypes.BIGINT,
-            allowNull: true,
-            defaultValue: '0'
-        },
         guid: {
             type: DataTypes.STRING(25),
             allowNull: true
         },
-        menu_order: {
+        menu_order: { // 在展示文章时的排序
             type: DataTypes.INTEGER(11),
             allowNull: true,
             defaultValue: '0'
