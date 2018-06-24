@@ -26,5 +26,6 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'j_term_relationships',
+        timestamps: false,
     });
 };

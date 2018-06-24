@@ -1,4 +1,5 @@
 /* jshint indent: 2 */
+const {Enum} = require('../common/enum')
 
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('j_site', {
@@ -18,7 +19,13 @@ module.exports = function (sequelize, DataTypes) {
         textSmall: {
             type: DataTypes.STRING(30),
             allowNull: true
+        },
+        autoLoad: {
+            type: DataTypes.ENUM,
+            values: Object.values(Enum.SiteEnum),
+            allowNull: false
         }
+
     }, {
         tableName: 'j_site',
         // 不要忘了启用 timestamps

@@ -7,7 +7,7 @@
 const app = require('../app');
 const debug = require('debug')('app:server');
 const http = require('http');
-const models = require('../src/models');
+
 
 /**
  * Get port from environment and store in Express.
@@ -16,53 +16,46 @@ const models = require('../src/models');
 let {appPort: port} = config;
 app.set('port', port);
 
-models.sequelize.sync().then(async ()=>{
-    debug("Loading Mysql Database");
 
-    const siteDao = require('../src/models').site
+// models.sequelize.sync().then(async ()=>{
+//     debug("Loading Mysql Database");
+//
+//     const siteDao = require('../src/models').site
+//
+//     let siteList = await siteDao.findAll()
+//     let site = {}
+//     siteList.forEach((item)=>{
+//         site[item.key] = item.value
+//     })
+//     // 将全部 全局设置更新到全局变量
+//     global.SITE = site;
+//
 
-    let siteList = await siteDao.findAll()
-    let site = {}
-    siteList.forEach((item)=>{
-        site[item.key] = item.value
-    })
-    // 将全部 全局设置更新到全局变量
-    global.SITE = site;
+//     listen()
+// });
+// 初始化加载options 数据
 
-    require('../src/base.js')(app)
-    listen()
-});
+const base = require('../src/base.js')
 
-let server = http.createServer(app);
+base(app).then(listen)
+
 function listen() {
-    /**
-     * Create HTTP server.
-     */
-
-    server.listen(port);
 
     /**
-     * Listen on provided port, on all network interfaces.
+     * Event listener for HTTP server "error" event.
      */
-    server.on('error', onError);
-    server.on('listening', onListening);
-}
-// dataSource.on()
-/**
- * Event listener for HTTP server "error" event.
- */
 
-function onError(error) {
-    if (error.syscall !== 'listen') {
-        throw error;
-    }
+    function onError(error) {
+        if (error.syscall !== 'listen') {
+            throw error;
+        }
 
-    let bind = typeof port === 'string'
-        ? 'Pipe ' + port
-        : 'Port ' + port;
+        let bind = typeof port === 'string'
+            ? 'Pipe ' + port
+            : 'Port ' + port;
 
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
+        // handle specific listen errors with friendly messages
+        switch (error.code) {
         case 'EACCES':
             console.error(bind + ' requires elevated privileges');
             process.exit(1);
@@ -73,20 +66,33 @@ function onError(error) {
             break;
         default:
             throw error;
+        }
     }
-}
 
-/**
- * Event listener for HTTP server "listening" event.
- */
+    /**
+     * Event listener for HTTP server "listening" event.
+     */
 
-function onListening() {
-    let addr = server.address();
-    let host = addr.address;
-    let port = addr.port;
-    var bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    debug('Listening on ' + bind);
-    console.log(`app (${IS_DEV?'dev':'production'}) listening at  http://localhost:${port}`);
+    function onListening() {
+        let addr = server.address();
+        let host = addr.address;
+        let port = addr.port;
+        var bind = typeof addr === 'string'
+            ? 'pipe ' + addr
+            : 'port ' + addr.port;
+        debug('Listening on ' + bind);
+        console.log(`app (${IS_DEV?'dev':'production'}) listening at  http://localhost:${port}`);
+    }
+    /**
+     * Create HTTP server.
+     */
+    let server = http.createServer(app);
+
+    server.listen(port);
+
+    /**
+     * Listen on provided port, on all network interfaces.
+     */
+    server.on('error', onError);
+    server.on('listening', onListening);
 }

@@ -57,3 +57,4 @@ kfavicon.png
 !/public/lib
 dump.rdb
 sql.sql
+src/model/*

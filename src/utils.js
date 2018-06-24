@@ -6,7 +6,8 @@ const Promise = require('bluebird')
 const Redis = require('ioredis');
 const JWTR =  require('jwt-redis');
 const _ = require("lodash")
-
+const {validationResult} = require('express-validator/check')
+const Result = require('./common/resultUtils')
 
 const TOKEN_EXPIRATION = 60; // 单位秒
 // 5天
@@ -35,6 +36,22 @@ async function create(obj,expiresIn = TOKEN_EXPIRATION_SEC){
 
 }
 
+const x="0123456789qwertyuioplkjhgfdsazxcvbnm";
+module.exports.randomChar = function(l)  {
+    var tmp="";
+    for(var i=0;i<l;i++)  {
+        tmp += x.charAt(Math.ceil(Math.random()*100000000)%x.length);
+    }
+    return tmp;
+}
 
+module.exports.validationResult = function(req, res, next)  {
+    const errors = validationResult(req)
+
+    if (!errors.isEmpty()) {
+        return res.status(200).json(Result.info('参数错误', errors.mapped()))
+    }
+    return next();
+}
 
 module.exports.create = create

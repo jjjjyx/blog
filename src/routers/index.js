@@ -55,6 +55,7 @@ module.exports = function (app) {
     // app.use("/api",middleware.unless(unless_path))
 
     app.use('/api/user', require('./user.js'))
+    app.use("/api/term" , require("./term.js"));
     app.use("/api/img" , require("./up-load-file.js"));
 
 }

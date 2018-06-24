@@ -1,5 +1,8 @@
 /* jshint indent: 2 */
-
+const {Enum} = require('../common/enum')
+/*
+分类使用平级
+ */
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('j_terms', {
         term_id: {
@@ -12,10 +15,9 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(200),
             allowNull: true
         },
-        slug: {
+        slug: { // 不能添加唯一约束， 分类的别名与标签可以相同
             type: DataTypes.STRING(200),
             allowNull: true,
-            unique: true
         },
         term_group: {
             type: DataTypes.BIGINT,
@@ -23,35 +25,23 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: '0'
         },
         taxonomy: {
-            type: DataTypes.STRING(32),
-            allowNull: true
-        },
-        parent: {
-            type: DataTypes.BIGINT,
-            allowNull: true
-        },
-        count: {
-            type: DataTypes.BIGINT,
-            allowNull: true
+            type: DataTypes.ENUM,
+            values: Object.values(Enum.TaxonomyEnum),
+            allowNull: false
         },
         description: {
             type: DataTypes.TEXT,
             allowNull: true
         },
-        // delete_at: {
-        //   type: DataTypes.DATE,
-        //   allowNull: true
-        // },
-        // create_at: {
-        //   type: DataTypes.DATE,
-        //   allowNull: false,
-        //   defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-        // },
         icon: {
-            type: DataTypes.STRING(200),
+            type: DataTypes.STRING(80),
             allowNull: true,
-            defaultValue: 'am-icon-tag'
-        }
+            defaultValue: ''
+        },
+        count: {
+            type: DataTypes.BIGINT,
+            allowNull: true
+        },
     }, {
         tableName: 'j_terms',
         deletedAt: "deleteAt",

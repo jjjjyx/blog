@@ -12,7 +12,3 @@ export default {
     title: '封面'
 }
 </script>
-
-<style scoped>
-
-</style>

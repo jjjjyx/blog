@@ -8,7 +8,7 @@ const debug = require('debug')('app:routers:user')
 const {check, validationResult} = require('express-validator/check')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
-const userDao = require('../models').users
+const {users: userDao} = require('../models')
 //密码必须为6-18位 必须包含特殊字符和英文
 const passReg = new RegExp('^(?![a-zA-z]+$)(?!\\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\\d!@#$%^&*]+$)[a-zA-Z\\d!@#$%^&*]+$')
 
@@ -16,11 +16,8 @@ const login = [
     check('username', '账号不可为空且3-6位').isString().withMessage('必须是字符串').isLength({min: 3, max: 6}),
     check('password', '密码为6-18位').isString().withMessage('必须是字符串')
         .isLength({min: 6, max: 18}),
+    utils.validationResult,
     async function (req, res, next) {
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            return res.status(200).json(Result.info('参数错误', errors.mapped()))
-        }
         let {username, password} = req.body
         // 取数据验证
         let user = await userDao.findOne({
@@ -71,12 +68,8 @@ const update_pass = [
         min: 6,
         max: 18
     }).withMessage('密码长度在6-18').matches(passReg).withMessage('密码强度不够'),
+    utils.validationResult,
     async function (req, res, next) {
-        const errors = validationResult(req)
-        let map = {code: 0}
-        if (!errors.isEmpty()) {
-            return res.status(200).json(Result.info('参数错误', errors.mapped()))
-        }
         let {old_pass, new_pass, cpass} = req.body
 
         if (new_pass !== cpass) {
@@ -88,6 +81,7 @@ const update_pass = [
         })
         let isMatch = bcrypt.compareSync(old_pass, user.user_pass)
 
+        let map
         if (isMatch) {
             debug(`update user ${user_login} pass`)
             user.user_pass = bcrypt.hashSync(new_pass)

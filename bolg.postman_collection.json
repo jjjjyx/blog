@@ -1,0 +1,460 @@
+{
+	"id": "15dc81af-cf41-4128-96af-d574471e5dc7",
+	"name": "bolg",
+	"description": "",
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2xvZ2luIjoianl4IiwidXNlcl9uaWNrbmFtZSI6IumFsemFsemFsemFseayuemynCIsInVzZXJfZW1haWwiOiJqeXhAcnBnYW1lLm5ldCIsInVzZXJfdXJsIjoid3d3Lm1iZG9nZS5jbiIsInVzZXJfc3RhdHVzIjoxLCJkaXNwbGF5X25hbWUiOiJv566h55CG5ZGYbyIsInJvbGUiOjEwMCwiY3JlYXRlZEF0IjoiMjAxNy0wMi0xM1QwMzowMDo0NC4wMDBaIiwidXBkYXRlZEF0IjoiMjAxNy0wMi0wOVQxNTowMDowMC4wMDBaIiwianRpIjoidHJ1ZTpIMUlCRnUzWlEiLCJpYXQiOjE1Mjk4MDUxMTcsImV4cCI6MTUzMDIzNzExN30.K0W3-Me3mlDgzNLrQpzVtdmub7Y8iwyXZp5FxPWrJ1A"
+			}
+		]
+	},
+	"events": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "f5d7da53-9539-4a39-8c30-13e527383ff0",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "11e7ad50-647e-463c-ade8-be98f98ba031",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variables": [],
+	"order": [],
+	"folders_order": [
+		"e39822eb-0d1a-4db3-8660-0ff42e9cb0c0",
+		"35ee3276-d794-4b69-9bc6-447e11e56394",
+		"df551c6f-0e6a-445a-971c-925f1fbf86e5"
+	],
+	"folders": [
+		{
+			"id": "df551c6f-0e6a-445a-971c-925f1fbf86e5",
+			"name": "term",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "15dc81af-cf41-4128-96af-d574471e5dc7",
+			"folder": null,
+			"order": [
+				"3824a1a7-580b-4d0a-ac97-a4252017e5da",
+				"54bc0d24-472b-4303-9825-438915058051",
+				"349a1b71-2368-43d8-abcc-2eae11f308fe",
+				"2dd9194c-256d-403d-b7aa-fdbafc20f4cf",
+				"985b42a2-9aac-4dd3-ae1d-36e04ee5bdce",
+				"46941346-4d7f-4315-8032-6d5cfa8b49e8"
+			],
+			"folders_order": []
+		},
+		{
+			"id": "35ee3276-d794-4b69-9bc6-447e11e56394",
+			"name": "up-load-file",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "15dc81af-cf41-4128-96af-d574471e5dc7",
+			"folder": null,
+			"order": [
+				"9966758c-925f-4f20-a55a-96a0aa0a6863"
+			],
+			"folders_order": []
+		},
+		{
+			"id": "e39822eb-0d1a-4db3-8660-0ff42e9cb0c0",
+			"name": "user",
+			"description": "",
+			"auth": null,
+			"events": null,
+			"collection": "15dc81af-cf41-4128-96af-d574471e5dc7",
+			"folder": null,
+			"order": [
+				"51acab25-9066-4a65-a957-7eccfdd3f9c2",
+				"63fe297b-2a67-4744-ae5e-91211d29c552"
+			],
+			"folders_order": []
+		}
+	],
+	"requests": [
+		{
+			"id": "2dd9194c-256d-403d-b7aa-fdbafc20f4cf",
+			"name": "addTag",
+			"url": "http://localhost:3878/api/term/t/add",
+			"description": "",
+			"data": [
+				{
+					"key": "name",
+					"value": "vue",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "slug",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "description",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "icon",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "df551c6f-0e6a-445a-971c-925f1fbf86e5",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "349a1b71-2368-43d8-abcc-2eae11f308fe",
+			"name": "delTerm",
+			"url": "http://localhost:3878/api/term/del",
+			"description": "",
+			"data": [
+				{
+					"key": "id",
+					"value": "7",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "df551c6f-0e6a-445a-971c-925f1fbf86e5",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "3824a1a7-580b-4d0a-ac97-a4252017e5da",
+			"name": "addTerm",
+			"url": "http://localhost:3878/api/term/c/add",
+			"description": "",
+			"data": [
+				{
+					"key": "name",
+					"value": "(*&)(",
+					"description": "",
+					"type": "text",
+					"enabled": false
+				},
+				{
+					"key": "name",
+					"value": "新分类1",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "slug",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "description",
+					"value": "增加的分类",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "icon",
+					"value": "icon-test",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": ""
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "df551c6f-0e6a-445a-971c-925f1fbf86e5",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "46941346-4d7f-4315-8032-6d5cfa8b49e8",
+			"name": "getAll",
+			"url": "http://localhost:3878/api/term/",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "df551c6f-0e6a-445a-971c-925f1fbf86e5",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "51acab25-9066-4a65-a957-7eccfdd3f9c2",
+			"name": "login",
+			"url": "http://localhost:3878/api/user/login",
+			"description": "",
+			"data": [
+				{
+					"key": "username",
+					"value": "jyx",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "password",
+					"value": "jjjjyx",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded",
+					"description": ""
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "e39822eb-0d1a-4db3-8660-0ff42e9cb0c0",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "54bc0d24-472b-4303-9825-438915058051",
+			"name": "editTerm",
+			"url": "http://localhost:3878/api/term/c/edit",
+			"description": "",
+			"data": [
+				{
+					"key": "name",
+					"value": "222444",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "slug",
+					"value": "uncategorized",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "description",
+					"value": "默认分类",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "icon",
+					"value": "",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "id",
+					"value": "5",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "df551c6f-0e6a-445a-971c-925f1fbf86e5",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "63fe297b-2a67-4744-ae5e-91211d29c552",
+			"name": "auth",
+			"url": "http://localhost:3878/api/user/auth",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [
+				{
+					"key": "",
+					"value": "",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": {
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2xvZ2luIjoianl4IiwidXNlcl9uaWNrbmFtZSI6IumFsemFsemFsemFseayuemynCIsInVzZXJfZW1haWwiOiJqeXhAcnBnYW1lLm5ldCIsInVzZXJfdXJsIjoid3d3Lm1iZG9nZS5jbiIsInVzZXJfc3RhdHVzIjoxLCJkaXNwbGF5X25hbWUiOiJv566h55CG5ZGYbyIsInJvbGUiOjEwMCwiY3JlYXRlZEF0IjoiMjAxNy0wMi0xM1QwMzowMDo0NC4wMDBaIiwidXBkYXRlZEF0IjoiMjAxNy0wMi0wOVQxNTowMDowMC4wMDBaIiwianRpIjoidHJ1ZTpIMUlCRnUzWlEiLCJpYXQiOjE1Mjk4MDUxMTcsImV4cCI6MTUzMDIzNzExN30.K0W3-Me3mlDgzNLrQpzVtdmub7Y8iwyXZp5FxPWrJ1A"
+					}
+				],
+				"type": "bearer"
+			},
+			"events": [],
+			"folder": "e39822eb-0d1a-4db3-8660-0ff42e9cb0c0",
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "985b42a2-9aac-4dd3-ae1d-36e04ee5bdce",
+			"name": "editTag",
+			"url": "http://localhost:3878/api/term/t/edit",
+			"description": "",
+			"data": [
+				{
+					"key": "name",
+					"value": "修改的标签名称",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "slug",
+					"value": "asd",
+					"description": "",
+					"type": "text",
+					"enabled": false
+				},
+				{
+					"key": "description",
+					"value": "默认分类2222",
+					"description": "",
+					"type": "text",
+					"enabled": false
+				},
+				{
+					"key": "icon",
+					"value": "2222",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "id",
+					"value": "6",
+					"description": "",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "urlencoded",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/x-www-form-urlencoded"
+				}
+			],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": [],
+			"folder": "df551c6f-0e6a-445a-971c-925f1fbf86e5",
+			"headers": "Content-Type: application/x-www-form-urlencoded\n",
+			"pathVariables": {}
+		},
+		{
+			"id": "9966758c-925f-4f20-a55a-96a0aa0a6863",
+			"name": "getToken",
+			"url": "http://localhost:3878/api/img/token",
+			"description": "",
+			"data": null,
+			"dataMode": "params",
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": {
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2xvZ2luIjoianl4IiwidXNlcl9uaWNrbmFtZSI6IumFsemFsemFsemFseayuemynCIsInVzZXJfZW1haWwiOiJqeXhAcnBnYW1lLm5ldCIsInVzZXJfdXJsIjoid3d3Lm1iZG9nZS5jbiIsInVzZXJfc3RhdHVzIjoxLCJkaXNwbGF5X25hbWUiOiJv566h55CG5ZGYbyIsInJvbGUiOjEwMCwiY3JlYXRlZEF0IjoiMjAxNy0wMi0xM1QwMzowMDo0NC4wMDBaIiwidXBkYXRlZEF0IjoiMjAxNy0wMi0wOVQxNTowMDowMC4wMDBaIiwianRpIjoidHJ1ZTpIMUlCRnUzWlEiLCJpYXQiOjE1Mjk4MDUxMTcsImV4cCI6MTUzMDIzNzExN30.K0W3-Me3mlDgzNLrQpzVtdmub7Y8iwyXZp5FxPWrJ1A"
+					}
+				],
+				"type": "bearer"
+			},
+			"events": [],
+			"folder": "35ee3276-d794-4b69-9bc6-447e11e56394",
+			"headers": "",
+			"pathVariables": {}
+		}
+	]
+}

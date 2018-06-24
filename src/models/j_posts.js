@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-
+const {Enum} = require('../common/enum')
 /*
 关于
 此表用户记录与维护文章，以及文章的历史版本信息
@@ -51,14 +51,18 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         post_status: {
-            type: DataTypes.STRING(20),
-            allowNull: true,
-            defaultValue: 'auto-draft'
+            // type: DataTypes.STRING(20),
+            // allowNull: false,
+            // defaultValue: 'auto-draft'
+            type: DataTypes.ENUM,
+            values: Object.values(Enum.PostStatusEnum), //['draft', 'auto-draft', 'publish', 'inherit'],
+            allowNull: false
         },
         comment_status: {
-            type: DataTypes.STRING(20),
-            allowNull: true,
-            defaultValue: 'open'
+            type: DataTypes.ENUM,
+            values: Object.values(Enum.StatusEnum),
+            defaultValue: 'open',
+            allowNull: false
         },
         ping_status: {
             type: DataTypes.STRING(20),
@@ -73,14 +77,14 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(200),
             allowNull: true
         },
-        term_id: {
-            type: DataTypes.BIGINT,
-            allowNull: true,
-            references: {
-                model: 'j_terms',
-                key: 'term_id'
-            }
-        },
+        // term_id: {
+        //     type: DataTypes.BIGINT,
+        //     allowNull: true,
+        //     references: {
+        //         model: 'j_terms',
+        //         key: 'term_id'
+        //     }
+        // },
         pinged: {
             type: DataTypes.TEXT,
             allowNull: true
