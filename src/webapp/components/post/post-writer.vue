@@ -61,7 +61,7 @@ import CollapseTransition from '@/utils/collapse-transition'
 import sidebars from './sidebar'
 import sidebarPanel from './sidebar/sidebar.vue'
 // import {on} from '@/utils/dom'
-
+// import { Base64 } from 'js-base64'
 const sidebarsOrder = Object.keys(sidebars)
 // tmp
 const value = `
@@ -151,13 +151,15 @@ export default {
             return new Promise(async (resolve, reject) => {
                 try {
                     let md5 = await fileMd5(file)
-                    let tokenParam = {md5, name: file.name, ext: file.type}
+                    // 3 = post/img/
+                    let tokenParam = {md5, prefix: 3}
                     let result = await api.nget('/api/img/token', tokenParam)
                     if (result.code !== 0) {
                         return reject(new Error('获取上传凭证失败！'))
                     }
-                    let {token, domain} = result.data
-                    let url = `http://up-z2.qiniu.com/putb64/${file.size}`
+                    let {token, domain, key} = result.data
+                    // key = Base64.encode(key)
+                    let url = `http://up-z2.qiniu.com/putb64/${file.size}/key/${key}`
 
                     ajax({
                         headers: {

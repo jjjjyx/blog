@@ -56,6 +56,6 @@ module.exports = function (app) {
 
     app.use('/api/user', require('./user.js'))
     app.use("/api/term" , require("./term.js"));
-    app.use("/api/img" , require("./up-load-file.js"));
+    app.use("/api/img" , require("./qiniu-file.js"));
 
 }

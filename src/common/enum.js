@@ -23,6 +23,13 @@ const SiteEnum = {
 }
 
 
+const ImgEnum = {
+    'ALL': '',
+    'PUBLIC': 'public/',
+    'COVER': 'cover/img/',
+    'POST': 'post/img/'
+}
+
 module.exports.labels = {
     PostStatus: {
         [PostStatusEnum.DRAFT]: '草稿',
@@ -42,6 +49,12 @@ module.exports.labels = {
     Site: {
         [SiteEnum.YES]: '',
         [SiteEnum.NO]: ''
+    },
+    Img: {
+        [ImgEnum.ALL]: '所有',
+        [ImgEnum.PUBLIC]: '公共区域',
+        [ImgEnum.COVER]: '封面',
+        [ImgEnum.POST]: '文章插图'
     }
 }
 
@@ -49,5 +62,6 @@ module.exports.Enum =  {
     PostStatusEnum,
     StatusEnum,
     TaxonomyEnum,
-    SiteEnum
+    SiteEnum,
+    ImgEnum
 }
