@@ -1,14 +1,14 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<%-locals.site.metaKey%>
-<%-locals.site.metaDescription%>
-<%-locals.site.googleVerification%>
-<title><% if(locals.title) {%> <%-locals.title%> | <%}%><%-locals.site.title%></title>
+<%-SITE.metaKey%>
+<%-SITE.metaDescription%>
+<%-SITE.googleVerification%>
+<title><% if(locals.title) {%> <%-locals.title%> | <%}%><%-SITE.title%></title>
 <meta name="renderer" content="webkit">
 <meta http-equiv="Cache-Control" content="no-siteapp" />
 <link rel="icon" type="image/x-icon" href="/favicon.ico" rel="shortcut icon">
-<link href="<%-locals.site.iconUrl%>" rel="stylesheet">
+<link href="<%-SITE.iconUrl%>" rel="stylesheet">
 <% if(!locals.dev) {%>
 <link href="<%=locals.cdn('normalize/8.0.0/normalize.min.css')%>" rel="stylesheet">
 <link href="<%=locals.cdn('iview/2.14.0/styles/iview.css')%>" rel="stylesheet">

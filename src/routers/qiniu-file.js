@@ -3,7 +3,7 @@
 const express = require('express')
 
 const router = express.Router()
-const debug = require('debug')('app:routers:qiniu-file')
+const debug = require('debug')('app:routers:api.qiniu-file')
 const {check, validationResult} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const Result = require('../common/resultUtils')

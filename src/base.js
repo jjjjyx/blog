@@ -11,7 +11,7 @@ function randomHex (){
     return md5.digest('hex');
 }
 
-module.exports =async function (app) {
+module.exports = async function (app) {
     debug("Loading system options");
 
     let siteList = await siteDao.findAll({
@@ -29,7 +29,6 @@ module.exports =async function (app) {
     let CND_SRC = function (name) {
         return `${SITE.CDN}/${name}`
     }
-    app.locals['site'] = SITE;
     app.locals['dev'] = IS_DEV;
     app.locals['cdn'] = CND_SRC;
 
@@ -40,5 +39,5 @@ module.exports =async function (app) {
     const hash = randomHex();
     // 每次重新启动的时候静态资源都要去除缓存
     app.locals['hash'] = hash;
-    app.locals['statistical'] = SITE.statistical;
+    // app.locals['statistical'] = SITE.statistical;
 };

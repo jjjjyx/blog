@@ -5,7 +5,7 @@ const {Enum} = require('../common/enum')
 此表用户记录与维护文章，以及文章的历史版本信息
 
 创建文章            -> 自动草稿
-编辑部分进行保存    -> 草稿
+编辑进行保存        -> 草稿
 发布
     重新创建一个    -> publish
     原文章          -> inherit // 记录
@@ -46,7 +46,7 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: true
         },
-        post_excerpt: {
+        post_excerpt: { // 摘录
             type: DataTypes.TEXT,
             allowNull: true
         },
@@ -74,7 +74,7 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: true
         },
         post_name: {
-            type: DataTypes.STRING(200),
+            type: DataTypes.STRING(60),
             allowNull: true
         },
         // term_id: {

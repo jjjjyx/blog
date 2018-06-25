@@ -55,6 +55,8 @@ module.exports = function (app) {
     // app.use("/api",middleware.unless(unless_path))
 
     app.use('/api/user', require('./user.js'))
+    app.use("/api/post", require("./posts.js"));
+    app.use("/api/site", require("./site.js"));
     app.use("/api/term" , require("./term.js"));
     app.use("/api/img" , require("./qiniu-file.js"));
 

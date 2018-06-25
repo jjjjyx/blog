@@ -4,7 +4,7 @@ const express = require('express')
 const bcrypt = require('bcryptjs')
 
 const router = express.Router()
-const debug = require('debug')('app:routers:user')
+const debug = require('debug')('app:routers:api.user')
 const {check, validationResult} = require('express-validator/check')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
@@ -33,7 +33,6 @@ const login = [
             user = user.get({plain: true})
 
             delete user.user_pass
-            delete user.id
             let result = await utils.create(user)
             //Token generated
             return res.status(200).json(Result.success(result))

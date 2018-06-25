@@ -6,6 +6,13 @@ const PostStatusEnum = {
     'INHERIT': 'inherit'
 }
 
+// const PostTypeEnum = {
+//     'revision': 'draft',
+//     'post': 'auto-draft',
+//     'PUBLISH': 'publish',
+//     'INHERIT': 'inherit'
+// }
+
 const StatusEnum = {
     'OPEN': 'open',
     'CLOSE': 'close'

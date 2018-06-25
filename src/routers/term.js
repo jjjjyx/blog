@@ -3,7 +3,7 @@
 const express = require('express')
 
 const router = express.Router()
-const debug = require('debug')('app:routers:term')
+const debug = require('debug')('app:routers:api.term')
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const utils = require('../utils')
