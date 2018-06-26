@@ -9,6 +9,8 @@ const {sanitizeBody} = require('express-validator/filter')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
 const {Enum} = require('../common/enum')
+const Sequelize = require('sequelize')
+const Op = Sequelize.Op
 const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao} = require('../models')
 
 // id
@@ -121,7 +123,73 @@ const release = [
     utils.validationResult,
     async function (req, res) {
 
+
         return res.status(200).json('null')
+    }
+]
+
+const moverTrash = [
+    sanitizeId,
+    checkId,
+    utils.validationResult,
+    async function (req, res) {
+        try {
+            let {id} = req.body
+            let post = await postDao.findById(id)
+            if (post === null) {
+                return res.status(200).json(Result.info('失败，未提交正确的文章id'))
+            }
+            // 删除文章
+            debug(`del post id = [${id}]`)
+            await post.destroy()
+            return res.status(200).json(Result.success())
+        } catch (e) {
+            debug('getTrash error by:', e.message)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
+const getTrash = [
+    async function (req, res) {
+        try {
+            // 有删除时间就是删除的
+            // 是删除的 且删除时间小于 30天
+            // 获取当前时间 - 30 天、
+            let date = new Date()
+            date.setDate(date.getDate() - 30)
+            let posts = await postDao.findAll({
+                paranoid: false,
+                where: {
+                    [Op.or]: [
+                        {deleteAt: {[Op.not]: null}},
+                        {deleteAt: {[Op.gte]: date}}
+                    ]
+
+                }
+            })
+            return res.status(200).json(Result.success(posts))
+        } catch (e) {
+            debug('getTrash error by:', e.message)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
+// 删除文章
+/* 只能删除在回收站的文章 */
+const del = [
+    sanitizeId,
+    checkId,
+    utils.validationResult,
+    async function (req, res) {
+        let {id} = req.body
+        let post = await postDao.findById(id)
+        if (post === null) {
+            return res.status(200).json(Result.info('失败，未提交正确的文章id'))
+        }
+        // 删除文章
+        debug(`del post id = [${id}]`)
+        await post.destroy()
+        return res.status(200).json(Result.success())
     }
 ]
 
@@ -131,5 +199,7 @@ router.route('/new_post').post(newPost)
 // 更新文章
 router.route('/save').post(save)
 router.route('/release').post(release)
+router.route('/trash').post(moverTrash).get(getTrash)
+router.route('/del').post(del)
 
 module.exports = router

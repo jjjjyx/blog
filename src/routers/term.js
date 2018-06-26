@@ -160,11 +160,7 @@ const del = [
                 })
             }
             // 删除分类
-            await termsDao.destroy({
-                where:{
-                    term_id: id,
-                }
-            })
+            await term.destroy()
             return res.status(200).json(Result.success())
         } catch (e) {
             debug('delTerm error by :', e.message)
