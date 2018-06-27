@@ -4,7 +4,6 @@
     <list default="true" id="95d361ca-240e-45f8-a670-cc1d909bf7d8" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routers/posts.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/posts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routers/term.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/term.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -32,8 +31,8 @@
           <file leaf-file-name="posts.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/routers/posts.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="462">
-                  <caret line="162" column="30" lean-forward="true" selection-start-line="162" selection-start-column="30" selection-end-line="162" selection-end-column="30" />
+                <state relative-caret-position="487">
+                  <caret line="152" column="34" lean-forward="true" selection-start-line="152" selection-start-column="34" selection-end-line="152" selection-end-column="34" />
                 </state>
               </provider>
             </entry>
@@ -41,8 +40,8 @@
           <file leaf-file-name="term.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/routers/term.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="287">
-                  <caret line="12" selection-start-line="12" selection-end-line="13" selection-end-column="23" />
+                <state relative-caret-position="437">
+                  <caret line="113" column="31" lean-forward="true" selection-start-line="113" selection-start-column="31" selection-end-line="113" selection-end-column="31" />
                 </state>
               </provider>
             </entry>
@@ -81,11 +80,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="j_posts.js" pinned="false" current-in-tab="true">
+          <file leaf-file-name="j_posts.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/models/j_posts.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="425">
-                  <caret line="50" column="27" selection-start-line="50" selection-start-column="27" selection-end-line="50" selection-end-column="27" />
+                <state relative-caret-position="525">
+                  <caret line="21" column="13" lean-forward="true" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
                   <folding>
                     <element signature="n#!!doc" expanded="true" />
                   </folding>
@@ -105,11 +104,11 @@
               </provider>
             </entry>
           </file>
-          <file leaf-file-name="enum.js" pinned="false" current-in-tab="false">
+          <file leaf-file-name="enum.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/common/enum.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="325">
-                  <caret line="13" column="4" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="4" />
+                <state relative-caret-position="400">
+                  <caret line="16" column="19" lean-forward="true" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
                 </state>
               </provider>
             </entry>
@@ -131,8 +130,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>on</find>
-      <find>uploadToken</find>
       <find>qiniuUpload</find>
       <find>imgAdd</find>
       <find>open-names</find>
@@ -145,7 +142,6 @@
       <find>ENUM</find>
       <find>sanitizeSlug</find>
       <find>server</find>
-      <find>Validation</find>
       <find>result</find>
       <find>editTerm</find>
       <find>console</find>
@@ -161,6 +157,9 @@
       <find>statistical</find>
       <find>post_name</find>
       <find>Op</find>
+      <find>update</find>
+      <find>autosave</find>
+      <find>Validation</find>
     </findStrings>
     <replaceStrings>
       <replace>size=&quot;16&quot;</replace>
@@ -480,11 +479,12 @@
       <workItem from="1529800884371" duration="33162000" />
       <workItem from="1529933349042" duration="4642000" />
       <workItem from="1530021934759" duration="2760000" />
+      <workItem from="1530108018298" duration="3969000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="222716000" />
+    <option name="totallyTimeSpent" value="226685000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
@@ -496,10 +496,10 @@
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" />
       <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23515053" />
-      <window_info id="npm" order="6" sideWeight="0.33829787" side_tool="true" visible="true" weight="0.15734825" />
+      <window_info id="npm" order="6" sideWeight="0.3393617" side_tool="true" visible="true" weight="0.15734825" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.31244916" />
       <window_info anchor="right" id="FAQ Robot" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.66170216" visible="true" weight="0.15734825" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6606383" visible="true" weight="0.15734825" />
       <window_info id="Project Explorer" order="3" sideWeight="0.4987745" weight="0.3298722" />
       <window_info id="Job Explorer" order="4" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
@@ -835,34 +835,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/enum.js">
+    <entry file="file://$PROJECT_DIR$/src/routers/term.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="13" column="4" selection-start-line="13" selection-start-column="4" selection-end-line="13" selection-end-column="4" />
+        <state relative-caret-position="437">
+          <caret line="113" column="31" lean-forward="true" selection-start-line="113" selection-start-column="31" selection-end-line="113" selection-end-column="31" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/models/j_posts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="50" column="27" selection-start-line="50" selection-start-column="27" selection-end-line="50" selection-end-column="27" />
+        <state relative-caret-position="525">
+          <caret line="21" column="13" lean-forward="true" selection-start-line="21" selection-start-column="13" selection-end-line="21" selection-end-column="13" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/routers/term.js">
+    <entry file="file://$PROJECT_DIR$/src/common/enum.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="12" selection-start-line="12" selection-end-line="13" selection-end-column="23" />
+        <state relative-caret-position="400">
+          <caret line="16" column="19" lean-forward="true" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/routers/posts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="462">
-          <caret line="162" column="30" lean-forward="true" selection-start-line="162" selection-start-column="30" selection-end-line="162" selection-end-column="30" />
+        <state relative-caret-position="487">
+          <caret line="152" column="34" lean-forward="true" selection-start-line="152" selection-start-column="34" selection-end-line="152" selection-end-column="34" />
         </state>
       </provider>
     </entry>

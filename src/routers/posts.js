@@ -38,21 +38,16 @@ const save = [
     checkTitle,
     checkId,
     checkContent,
-    checkPostName,
     checkExcerpt,
     utils.validationResult,
     async function (req, res) {
-
-        let {post_title, id, post_content, post_name, excerpt} = req.body
+        let {post_title, id, post_content, excerpt} = req.body
         try {
             // 保存的时候 如果文章当前状态是 auto_draft 则更新状态为草稿
             let post = await postDao.findById(id)
             if (post === null)
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
-            // 检查 post_name 格式， post_name 只能包含字母数组，下划线 连字符串，长度在60 之间
-            if (!postNameReg.test(post_name)) {
-                post_name = undefined
-            }
+
             // 提交id 只会有3种状态 auto-draft publish draft
             switch (post.post_status) {
             case Enum.PostStatusEnum.AUTO_DRAFT:
@@ -62,20 +57,30 @@ const save = [
             case Enum.PostStatusEnum.PUBLISH:
                 // 如果是发布状态
                 // 则去获取发布状态文章的自动草稿
-                // 如果获取为空，说明数据库被修改过， 不然发布状态必然会创建: ${id}--autosave-v1
-                post = await postDao.findOne({
+                // 如果获取为空，则创建一个: ${id}--autosave-v1
+                let autoSavePost = await postDao.findOne({
                     where: {
                         post_name: `${id}-autosave-v1`,
                         post_status: Enum.PostStatusEnum.INHERIT,
                         post_type: 'revision'
                     }
                 })
+                if (autoSavePost === null) {
+                    let values = post.toJSON()
+                    values.id = undefined
+                    values.post_name = `${id}-autosave-v1`
+                    values.post_type = 'revision'
+                    values.post_status = Enum.PostStatusEnum.INHERIT
+                    post = await postDao.create(values)
+                }else {
+                    post = autoSavePost
+                }
                 break
             default:
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
             }
 
-            let values = {post_title, post_content, post_name, excerpt, post_status: post.post_status}
+            let values = {post_title, post_content, excerpt, post_status: post.post_status}
             await post.update(values)
             return res.status(200).json(Result.success())
         } catch (e) {
@@ -117,14 +122,52 @@ const newPost = [
 // 作者
 //
 // 更新 ，发布接口
+// 更新或发布将创建一个版本记录
 const release = [
+    sanitizeTitle,
     sanitizeId,
+    checkTitle,
     checkId,
+    checkContent,
+    checkPostName,
+    checkExcerpt,
     utils.validationResult,
     async function (req, res) {
+        let {post_title, id, post_content, post_name, excerpt} = req.body
+        try {
+            let post = await postDao.findById(id)
+            if (post === null)
+                return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
+            // 检查 post_name 格式， post_name 只能包含字母数组，下划线 连字符串，长度在60 之间
+            if (!postNameReg.test(post_name)) {
+                post_name = undefined
+            }
+            // 修改post 状态
+            let values
+            post.post_title = post_title
+            post.post_content = post_content
+            post.excerpt = excerpt
+            post.post_name = post_name || post.id
+            post.post_status = Enum.PostStatusEnum.PUBLISH
 
+            // todo 分类 ， 标签 ，... 等
 
-        return res.status(200).json('null')
+            await post.save()
+
+            // 创建版本
+            values = post.toJSON()
+            values.post_name = `${id}-revision-v1`
+            values.post_status = Enum.PostStatusEnum.INHERIT
+            values.post_type = 'revision'
+            values.id = undefined
+            await postDao.create(values)
+
+            return res.status(200).json(Result.success())
+        } catch (e) {
+            console.log(e)
+            debug('release post error by:', e.message)
+            return res.status(200).json(Result.error())
+        }
     }
 ]
 
@@ -164,7 +207,6 @@ const getTrash = [
                         {deleteAt: {[Op.not]: null}},
                         {deleteAt: {[Op.gte]: date}}
                     ]
-
                 }
             })
             return res.status(200).json(Result.success(posts))
@@ -176,20 +218,47 @@ const getTrash = [
 ]
 // 删除文章
 /* 只能删除在回收站的文章 */
+// 删除文章的同时顺便删除 过期的文章
 const del = [
     sanitizeId,
     checkId,
     utils.validationResult,
     async function (req, res) {
         let {id} = req.body
-        let post = await postDao.findById(id)
-        if (post === null) {
-            return res.status(200).json(Result.info('失败，未提交正确的文章id'))
+        try {
+            let date = new Date()
+            date.setDate(date.getDate() - 30)
+            let post = await postDao.find({
+                paranoid: false,
+                where: {
+                    id: id,
+                    [Op.or]: [
+                        {deleteAt: {[Op.not]: null}},
+                        {deleteAt: {[Op.gte]: date}}
+                    ]
+                }
+            })
+            if (post === null) {
+                return res.status(200).json(Result.info('失败，未提交正确的文章id'))
+            }
+            // 删除文章
+            debug(`del post id = [${id}]`)
+            await postDao.destroy({
+                paranoid: false,
+                force: true,
+                where: {
+                    [Op.or]: [
+                        {deleteAt: id},
+                        {deleteAt: {[Op.lte]: date}}
+                    ]
+
+                }
+            })
+            return res.status(200).json(Result.success())
+        } catch (e) {
+            debug('del post error by:', e.message)
+            return res.status(200).json(Result.error())
         }
-        // 删除文章
-        debug(`del post id = [${id}]`)
-        await post.destroy()
-        return res.status(200).json(Result.success())
     }
 ]
 
