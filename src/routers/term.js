@@ -28,7 +28,7 @@ const checkId = body('id').isInt().withMessage("请提交正确的ID")
 const checkName = body('name').isString().withMessage('请提交正确的分类').custom((value) => {
     debug('checkName name = ', value)
     return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(value)
-}).withMessage('请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！')
+}).withMessage('请提交正确的名称，名称只能包含中文英文，下划线，数字,且在长度不超过10！')
 
 const slugMsg = '且名称只能包含小写英文，连字符（-），数字,且在长度不超过30！'
 const slugV = (value) => {
@@ -39,10 +39,11 @@ const checkSlug = body('slug').exists().withMessage('必须').custom(slugV).with
 const checkSlug2 = body('slug').isLength({min: 0, max: 30}).custom(slugV).withMessage(slugMsg)
 const checkDescription = body('description').isLength({min: 0, max: 140})
 const checkIcon = body('icon').custom((value) => {
+    // todo 验证 icon
     debug('checkIcon icon = ', value)
     return true
 })
-const default_id = 1
+// const default_id = SITE.defaultCategoryId
 
 const addTerm = [
     sanitizeName,
@@ -94,7 +95,7 @@ const editTerm = [
         let values = {id, name, slug, description, icon}
         debug(`editTerm id= [${id}] name =[${name}], slug[${slug}]`)
         try {
-            if (id === default_id) {
+            if (id === SITE.defaultCategoryId) {
                 return res.status(200).json(Result.info('失败!此分类不可修改'))
             }
             // 检查同名 ，检查 slug
@@ -129,7 +130,7 @@ const del = [
     async function (req, res) {
         let {id} = req.body
         // 不可删除 默认分类，默认分类id = 1
-        if (id === default_id) {
+        if (id === SITE.defaultCategoryId) {
             return res.status(200).json(Result.info('失败!此分类不可删除'))
         }
         try {
@@ -142,14 +143,14 @@ const del = [
             if (term.taxonomy === Enum.TaxonomyEnum.CATEGORY) {
                 // 移动改分类下的所有文章到默认分类
                 await termRelationshipsDao.update({
-                    term_id: default_id,
+                    term_id: SITE.defaultCategoryId,
                 },{
                     where: {
                         term_id: id,
                     }
                 })
                 // todo 更新分类下的文章个数
-                // term = termsDao.findById(default_id)
+                // term = termsDao.findById(SITE.defaultCategoryId)
                 // let count =
             } else if (term.taxonomy === Enum.TaxonomyEnum.POST_TAG) { // 如果是标签
                 // 删除所有文章引用

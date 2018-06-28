@@ -2,6 +2,9 @@
 const {Enum} = require('../common/enum')
 /*
 分类使用平级
+
+// 一个文章只有一个分类
+// 一个文章至多可以有 16 个标签
  */
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('j_terms', {

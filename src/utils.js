@@ -54,4 +54,7 @@ module.exports.validationResult = function(req, res, next)  {
     return next();
 }
 
+module.exports.termReg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
+
+
 module.exports.create = create
