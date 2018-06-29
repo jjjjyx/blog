@@ -3,9 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="95d361ca-240e-45f8-a670-cc1d909bf7d8" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/base.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/base.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routers/posts.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/posts.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/term.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/term.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -15,17 +14,14 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5">
+    <splitter split-orientation="horizontal" split-proportion="0.6516588">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
           <file leaf-file-name="post-writer.vue" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/webapp/components/post/post-writer.vue">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="3200">
+                <state>
                   <caret line="136" column="19" selection-start-line="136" selection-start-column="19" selection-end-line="136" selection-end-column="19" />
-                  <folding>
-                    <element signature="e#2633#2665#0" expanded="true" />
-                  </folding>
                 </state>
               </provider>
             </entry>
@@ -33,8 +29,8 @@
           <file leaf-file-name="posts.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/routers/posts.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="615">
-                  <caret line="387" column="71" selection-start-line="387" selection-start-column="71" selection-end-line="387" selection-end-column="71" />
+                <state relative-caret-position="662">
+                  <caret line="280" column="31" lean-forward="true" selection-start-line="280" selection-start-column="31" selection-end-line="280" selection-end-column="31" />
                 </state>
               </provider>
             </entry>
@@ -51,17 +47,8 @@
           <file leaf-file-name="term.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/routers/term.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2675">
-                  <caret line="107" column="14" selection-start-line="107" selection-start-column="14" selection-end-line="107" selection-end-column="14" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/models/index.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="500">
-                  <caret line="20" column="52" selection-start-line="20" selection-start-column="47" selection-end-line="20" selection-end-column="52" />
+                <state relative-caret-position="509">
+                  <caret line="177" column="25" lean-forward="true" selection-start-line="177" selection-start-column="25" selection-end-line="177" selection-end-column="25" />
                 </state>
               </provider>
             </entry>
@@ -91,7 +78,7 @@
           <file leaf-file-name="j_posts.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/models/j_posts.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="672">
+                <state relative-caret-position="1300">
                   <caret line="52" column="19" selection-start-line="52" selection-start-column="8" selection-end-line="52" selection-end-column="19" />
                   <folding>
                     <element signature="n#!!doc" expanded="true" />
@@ -115,8 +102,8 @@
           <file leaf-file-name="enum.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/common/enum.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1675">
-                  <caret line="67" selection-start-line="67" selection-end-line="67" />
+                <state relative-caret-position="575">
+                  <caret line="23" column="25" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="25" />
                 </state>
               </provider>
             </entry>
@@ -124,8 +111,8 @@
           <file leaf-file-name="j_terms.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/models/j_terms.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="712">
-                  <caret line="29" column="16" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="16" />
+                <state relative-caret-position="225">
+                  <caret line="9" column="36" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="36" />
                   <folding>
                     <element signature="n#!!doc" expanded="true" />
                   </folding>
@@ -136,7 +123,7 @@
           <file leaf-file-name="base.js" pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/src/base.js">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="525">
+                <state relative-caret-position="900">
                   <caret line="36" column="48" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
                 </state>
               </provider>
@@ -159,7 +146,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find />
       <find>uuid</find>
       <find>ex</find>
       <find>Base64</find>
@@ -189,6 +175,7 @@
       <find>isArray</find>
       <find>checkTagsId</find>
       <find>tags_id</find>
+      <find>提交了未定义的分类id</find>
     </findStrings>
     <replaceStrings>
       <replace>size=&quot;16&quot;</replace>
@@ -261,9 +248,9 @@
         <option value="$PROJECT_DIR$/src/models/j_posts.js" />
         <option value="$PROJECT_DIR$/src/common/enum.js" />
         <option value="$PROJECT_DIR$/src/models/j_terms.js" />
-        <option value="$PROJECT_DIR$/src/routers/term.js" />
         <option value="$PROJECT_DIR$/src/base.js" />
         <option value="$PROJECT_DIR$/src/utils.js" />
+        <option value="$PROJECT_DIR$/src/routers/term.js" />
         <option value="$PROJECT_DIR$/src/routers/posts.js" />
       </list>
     </option>
@@ -519,12 +506,14 @@
       <workItem from="1530108018298" duration="3969000" />
       <workItem from="1530187625686" duration="13424000" />
       <workItem from="1530231250340" duration="1783000" />
-      <workItem from="1530246531156" duration="1419000" />
+      <workItem from="1530246531156" duration="1869000" />
+      <workItem from="1530274450799" duration="1913000" />
+      <workItem from="1530282648345" duration="2513000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="243311000" />
+    <option name="totallyTimeSpent" value="248187000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
@@ -535,11 +524,11 @@
       <window_info anchor="bottom" id="DB Execution Console" order="12" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.23433685" />
-      <window_info id="npm" order="6" sideWeight="0.34201184" side_tool="true" visible="true" weight="0.15734825" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.31244916" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.23433685" />
+      <window_info id="npm" order="6" sideWeight="0.34431455" side_tool="true" visible="true" weight="0.15734825" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.31244916" />
       <window_info anchor="right" id="FAQ Robot" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6579882" visible="true" weight="0.15734825" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6556854" visible="true" weight="0.15734825" />
       <window_info id="Project Explorer" order="3" sideWeight="0.4987745" weight="0.3298722" />
       <window_info id="Job Explorer" order="4" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
@@ -569,13 +558,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-cover.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="5" column="10" lean-forward="true" selection-start-line="5" selection-start-column="10" selection-end-line="5" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/model/config-test.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="125">
@@ -789,11 +771,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/components/post/post-writer.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3200">
+        <state>
           <caret line="136" column="19" selection-start-line="136" selection-start-column="19" selection-end-line="136" selection-end-column="19" />
-          <folding>
-            <element signature="e#2633#2665#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -825,24 +804,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/enum.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1675">
-          <caret line="67" selection-start-line="67" selection-end-line="67" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/routers/user.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="800">
           <caret line="32" column="42" selection-start-line="32" selection-start-column="42" selection-end-line="32" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="500">
-          <caret line="20" column="52" selection-start-line="20" selection-start-column="47" selection-end-line="20" selection-end-column="52" />
         </state>
       </provider>
     </entry>
@@ -860,16 +825,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/routers/term.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2675">
-          <caret line="107" column="14" selection-start-line="107" selection-start-column="14" selection-end-line="107" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/models/j_posts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="672">
+        <state relative-caret-position="1300">
           <caret line="52" column="19" selection-start-line="52" selection-start-column="8" selection-end-line="52" selection-end-column="19" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
@@ -889,7 +847,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/base.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="525">
+        <state relative-caret-position="900">
           <caret line="36" column="48" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
         </state>
       </provider>
@@ -901,20 +859,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/enum.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="575">
+          <caret line="23" column="25" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/models/j_terms.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="712">
-          <caret line="29" column="16" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="16" />
+        <state relative-caret-position="225">
+          <caret line="9" column="36" selection-start-line="9" selection-start-column="29" selection-end-line="9" selection-end-column="36" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/sequelize/lib/sequelize.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8845">
+          <caret line="447" column="2" selection-start-line="447" selection-start-column="2" selection-end-line="447" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="583">
+          <caret line="29" lean-forward="true" selection-start-line="29" selection-end-line="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/routers/term.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="509">
+          <caret line="177" column="25" lean-forward="true" selection-start-line="177" selection-start-column="25" selection-end-line="177" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/routers/posts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="615">
-          <caret line="387" column="71" selection-start-line="387" selection-start-column="71" selection-end-line="387" selection-end-column="71" />
+        <state relative-caret-position="662">
+          <caret line="280" column="31" lean-forward="true" selection-start-line="280" selection-start-column="31" selection-end-line="280" selection-end-column="31" />
         </state>
       </provider>
     </entry>

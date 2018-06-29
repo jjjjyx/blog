@@ -178,9 +178,9 @@ const release = [
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
 
             // 验证分类是否存在
-            let category = await termsDao.findById(id,{attributes:['term_id']})
+            let category = await termsDao.findById(category_id,{attributes:['term_id']})
             if (category === null) {
-                debug(`release 提交了未定义的分类id，自动修正为默认分类 ${SITE.defaultCategoryId}`)
+                debug(`release 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
                 category_id = SITE.defaultCategoryId * 1
             }
 
@@ -273,11 +273,12 @@ const release = [
                 termRelationshipsDao.bulkCreate(createValues).then(()=>{
                     if (_not.length) {
                         // todo 这里会出现一个 异常 有时间修改
-                        termsDao.update(
+                        return termsDao.update(
                             {count: Sequelize.literal('`count` + 1')},
                             {where: {term_id: {[Op.in]: _not}}}
                         )
                     }
+                    return null
                 }).catch((err)=>{
                     debug("release update termRelationships error by:", err.message)
                 })
@@ -438,6 +439,33 @@ const getTrash = [
         }
     }
 ]
+// 还原回收站文章
+const revert = [
+    async function (req, res) {
+        let {ids} = req.body
+        if (!_.isArray(ids)) {
+            ids = [ids]
+        }
+        try {
+            let result = await postDao.update({
+                deleteAt: null
+            },{
+                paranoid: false,
+                where: {
+                    id: ids,
+                    [Op.or]: [
+                        {deleteAt: {[Op.not]: null}},
+                    ]
+                }
+            })
+            debug(`还原文章 ids = [${ids}], 共计还原文章: ${result} 篇`)
+            return res.status(200).json(Result.success(result))
+        } catch (e) {
+            debug('del post error by:', e.message)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
 
 router.route('/').get(getAllPost)
 // 创建文章
@@ -446,6 +474,7 @@ router.route('/new_post').post(newPost)
 router.route('/save').post(save)
 router.route('/release').post(release)
 router.route('/trash').post(moverTrash).get(getTrash)
+router.route('/revert').post(revert)
 router.route('/del').post(del)
 
 module.exports = router

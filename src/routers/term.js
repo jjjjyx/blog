@@ -8,10 +8,12 @@ const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
-const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao} = require('../models')
+const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao, sequelize} = require('../models')
 const {Enum} = require('../common/enum')
 const Sequelize = require('sequelize')
+
 const Op = Sequelize.Op
+const _ = require('lodash')
 const sanitizeId = sanitizeBody('id').toInt()
 const sanitizeName = sanitizeBody('name').escape().trim()
 const sanitizeIcon = sanitizeBody('icon').escape().trim()
@@ -123,45 +125,65 @@ const editTerm = [
         }
     }
 ]
-
+// 直接删除 不需要保留
 const del = [
-    sanitizeId,
-    checkId,
+    // sanitizeId,
+    // checkId,
     async function (req, res) {
-        let {id} = req.body
-        // 不可删除 默认分类，默认分类id = 1
-        if (id === SITE.defaultCategoryId) {
-            return res.status(200).json(Result.info('失败!此分类不可删除'))
+        let {ids} = req.body
+        if (!_.isArray(ids)) {
+            ids = [ids]
         }
+        // 删除掉文章的引用
         try {
-            let term = await termsDao.findById(id)
-            if (term === null) {
-                return res.status(200).json(Result.info('删除失败!'))
-            }
-            debug(`del term id = [${id}] taxonomy = [${term.taxonomy}]`)
-            // 如果是 分类
-            if (term.taxonomy === Enum.TaxonomyEnum.CATEGORY) {
-                // 移动改分类下的所有文章到默认分类
-                await termRelationshipsDao.update({
-                    term_id: SITE.defaultCategoryId,
-                },{
-                    where: {
-                        term_id: id,
+            let terms = await termsDao.findAll({
+                where:{
+                    term_id:{
+                        [Op.in]: ids,
+                        [Op.not]: SITE.defaultCategoryId
                     }
-                })
-                // todo 更新分类下的文章个数
-                // term = termsDao.findById(SITE.defaultCategoryId)
-                // let count =
-            } else if (term.taxonomy === Enum.TaxonomyEnum.POST_TAG) { // 如果是标签
-                // 删除所有文章引用
-                await termRelationshipsDao.destroy({
-                    where: {
-                        term_id: id,
-                    }
-                })
+                }
+            })
+            if (terms.length) {
+                // 调出标签与分类
+                let fn = (item) => item.term_id
+                let {category, post_tag} = _.groupBy(terms, (item) => item.taxonomy)
+                category = category || []
+                post_tag = post_tag || []
+                let category_ids = category.map(fn)
+                let post_tag_ids = post_tag.map(fn)
+                debug(`del term id = [${category_ids},${post_tag_ids}] 其中标签：[${post_tag_ids}] ${post_tag_ids.length}个，分类：[${category_ids}], ${category_ids.length} 个`)
+                // 分类的移动文章到默认分类
+                if (category_ids.length){
+                    termRelationshipsDao.update(
+                        {term_id: SITE.defaultCategoryId},
+                        {where: {term_id: category_ids}}
+                    ).then(()=>{
+                        // 更新文章个数
+                        try {
+                            sequelize.query('UPDATE j_terms SET `count` = (SELECT COUNT(*) FROM j_term_relationships WHERE term_id = :term_id) WHERE term_id = :term_id', {
+                                replacements: {term_id: SITE.defaultCategoryId}
+                            }).spread((results, metadata)=>{
+                                // update results = {"fieldCount":0,"affectedRows":0,"insertId":0,"info":"Rows matched: 1  Changed: 0  Warnings: 0","serverStatus":2,"warningStatus":0,"changedRows":0}, metadata = {"fieldCount":0,"affectedRows":0,"insertId":0,"info":"Rows matched: 1  Changed: 0  Warnings: 0","serverStatus":2,"warningStatus":0,"changedRows":0}
+                                console.log('update results = %s, metadata = %s', JSON.stringify(results), JSON.stringify(metadata))
+                            })
+                        } catch (e) {
+                            console.log(e)
+                        }
+                        // 删除分类
+                        termsDao.destroy({paranoid: false, force: true, where: {term_id: category_ids}})
+                    })
+                }
+                // 标签直接删除
+                // 删除对应关系
+                if (post_tag_ids.length) {
+                    let _destroy = {paranoid: false, force: true, where: {term_id: post_tag_ids}}
+                    termRelationshipsDao.destroy(_destroy).then(() =>{
+                        // 删除标签
+                        termsDao.destroy(_destroy)
+                    })
+                }
             }
-            // 删除分类
-            await term.destroy()
             return res.status(200).json(Result.success())
         } catch (e) {
             debug('delTerm error by :', e.message)
