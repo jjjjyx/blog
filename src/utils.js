@@ -3,6 +3,7 @@
 
 const debug = require('debug')('app:utils:' + process.pid);
 const Promise = require('bluebird')
+const moment = require("moment")
 const Redis = require('ioredis');
 const JWTR =  require('jwt-redis');
 const _ = require("lodash")
@@ -56,5 +57,8 @@ module.exports.validationResult = function(req, res, next)  {
 
 module.exports.termReg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
 
+module.exports.formatDate = function (time) {
+    return moment(time).format("YYYY-MM-D hh:mm")
+}
 
 module.exports.create = create

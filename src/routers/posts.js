@@ -19,9 +19,9 @@ const checkId = body('id').exists().isInt().withMessage('请提交正确的文�
 
 const sanitizeCategoryId = sanitizeBody('category_id').toInt()
 const checkCategoryId = body('category_id').exists().isInt().withMessage('请提交正确的分类ID')
-//
+// todo 数组暂时无法使用express-validator 做检查， 单独提交一个值的时候会错误
 // const sanitizeTagsId = sanitizeBody('tags_id').toArray()
-const checkTagsId = body('tags_id').exists().isArray().withMessage('请提交正确的标签ID')
+// const checkTagsId = body('tags_id').exists().isArray().withMessage('请提交正确的标签ID')
 
 // 蛋疼提交为数组 这个不执行
 // const sanitizeNewTagsName = sanitizeBody('new_tag*').customSanitizer((value)=>{/* console.log(value)*/debug(`sanitizeNewTagsName v = ${value}`)return value})
@@ -40,7 +40,7 @@ const checkContent = body('post_content').exists().isString().isLength({min: 0})
 const checkPostName = body('post_name').exists().isString().isLength({min: 0}).withMessage('请提交文章内容')
 const postNameReg = /^[_a-zA-Z0-9\-]{1,60}$/
 // 摘录
-const checkExcerpt = body('excerpt').exists().isString().isLength({min: 0}).withMessage('请提交文章摘录')
+const checkExcerpt = body('post_excerpt').exists().isString().isLength({min: 0}).withMessage('请提交文章摘录')
 
 /**
  * 保存文章, 仅保存标题，内容，摘录
@@ -55,7 +55,7 @@ const save = [
     checkExcerpt,
     utils.validationResult,
     async function (req, res) {
-        let {post_title, id, post_content, excerpt} = req.body
+        let {post_title, id, post_content, post_excerpt} = req.body
         try {
             // 保存的时候 如果文章当前状态是 auto_draft 则更新状态为草稿
             let post = await postDao.findById(id)
@@ -98,7 +98,7 @@ const save = [
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
             }
 
-            let values = {post_title, post_content, excerpt, post_status: post.post_status}
+            let values = {post_title, post_content, post_excerpt, post_status: post.post_status}
             debug(`文章 = ${id} 更新自动存档内容！`)
             await post.update(values)
             return res.status(200).json(Result.success())
@@ -149,7 +149,6 @@ const release = [
     sanitizeTitle,
     sanitizeId,
     sanitizeCategoryId,
-    checkTagsId,
     checkTitle,
     checkId,
     checkContent,
@@ -157,19 +156,19 @@ const release = [
     checkExcerpt,
     checkNewTagsName,
     checkCategoryId,
-    checkTagsId,
+    // checkTagsId,
     utils.validationResult,
     async function (req, res) {
         // todo 文章状态！！
-        let {post_title, id, post_content, post_name, excerpt: post_excerpt, new_tag, tags_id, category_id} = req.body
+        let {post_title, id, post_content, post_name, post_excerpt, new_tag, tags_id, category_id} = req.body
         // post_excerpt = post_excerpt || ''
 
         let new_tags = new_tag
-        if (!new_tags instanceof Array) {
+        if (!_.isArray(new_tags)) {
             new_tags = [new_tag]
         }
 
-        if (!tags_id instanceof Array) {
+        if (!_.isArray(tags_id)) {
             tags_id = [tags_id]
         }
 
@@ -248,7 +247,10 @@ const release = [
                 let thatIds = termRelationships.map(t=>t.term_id)
                 debug(`release 文章${id} 对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
                 let _not = _.difference(ids, thatIds)
-                debug(`release 文章${id} 本次提交了ids = [${ids}],其中[${_not}] 是新增的，创建关系`)
+                let _del = _.difference(thatIds, ids,)
+                debug(`release 文章${id} 本次提交了ids = [${ids}],其中[${_not}] 是新增的,[${_del}]是删除的，创建关系`)
+                // 还要计算删除的
+
                 // 创建文章标签对应表
                 let createValues = _not.map((term)=>{
                     return {
@@ -256,16 +258,25 @@ const release = [
                         term_id: term
                     }
                 })
+                termRelationshipsDao.destroy({
+                    where: {
+                        term_id: {[Op.in]: _del}
+                    },
+                }).then(()=>{
+                    if (_del.length) {
+                        termsDao.update(
+                            {count: Sequelize.literal('`count` - 1')},
+                            {where: {term_id: {[Op.in]: _del}}}
+                        )
+                    }
+                })
                 termRelationshipsDao.bulkCreate(createValues).then(()=>{
                     if (_not.length) {
                         // todo 这里会出现一个 异常 有时间修改
-                        termsDao.update({
-                            count: Sequelize.literal('`count` + 1')
-                        }, {
-                            where: {
-                                term_id: {[Op.in]: _not}
-                            }
-                        })
+                        termsDao.update(
+                            {count: Sequelize.literal('`count` + 1')},
+                            {where: {term_id: {[Op.in]: _not}}}
+                        )
                     }
                 }).catch((err)=>{
                     debug("release update termRelationships error by:", err.message)
@@ -287,14 +298,12 @@ const release = [
             post.post_name = post_name || post.id
             post.post_status = Enum.PostStatusEnum.PUBLISH
 
-            // 版本只对做 内容，标题，摘录 敏感
+            // 版本只对做 内容，标题，摘录信息敏感
             await post.save()
             // 检查内容是否修改了，没有修改则不创建版本
             // debug(`是否修改了文章 = ${id}, result = ${result}`)
             let isModify = _.isEqual(newValues, oldValues)
             debug(`是否修改了文章 isModify = ${!isModify}`)
-            console.log(newValues)
-            console.log(oldValues)
             if (!isModify) {
                 // 创建版本
                 let values = post.toJSON()
@@ -315,19 +324,88 @@ const release = [
 
 // todo 删除，移动到回收站，都需要支持批量
 const moverTrash = [
-    body('ids').exists().isArray().withMessage('请提交正确的文章ID列表'),
+    // body('ids').exists().isArray().withMessage('请提交正确的文章ID列表'),
     utils.validationResult,
     async function (req, res) {
         try {
-            let {id} = req.body
-            let post = await postDao.findById(id)
-            if (post === null) {
-                return res.status(200).json(Result.info('失败，未提交正确的文章id'))
+            let {ids} = req.body
+            if (!_.isArray(ids)) {
+                ids = [ids]
             }
+            // 只能移动发布的文章 跟草稿对象
+            let result = await postDao.destroy({
+                where: {
+                    id: ids,
+                    post_status: [
+                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    ]
+                }
+            })
+            debug(`mover trash ids = [${ids}], 其中${result} 个id 有效, 已成功丢弃至回收站`)
             // 删除文章
-            debug(`del post id = [${id}]`)
-            await post.destroy()
-            return res.status(200).json(Result.success())
+            return res.status(200).json(Result.success(result))
+        } catch (e) {
+            debug('mover trash error by:', e.message)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
+
+// 删除文章
+/* 只能删除在回收站的文章 */
+// 删除文章的同时顺便删除 过期的文章
+// todo 删除多余的空白自动草稿
+const del = [
+    utils.validationResult,
+    async function (req, res) {
+        let {ids} = req.body
+        if (!_.isArray(ids)) {
+            ids = [ids]
+        }
+        try {
+            let date = new Date()
+            date.setDate(date.getDate() - 30)
+            // 删除文章时需要清除掉关联关系
+
+            await termRelationshipsDao.destroy({
+                paranoid: false,
+                force: true,
+                where: {
+                    object_id: ids
+                }
+            })
+            let result = await postDao.destroy({
+                paranoid: false,
+                force: true,
+                where: {
+                    id: ids,
+                    [Op.or]: [
+                        {deleteAt: {[Op.not]: null}},
+                        {deleteAt: {[Op.gte]: date}}
+                    ]
+                }
+            })
+            debug(`彻底删除文章 ids = [${ids}],并且清除时间{${utils.formatDate(date)}} 之前删除的文章, 共计删除文章: ${result} 篇`)
+            return res.status(200).json(Result.success(result))
+        } catch (e) {
+            debug('del post error by:', e.message)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
+
+const getAllPost = [
+    async function (req, res) {
+        try {
+            let posts = await postDao.findAll({
+                where: {
+                    post_status: [
+                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    ]
+                }
+            })
+            debug(`获取全部文章，包含有[发布,草稿],共计：${posts.length} 篇`)
+            return res.status(200).json(Result.success(posts))
         } catch (e) {
             debug('getTrash error by:', e.message)
             return res.status(200).json(Result.error())
@@ -360,54 +438,8 @@ const getTrash = [
         }
     }
 ]
-// 删除文章
-/* 只能删除在回收站的文章 */
-// 删除文章的同时顺便删除 过期的文章
-const del = [
-    sanitizeId,
-    checkId,
-    utils.validationResult,
-    async function (req, res) {
-        let {id} = req.body
-        try {
 
-            let date = new Date()
-            date.setDate(date.getDate() - 30)
-            debug(`彻底删除文章 ids = [${id}],并且清除时间{${date}} 之前删除的文章`)
-            let post = await postDao.find({
-                paranoid: false,
-                where: {
-                    id: id,
-                    [Op.or]: [
-                        {deleteAt: {[Op.not]: null}},
-                        {deleteAt: {[Op.gte]: date}}
-                    ]
-                }
-            })
-            if (post === null) {
-                return res.status(200).json(Result.info('失败，未提交正确的文章id'))
-            }
-            // todo 有bug ！！！
-            await postDao.destroy({
-                paranoid: false,
-                force: true,
-                where: {
-                    [Op.or]: [
-                        {deleteAt: id},
-                        {deleteAt: {[Op.lte]: date}}
-                    ]
-
-                }
-            })
-            return res.status(200).json(Result.success())
-        } catch (e) {
-            debug('del post error by:', e.message)
-            return res.status(200).json(Result.error())
-        }
-    }
-]
-
-
+router.route('/').get(getAllPost)
 // 创建文章
 router.route('/new_post').post(newPost)
 // 更新文章

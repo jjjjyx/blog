@@ -1,18 +1,19 @@
 'use strict'
 
-const moment = require("moment")
-const crypto=require('crypto');
-const debug = require('debug')('app:base');
-const {site: siteDao} = require('../src/models');
+const moment = require('moment')
+const crypto = require('crypto')
+const debug = require('debug')('app:base')
+const {site: siteDao} = require('../src/models')
 const {Enum} = require('./common/enum')
-function randomHex (){
-    let  md5 = crypto.createHash("md5");
-    md5.update("" + Date.now());
-    return md5.digest('hex');
+
+function randomHex () {
+    let md5 = crypto.createHash('md5')
+    md5.update('' + Date.now())
+    return md5.digest('hex')
 }
 
 module.exports = async function (app) {
-    debug("Loading system options");
+    debug('Loading system options')
 
     let siteList = await siteDao.findAll({
         where: {
@@ -20,24 +21,24 @@ module.exports = async function (app) {
         }
     })
     let site = {}
-    siteList.forEach((item)=>{
+    siteList.forEach((item) => {
         site[item.key] = item.value
     })
     // 将全部 全局设置更新到全局变量
-    global.SITE = site;
+    global.SITE = site
 
     let CND_SRC = function (name) {
         return `${SITE.CDN}/${name}`
     }
-    app.locals['dev'] = IS_DEV;
-    app.locals['cdn'] = CND_SRC;
+    app.locals['dev'] = IS_DEV
+    app.locals['cdn'] = CND_SRC
 
     // 创建
-    app.locals['dateFormat'] = function(time, f){
-        return moment(time).format(f);
-    };
-    const hash = randomHex();
+    app.locals['dateFormat'] = function (time, f) {
+        return moment(time).format(f)
+    }
+    const hash = randomHex()
     // 每次重新启动的时候静态资源都要去除缓存
-    app.locals['hash'] = hash;
+    app.locals['hash'] = hash
     // app.locals['statistical'] = SITE.statistical;
-};
+}
