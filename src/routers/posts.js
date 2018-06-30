@@ -4,14 +4,14 @@ const express = require('express')
 const _ = require('lodash')
 const router = express.Router()
 const debug = require('debug')('app:routers:api.posts')
-const {body} = require('express-validator/check')
-const {sanitizeBody} = require('express-validator/filter')
+const {body, param} = require('express-validator/check')
+const {sanitizeBody, sanitizeParam} = require('express-validator/filter')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
 const {Enum} = require('../common/enum')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
-const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao} = require('../models')
+const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao, postmeta: postmetaDao} = require('../models')
 
 // id
 const sanitizeId = sanitizeBody('id').toInt()
@@ -25,7 +25,7 @@ const checkCategoryId = body('category_id').exists().isInt().withMessage('请提
 
 // 蛋疼提交为数组 这个不执行
 // const sanitizeNewTagsName = sanitizeBody('new_tag*').customSanitizer((value)=>{/* console.log(value)*/debug(`sanitizeNewTagsName v = ${value}`)return value})
-const checkNewTagsName = body('new_tag').exists().withMessage('请提交新建的标签')
+// const checkNewTagsName = body('new_tag').exists().withMessage('请提交新建的标签')
 
 // 标题
 const sanitizeTitle = sanitizeBody('post_title').escape().trim()
@@ -42,8 +42,126 @@ const postNameReg = /^[_a-zA-Z0-9\-]{1,60}$/
 // 摘录
 const checkExcerpt = body('post_excerpt').exists().isString().isLength({min: 0}).withMessage('请提交文章摘录')
 
+const TagsLength = 16
+const createTags = async function (req, res, dealWithCategory) {
+    req.sanitizeBody('new_tag').toArray()
+    req.sanitizeBody('tags_id').toArray()
+    try {
+        let {new_tag, tags_id, id, category_id} = req.body
+        new_tag = new_tag || []
+        tags_id = tags_id || []
+        if (dealWithCategory) {
+        // 验证分类是否存在
+            let category = await termsDao.findById(category_id, {attributes: ['term_id']})
+            if (category === null) {
+                debug(`release 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
+                category_id = SITE.defaultCategoryId * 1
+            }
+        }
+
+        // 验证new_tag 的名字
+        // /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
+        // 包含有错误的tag 驳回请求 因为这个名字会在前端验证，能提交错误的不是什么好请求
+        let testReg = new_tag.every((tag)=>utils.termReg.test(tag))
+        if (!testReg) {
+            return Result.info('错误的标签名称')
+        }
+
+        // 验证tags_id
+        // 如果tags_id 不存在则忽略
+        let tags = await termsDao.findAll({
+            where:{
+                taxonomy: Enum.TaxonomyEnum.POST_TAG,
+                term_id:{[Op.in]: tags_id}
+            }
+        })
+        debug(`createTags 提交了标签ID个数 = ${tags_id.length} 个，其中 ${tags.length} 有效`)
+        // 判断tags 的个数 个数的判断在创建标签之前
+        if (TagsLength <= tags.length + new_tag.length) {
+            return Result.info('标签太多啦！')
+        }
+
+        // 对于新加的 new_tag 则去创建
+        // 防止同名是个问题，虽然会在页面中做同名过滤，但是保不齐非法提交
+        // 做法查询这些new_tag 是否存在, 存在的删除掉
+        let newTags = await termsDao.findAll({
+            where:{
+                taxonomy: Enum.TaxonomyEnum.POST_TAG,
+                name:{[Op.in]: new_tag}
+            }
+        })
+
+        tags = tags.concat(newTags)
+        let _newTags =  newTags.map((item)=>item.name)
+        debug(`createTags 提交了标签名称：[${new_tag}]，其中[${_newTags}]是已存在的`)
+
+        let new_tags = _.difference(new_tag, _newTags).map((name)=>({name,  taxonomy: Enum.TaxonomyEnum.POST_TAG, description: '', count: 0, slug: utils.randomChar(6)}))
+        // 创建
+        // bulkCreate
+        if (new_tags.length) {
+            debug(`release 创建其余未定义的标签：[${new_tags}]`)
+            new_tags = await termsDao.bulkCreate(new_tags)
+        }
+
+        tags = tags.concat(new_tags)
+
+        // 查询到文章所有用到的分类 + 标签
+        termRelationshipsDao.findAll({
+            where: {object_id: id}
+        }).then(termRelationships=>{
+            // 对没有做对应的做一次创建对应关系，并且更新文章个数
+            // 更新标签，分类文章个数
+            let ids = tags.map((item)=>item.term_id)
+            // 共同的调用 这个分类怎么处理 也进行处理
+            if (dealWithCategory) {
+                ids.push(category_id)
+            }
+            let thatIds = termRelationships.map(t=>t.term_id)
+            debug(`release 文章${id} 对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
+            let _not = _.difference(ids, thatIds)
+            let _del = _.difference(thatIds, ids,)
+            debug(`release 文章${id} 本次提交了ids = [${ids}],其中[${_not}] 是新增的,[${_del}]是删除的，创建关系`)
+            // 还要计算删除的
+
+            // 创建文章标签对应表
+            let createValues = _not.map((term)=>{
+                return {
+                    object_id: id,
+                    term_id: term
+                }
+            })
+            if (_del.length) {
+                termRelationshipsDao.destroy({where: {term_id: {[Op.in]: _del}},}).then(()=>{
+                        termsDao.update(
+                            {count: Sequelize.literal('`count` - 1')},
+                            {where: {term_id: {[Op.in]: _del}}}
+                        )
+                })
+            }
+            if (createValues.length) {
+                termRelationshipsDao.bulkCreate(createValues).then(()=>{
+                    // 已修复 这里会出现一个 异常 有时间修改
+                    return termsDao.update(
+                        {count: Sequelize.literal('`count` + 1')},
+                        {where: {term_id: {[Op.in]: _not}}}
+                    )
+                }).catch((err)=>{
+                    debug("update termRelationships error by:", err.message)
+                })
+            }
+        })
+        return true
+    } catch (e) {
+        debug('createTags error by:', e.message)
+        return Result.error()
+    }
+}
 /**
- * 保存文章, 仅保存标题，内容，摘录
+ * 保存文章, 仅保存标题，内容，摘录，标签
+ *
+ * 如果文章是发布状态
+ * 标签的保存放入meta 中，因为标签是关联到文章的 保存的文章可能只是一个版本记录，但是标签是会更新到发布中文章上的
+ * 草稿状态就放入实际的对应关系表中
  * @type {*[]}
  */
 const save = [
@@ -56,6 +174,7 @@ const save = [
     utils.validationResult,
     async function (req, res) {
         let {post_title, id, post_content, post_excerpt} = req.body
+
         try {
             // 保存的时候 如果文章当前状态是 auto_draft 则更新状态为草稿
             let post = await postDao.findById(id)
@@ -66,9 +185,15 @@ const save = [
 
             switch (post.post_status) {
             case Enum.PostStatusEnum.AUTO_DRAFT:
-            case Enum.PostStatusEnum.DRAFT:
-                debug(`保存的文章 = ${id} 当前状态为：${post.post_status}, 修改文章状态为：${Enum.PostStatusEnum.DRAFT}`)
+                debug(`修改文章 = ${id} 状态为：${Enum.PostStatusEnum.DRAFT}`)
                 post.post_status = Enum.PostStatusEnum.DRAFT
+            case Enum.PostStatusEnum.DRAFT:
+                debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
+                // 保存文章的标签信息
+                let createTagsResult = await createTags(req, res, false)
+                if (createTagsResult instanceof Result) {
+                    return res.status(200).json(createTagsResult)
+                }
                 break
             case Enum.PostStatusEnum.PUBLISH:
                 debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
@@ -93,6 +218,14 @@ const save = [
                 }else {
                     post = autoSavePost
                 }
+                // 保存文章的标签信息到 meta 中 不创建 term
+                // todo 创建meta 获取到文章原有的 标签列表与新增的合并
+                // req.sanitizeBody('new_tag').toArray()
+                // req.sanitizeBody('tags_id').toArray()
+                // let {new_tag, tags_id} = req.body
+                // new_tag = new_tag || []
+                // tags_id = tags_id || []
+
                 break
             default:
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
@@ -144,7 +277,7 @@ const newPost = [
 // 更新 ，发布接口
 // 更新或发布将创建一个版本记录
 
-const TagsLength = 16
+
 const release = [
     sanitizeTitle,
     sanitizeId,
@@ -154,136 +287,23 @@ const release = [
     checkContent,
     checkPostName,
     checkExcerpt,
-    checkNewTagsName,
     checkCategoryId,
     // checkTagsId,
     utils.validationResult,
     async function (req, res) {
         // todo 文章状态！！
         let {post_title, id, post_content, post_name, post_excerpt, new_tag, tags_id, category_id} = req.body
-        // post_excerpt = post_excerpt || ''
-
-        let new_tags = new_tag
-        if (!_.isArray(new_tags)) {
-            new_tags = [new_tag]
-        }
-
-        if (!_.isArray(tags_id)) {
-            tags_id = [tags_id]
-        }
 
         try {
             let post = await postDao.findById(id)
-            if (post === null)
+            if (post === null) {
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
-
-            // 验证分类是否存在
-            let category = await termsDao.findById(category_id,{attributes:['term_id']})
-            if (category === null) {
-                debug(`release 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
-                category_id = SITE.defaultCategoryId * 1
             }
 
-            // 验证new_tag 的名字
-            // /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
-            // 包含有错误的tag 驳回请求
-            let testReg = new_tag.every((tag)=>utils.termReg.test(tag))
-            if (!testReg) {
-                return res.status(200).json(Result.info('错误的标签名称'))
+            let createTagsResult = await createTags(req, res, true)
+            if (createTagsResult instanceof Result) {
+                return res.status(200).json(createTagsResult)
             }
-
-            // 验证tags_id
-            // 如果tags_id 不存在则忽略
-            let tags = await termsDao.findAll({
-                where:{
-                    taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                    term_id:{[Op.in]: tags_id}
-                }
-            })
-            debug(`release 提交了标签ID个数 = ${tags_id.length} 个，其中 ${tags.length} 有效`)
-            // 判断tags 的个数 个数的判断在创建标签之前
-            if (TagsLength <= tags.length + new_tags.length) {
-                return res.status(200).json(Result.info('标签太多啦！'))
-            }
-            // 对于新加的 new_tag 则去创建
-            // 防止同名是个问题，虽然会在页面中做同名过滤，但是保不齐非法提交
-            // 做法查询这些new_tag 是否存在, 存在的删除掉
-            let newTags = await termsDao.findAll({
-                where:{
-                    taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                    name:{[Op.in]: new_tags}
-                }
-            })
-
-            tags = tags.concat(newTags)
-            let _newTags =  newTags.map((item)=>item.name)
-            debug(`release 提交了标签名称：[${new_tags}]，其中[${_newTags}]是已存在的`)
-
-            // 做差集
-            new_tags = _.difference(new_tags, _newTags).map((name)=>({name,  taxonomy: Enum.TaxonomyEnum.POST_TAG, description: '', count: 0, slug: utils.randomChar(6)}))
-            // 创建
-            // bulkCreate
-            if (new_tags.length) {
-                debug(`release 创建其余未定义的标签：[${new_tags}]`)
-                new_tags = await termsDao.bulkCreate(new_tags)
-            }
-
-            tags = tags.concat(new_tags)
-
-
-            // 检查 post_name 格式， post_name 只能包含字母数组，下划线 连字符串，长度在60 之间
-            if (!postNameReg.test(post_name)) {
-                debug(`release 提交的post_name = ${post_name} 不符合规范, 将不做修改`)
-                post_name = undefined
-            }
-            // 查询到文章所有用到的分类 + 标签
-            termRelationshipsDao.findAll({
-                where: {object_id: id}
-            }).then(termRelationships=>{
-                // 对没有做对应的做一次创建对应关系，并且更新文章个数
-                // 更新标签，分类文章个数
-                let ids = tags.map((item)=>item.term_id)
-                ids.push(category_id)
-                let thatIds = termRelationships.map(t=>t.term_id)
-                debug(`release 文章${id} 对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
-                let _not = _.difference(ids, thatIds)
-                let _del = _.difference(thatIds, ids,)
-                debug(`release 文章${id} 本次提交了ids = [${ids}],其中[${_not}] 是新增的,[${_del}]是删除的，创建关系`)
-                // 还要计算删除的
-
-                // 创建文章标签对应表
-                let createValues = _not.map((term)=>{
-                    return {
-                        object_id: id,
-                        term_id: term
-                    }
-                })
-                termRelationshipsDao.destroy({
-                    where: {
-                        term_id: {[Op.in]: _del}
-                    },
-                }).then(()=>{
-                    if (_del.length) {
-                        termsDao.update(
-                            {count: Sequelize.literal('`count` - 1')},
-                            {where: {term_id: {[Op.in]: _del}}}
-                        )
-                    }
-                })
-                termRelationshipsDao.bulkCreate(createValues).then(()=>{
-                    if (_not.length) {
-                        // todo 这里会出现一个 异常 有时间修改
-                        return termsDao.update(
-                            {count: Sequelize.literal('`count` + 1')},
-                            {where: {term_id: {[Op.in]: _not}}}
-                        )
-                    }
-                    return null
-                }).catch((err)=>{
-                    debug("release update termRelationships error by:", err.message)
-                })
-            })
-
             // 修改post 状态
             let oldValues = {
                 post_title: post.post_title,
@@ -316,7 +336,6 @@ const release = [
             }
             return res.status(200).json(Result.success())
         } catch (e) {
-            console.log(e)
             debug('release post error by:', e.message)
             return res.status(200).json(Result.error())
         }
@@ -329,10 +348,9 @@ const moverTrash = [
     utils.validationResult,
     async function (req, res) {
         try {
+            req.sanitizeBody('ids').toArray()
             let {ids} = req.body
-            if (!_.isArray(ids)) {
-                ids = [ids]
-            }
+
             // 只能移动发布的文章 跟草稿对象
             let result = await postDao.destroy({
                 where: {
@@ -359,10 +377,8 @@ const moverTrash = [
 const del = [
     utils.validationResult,
     async function (req, res) {
+        req.sanitizeBody('ids').toArray()
         let {ids} = req.body
-        if (!_.isArray(ids)) {
-            ids = [ids]
-        }
         try {
             let date = new Date()
             date.setDate(date.getDate() - 30)
@@ -442,10 +458,8 @@ const getTrash = [
 // 还原回收站文章
 const revert = [
     async function (req, res) {
+        req.sanitizeBody('ids').toArray()
         let {ids} = req.body
-        if (!_.isArray(ids)) {
-            ids = [ids]
-        }
         try {
             let result = await postDao.update({
                 deleteAt: null
@@ -466,6 +480,47 @@ const revert = [
         }
     }
 ]
+const getContent = [
+    sanitizeParam('id').toInt(),
+    param('id').isInt().exists().withMessage('错误的id'),
+    utils.validationResult,
+    async function (req, res) {
+        let {id} = req.params
+        try {
+            let result = await postDao.findOne({
+                // attributes: ['post_content'],
+                where: {
+                    id,
+                    post_status: [
+                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    ]
+                }
+            })
+            if (result !== null) {
+                return res.status(200).json(Result.success(result))
+            }
+            return res.status(200).json(Result.info('错误的id'))
+        } catch (e) {
+            debug('post getContent error by:', e.message)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
+
+// const test = [
+//     function (req, res, next){
+//         console.log(req.body)
+//         req.sanitizeBody('ids').toArray()
+//         console.log(req.body)
+//         next()
+//     },
+//     utils.validationResult,
+//     function (req, res) {
+//         // console.log(req)
+//         console.log(req.body)
+//         return res.send("aaaa")
+//     }
+// ]
 
 router.route('/').get(getAllPost)
 // 创建文章
@@ -476,5 +531,7 @@ router.route('/release').post(release)
 router.route('/trash').post(moverTrash).get(getTrash)
 router.route('/revert').post(revert)
 router.route('/del').post(del)
+router.route('/:id').get(getContent)
+// router.route('/test').post(test)
 
 module.exports = router

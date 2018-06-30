@@ -2,7 +2,7 @@
     <div class="post-writer-content">
         <div class="post-body-content">
             <div class="post-title-wrap">
-                <input type="text" class="title" v-bind:value="'一个标题'">
+                <input type="text" class="title" v-bind:value="currentPost.post_title">
                 <!--<div class="post-title-options table-buttons">-->
                     <!--<tooltip content="标签">-->
                         <!--<i-button type="text" icon="pricetags" @click="tagWrapShow = !tagWrapShow"></i-button>-->
@@ -33,10 +33,15 @@
             </collapse-transition>
             <div class="post-markdown-wrap">
                 <!--<span class="saving-notice">未保存</span>-->
-                <mavon-editor style="height: 100%" :value="value" ref="md" @imgAdd="uploadImg" @imgDel="imgDel"></mavon-editor>
+
+                <mavon-editor style="height: 100%" :value="currentPost.post_content" ref="md"
+                              @change="handleMdChange"
+                              @save="handleMdSave"
+                              @imgAdd="uploadImg" @imgDel="imgDel"></mavon-editor>
             </div>
         </div>
         <div class="postbox-container">
+            {{currentPost}}
             <draggable :list="sidebarsOrder" class="dragArea">
                 <transition-group type="transition" :name="'flip-list'">
                     <sidebar-panel v-for="sidebar in sidebarsOrder" :key="sidebar" class="postbox">
@@ -63,30 +68,6 @@ import sidebarPanel from './sidebar/sidebar.vue'
 // import {on} from '@/utils/dom'
 // import { Base64 } from 'js-base64'
 const sidebarsOrder = Object.keys(sidebars)
-// tmp
-const value = `
-# 怎么写一篇文章
-
-我写
-
-我演示一个列表
-* a
-* v
-* c
-
-|column1|column2|column3|
-|-|-|-|
-|aa|vv|cc|
-
-
-> asdas
-
-\`\`\`java
-public void test(){
-System.out.println('test');
-}
-\`\`\`
-`
 
 const verification = function (name) {
     let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
@@ -124,9 +105,26 @@ export default {
         return {
             tagWrapShow: false,
             newTagValue: '',
-            value,
+            // value: '',
             count: [0, 1, 2],
-            sidebarsOrder
+            sidebarsOrder,
+            showLeaveTip: false,
+            currentPost: {
+                'comment_status': 'open',
+                'ping_status': 'open',
+                'menu_order': '0',
+                'post_type': 'post',
+                'comment_count': '0',
+                'seq_in_nb': '0',
+                'post_author': 1,
+                'post_content': '',
+                'post_title': '',
+                'post_excerpt': '',
+                'post_status': 'auto-draft',
+                'post_name': '',
+                'guid': '',
+                'id': 0
+            }
         }
     },
     components: {
@@ -222,6 +220,93 @@ export default {
         handleClose2 (event, name) {
             const index = this.count.indexOf(name)
             this.count.splice(index, 1)
+        },
+        handleMdChange (value, render) {
+            // console.log(value, value === this.currentPost.post_content)
+            this.showLeaveTip = value && value !== this.currentPost.post_content
+            // 做出了修改 并且文章内容不等于当前文章内容的时候
+            // 给windows 绑定离开事件
+            // if () {
+            // } else {
+            //     window.onbeforeunload = null
+            // }
+        },
+        async handleMdSave (value, render) {
+            // title 绑定了
+            // this.currentPost.post_title =
+            this.currentPost.post_content = value
+            this.currentPost.render_value = render
+            let result = await api.npost('/api/post/save', this.currentPost)
+            console.log('save result = ', result)
+            // todo 保存完成后 给予反馈
+            this.pushRouter('replace')
+            this.showLeaveTip = false
+
+        },
+        pushRouter (mode = 'push') {
+            let id = this.currentPost.id
+            if (id) {
+                this.$router[mode]({
+                    query: {
+                        poi: id
+                    }
+                })
+            }
+        },
+        leaveConfirm (next) {
+            this.$Modal.confirm({
+                title: '离开提示',
+                okText: '确认离开',
+                cancelText: '取消',
+                content: '离开当前页面可能造成内容丢失，请谨慎！',
+                onOk: () => {
+                    next()
+                },
+                onCancel: () => {
+                    this.$Message.info('取消离开');
+                    next(false)
+                }
+            });
+        },
+    },
+    watch: {
+        showLeaveTip: function (val) {
+            if (val) {
+                window.onbeforeunload = function () {
+                    return '确认离开页面，当前修改将会丢弃'
+                }
+            } else {
+                window.onbeforeunload = null
+            }
+        }
+    },
+    // 路由的变化就不监听了 这个没有意义
+    beforeRouteEnter (to, from, next) {
+        next((vm) => {
+            vm.pushRouter('replace')
+        })
+    },
+    beforeRouteLeave (to, from, next) {
+        if (this.showLeaveTip) {
+            this.leaveConfirm(next)
+        } else {
+            next()
+        }
+    },
+    async created () {
+        // 创建新文章 - 自动草稿
+        let {poi} = this.$route.query
+        if (poi) {
+            let result = await api.nget(`/api/post/${poi}`)
+            if (result.code === 0) {
+                this.currentPost = result.data
+            }
+        }
+
+        if (this.currentPost.id === 0) {
+            let result = await api.npost('/api/post/new_post', {post_title: ''})
+            this.currentPost = result.data
+            // this.value = this.currentPost.post_content
         }
     },
     mounted () {

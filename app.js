@@ -8,7 +8,7 @@ const compression = require('compression') // 压缩
 const unless = require('express-unless')
 const expressValidator = require('express-validator')
 const Result = require('./src/common/resultUtils')
-
+const middlewareOptions = require('./src/common/middlewareOptions')
 global.config = require('./src/config')
 
 // global.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -30,7 +30,7 @@ app.use(bodyParser.json()) // for parsing application/json
 // app.use(multer()); // for parsing multipart/form-data
 app.use(cookieParser())
 app.use(compression())
-app.use(expressValidator())
+app.use(expressValidator(middlewareOptions.validator))
 
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 app.use(function (req, res, next) {

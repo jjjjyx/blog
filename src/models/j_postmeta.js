@@ -5,7 +5,8 @@ module.exports = function (sequelize, DataTypes) {
         meta_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         post_id: {
             type: DataTypes.BIGINT,

@@ -42,8 +42,11 @@
     text-align: center;
 }
 
-.ivu-tooltip-popper,.ivu-poptip-popper {
-    z-index: 1501; // 比markdown 查看要低
+.ivu-tooltip-popper,.ivu-poptip-popper, .ivu-modal-wrap {
+    z-index: 1502; // 要比markdown高
+}
+.ivu-modal-mask {
+    z-index: 1501;
 }
 
 .iconfont {
