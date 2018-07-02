@@ -135,3 +135,11 @@
 .flip-list-move {
     transition: transform 0.5s;
 }
+
+.post-tag-list {
+    max-height: 30vh;
+    .ivu-checkbox-group-item {
+        display: block;
+        padding: 5px 0;
+    }
+}

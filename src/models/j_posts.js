@@ -18,7 +18,7 @@ const {Enum} = require('../common/enum')
  */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('j_posts', {
+    let postModel = sequelize.define('j_posts', {
         id: {
             type: DataTypes.BIGINT,
             allowNull: false,
@@ -156,4 +156,5 @@ module.exports = function (sequelize, DataTypes) {
         //     fields: ['post_name','post_title']
         // },]
     });
+    return postModel
 };

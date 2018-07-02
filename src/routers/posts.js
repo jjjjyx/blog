@@ -11,7 +11,7 @@ const Result = require('../common/resultUtils')
 const {Enum} = require('../common/enum')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
-const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao, postmeta: postmetaDao} = require('../models')
+const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao, postmeta: postmetaDao, sequelize} = require('../models')
 
 // id
 const sanitizeId = sanitizeBody('id').toInt()
@@ -54,7 +54,7 @@ const createTags = async function (req, res, dealWithCategory) {
         // 验证分类是否存在
             let category = await termsDao.findById(category_id, {attributes: ['term_id']})
             if (category === null) {
-                debug(`release 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
+                debug(`createTags 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
                 category_id = SITE.defaultCategoryId * 1
             }
         }
@@ -99,7 +99,7 @@ const createTags = async function (req, res, dealWithCategory) {
         // 创建
         // bulkCreate
         if (new_tags.length) {
-            debug(`release 创建其余未定义的标签：[${new_tags}]`)
+            debug(`createTags 创建其余未定义的标签：[${new_tags}]`)
             new_tags = await termsDao.bulkCreate(new_tags)
         }
 
@@ -117,10 +117,10 @@ const createTags = async function (req, res, dealWithCategory) {
                 ids.push(category_id)
             }
             let thatIds = termRelationships.map(t=>t.term_id)
-            debug(`release 文章${id} 对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
+            debug(`createTags 文章${id} 对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
             let _not = _.difference(ids, thatIds)
             let _del = _.difference(thatIds, ids,)
-            debug(`release 文章${id} 本次提交了ids = [${ids}],其中[${_not}] 是新增的,[${_del}]是删除的，创建关系`)
+            debug(`createTags 文章${id} 本次提交了ids = [${ids}],其中[${_not}] 是新增的,[${_del}]是删除的，创建关系`)
             // 还要计算删除的
 
             // 创建文章标签对应表
@@ -218,13 +218,41 @@ const save = [
                 }else {
                     post = autoSavePost
                 }
+
                 // 保存文章的标签信息到 meta 中 不创建 term
-                // todo 创建meta 获取到文章原有的 标签列表与新增的合并
-                // req.sanitizeBody('new_tag').toArray()
-                // req.sanitizeBody('tags_id').toArray()
-                // let {new_tag, tags_id} = req.body
-                // new_tag = new_tag || []
-                // tags_id = tags_id || []
+
+                req.sanitizeBody('new_tag').toArray()
+                req.sanitizeBody('tags_id').toArray()
+                let {new_tag, tags_id} = req.body
+                new_tag = new_tag || []
+                tags_id = tags_id || []
+
+                let testReg = new_tag.every((tag)=>utils.termReg.test(tag))
+                if (!testReg) {
+                    return res.status(200).json(Result.info('错误的标签名称'))
+                }
+
+                // tags_id  转换成名称 meta 中不保存id
+                let tags = await termsDao.findAll({
+                    where:{
+                        taxonomy: Enum.TaxonomyEnum.POST_TAG,
+                        term_id:{[Op.in]: tags_id}
+                    }
+                })
+                // 判断tags 的个数 个数的判断在创建标签之前
+                if (TagsLength <= tags.length + new_tag.length) {
+                    return res.status(200).json(Result.info('标签太多啦!'))
+                }
+                tags.forEach((item)=>{
+                    new_tag.push(item.name)
+                })
+
+                let pm = {
+                    post_id: post.id,
+                    meta_key: 'tags',
+                    meta_value: JSON.stringify(new_tag)
+                }
+                postmetaDao.create(pm)
 
                 break
             default:
@@ -480,13 +508,15 @@ const revert = [
         }
     }
 ]
-const getContent = [
+const postInfo = [
     sanitizeParam('id').toInt(),
     param('id').isInt().exists().withMessage('错误的id'),
     utils.validationResult,
     async function (req, res) {
+        // todo 标签的回填
         let {id} = req.params
         try {
+            // 蛋疼对这个left 不熟
             let result = await postDao.findOne({
                 // attributes: ['post_content'],
                 where: {
@@ -494,11 +524,26 @@ const getContent = [
                     post_status: [
                         Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
                     ]
-                }
+                },
+                // include: [
+                //     {
+                //         model: termRelationshipsDao,
+                //         where: {
+                //             object_id: Sequelize.col('postDao.id')
+                //         }
+                //     }
+                // ]
             })
+
             if (result !== null) {
-                return res.status(200).json(Result.success(result))
+                let tags = await sequelize.query('SELECT b.name FROM j_term_relationships a LEFT JOIN j_terms b ON a.`term_id` = b.term_id WHERE object_id = ?',
+                    { replacements: [id], type: sequelize.QueryTypes.SELECT }
+                )
+                let pp = result.toJSON()
+                pp.tags = tags.map((item)=> item.name)
+                return res.status(200).json(Result.success(pp))
             }
+
             return res.status(200).json(Result.info('错误的id'))
         } catch (e) {
             debug('post getContent error by:', e.message)
@@ -531,7 +576,7 @@ router.route('/release').post(release)
 router.route('/trash').post(moverTrash).get(getTrash)
 router.route('/revert').post(revert)
 router.route('/del').post(del)
-router.route('/:id').get(getContent)
+router.route('/:id').get(postInfo)
 // router.route('/test').post(test)
 
 module.exports = router

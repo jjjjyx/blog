@@ -2,7 +2,7 @@
     <div class="post-writer-content">
         <div class="post-body-content">
             <div class="post-title-wrap">
-                <input type="text" class="title" v-bind:value="currentPost.post_title">
+                <input type="text" class="title" v-model="currentPost.post_title" placeholder="请输入一个标题">
                 <!--<div class="post-title-options table-buttons">-->
                     <!--<tooltip content="标签">-->
                         <!--<i-button type="text" icon="pricetags" @click="tagWrapShow = !tagWrapShow"></i-button>-->
@@ -21,13 +21,16 @@
                 <!--v-show="tagWrapShow"-->
             <div class="post-tag-wrap" >
                 <span class="align-middle mr-2">标签</span>
-                <Poptip placement="bottom-start" width="400" transfer>
+                <Poptip placement="bottom-start" width="200" transfer>
                     <Button icon="ios-plus-empty" type="dashed" size="small" ></Button>
                     <div class="post-tag-list" slot="content">
-                        222
+                        <CheckboxGroup v-model="selectedTag" @on-change="handleSelectTag">
+                            <Checkbox :label="tag.name" v-for="(tag,index) in tagsList" :key="index">{{tag.name}}</Checkbox>
+                        </CheckboxGroup>
                     </div>
                 </Poptip>
-                <Tag v-for="item in count" :key="item" :name="item" closable @on-close="handleClose2">标签{{ item + 1 }}</Tag>
+                <Tag v-for="(item, index) in selectedTag" :key="index" :name="item" closable @on-close="handleClose2(selectedTag, item)">{{item}}</Tag>
+                <Tag v-for="(item, index) in newTag" :key="'a_'+index+item" :name="item" closable @on-close="handleClose2(newTag, item)">{{item}}</Tag>
                 <input class="input-tag" autocomplete="off" tabindex="0" type="text" ref="tagInput" v-model="newTagValue" placeholder="点击此处添加标签" @keyup.enter="addTag">
             </div>
             </collapse-transition>
@@ -103,10 +106,10 @@ export default {
     name: 'post-writer',
     data () {
         return {
+            maxTagLength: 16,
             tagWrapShow: false,
             newTagValue: '',
             // value: '',
-            count: [0, 1, 2],
             sidebarsOrder,
             showLeaveTip: false,
             currentPost: {
@@ -124,7 +127,10 @@ export default {
                 'post_name': '',
                 'guid': '',
                 'id': 0
-            }
+            },
+            selectedTag: [],
+            newTag: [],
+            termList: []
         }
     },
     components: {
@@ -134,14 +140,52 @@ export default {
         sidebarPanel,
         ...sidebars
     },
+    computed: {
+        tagsList: function () {
+            return this.termList.filter((item) => {
+                return item.taxonomy === 'post_tag'
+            })
+        },
+        categoryList: function () {
+            return this.termList.filter((item) => {
+                return item.taxonomy === 'category'
+            })
+        },
+        currTagLength: function () {
+            return this.selectedTag.length + this.newTag.length
+        }
+    },
     methods: {
+        checkTagLength () {
+            if (this.currTagLength >= this.maxTagLength) {
+                return false
+            }
+            return true
+        },
+        handleSelectTag () {
+            if (!this.checkTagLength()) {
+                this.$Message.info('标签太多啦')
+                this.selectedTag.shift()
+            }
+        },
         addTag () {
             // let r = this.tagList.find((item)=>item.name==this.text);
             // 添加标签，添加的标签只是暂时存放，在未保存文章前不会保存到数据库
-            if (!verification(this.newTagValue)) {
+            if (!this.checkTagLength()) {
+                this.$Message.info('标签太多啦')
+            } else if (!verification(this.newTagValue)) {
                 this.$Message.info('请提交正确的标签名称，且名称只能包含中文英文，下划线，数字,且在长度不超过8！')
+            } else if (this.newTag.indexOf(this.newTagValue) >= 0) { // 是否重复
+                console.log('重复的标签')
             } else {
-                console.debug('添加标签', this.newTagValue)
+                // console.debug('添加标签', this.newTagValue)
+                // 检查是否在已有列表中
+                let tag = this.tagsList.find((item) => (item.name === this.newTagValue))
+                if (tag) {
+                    this.selectedTag.push(tag.name)
+                } else {
+                    this.newTag.push(this.newTagValue)
+                }
             }
             this.newTagValue = ''
         },
@@ -217,9 +261,10 @@ export default {
         imgDel (file) {
             console.log('del img', file)
         },
-        handleClose2 (event, name) {
-            const index = this.count.indexOf(name)
-            this.count.splice(index, 1)
+        handleClose2 (list, name) {
+            let index = list.indexOf(name)
+            // const index = this.count.indexOf(name)
+            list.splice(index, 1)
         },
         handleMdChange (value, render) {
             // console.log(value, value === this.currentPost.post_content)
@@ -236,12 +281,13 @@ export default {
             // this.currentPost.post_title =
             this.currentPost.post_content = value
             this.currentPost.render_value = render
-            let result = await api.npost('/api/post/save', this.currentPost)
+            let obj = Object.assign({}, this.currentPost)
+            obj.new_tag = this.newTag.concat(this.selectedTag)
+            let result = await api.npost('/api/post/save', obj)
             console.log('save result = ', result)
             // todo 保存完成后 给予反馈
             this.pushRouter('replace')
             this.showLeaveTip = false
-
         },
         pushRouter (mode = 'push') {
             let id = this.currentPost.id
@@ -263,11 +309,11 @@ export default {
                     next()
                 },
                 onCancel: () => {
-                    this.$Message.info('取消离开');
+                    this.$Message.info('取消离开')
                     next(false)
                 }
-            });
-        },
+            })
+        }
     },
     watch: {
         showLeaveTip: function (val) {
@@ -298,8 +344,10 @@ export default {
         let {poi} = this.$route.query
         if (poi) {
             let result = await api.nget(`/api/post/${poi}`)
+            console.log(result)
             if (result.code === 0) {
                 this.currentPost = result.data
+                this.selectedTag = result.data.tags || []
             }
         }
 
@@ -308,6 +356,9 @@ export default {
             this.currentPost = result.data
             // this.value = this.currentPost.post_content
         }
+        // 获取标签列表
+        let result = await api.nget('/api/term/')
+        this.termList = result.data
     },
     mounted () {
         console.log(this.$refs.md)
