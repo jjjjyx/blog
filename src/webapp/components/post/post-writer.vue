@@ -16,6 +16,7 @@
                         <!--<i-button type="text" icon="merge"></i-button>-->
                     <!--</tooltip>-->
                 <!--</div>-->
+                <span class="saving-notice">{{currentStatus}}</span>
             </div>
             <collapse-transition>
                 <!--v-show="tagWrapShow"-->
@@ -35,8 +36,6 @@
             </div>
             </collapse-transition>
             <div class="post-markdown-wrap">
-                <!--<span class="saving-notice">未保存</span>-->
-
                 <mavon-editor style="height: 100%" :value="currentPost.post_content" ref="md"
                               @change="handleMdChange"
                               @save="handleMdSave"
@@ -44,12 +43,12 @@
             </div>
         </div>
         <div class="postbox-container">
-            {{currentPost}}
+            <!--{{currentPost}}-->
             <draggable :list="sidebarsOrder" class="dragArea">
                 <transition-group type="transition" :name="'flip-list'">
                     <sidebar-panel v-for="sidebar in sidebarsOrder" :key="sidebar" class="postbox">
                         <template slot="title">{{$options.components[sidebar].title}}</template>
-                        <components :is="sidebar"></components>
+                        <components :is="sidebar" :current-post="currentPost"></components>
                     </sidebar-panel>
                 </transition-group>
             </draggable>
@@ -68,17 +67,11 @@ import ajax from '@/utils/ajax'
 import CollapseTransition from '@/utils/collapse-transition'
 import sidebars from './sidebar'
 import sidebarPanel from './sidebar/sidebar.vue'
+import {mapActions, mapGetters} from 'vuex'
+import {verification} from '../../utils/common'
 // import {on} from '@/utils/dom'
 // import { Base64 } from 'js-base64'
 const sidebarsOrder = Object.keys(sidebars)
-
-const verification = function (name) {
-    let reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
-    let result = reg.test(name)
-    // if(!result)
-    //     layer.alert("请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！")
-    return result
-}
 
 function fileMd5 (file) {
     return new Promise((resolve, reject) => {
@@ -102,6 +95,14 @@ function fileMd5 (file) {
     })
 }
 
+const POST_WRITER_STATUS = {
+    normal: '',
+    save: '已保存',
+    saveing: '保存中',
+    edit: '已修改 - 未保存',
+    auto_draft: '自动草稿'
+}
+
 export default {
     name: 'post-writer',
     data () {
@@ -110,8 +111,9 @@ export default {
             tagWrapShow: false,
             newTagValue: '',
             // value: '',
+            currentStatus: POST_WRITER_STATUS.normal,
             sidebarsOrder,
-            showLeaveTip: false,
+            // showLeaveTip: false,
             currentPost: {
                 'comment_status': 'open',
                 'ping_status': 'open',
@@ -129,8 +131,7 @@ export default {
                 'id': 0
             },
             selectedTag: [],
-            newTag: [],
-            termList: []
+            newTag: []
         }
     },
     components: {
@@ -141,21 +142,16 @@ export default {
         ...sidebars
     },
     computed: {
-        tagsList: function () {
-            return this.termList.filter((item) => {
-                return item.taxonomy === 'post_tag'
-            })
-        },
-        categoryList: function () {
-            return this.termList.filter((item) => {
-                return item.taxonomy === 'category'
-            })
-        },
+        ...mapGetters(['tagsList']),
         currTagLength: function () {
             return this.selectedTag.length + this.newTag.length
+        },
+        showLeaveTip: function () {
+            return this.currentStatus === POST_WRITER_STATUS.saveing || this.currentStatus === POST_WRITER_STATUS.edit
         }
     },
     methods: {
+        ...mapActions(['fetchTerms']),
         checkTagLength () {
             if (this.currTagLength >= this.maxTagLength) {
                 return false
@@ -174,7 +170,7 @@ export default {
             if (!this.checkTagLength()) {
                 this.$Message.info('标签太多啦')
             } else if (!verification(this.newTagValue)) {
-                this.$Message.info('请提交正确的标签名称，且名称只能包含中文英文，下划线，数字,且在长度不超过8！')
+                this.$Message.info('请提交正确的标签名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！')
             } else if (this.newTag.indexOf(this.newTagValue) >= 0) { // 是否重复
                 console.log('重复的标签')
             } else {
@@ -196,10 +192,7 @@ export default {
                     // 3 = post/img/
                     let tokenParam = {md5, prefix: 3}
                     let result = await api.nget('/api/img/token', tokenParam)
-                    if (result.code !== 0) {
-                        return reject(new Error('获取上传凭证失败！'))
-                    }
-                    let {token, domain, key} = result.data
+                    let {token, domain, key} = result
                     // key = Base64.encode(key)
                     let url = `http://up-z2.qiniu.com/putb64/${file.size}/key/${key}`
 
@@ -228,7 +221,7 @@ export default {
                         }
                     })
                 } catch (e) {
-                    return reject(e)
+                    reject(new Error('获取上传凭证失败！'))
                 }
             })
         },
@@ -268,7 +261,11 @@ export default {
         },
         handleMdChange (value, render) {
             // console.log(value, value === this.currentPost.post_content)
-            this.showLeaveTip = value && value !== this.currentPost.post_content
+            if (value && value !== this.currentPost.post_content) {
+                // this.showLeaveTip =
+                this.currentStatus = POST_WRITER_STATUS.edit
+            }
+
             // 做出了修改 并且文章内容不等于当前文章内容的时候
             // 给windows 绑定离开事件
             // if () {
@@ -279,15 +276,21 @@ export default {
         async handleMdSave (value, render) {
             // title 绑定了
             // this.currentPost.post_title =
+            this.currentStatus = POST_WRITER_STATUS.saveing
             this.currentPost.post_content = value
             this.currentPost.render_value = render
             let obj = Object.assign({}, this.currentPost)
             obj.new_tag = this.newTag.concat(this.selectedTag)
-            let result = await api.npost('/api/post/save', obj)
-            console.log('save result = ', result)
-            // todo 保存完成后 给予反馈
-            this.pushRouter('replace')
-            this.showLeaveTip = false
+            // 保存的时候不需要提交分类
+            try {
+                let result = await api.npost('/api/post/save', obj)
+                console.log('save result = ', result)
+                this.pushRouter('replace')
+                this.currentStatus = POST_WRITER_STATUS.save
+            } catch (e) {
+                this.$Message.info('保存失败')
+                this.currentStatus = POST_WRITER_STATUS.edit
+            }
         },
         pushRouter (mode = 'push') {
             let id = this.currentPost.id
@@ -316,8 +319,9 @@ export default {
         }
     },
     watch: {
-        showLeaveTip: function (val) {
-            if (val) {
+        currentStatus: function (val) {
+            console.log(val, 'currentStatus', this.showLeaveTip)
+            if (this.showLeaveTip) {
                 window.onbeforeunload = function () {
                     return '确认离开页面，当前修改将会丢弃'
                 }
@@ -343,22 +347,26 @@ export default {
         // 创建新文章 - 自动草稿
         let {poi} = this.$route.query
         if (poi) {
-            let result = await api.nget(`/api/post/${poi}`)
-            console.log(result)
-            if (result.code === 0) {
-                this.currentPost = result.data
-                this.selectedTag = result.data.tags || []
+            try {
+                let result = await api.nget(`/api/post/${poi}`)
+                this.currentPost = result
+                this.selectedTag = result.tags || []
+                this.currentStatus = POST_WRITER_STATUS.normal
+            } catch (e) {
+
             }
         }
 
         if (this.currentPost.id === 0) {
-            let result = await api.npost('/api/post/new_post', {post_title: ''})
-            this.currentPost = result.data
-            // this.value = this.currentPost.post_content
+            try {
+                let result = await api.npost('/api/post/new_post', {post_title: ''})
+                this.currentPost = result
+                this.currentStatus = POST_WRITER_STATUS.auto_draft
+            } catch (e) {
+                this.$Message.info('创建新文章失败，请重新刷新页面')
+            }
         }
-        // 获取标签列表
-        let result = await api.nget('/api/term/')
-        this.termList = result.data
+        this.fetchTerms(false)
     },
     mounted () {
         console.log(this.$refs.md)

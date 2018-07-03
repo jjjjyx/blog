@@ -42,6 +42,26 @@ function encode (obj, sep = '&', eq = '=', name) {
         encodeURIComponent(stringifyPrimitive(obj))
 }
 
+class HttpBaseError extends Error {
+    constructor(message, code, data) {
+        super(message);
+        this.name = 'HttpBaseError';
+        this.code = code
+        this.data = data
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+class AuthInvalidError extends HttpBaseError {
+    constructor () {
+        super('尚未登录', 401)
+        this.name = 'AuthInvalidError'
+    }
+}
+
+export {
+    HttpBaseError
+}
+
 const defaultHeaders = {
     'Accept': 'application/json',
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -78,30 +98,69 @@ function get(url, data, header) {
 function post(url, data, header) {
     return do_fetch(url, "POST", data, header);
 }
-
-function nget(url, info, header) {
-    return new Promise(function (resolve, reject) {
-        get(url, info, header).then(function (resp) {
-            if (resp.ok) {
-                resolve(resp.json());
-            } else {
-                reject(resp.json());
-            }
-        });
-    });
+const handle = async function (resp) {
+    if (resp.ok) {
+        let {code, data, msg} = await resp.json()
+        if (code === 0) {
+            data = data || msg
+            return data
+        } else {
+            throw new HttpBaseError(msg, code, data)
+        }
+    } else {
+        if (resp.status === 401) {
+            // reject(new AuthInvalidError())
+            throw new AuthInvalidError()
+        } else if (resp.status === 404) {
+            throw new HttpBaseError('(～￣▽￣)～ ，404 了呢', resp.status)
+        } else {
+            throw new HttpBaseError('(～￣▽￣)～ ，服务器出错了', resp.status)
+        }
+    }
 }
 
-function npost(url, info, header) {
-    return new Promise(function (resolve, reject) {
-        post(url, info, header).then(function (resp) {
-            if (resp.ok) {
-                resolve(resp.json());
-            } else {
-                reject(resp.json());
-            }
-        });
-    });
+async function nget (url, info, header) {
+    let resp
+    try {
+        resp = await get(url, info, header)
+    } catch (e) {
+        throw new HttpBaseError('(～￣▽￣)～ ，url 地址不正确呢')
+    }
+    return await handle(resp)
 }
+
+
+async function npost (url, info, header) {
+    let resp
+    try {
+        resp = await post(url, info, header)
+    } catch (e) {
+        throw new HttpBaseError('(～￣▽￣)～ ，url 地址不正确呢')
+    }
+    return await handle(resp)
+}
+//
+// function npost(url, info, header) {
+//     return new Promise(function (resolve, reject) {
+//         post(url, info, header).then(async function (resp) {
+//             if (resp.ok) {
+//                 let {code, data, msg} = await resp.json()
+//                 if (code === 0) {
+//                     data = data || msg
+//                     resolve(data)
+//                 } else {
+//                     reject(new HttpBaseError(msg, code, data));
+//                 }
+//             } else {
+//                 if (resp.status === 401) {
+//                     reject(new AuthInvalidError());
+//                 } else {
+//                     reject(new HttpBaseError('(～￣▽￣)～ ，服务器出错了', resp.status));
+//                 }
+//             }
+//         });
+//     });
+// }
 
 
 export default {

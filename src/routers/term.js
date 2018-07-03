@@ -16,7 +16,12 @@ const Op = Sequelize.Op
 const _ = require('lodash')
 const sanitizeId = sanitizeBody('id').toInt()
 const sanitizeName = sanitizeBody('name').escape().trim()
-const sanitizeIcon = sanitizeBody('icon').escape().trim()
+const sanitizeIcon = sanitizeBody('icon').escape().trim().customSanitizer((value)=>{
+    if (!value) {
+        return 'iconfont icon-ziyuan1'
+    }
+    return value
+})
 // 当请求未提交slug 的时候不启作用
 const sanitizeSlug = sanitizeBody('slug').trim().customSanitizer((value) => {
     debug('sanitizeSlug slug = ', value)
@@ -27,7 +32,7 @@ const sanitizeSlug = sanitizeBody('slug').trim().customSanitizer((value) => {
     }
 })
 const checkId = body('id').isInt().withMessage("请提交正确的ID")
-const checkName = body('name').isString().withMessage('请提交正确的分类').custom((value) => {
+const checkName = body('name').isString().withMessage('请提交正确的名称').custom((value) => {
     debug('checkName name = ', value)
     return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(value)
 }).withMessage('请提交正确的名称，名称只能包含中文英文，下划线，数字,且在长度不超过10！')

@@ -7,6 +7,8 @@ import iView from 'iview'
 import 'normalize.css'
 import 'iview/dist/styles/iview.css'
 import './assets/cms-main.scss'
+import api from '@/utils/api'
+import store from './store'
 
 Vue.use(iView)
 
@@ -20,13 +22,20 @@ function appInit () {
         components: {App},
         template: '<App/>'
     })
-    window.fulfilLoading()
+    window.fulfilLoading && window.fulfilLoading()
 }
+// 初始化数据
+// 获取基本信息，例如枚举字段的标签
 
-appInit()
-// // 初始化数据
-// function initData(){
-//     return new Promise((resolve, reject)=>{
-//
-//     })
-// }
+Promise.all([api.nget('/api/user/auth'), api.nget('/api/site')]).then((results) => {
+    let [user, site] = results
+    store.commit('USER_SET_INFO', user)
+    store.commit('SET_SITE', site)
+    return true
+}).then(appInit).catch(async (e) => {
+    // let a = await e
+    new Vue().$Modal.error({
+        title: '错误',
+        content: e
+    })
+})

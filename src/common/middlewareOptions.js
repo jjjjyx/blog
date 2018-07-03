@@ -8,10 +8,11 @@ module.exports.validator = {
             if (value === null) {
                 return []
             }
+            let arr = value
             if (!_.isArray(value)) {
-                return [value]
+                arr = [value]
             }
-            return value
+            return _.compact(arr)
         }
     }
 }

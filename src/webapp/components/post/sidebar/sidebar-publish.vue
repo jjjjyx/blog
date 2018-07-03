@@ -113,6 +113,8 @@ export default {
                 }
             ]
         }
-    }
+    },
+    props: ['currentPost'],
+    methods: {}
 }
 </script>

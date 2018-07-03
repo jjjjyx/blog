@@ -53,7 +53,6 @@ module.exports = function (app) {
     // /api 下全是需要登录才可以访问
     app.use('/api', jwtCheck.unless(unless_path))
     // app.use("/api",middleware.unless(unless_path))
-
     app.use('/api/user', require('./user.js'))
     app.use("/api/post", require("./posts.js"));
     app.use("/api/site", require("./site.js"));

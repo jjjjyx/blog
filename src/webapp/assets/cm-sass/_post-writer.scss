@@ -59,8 +59,8 @@
 
 .saving-notice {
     position: absolute;
-    top: 0;
-    right: 7px;
+    top: 5px;
+    right: 15px;
     z-index: 1140;
 }
 
@@ -122,6 +122,11 @@
     margin-right: 5px;
 }
 
+.sidebar-category-list {
+    .ivu-radio + i {
+        min-width: 18px;
+    }
+}
 // _overload-markdown
 .v-note-wrapper .v-note-op.shadow,
 .v-note-wrapper .v-note-panel.shadow{

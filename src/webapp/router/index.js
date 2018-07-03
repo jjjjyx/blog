@@ -21,10 +21,8 @@ async function isLogIn () {
         try {
             let data = await api.nget('/api/user/auth')
             // console.log(code,userdata);
-            if (data.code === 0) {
-                store.commit('USER_SET_INFO', data.data)
-                loginStatus = true
-            }
+            store.commit('USER_SET_INFO', data)
+            loginStatus = true
         } catch (e) {
             loginStatus = false
         }
