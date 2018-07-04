@@ -7,7 +7,7 @@ const {Enum} = require('../common/enum')
 // 一个文章至多可以有 16 个标签
  */
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('j_terms', {
+    const termModel = sequelize.define('j_terms', {
         term_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
@@ -50,4 +50,6 @@ module.exports = function (sequelize, DataTypes) {
         deletedAt: "deleteAt",
         paranoid: true,
     });
+    // const {commentsModel} = sequelize.models
+    return termModel
 };

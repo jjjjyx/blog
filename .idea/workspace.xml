@@ -2,22 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="95d361ca-240e-45f8-a670-cc1d909bf7d8" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/webapp/store/modules/postWriter.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/webapp/utils/common.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/common/common.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/commentMetaModel.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/usersMetaModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/common/middlewareOptions.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/middlewareOptions.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routers/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/base.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/base.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db_config.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/db_config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/init-db.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/init-db.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_commentmeta.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_comments.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/commentsModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_postmeta.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/postMetaModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_posts.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/postsModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_reads.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/readsModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_site.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/siteModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_term_relationships.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/termRelationshipsModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_terms.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/termsModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_usermeta.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_users.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/usersModel.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/j_visitors.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/visitorsModel.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routers/posts.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/posts.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/site.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/site.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routers/term.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/term.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/admin.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/admin.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/assets/cm-sass/_post-writer.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/assets/cm-sass/_post-writer.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/cms.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/cms.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/components/cms-app.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/components/cms-app.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/components/post/post-writer.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/components/post/post-writer.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-category.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-category.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-publish.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-publish.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/router/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/webapp/utils/api.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/utils/api.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routers/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routers/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/webapp/components/post/post-management.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/webapp/components/post/post-management.vue" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,185 +36,101 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.52681535">
-      <split-first>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-          <file leaf-file-name="post-writer.vue" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/webapp/components/post/post-writer.vue">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="3666">
-                  <caret line="289" column="25" lean-forward="true" selection-start-line="289" selection-start-column="25" selection-end-line="289" selection-end-column="25" />
-                  <folding>
-                    <element signature="n#style#0;n#mavon-editor#0;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
-                    <element signature="e#3271#3303#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="api.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/webapp/utils/api.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="463">
-                  <caret line="137" column="50" lean-forward="true" selection-start-line="137" selection-start-column="50" selection-end-line="137" selection-end-column="50" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="sidebar-category.vue" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-category.vue">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="125">
-                  <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
-                  <folding>
-                    <element signature="e#1941#2001#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="common.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/webapp/utils/common.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="200">
-                  <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="sidebar-publish.vue" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-publish.vue">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="888">
-                  <caret line="116" column="11" selection-start-line="116" selection-start-column="11" selection-end-line="116" selection-end-column="11" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="posts.js" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/routers/posts.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-10">
-                  <caret line="46" column="36" selection-start-line="46" selection-start-column="36" selection-end-line="46" selection-end-column="36" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/webapp/router/index.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="329">
-                  <caret line="21" column="32" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="32" />
-                  <folding>
-                    <element signature="e#14#35#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="postWriter.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/webapp/store/modules/postWriter.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="204">
-                  <caret line="27" column="9" lean-forward="true" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
-                  <folding>
-                    <element signature="e#40#69#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-first>
-      <split-second>
-        <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-          <file leaf-file-name="j_posts.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/models/j_posts.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="375">
-                  <caret line="24" column="29" lean-forward="true" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
-                  <folding>
-                    <element signature="n#!!doc" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="j_term_relationships.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/models/j_term_relationships.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="250">
-                  <caret line="10" column="25" lean-forward="true" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="25" />
-                  <folding>
-                    <element signature="n#!!doc" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="enum.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/common/enum.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="488">
-                  <caret line="69" column="15" lean-forward="true" selection-start-line="69" selection-start-column="15" selection-end-line="69" selection-end-column="15" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="cms.js" pinned="false" current-in-tab="true">
-            <entry file="file://$PROJECT_DIR$/src/webapp/cms.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="388">
-                  <caret line="23" column="6" lean-forward="true" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
-                  <folding>
-                    <element signature="e#14#35#0" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="j_terms.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/models/j_terms.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="375">
-                  <caret line="15" column="10" lean-forward="true" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
-                  <folding>
-                    <element signature="n#!!doc" expanded="true" />
-                  </folding>
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="base.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/base.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="713">
-                  <caret line="36" column="48" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="j_postmeta.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/models/j_postmeta.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="450">
-                  <caret line="18" column="16" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="16" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-          <file leaf-file-name="posts.js" pinned="false" current-in-tab="false">
-            <entry file="file://$PROJECT_DIR$/src/routers/posts.js">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="2125">
-                  <caret line="86" column="37" lean-forward="true" selection-start-line="86" selection-start-column="37" selection-end-line="86" selection-end-column="37" />
-                </state>
-              </provider>
-            </entry>
-          </file>
-        </leaf>
-      </split-second>
-    </splitter>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
+      <file leaf-file-name="db_config.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/db_config.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="250">
+              <caret line="10" column="6" lean-forward="true" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="enum.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/common/enum.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1725">
+              <caret line="69" column="15" lean-forward="true" selection-start-line="69" selection-start-column="15" selection-end-line="69" selection-end-column="15" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cms.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/webapp/cms.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="23" column="6" lean-forward="true" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+              <folding>
+                <element signature="e#14#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/base.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="21">
+              <caret line="5" column="40" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="termsModel.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/models/termsModel.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1000">
+              <caret line="52" column="47" lean-forward="true" selection-start-line="52" selection-start-column="47" selection-end-line="52" selection-end-column="47" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/models/index.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="175">
+              <caret line="19" column="24" lean-forward="true" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="usersMetaModel.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/models/usersMetaModel.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="587">
+              <caret line="34" column="45" lean-forward="true" selection-start-line="31" selection-start-column="44" selection-end-line="34" selection-end-column="45" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="postMetaModel.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/models/postMetaModel.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="750">
+              <caret line="30" column="17" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="postsModel.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/models/postsModel.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="921">
+              <caret line="161" column="80" lean-forward="true" selection-start-line="161" selection-start-column="80" selection-end-line="161" selection-end-column="80" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -220,10 +145,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>checkTagsId</find>
-      <find>提交了未定义的分类id</find>
-      <find>npost</find>
-      <find>get</find>
       <find>nget</find>
       <find>currentPost</find>
       <find>attr</find>
@@ -234,7 +155,7 @@
       <find>length</find>
       <find>addTag</find>
       <find>release</find>
-      <find />
+      <find>release 文章</find>
       <find>query</find>
       <find>q</find>
       <find>handleClose2</find>
@@ -250,6 +171,10 @@
       <find>api</find>
       <find>api.</find>
       <find>verification</find>
+      <find>.js</find>
+      <find>postMetaDao</find>
+      <find>models</find>
+      <find>aaaaaa</find>
     </findStrings>
     <replaceStrings>
       <replace>size=&quot;16&quot;</replace>
@@ -265,9 +190,9 @@
       <dir>G:\18-workspace\19.bolg\src\webapp\components</dir>
       <dir>G:\18-workspace\19.bolg\webpack</dir>
       <dir>G:\18-workspace\19.bolg\src\views</dir>
-      <dir>G:\18-workspace\19.bolg\src</dir>
       <dir>G:\18-workspace\19.bolg\node_modules\express-validator</dir>
       <dir>G:\18-workspace\19.bolg\src\webapp</dir>
+      <dir>G:\18-workspace\19.bolg\src</dir>
     </dirStrings>
   </component>
   <component name="Git.Settings">
@@ -276,57 +201,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/routers/up-load-file.js" />
-        <option value="$PROJECT_DIR$/src/webapp/utils/ajax.js" />
-        <option value="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar.js" />
-        <option value="$PROJECT_DIR$/src/webapp/components/post/sidebar/index.js" />
-        <option value="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar.vue" />
-        <option value="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-version.vue" />
-        <option value="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-cover.vue" />
-        <option value="$PROJECT_DIR$/src/models/j_term_relationships.js" />
-        <option value="$PROJECT_DIR$/src/models/j_terms_taxonomy.js" />
-        <option value="$PROJECT_DIR$/bin/www" />
-        <option value="$PROJECT_DIR$/src/model/config-default.js" />
-        <option value="$PROJECT_DIR$/src/model/config-test.js" />
-        <option value="$PROJECT_DIR$/src/model/config.js" />
-        <option value="$PROJECT_DIR$/src/model/init-db.js" />
         <option value="$PROJECT_DIR$/src/model/model.js" />
         <option value="$PROJECT_DIR$/src/model/db.js" />
         <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/models/j_site.js" />
         <option value="$PROJECT_DIR$/src/models/j_term_taxonomy.js" />
-        <option value="$PROJECT_DIR$/src/init-db.js" />
         <option value="$PROJECT_DIR$/package.json" />
         <option value="$PROJECT_DIR$/src/routers/qiniu-file.js" />
         <option value="$PROJECT_DIR$/src/views/category.html" />
-        <option value="$PROJECT_DIR$/src/routers/site.js" />
         <option value="$PROJECT_DIR$/src/views/head.html" />
         <option value="$PROJECT_DIR$/src/views/home.html" />
-        <option value="$PROJECT_DIR$/src/routers/user.js" />
         <option value="$PROJECT_DIR$/src/common/enum.js" />
-        <option value="$PROJECT_DIR$/src/models/j_terms.js" />
-        <option value="$PROJECT_DIR$/src/base.js" />
-        <option value="$PROJECT_DIR$/src/utils.js" />
         <option value="$PROJECT_DIR$/src/webapp/assets/cm-sass/_overload-iview.scss" />
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/src/models/j_postmeta.js" />
-        <option value="$PROJECT_DIR$/src/models/j_posts.js" />
         <option value="$PROJECT_DIR$/src/webapp/components/cms-app.vue" />
         <option value="$PROJECT_DIR$/src/webapp/store/modules/post-writer.js" />
         <option value="$PROJECT_DIR$/src/webapp/assets/cm-sass/_post-writer.scss" />
-        <option value="$PROJECT_DIR$/src/webapp/utils/common.js" />
-        <option value="$PROJECT_DIR$/src/routers/term.js" />
         <option value="$PROJECT_DIR$/src/webapp/store/modules/postWriter.js" />
         <option value="$PROJECT_DIR$/src/webapp/admin.html" />
         <option value="$PROJECT_DIR$/src/routers/index.js" />
         <option value="$PROJECT_DIR$/src/webapp/router/index.js" />
         <option value="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-category.vue" />
         <option value="$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-publish.vue" />
-        <option value="$PROJECT_DIR$/src/webapp/components/post/post-writer.vue" />
         <option value="$PROJECT_DIR$/src/webapp/utils/api.js" />
-        <option value="$PROJECT_DIR$/src/routers/posts.js" />
         <option value="$PROJECT_DIR$/src/common/middlewareOptions.js" />
         <option value="$PROJECT_DIR$/src/webapp/cms.js" />
+        <option value="$PROJECT_DIR$/src/webapp/utils/load.js.bak" />
+        <option value="$PROJECT_DIR$/src/webapp/components/post/post-management.vue" />
+        <option value="$PROJECT_DIR$/src/webapp/utils/common.js" />
+        <option value="$PROJECT_DIR$/src/base.js" />
+        <option value="$PROJECT_DIR$/src/routers/user.js" />
+        <option value="$PROJECT_DIR$/src/routers/term.js" />
+        <option value="$PROJECT_DIR$/src/routers/posts.js" />
+        <option value="$PROJECT_DIR$/src/routers/site.js" />
+        <option value="$PROJECT_DIR$/src/models/j_users.js" />
+        <option value="$PROJECT_DIR$/src/models/j_terms.js" />
+        <option value="$PROJECT_DIR$/src/utils.js" />
+        <option value="$PROJECT_DIR$/src/common/common.js" />
+        <option value="$PROJECT_DIR$/src/db_config.js" />
+        <option value="$PROJECT_DIR$/src/models/j_posts.js" />
+        <option value="$PROJECT_DIR$/src/init-db.js" />
+        <option value="$PROJECT_DIR$/src/models/j_comment_meta.js" />
+        <option value="$PROJECT_DIR$/src/webapp/components/post/post-writer.vue" />
+        <option value="$PROJECT_DIR$/src/models/j_post_meta.js" />
+        <option value="$PROJECT_DIR$/src/models/commentMetaModel.js" />
+        <option value="$PROJECT_DIR$/src/models/postMetaModel.js" />
+        <option value="$PROJECT_DIR$/src/models/postsModel.js" />
+        <option value="$PROJECT_DIR$/src/models/termsModel.js" />
+        <option value="$PROJECT_DIR$/src/models/userMetaModel.js" />
+        <option value="$PROJECT_DIR$/src/models/index.js" />
+        <option value="$PROJECT_DIR$/src/models/usersMetaModel.js" />
       </list>
     </option>
   </component>
@@ -352,7 +277,7 @@
       <path value="$PROJECT_DIR$/package.json" />
     </packageJsonPaths>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="216" />
     <option name="y" value="82" />
     <option name="width" value="1400" />
@@ -363,7 +288,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -396,54 +320,13 @@
               <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
               <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="routers" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="components" type="462c0819:PsiDirectoryNode" />
-              <item name="post" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="router" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="store" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="19.bolg" type="b2602c69:ProjectViewProjectNode" />
-              <item name="19.bolg" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="webapp" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
+              <item name="models" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
       <pane id="PackagesPane" />
     </panes>
   </component>
@@ -622,12 +505,14 @@
       <workItem from="1530282648345" duration="4520000" />
       <workItem from="1530319307991" duration="12298000" />
       <workItem from="1530534637339" duration="7040000" />
-      <workItem from="1530617148818" duration="12625000" />
+      <workItem from="1530617148818" duration="14486000" />
+      <workItem from="1530710281907" duration="2574000" />
+      <workItem from="1530714423078" duration="5201000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="282157000" />
+    <option name="totallyTimeSpent" value="291793000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1416" extended-state="6" />
@@ -638,11 +523,11 @@
       <window_info anchor="bottom" id="DB Execution Console" order="12" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.31163546" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.31163546" />
       <window_info id="npm" order="6" sideWeight="0.24822696" side_tool="true" weight="0.15734825" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.31244916" />
+      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.31244916" />
       <window_info anchor="right" id="FAQ Robot" order="3" />
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.75177306" visible="true" weight="0.15854633" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.75177306" visible="true" weight="0.16174121" />
       <window_info id="Project Explorer" order="3" sideWeight="0.4987745" weight="0.3298722" />
       <window_info id="Job Explorer" order="4" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
@@ -661,13 +546,14 @@
     </layout>
     <layout-to-restore>
       <window_info anchor="bottom" id="Console" order="8" />
+      <window_info anchor="bottom" id="DB Execution Console" order="12" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info id="npm" order="6" sideWeight="0.24822696" side_tool="true" weight="0.15734825" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.31163546" />
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.75177306" visible="true" weight="0.15894568" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="DB Execution Console" order="12" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
@@ -681,10 +567,9 @@
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info id="Favorites" order="5" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Version Control" order="11" />
-      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info id="Favorites" order="5" side_tool="true" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -699,114 +584,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/routers/qiniu-file.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="5" column="48" selection-start-line="5" selection-start-column="48" selection-end-line="5" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/views/footer.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="50">
-          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/views/head.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="10" column="48" lean-forward="true" selection-start-line="10" selection-start-column="48" selection-end-line="10" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/views/home.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="5" column="25" lean-forward="true" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/j_users.js">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/express-validator/check/check.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="575">
-          <caret line="25" column="11" selection-start-line="25" selection-start-column="2" selection-end-line="25" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/express-validator/check/check.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1817">
-          <caret line="83" lean-forward="true" selection-start-line="83" selection-end-line="83" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/express-validator/filter/sanitization-chain-builders.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="11" column="53" lean-forward="true" selection-start-line="11" selection-start-column="53" selection-end-line="11" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/express-validator/filter/sanitize.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="4" column="2" selection-start-line="4" selection-start-column="2" selection-end-line="4" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/routers/user.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="800">
-          <caret line="32" column="42" selection-start-line="32" selection-start-column="42" selection-end-line="32" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/mysql2/lib/packets/packet.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="295">
-          <caret line="715" column="12" selection-start-line="715" selection-start-column="12" selection-end-line="715" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/bluebird/js/release/method.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="295">
-          <caret line="28" column="8" selection-start-line="28" selection-start-column="8" selection-end-line="28" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/sequelize/lib/sequelize.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8845">
-          <caret line="447" column="2" selection-start-line="447" selection-start-column="2" selection-end-line="447" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/node_modules/express-validator/check/validation-chain-builders.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="14" column="43" lean-forward="true" selection-start-line="14" selection-start-column="43" selection-end-line="14" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/assets/cm-sass/_overload-iview.scss">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="433">
-          <caret line="43" lean-forward="true" selection-start-line="43" selection-end-line="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/utils.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="512">
-          <caret line="52" column="73" lean-forward="true" selection-start-line="52" selection-start-column="73" selection-end-line="52" selection-end-column="73" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/common/resultUtils.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="750">
@@ -835,30 +612,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/j_postmeta.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="18" column="16" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/j_term_relationships.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="250">
-          <caret line="10" column="25" lean-forward="true" selection-start-line="10" selection-start-column="25" selection-end-line="10" selection-end-column="25" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/index.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="12" column="15" selection-start-line="12" selection-start-column="6" selection-end-line="12" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/assets/cm-sass/_cm-sidebar.scss">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -867,41 +620,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/utils/dom.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-75">
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
+        <state relative-caret-position="-75" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/routers/category.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="275">
           <caret line="11" column="23" lean-forward="true" selection-start-line="11" selection-start-column="23" selection-end-line="11" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/j_terms.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="15" column="10" lean-forward="true" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/base.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="713">
-          <caret line="36" column="48" selection-start-line="36" selection-start-column="48" selection-end-line="36" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/routers/term.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="23" column="2" lean-forward="true" selection-start-line="23" selection-start-column="2" selection-end-line="23" selection-end-column="2" />
         </state>
       </provider>
     </entry>
@@ -914,7 +639,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/common/enum.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="488">
+        <state relative-caret-position="1725">
           <caret line="69" column="15" lean-forward="true" selection-start-line="69" selection-start-column="15" selection-end-line="69" selection-end-column="15" />
         </state>
       </provider>
@@ -926,34 +651,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/components/cms-app.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2375">
-          <caret line="125" column="12" selection-start-line="125" selection-start-column="7" selection-end-line="125" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/models/j_posts.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="375">
-          <caret line="24" column="29" lean-forward="true" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/admin.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="19" column="135" selection-start-line="19" selection-start-column="135" selection-end-line="19" selection-end-column="135" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/routers/site.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="26" column="23" lean-forward="true" selection-start-line="26" selection-start-column="23" selection-end-line="26" selection-end-column="23" />
         </state>
       </provider>
     </entry>
@@ -980,7 +681,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/router/index.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="329">
+        <state relative-caret-position="300">
           <caret line="21" column="32" selection-start-line="21" selection-start-column="29" selection-end-line="21" selection-end-column="32" />
           <folding>
             <element signature="e#14#35#0" expanded="true" />
@@ -992,9 +693,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="204">
           <caret line="27" column="9" lean-forward="true" selection-start-line="27" selection-start-column="9" selection-end-line="27" selection-end-column="9" />
-          <folding>
-            <element signature="e#40#69#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1005,27 +703,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-category.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="125">
-          <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
-          <folding>
-            <element signature="e#1941#2001#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/components/post/post-writer.vue">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3666">
-          <caret line="289" column="25" lean-forward="true" selection-start-line="289" selection-start-column="25" selection-end-line="289" selection-end-column="25" />
-          <folding>
-            <element signature="n#style#0;n#mavon-editor#0;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
-            <element signature="e#3271#3303#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/common/middlewareOptions.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="350">
@@ -1033,40 +710,250 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/utils/load.js.bak">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="642">
+          <caret line="35" column="10" selection-start-line="35" selection-start-column="10" selection-end-line="35" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/components/cms-app.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="417">
+          <caret line="154" column="66" selection-start-line="154" selection-start-column="55" selection-end-line="154" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-publish.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="888">
+        <state relative-caret-position="1188">
           <caret line="116" column="11" selection-start-line="116" selection-start-column="11" selection-end-line="116" selection-end-column="11" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/utils/common.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="175">
+          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/webapp/utils/api.js">
+    <entry file="file://$PROJECT_DIR$/src/routers/term.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="463">
-          <caret line="137" column="50" lean-forward="true" selection-start-line="137" selection-start-column="50" selection-end-line="137" selection-end-column="50" />
+        <state relative-caret-position="250">
+          <caret line="10" column="52" lean-forward="true" selection-start-line="10" selection-start-column="52" selection-end-line="10" selection-end-column="52" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/routers/posts.js">
+    <entry file="file://$PROJECT_DIR$/src/routers/user.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2125">
-          <caret line="86" column="37" lean-forward="true" selection-start-line="86" selection-start-column="37" selection-end-line="86" selection-end-column="37" />
+        <state relative-caret-position="250">
+          <caret line="10" column="7" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/routers/site.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="7" column="47" lean-forward="true" selection-start-line="7" selection-start-column="47" selection-end-line="7" selection-end-column="47" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/webapp/cms.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
+        <state relative-caret-position="375">
           <caret line="23" column="6" lean-forward="true" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
           <folding>
             <element signature="e#14#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/sequelize/lib/sequelize.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="404">
+          <caret line="256" column="4" selection-start-line="256" selection-start-column="4" selection-end-line="256" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/commentsModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="325">
+          <caret line="13" column="10" lean-forward="true" selection-start-line="13" selection-start-column="10" selection-end-line="13" selection-end-column="10" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/readsModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="15" column="9" lean-forward="true" selection-start-line="15" selection-start-column="9" selection-end-line="15" selection-end-column="9" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/visitorsModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="9" column="10" lean-forward="true" selection-start-line="9" selection-start-column="10" selection-end-line="9" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/termRelationshipsModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="14" column="40" lean-forward="true" selection-start-line="14" selection-start-column="40" selection-end-line="14" selection-end-column="40" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/utils/api.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="263">
+          <caret line="116" column="52" selection-start-line="116" selection-start-column="46" selection-end-line="116" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/node_modules/sequelize/lib/associations/mixin.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="470">
+          <caret line="103" selection-start-line="103" selection-end-line="103" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/common.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret lean-forward="true" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/init-db.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="9" column="32" lean-forward="true" selection-start-line="9" selection-start-column="32" selection-end-line="9" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/db_config.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="10" column="6" lean-forward="true" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/components/post/post-writer.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1950">
+          <caret line="78" column="33" selection-start-line="78" selection-start-column="33" selection-end-line="78" selection-end-column="33" />
+          <folding>
+            <element signature="n#style#0;n#mavon-editor#0;n#div#1;n#div#0;n#div#0;n#template#0;n#!!top" expanded="true" />
+            <element signature="e#3299#3331#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/components/post/sidebar/sidebar-category.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="5" column="27" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/routers/posts.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="286">
+          <caret line="525" column="41" lean-forward="true" selection-start-line="525" selection-start-column="41" selection-end-line="525" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/webapp/components/post/post-management.vue">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="713">
+          <caret line="50" column="49" selection-start-line="50" selection-start-column="49" selection-end-line="50" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/utils.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="562">
+          <caret line="63" lean-forward="true" selection-start-line="63" selection-end-line="63" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/postMetaModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="750">
+          <caret line="30" column="17" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/postsModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="921">
+          <caret line="161" column="80" lean-forward="true" selection-start-line="161" selection-start-column="80" selection-end-line="161" selection-end-column="80" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/termsModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1000">
+          <caret line="52" column="47" lean-forward="true" selection-start-line="52" selection-start-column="47" selection-end-line="52" selection-end-column="47" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/usersModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/commentMetaModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="900">
+          <caret line="36" selection-start-line="36" selection-end-line="36" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/base.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="21">
+          <caret line="5" column="40" selection-start-line="5" selection-start-column="34" selection-end-line="5" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/index.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="19" column="24" lean-forward="true" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/models/usersMetaModel.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="587">
+          <caret line="34" column="45" lean-forward="true" selection-start-line="31" selection-start-column="44" selection-end-line="34" selection-end-column="45" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>

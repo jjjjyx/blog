@@ -4,14 +4,14 @@ module.exports = {
     development: {
         username: 'blog',
         password: 'C9XyX5dWd9CQjHwu',
-        database: 'blog',
+        database: 'bolg2',
         host: '127.0.0.1',
         dialect: 'mysql',
         // timestamps: false,
     },
     test: {
         username: 'database_test',
-        password: null,
+        password: 'test',
         database: 'database_test',
         host: '127.0.0.1',
         dialect: 'mysql'

@@ -25,7 +25,7 @@
                         <i-Button type="primary" shape="circle" icon="ios-search" @click="search"></i-Button>
                     </FormItem>
                 </i-Form>
-                <i-Button type="ghost" icon="document">新建文章</i-Button>
+                <i-Button type="ghost" icon="document" @click="$router.push({name: 'post_writer'})">新建文章</i-Button>
             </i-col>
             <i-col span="6">
                 <div class="table-buttons" style="float: right">
@@ -48,11 +48,11 @@
             </i-col>
         </row>
         <div class="cm-header">
-            <span style="float: right">已全部加载，共3个</span>
+            <span style="float: right">已全部加载，共{{data.length}}篇文章</span>
             <span>全部文章</span>
         </div>
         <div class="cm-wrapper" ref="table-wrapper">
-            <i-table :columns="columns" :data="data" class="cm-list-table" :height="tableHeight"></i-table>
+            <i-table :columns="columns" :data="data" stripe class="cm-list-table" :height="tableHeight" :loading="tableStatus"></i-table>
         </div>
     </div>
 </template>
@@ -60,6 +60,15 @@
 <script>
 import {on} from '@/utils/dom'
 import _ from 'lodash'
+import api from '@/utils/api'
+
+const renderTitle = function (h, {row}) {
+    return h('span', row.post_title)
+}
+
+const renderAuthor = function (h, {row}) {
+    return h('span', row.post_author)
+}
 
 export default {
     name: 'post-management',
@@ -71,41 +80,38 @@ export default {
             tableHeight: 400,
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
-                {title: 'ID', key: 'id', sortable: true},
-                {title: '标题', key: 'size', sortable: true},
-                {title: '类别', key: 'uploader', sortable: true},
-                {title: '作者/创建时间', key: 'auth', sortable: true},
-                {title: '状态', key: 'status', sortable: true},
-                {title: 'Action'}
+                // {title: 'ID', key: 'id', sortable: true},
+                {title: '标题', key: 'size', sortable: true, render: renderTitle.bind(this)},
+                {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
+                {title: '类别', key: 'uploader', width: 100},
+                {title: '标签', key: 'uploader' , width: 180},
+                {title: '评论', key: 'uploader', width: 80, sortable: true},
+                {title: '日期', key: 'status', width: 220}
             ],
-            data: [
-                {
-                    id: 0,
-                    ext: 'doc',
-                    mimeType: 'application/msword',
-                    name: 'a.doc',
-                    originName: 'a.doc',
-                    createdTime: '2018-6-4 12:21:52', // 数据创建时间 不是文件创建时间
-                    remark: '文件描述',
-                    size: '100126',
-                    uid: {},
-                    ascId: '12345555',
-                    downNum: 5,
-                    status: 'normal'
-                }
-            ]
+            data: [],
+            tableStatus: false,
         }
     },
     methods: {
         search: function search () {
 
         },
-        fetchData: function fetchData () {
-
+        fetchData:async function fetchData () {
+            this.tableStatus = true
+            try {
+                let data = await api.nget('/api/post/')
+                this.data = data
+            } catch (e) {
+                this.data = []
+                this.$Message.info('获取文章数据失败!')
+            } finally {
+                this.tableStatus = false
+            }
         }
     },
     created: function () {
         // console.log(this.$el,222)
+        this.fetchData()
     },
     mounted () {
         let h = this.$refs['table-wrapper'].clientHeight

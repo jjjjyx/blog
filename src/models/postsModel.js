@@ -18,6 +18,7 @@ const {Enum} = require('../common/enum')
  */
 
 module.exports = function (sequelize, DataTypes) {
+
     let postModel = sequelize.define('j_posts', {
         id: {
             type: DataTypes.BIGINT,
@@ -25,15 +26,15 @@ module.exports = function (sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
-        post_author: {
-            type: DataTypes.BIGINT,
-            allowNull: true,
-            defaultValue: '0',
-            references: {
-                model: 'j_users',
-                key: 'id'
-            }
-        },
+        // post_author: {
+        //     type: DataTypes.BIGINT,
+        //     allowNull: true,
+        //     defaultValue: '0',
+        //     references: {
+        //         model: j_users,
+        //         key: 'id'
+        //     }
+        // },
         post_date: { // 发布时间
             type: DataTypes.DATE,
             allowNull: true
@@ -150,11 +151,14 @@ module.exports = function (sequelize, DataTypes) {
         // 不要忘了启用 timestamps
         timestamps:true,
         deletedAt: "deleteAt",
-        paranoid: true,
+        paranoid: true
         // indexes:[{
         //     unique: true,
         //     fields: ['post_name','post_title']
         // },]
     });
+    const {userModel} = sequelize.models
+    userModel.hasMany(postModel, {foreignKey: 'post_author', targetKey: 'id'})
+    postModel.belongsTo(userModel, {foreignKey: 'post_author', targetKey: 'id'})
     return postModel
 };

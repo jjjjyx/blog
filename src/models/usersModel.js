@@ -1,6 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
+    console.log('sequelize', sequelize.models)
     return sequelize.define('j_users', {
         id: {
             type: DataTypes.BIGINT,

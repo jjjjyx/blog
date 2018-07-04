@@ -8,7 +8,7 @@ const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
-const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao, sequelize} = require('../models')
+const {termsDao, postDao, termRelationshipsDao, sequelize} = require('../models')
 const {Enum} = require('../common/enum')
 const Sequelize = require('sequelize')
 

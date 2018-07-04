@@ -9,9 +9,9 @@ const {sanitizeBody, sanitizeParam} = require('express-validator/filter')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
 const {Enum} = require('../common/enum')
-const Sequelize = require('sequelize')
+
+const {termsDao, postDao, termRelationshipsDao, postMetaDao, sequelize, Sequelize} = require('../models')
 const Op = Sequelize.Op
-const {terms: termsDao, posts: postDao, term_relationships: termRelationshipsDao, postmeta: postmetaDao, sequelize} = require('../models')
 
 // id
 const sanitizeId = sanitizeBody('id').toInt()
@@ -253,7 +253,7 @@ const save = [
                     meta_key: 'tags',
                     meta_value: JSON.stringify(new_tag)
                 }
-                postmetaDao.create(pm)
+                postMetaDao.create(pm)
 
                 break
             default:

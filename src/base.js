@@ -3,7 +3,7 @@
 const moment = require('moment')
 const crypto = require('crypto')
 const debug = require('debug')('app:base')
-const {site: siteDao} = require('../src/models')
+const {siteDao} = require('../src/models')
 const {Enum} = require('./common/enum')
 
 function randomHex () {

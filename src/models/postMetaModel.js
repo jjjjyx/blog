@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('j_postmeta', {
+    const postMetaModel = sequelize.define('j_postmeta', {
         meta_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
@@ -28,4 +28,10 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'j_postmeta',
         timestamps: false,
     });
+    const {postsModel} = sequelize.models
+    const pk = {foreignKey: 'post_id', targetKey: 'id'}
+    postsModel.hasMany(postMetaModel, pk)
+    postMetaModel.belongsTo(postsModel,pk)
+
+    return postMetaModel
 };
