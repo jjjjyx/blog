@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('j_reads', {
+    return sequelize.define('read', {
         ip: {
             type: DataTypes.STRING(15),
             allowNull: false

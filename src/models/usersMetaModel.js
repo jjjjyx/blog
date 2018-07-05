@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    const userMetaModel = sequelize.define('j_usermeta', {
+    const userMetaModel = sequelize.define('userMeta', {
         meta_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
@@ -28,11 +28,10 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'j_usermeta',
         timestamps: false,
     });
-    console.log(sequelize.models)
-    // const {usersModel} = sequelize.models
-    // const pk = {foreignKey: 'user_id', targetKey: 'id'}
-    // usersModel.hasMany(userMetaModel, pk)
-    // userMetaModel.belongsTo(usersModel,pk)
+    const {user: userModel} = sequelize.models
+    const pk = {foreignKey: 'user_id', targetKey: 'id'}
+    userModel.hasMany(userMetaModel, pk)
+    userMetaModel.belongsTo(userModel,pk)
     return userMetaModel
 };
 // node ./src/init-db.js

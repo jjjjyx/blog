@@ -18,8 +18,7 @@ const {Enum} = require('../common/enum')
  */
 
 module.exports = function (sequelize, DataTypes) {
-
-    let postModel = sequelize.define('j_posts', {
+    let postModel = sequelize.define('post', {
         id: {
             type: DataTypes.BIGINT,
             allowNull: false,
@@ -157,7 +156,7 @@ module.exports = function (sequelize, DataTypes) {
         //     fields: ['post_name','post_title']
         // },]
     });
-    const {userModel} = sequelize.models
+    const {user: userModel} = sequelize.models
     userModel.hasMany(postModel, {foreignKey: 'post_author', targetKey: 'id'})
     postModel.belongsTo(userModel, {foreignKey: 'post_author', targetKey: 'id'})
     return postModel

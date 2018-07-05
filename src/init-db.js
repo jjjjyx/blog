@@ -1,9 +1,15 @@
 const model = require('./models')
+// {force: true}
 model.sequelize.sync({force: true}).then(async () => {
     console.log('init db ok.');
     process.exit(0);
     // console.log(model.postsDao)
-    // let result = await model.postsDao.findOne({
+    // console.log(model.postsDao.tasks)
+    // console.log(model.postsDao.getTasks)
+    // console.log(model.termsDao)
+    // console.log(Object.getOwnPropertyDescriptors(model.postsDao))
+    // console.log(model.postsDao.prototype)
+    // let result = await model.postsDao({
     //     // attributes: ['post_content'],
     //     where: {
     //         id: 77

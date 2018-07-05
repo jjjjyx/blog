@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('j_comments', {
+    return sequelize.define('comment', {
         comment_id: {
             type: DataTypes.BIGINT,
             allowNull: false,

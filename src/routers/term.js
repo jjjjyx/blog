@@ -8,11 +8,12 @@ const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
-const {termsDao, postDao, termRelationshipsDao, sequelize} = require('../models')
-const {Enum} = require('../common/enum')
-const Sequelize = require('sequelize')
+const {termDao, postDao, sequelize} = require('../models')
+const {term_relationships: termRelationshipsDao } = sequelize.models
+const Op = sequelize.Op
 
-const Op = Sequelize.Op
+const {Enum} = require('../common/enum')
+
 const _ = require('lodash')
 const sanitizeId = sanitizeBody('id').toInt()
 const sanitizeName = sanitizeBody('name').escape().trim()
@@ -66,7 +67,7 @@ const addTerm = [
         debug(`addTerm name =[${name}], slug[${slug}]`)
         try {
             // 检查同名 ，检查 slug
-            let result = await termsDao.findOne({
+            let result = await termDao.findOne({
                 where: {
                     taxonomy: Enum.TaxonomyEnum.CATEGORY,
                     [Op.or]: [{name}, {slug}]
@@ -75,7 +76,7 @@ const addTerm = [
             if (result != null) {
                 return res.status(200).json(Result.info('分类名称或别名已存在'))
             }
-            result = await termsDao.create({
+            result = await termDao.create({
                 name, slug,taxonomy: Enum.TaxonomyEnum.CATEGORY,
                 description, icon, count: 0
             })
@@ -106,7 +107,7 @@ const editTerm = [
                 return res.status(200).json(Result.info('失败!此分类不可修改'))
             }
             // 检查同名 ，检查 slug
-            let result = await termsDao.findOne({
+            let result = await termDao.findOne({
                 where: {
                     taxonomy: Enum.TaxonomyEnum.CATEGORY,
                     term_id: { [Op.ne]: id },
@@ -117,7 +118,7 @@ const editTerm = [
                 return res.status(200).json(Result.info('分类名称或别名已存在! 修改失败'))
             }
 
-            await termsDao.update(values,{
+            await termDao.update(values,{
                 where:{
                     term_id: id
                 }
@@ -141,7 +142,7 @@ const del = [
         }
         // 删除掉文章的引用
         try {
-            let terms = await termsDao.findAll({
+            let terms = await termDao.findAll({
                 where:{
                     term_id:{
                         [Op.in]: ids,
@@ -164,19 +165,8 @@ const del = [
                         {term_id: SITE.defaultCategoryId},
                         {where: {term_id: category_ids}}
                     ).then(()=>{
-                        // 更新文章个数
-                        try {
-                            sequelize.query('UPDATE j_terms SET `count` = (SELECT COUNT(*) FROM j_term_relationships WHERE term_id = :term_id) WHERE term_id = :term_id', {
-                                replacements: {term_id: SITE.defaultCategoryId}
-                            }).spread((results, metadata)=>{
-                                // update results = {"fieldCount":0,"affectedRows":0,"insertId":0,"info":"Rows matched: 1  Changed: 0  Warnings: 0","serverStatus":2,"warningStatus":0,"changedRows":0}, metadata = {"fieldCount":0,"affectedRows":0,"insertId":0,"info":"Rows matched: 1  Changed: 0  Warnings: 0","serverStatus":2,"warningStatus":0,"changedRows":0}
-                                console.log('update results = %s, metadata = %s', JSON.stringify(results), JSON.stringify(metadata))
-                            })
-                        } catch (e) {
-                            console.log(e)
-                        }
                         // 删除分类
-                        termsDao.destroy({paranoid: false, force: true, where: {term_id: category_ids}})
+                        termDao.destroy({paranoid: false, force: true, where: {term_id: category_ids}})
                     })
                 }
                 // 标签直接删除
@@ -185,7 +175,7 @@ const del = [
                     let _destroy = {paranoid: false, force: true, where: {term_id: post_tag_ids}}
                     termRelationshipsDao.destroy(_destroy).then(() =>{
                         // 删除标签
-                        termsDao.destroy(_destroy)
+                        termDao.destroy(_destroy)
                     })
                 }
             }
@@ -210,7 +200,7 @@ const addTag = [
         debug(`addTag name =[${name}], slug[${slug}]`)
         try {
             // 检查同名 ，检查 slug
-            let result = await termsDao.findOne({
+            let result = await termDao.findOne({
                 where: {
                     taxonomy: Enum.TaxonomyEnum.POST_TAG,
                     [Op.or]: [{name}, {slug}]
@@ -219,7 +209,7 @@ const addTag = [
             if (result != null) {
                 return res.status(200).json(Result.info('标签名称或别名已存在'))
             }
-            result = await termsDao.create({
+            result = await termDao.create({
                 name, slug, taxonomy: Enum.TaxonomyEnum.POST_TAG,
                 description, count: 0
             })
@@ -246,7 +236,7 @@ const editTag = [
         debug(`editTerm id= [${id}] name =[${name}], slug[${slug}]`)
         try {
             // 检查同名 ，检查 slug
-            let result = await termsDao.findOne({
+            let result = await termDao.findOne({
                 where: {
                     taxonomy: Enum.TaxonomyEnum.POST_TAG,
                     term_id: { [Op.ne]: id },
@@ -257,7 +247,7 @@ const editTag = [
                 return res.status(200).json(Result.info('标签名称或别名已存在! 修改失败'))
             }
 
-            await termsDao.update(values,{
+            await termDao.update(values,{
                 where:{
                     term_id: id
                 }
@@ -273,8 +263,56 @@ const editTag = [
 
 const getAll = [
     async function (req, res) {
-        let result = await termsDao.findAll()
-        return res.status(200).json(Result.success(result))
+        try {
+            let result = await termDao.findAll({
+                attributes: {
+                    include:[
+                        [sequelize.literal('(SELECT COUNT(`term_relationships`.`object_id`) FROM  `j_term_relationships` AS `term_relationships` WHERE `term_relationships`.`term_id` = `term`.`term_id` )'), 'count']
+                    ]
+                }
+            })
+            return res.status(200).json(Result.success(result))
+        } catch (e) {
+            console.log(e)
+            debug('getAll error by :', e.message)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
+
+const test = [
+    async function (req, res, next) {
+        let term = await termDao.findById(19)
+        console.log(term.toJSON())
+        term.countPosts()
+        // console.log(Object.getOwnPropertyDescriptors(term))
+        // console.log(term.property)
+        // let test = await term.countPosts()
+        // console.log(test)
+        // let post = await postDao.findById(77)
+        // await term.addPosts(post)
+        // test = await term.countPosts()
+        // console.log(test)
+        // termRelationshipsDao.update(
+        //             {term_id: SITE.defaultCategoryId},
+        //             {where: {term_id: 19}}
+        // ).then((...a)=>{
+        //     console.log(...a)
+        // })
+
+        // let tags = await termDao.findAll({
+        //     where: {
+        //         term_id: [22,23,24]
+        //     }
+        // })
+        // try {
+        //     let aa = await tags.setPosts([])
+        //     console.log(aa)
+        // } catch (e) {
+        //     console.log(e)
+        // }
+
+        return res.status(200).json('null')
     }
 ]
 
@@ -286,4 +324,7 @@ router.route('/t/edit').post(editTag)
 
 router.route('/del').post(del)
 router.route('/').get(getAll)
+
+// router.route('/test').get(test)
+
 module.exports = router

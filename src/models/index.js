@@ -24,15 +24,15 @@ let models = [
     'postMetaModel.js',
     'termsModel.js',
     'readsModel.js',
-    'termRelationshipsModel.js', // 这个是many to many
+    // 'termRelationshipsModel.js', // 这个是many to many
     'visitorsModel.js',
     'siteModel.js'
 ]
 models.forEach(file => {
     // console.log(file)
     let model = sequelize['import'](path.join(__dirname, file));
-    let name = common.transformStr3(file.substring(prefix.length, file.length - 3)) + 'Dao'
-    db[name] = model;
+    // let name = common.transformStr3(file.substring(0, file.length - 8)) + 'Dao'
+    db[model.name + 'Dao'] = model;
 })
 
 // fs.readdirSync(__dirname)
@@ -63,10 +63,6 @@ models.forEach(file => {
 // (async function (){
 
 // })
-
-
-console.log('db', db)
-
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

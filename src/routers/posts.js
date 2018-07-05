@@ -10,8 +10,8 @@ const utils = require('../utils')
 const Result = require('../common/resultUtils')
 const {Enum} = require('../common/enum')
 
-const {termsDao, postDao, termRelationshipsDao, postMetaDao, sequelize, Sequelize} = require('../models')
-const Op = Sequelize.Op
+const {termDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
+const Op = sequelize.Op
 
 // id
 const sanitizeId = sanitizeBody('id').toInt()
@@ -43,16 +43,17 @@ const postNameReg = /^[_a-zA-Z0-9\-]{1,60}$/
 const checkExcerpt = body('post_excerpt').exists().isString().isLength({min: 0}).withMessage('请提交文章摘录')
 
 const TagsLength = 16
-const createTags = async function (req, res, dealWithCategory) {
+const tagToString = t =>`${t.name}#${t.term_id}`
+const createTags = async function (req, res, post, dealWithCategory) {
     req.sanitizeBody('new_tag').toArray()
     req.sanitizeBody('tags_id').toArray()
     try {
-        let {new_tag, tags_id, id, category_id} = req.body
+        let {new_tag, tags_id, category_id} = req.body
         new_tag = new_tag || []
         tags_id = tags_id || []
         if (dealWithCategory) {
         // 验证分类是否存在
-            let category = await termsDao.findById(category_id, {attributes: ['term_id']})
+            let category = await termDao.findById(category_id, {attributes: ['term_id']})
             if (category === null) {
                 debug(`createTags 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
                 category_id = SITE.defaultCategoryId * 1
@@ -70,13 +71,13 @@ const createTags = async function (req, res, dealWithCategory) {
 
         // 验证tags_id
         // 如果tags_id 不存在则忽略
-        let tags = await termsDao.findAll({
+        let tags = await termDao.findAll({
             where:{
                 taxonomy: Enum.TaxonomyEnum.POST_TAG,
                 term_id:{[Op.in]: tags_id}
             }
         })
-        debug(`createTags 提交了标签ID个数 = ${tags_id.length} 个，其中 ${tags.length} 有效`)
+        debug(`createTags 提交了标签ID个数 = ${tags_id.length} 个，其中 [${tags.map(tagToString)}] 有效`)
         // 判断tags 的个数 个数的判断在创建标签之前
         if (TagsLength <= tags.length + new_tag.length) {
             return Result.info('标签太多啦！')
@@ -85,7 +86,7 @@ const createTags = async function (req, res, dealWithCategory) {
         // 对于新加的 new_tag 则去创建
         // 防止同名是个问题，虽然会在页面中做同名过滤，但是保不齐非法提交
         // 做法查询这些new_tag 是否存在, 存在的删除掉
-        let newTags = await termsDao.findAll({
+        let newTags = await termDao.findAll({
             where:{
                 taxonomy: Enum.TaxonomyEnum.POST_TAG,
                 name:{[Op.in]: new_tag}
@@ -94,64 +95,27 @@ const createTags = async function (req, res, dealWithCategory) {
 
         tags = tags.concat(newTags)
         let _newTags =  newTags.map((item)=>item.name)
-        debug(`createTags 提交了标签名称：[${new_tag}]，其中[${_newTags}]是已存在的`)
+        debug(`createTags 提交了标签名称：[${new_tag}]，其中[${newTags.map(tagToString)}]是已存在的`)
 
-        let new_tags = _.difference(new_tag, _newTags).map((name)=>({name,  taxonomy: Enum.TaxonomyEnum.POST_TAG, description: '', count: 0, slug: utils.randomChar(6)}))
+        let new_tagsValue = _.difference(new_tag, _newTags).map((name)=>({name,  taxonomy: Enum.TaxonomyEnum.POST_TAG, description: '', count: 0, slug: utils.randomChar(6)}))
         // 创建
         // bulkCreate
-        if (new_tags.length) {
-            debug(`createTags 创建其余未定义的标签：[${new_tags}]`)
-            new_tags = await termsDao.bulkCreate(new_tags)
+        if (new_tagsValue.length) {
+            debug(`createTags 创建其余未定义的标签：[${new_tagsValue}]`)
+            tags = tags.concat(await termDao.bulkCreate(new_tagsValue))
         }
+        debug(`createTags 文章${post.id} 更新关系为[${tags.map(tagToString)}]`)
 
-        tags = tags.concat(new_tags)
-
-        // 查询到文章所有用到的分类 + 标签
-        termRelationshipsDao.findAll({
-            where: {object_id: id}
-        }).then(termRelationships=>{
-            // 对没有做对应的做一次创建对应关系，并且更新文章个数
-            // 更新标签，分类文章个数
-            let ids = tags.map((item)=>item.term_id)
-            // 共同的调用 这个分类怎么处理 也进行处理
-            if (dealWithCategory) {
-                ids.push(category_id)
-            }
-            let thatIds = termRelationships.map(t=>t.term_id)
-            debug(`createTags 文章${id} 对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
-            let _not = _.difference(ids, thatIds)
-            let _del = _.difference(thatIds, ids,)
-            debug(`createTags 文章${id} 本次提交了ids = [${ids}],其中[${_not}] 是新增的,[${_del}]是删除的，创建关系`)
-            // 还要计算删除的
-
-            // 创建文章标签对应表
-            let createValues = _not.map((term)=>{
-                return {
-                    object_id: id,
-                    term_id: term
-                }
-            })
-            if (_del.length) {
-                termRelationshipsDao.destroy({where: {term_id: {[Op.in]: _del}},}).then(()=>{
-                        termsDao.update(
-                            {count: Sequelize.literal('`count` - 1')},
-                            {where: {term_id: {[Op.in]: _del}}}
-                        )
-                })
-            }
-            if (createValues.length) {
-                termRelationshipsDao.bulkCreate(createValues).then(()=>{
-                    // 已修复 这里会出现一个 异常 有时间修改
-                    return termsDao.update(
-                        {count: Sequelize.literal('`count` + 1')},
-                        {where: {term_id: {[Op.in]: _not}}}
-                    )
-                }).catch((err)=>{
-                    debug("update termRelationships error by:", err.message)
-                })
-            }
-        })
-        return true
+        // post.getTerms().then((termRelationships)=>{
+        //     let thatIds = termRelationships.map(tagToString)
+        //     debug(`createTags 文章${post.id} 原先对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
+        //     tags = _.unionBy(termRelationships, tags, 'term_id')
+        //
+        //     return post.setTerms(tags)
+        // }).catch((e)=>{
+        //     console.log(e)
+        // })
+        return await post.setTerms(tags)
     } catch (e) {
         debug('createTags error by:', e.message)
         return Result.error()
@@ -191,7 +155,7 @@ const save = [
             case Enum.PostStatusEnum.DRAFT:
                 debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
                 // 保存文章的标签信息
-                let createTagsResult = await createTags(req, res, false)
+                let createTagsResult = await createTags(req, res, post, false)
                 if (createTagsResult instanceof Result) {
                     return res.status(200).json(createTagsResult)
                 }
@@ -234,7 +198,7 @@ const save = [
                 }
 
                 // tags_id  转换成名称 meta 中不保存id
-                let tags = await termsDao.findAll({
+                let tags = await termDao.findAll({
                     where:{
                         taxonomy: Enum.TaxonomyEnum.POST_TAG,
                         term_id:{[Op.in]: tags_id}
@@ -329,7 +293,7 @@ const release = [
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
             }
 
-            let createTagsResult = await createTags(req, res, true)
+            let createTagsResult = await createTags(req, res, post, true)
             if (createTagsResult instanceof Result) {
                 return res.status(200).json(createTagsResult)
             }
@@ -517,34 +481,17 @@ const postInfo = [
         // todo 标签的回填
         let {id} = req.params
         try {
-            // 蛋疼对这个left 不熟
             let result = await postDao.findOne({
-                // attributes: ['post_content'],
-                where: {
-                    id,
-                    post_status: [
-                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
-                    ]
-                },
-                // include: [
-                //     {
-                //         model: termRelationshipsDao,
-                //         where: {
-                //             object_id: Sequelize.col('postDao.id')
-                //         }
-                //     }
-                // ]
+                // attributes: {
+                //     exclude: ['']
+                // },
+                where: {id, post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT]},
+                include: [{model: termDao}]
             })
 
             if (result !== null) {
-                let tags = await sequelize.query('SELECT b.name FROM j_term_relationships a LEFT JOIN j_terms b ON a.`term_id` = b.term_id WHERE object_id = ?',
-                    { replacements: [id], type: sequelize.QueryTypes.SELECT }
-                )
-                let pp = result.toJSON()
-                pp.tags = tags.map((item)=> item.name)
-                return res.status(200).json(Result.success(pp))
+                return res.status(200).json(Result.success(result))
             }
-
             return res.status(200).json(Result.info('错误的id'))
         } catch (e) {
             debug('post getContent error by:', e.message)

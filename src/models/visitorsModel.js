@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('j_visitors', {
+    return sequelize.define('visitor', {
         id: {
             type: DataTypes.BIGINT,
             allowNull: false,

@@ -2,7 +2,7 @@
 const {Enum} = require('../common/enum')
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('j_site', {
+    return sequelize.define('site', {
         key: {
             type: DataTypes.STRING(30),
             allowNull: false,

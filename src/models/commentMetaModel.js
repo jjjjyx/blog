@@ -1,7 +1,7 @@
 /* jshint indent: 2 */
 
 module.exports = function (sequelize, DataTypes) {
-    const commentMetaModel = sequelize.define('j_commentmeta', {
+    const commentMetaModel = sequelize.define('commentMeta', {
         meta_id: {
             type: DataTypes.BIGINT,
             allowNull: false,
@@ -30,10 +30,10 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: false
     });
     // const {j_users} = sequelize.models
-    const {commentsModel} = sequelize.models
+    const {comment: commentModel} = sequelize.models
     const pk = {foreignKey: 'comment_id', targetKey: 'comment_id'}
-    commentsModel.hasMany(commentMetaModel, pk)
-    commentMetaModel.belongsTo(commentsModel,pk)
+    commentModel.hasMany(commentMetaModel, pk)
+    commentMetaModel.belongsTo(commentModel, pk)
 
     return commentMetaModel
 };

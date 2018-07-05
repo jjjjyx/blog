@@ -84,19 +84,19 @@ export default {
                 {title: '标题', key: 'size', sortable: true, render: renderTitle.bind(this)},
                 {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
                 {title: '类别', key: 'uploader', width: 100},
-                {title: '标签', key: 'uploader' , width: 180},
+                {title: '标签', key: 'uploader', width: 180},
                 {title: '评论', key: 'uploader', width: 80, sortable: true},
                 {title: '日期', key: 'status', width: 220}
             ],
             data: [],
-            tableStatus: false,
+            tableStatus: false
         }
     },
     methods: {
         search: function search () {
 
         },
-        fetchData:async function fetchData () {
+        fetchData: async function fetchData () {
             this.tableStatus = true
             try {
                 let data = await api.nget('/api/post/')
