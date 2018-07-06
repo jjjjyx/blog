@@ -6,10 +6,10 @@ const router = express.Router()
 const debug = require('debug')('app:routers:api.site')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
-const {siteDao} = require('../models');
+const {siteDao, termDao} = require('../models');
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
-const {Enum} = require('../common/enum')
+const {Enum, labels} = require('../common/enum')
 
 const update = [
     sanitizeBody('key').trim(),
@@ -42,6 +42,9 @@ const update = [
                     site[item.key] = item.value
                 })
                 global.SITE = site
+                termDao.findById(SITE.defaultCategoryId).then(term => {
+                    global.SITE.defaultTerm = term
+                })
             })
             return res.status(200).json(Result.success())
         } catch (e) {
@@ -56,8 +59,14 @@ const getSite = [
         return res.status(200).json(Result.success(siteList))
     }
 ]
+const getDict = async function (req, res) {
+    let siteList = await siteDao.findAll()
+    // let enums = labels
+    return res.status(200).json(Result.success({site: siteList, labels}))
+}
 
 router.route("/update").post(update)
 router.route("/").get(getSite)
+router.route("/dict").get(getDict)
 
 module.exports = router

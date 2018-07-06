@@ -27,10 +27,10 @@ function appInit () {
 // 初始化数据
 // 获取基本信息，例如枚举字段的标签
 
-Promise.all([api.nget('/api/user/auth'), api.nget('/api/site')]).then((results) => {
-    let [user, site] = results
+Promise.all([api.nget('/api/user/auth'), api.nget('/api/site/dict')]).then((results) => {
+    let [user, dict] = results
     store.commit('USER_SET_INFO', user)
-    store.commit('SET_SITE', site)
+    store.commit('SET_DICT', dict)
     return true
 }).then(appInit).catch(async (e) => {
     // let a = await e

@@ -58,16 +58,27 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import {on} from '@/utils/dom'
 import _ from 'lodash'
 import api from '@/utils/api'
-
+import postTitle from './_post-title'
+// import
+Vue.component('post-title', postTitle)
 const renderTitle = function (h, {row}) {
-    return h('span', row.post_title)
+    return h('post-title', {props: {post: row}})
 }
 
 const renderAuthor = function (h, {row}) {
-    return h('span', row.post_author)
+    return h('span', row.user.user_nickname)
+}
+const renderCategory = function (h, {row}) {
+    let category = _.find(row.terms, ['taxonomy', 'category'])
+    return h('Tooltip', {
+        props: {
+            content: category.description
+        }
+    }, category.name)
 }
 
 export default {
@@ -83,7 +94,7 @@ export default {
                 // {title: 'ID', key: 'id', sortable: true},
                 {title: '标题', key: 'size', sortable: true, render: renderTitle.bind(this)},
                 {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
-                {title: '类别', key: 'uploader', width: 100},
+                {title: '类别', key: 'uploader', width: 100, render: renderCategory.bind(this)},
                 {title: '标签', key: 'uploader', width: 180},
                 {title: '评论', key: 'uploader', width: 80, sortable: true},
                 {title: '日期', key: 'status', width: 220}

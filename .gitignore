@@ -58,3 +58,4 @@ kfavicon.png
 dump.rdb
 sql.sql
 src/model/*
+*.sql

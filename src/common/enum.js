@@ -38,30 +38,30 @@ const ImgEnum = {
 }
 
 module.exports.labels = {
-    PostStatus: {
+    postStatus: {
         [PostStatusEnum.DRAFT]: '草稿',
         [PostStatusEnum.AUTO_DRAFT]: '自动草稿',
         [PostStatusEnum.PUBLISH]: '发布',
         [PostStatusEnum.INHERIT]: 'inherit'
     },
-    Status: {
+    status: {
         [StatusEnum.OPEN]: '打开',
         [StatusEnum.CLOSE]: '关闭'
     },
-    Taxonomy: {
-        [TaxonomyEnum.CATEGORY]: '',
-        [TaxonomyEnum.NAV_MENU]: '',
-        [TaxonomyEnum.POST_TAG]: ''
+    taxonomy: {
+        [TaxonomyEnum.CATEGORY]: '分类',
+        [TaxonomyEnum.NAV_MENU]: '导航',
+        [TaxonomyEnum.POST_TAG]: '标签'
     },
-    Site: {
-        [SiteEnum.YES]: '',
-        [SiteEnum.NO]: ''
+    site: {
+        [SiteEnum.YES]: 'yes',
+        [SiteEnum.NO]: 'no'
     },
-    Img: {
-        [ImgEnum.ALL]: '所有',
-        [ImgEnum.PUBLIC]: '公共区域',
-        [ImgEnum.COVER]: '封面',
-        [ImgEnum.POST]: '文章插图'
+    img: {
+        0: '所有',
+        1: '公共区域',
+        2: '封面',
+        3: '文章插图'
     }
 }
 

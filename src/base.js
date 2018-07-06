@@ -3,7 +3,7 @@
 const moment = require('moment')
 const crypto = require('crypto')
 const debug = require('debug')('app:base')
-const {siteDao} = require('../src/models')
+const {siteDao, termDao} = require('../src/models')
 const {Enum} = require('./common/enum')
 
 function randomHex () {
@@ -26,6 +26,10 @@ module.exports = async function (app) {
     })
     // 将全部 全局设置更新到全局变量
     global.SITE = site
+    // 查询到默认的文章分类
+    termDao.findById(SITE.defaultCategoryId).then(term => {
+        global.SITE.defaultTerm = term
+    })
 
     let CND_SRC = function (name) {
         return `${SITE.CDN}/${name}`

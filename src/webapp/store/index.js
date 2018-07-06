@@ -10,13 +10,18 @@ Vue.use(Vuex)
 
 const state = {
     // 全局
+    dict: {},
+    site: []
+}
+const getters = {
+    postStatus: state => state.dict.postStatus
 }
 const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
     strict: debug,
     // actions,
-    // getters,
+    getters,
     state,
     mutations,
     modules,
