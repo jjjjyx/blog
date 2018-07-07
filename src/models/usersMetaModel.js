@@ -7,15 +7,6 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false,
             primaryKey: true
         },
-        // user_id: {
-        //     type: DataTypes.BIGINT,
-        //     allowNull: true,
-        //     defaultValue: '0',
-        //     references: {
-        //         model: 'j_users',
-        //         key: 'id'
-        //     }
-        // },
         meta_key: {
             type: DataTypes.STRING(255),
             allowNull: false
@@ -29,9 +20,10 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: false,
     });
     const {user: userModel} = sequelize.models
-    const pk = {foreignKey: 'user_id', targetKey: 'id'}
-    userModel.hasMany(userMetaModel, pk)
-    userMetaModel.belongsTo(userModel,pk)
+    // const pk = {foreignKey: 'user_id', targetKey: 'id'}
+    // userModel.hasMany(userMetaModel, pk)
+    // userMetaModel.belongsTo(userModel,pk)
+    userModel.hasMany(userMetaModel, {as: 'metas', foreignKey: 'user_id', sourceKey: 'id'})
     return userMetaModel
 };
 // node ./src/init-db.js

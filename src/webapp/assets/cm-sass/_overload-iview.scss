@@ -52,3 +52,13 @@
 .iconfont {
     font-size: inherit;
 }
+
+.ivu-table {
+    // 表格字体太小
+    font-size: 14px;
+}
+.ivu-table-cell {
+    // 表格内容内边距过大
+    padding-left: 14px;
+    padding-right: 14px;
+}

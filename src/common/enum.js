@@ -3,6 +3,7 @@ const PostStatusEnum = {
     'DRAFT': 'draft',
     'AUTO_DRAFT': 'auto-draft',
     'PUBLISH': 'publish',
+    'PENDING': 'pending',
     'INHERIT': 'inherit'
 }
 
@@ -41,8 +42,9 @@ module.exports.labels = {
     postStatus: {
         [PostStatusEnum.DRAFT]: '草稿',
         [PostStatusEnum.AUTO_DRAFT]: '自动草稿',
-        [PostStatusEnum.PUBLISH]: '发布',
-        [PostStatusEnum.INHERIT]: 'inherit'
+        [PostStatusEnum.PENDING]: '等待复审',
+        // [PostStatusEnum.INHERIT]: 'inherit',
+        [PostStatusEnum.PUBLISH]: '发布'
     },
     status: {
         [StatusEnum.OPEN]: '打开',

@@ -25,6 +25,10 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(100),
             allowNull: true
         },
+        user_avatar: {
+            type: DataTypes.STRING(300),
+            allowNull: true
+        },
         user_url: {
             type: DataTypes.STRING(100),
             allowNull: true
@@ -35,7 +39,7 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: '0'
         },
         display_name: {
-            type: DataTypes.STRING(250),
+            type: DataTypes.STRING(50),
             allowNull: true
         },
         role: {

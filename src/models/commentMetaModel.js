@@ -31,9 +31,9 @@ module.exports = function (sequelize, DataTypes) {
     });
     // const {j_users} = sequelize.models
     const {comment: commentModel} = sequelize.models
-    const pk = {foreignKey: 'comment_id', targetKey: 'comment_id'}
-    commentModel.hasMany(commentMetaModel, pk)
-    commentMetaModel.belongsTo(commentModel, pk)
+    // const pk = {foreignKey: 'comment_id', targetKey: 'comment_id'}
+    commentModel.hasMany(commentMetaModel, {as: 'metas', foreignKey: 'comment_id', sourceKey: 'comment_id'})
+    // commentMetaModel.belongsTo(commentModel, pk)
 
     return commentMetaModel
 };

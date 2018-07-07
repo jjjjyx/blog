@@ -14,7 +14,7 @@ const state = {
     site: []
 }
 const getters = {
-    postStatus: state => state.dict.postStatus
+    postStatusDict: state => state.dict.postStatus
 }
 const debug = process.env.NODE_ENV !== 'production'
 

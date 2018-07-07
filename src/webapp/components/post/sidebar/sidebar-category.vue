@@ -2,7 +2,7 @@
     <div  class="demo-tabs-style2">
         <Tabs size="small" type="card">
             <TabPane label="所有分类">
-                <RadioGroup v-model="vertical" vertical class="sidebar-category-list">
+                <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
                     <Radio v-for="(item, index) in categoryList" :label="item.term_id" :key="index">
                         <Icon  v-if="item.icon.indexOf('iconfont') == -1" :type="item.icon" ></Icon>
                         <i v-else  :class="item.icon"></i>
@@ -11,7 +11,7 @@
                 </RadioGroup>
             </TabPane>
             <TabPane label="常用">
-                <RadioGroup v-model="vertical" vertical class="sidebar-category-list">
+                <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
                     <Radio v-for="(item, index) in commonCategoryList" :label="item.term_id" :key="index">
                         <Icon  v-if="item.icon.indexOf('iconfont') == -1" :type="item.icon" ></Icon>
                         <i v-else  :class="item.icon"></i>
@@ -58,7 +58,7 @@ export default {
             let arr = _.orderBy(this.categoryList, ['count'], ['desc']).slice(0, 5)
             return arr
         },
-        vertical: {
+        categoryValue: {
             get () {
                 return this.$store.state.postWriter.sidebarCategoryValue
             },

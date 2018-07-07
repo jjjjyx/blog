@@ -140,6 +140,30 @@ const _save_update = async function (post, {post_title, post_content, post_excer
     return await post.save()
 }
 /**
+ * 更新meta 的统一方法
+ * @param id
+ * @param key
+ * @param value
+ * @private
+ */
+let _save_postMeta = function (id, key, value) {
+     return postMetaDao.findOrCreate({
+        where: {
+            post_id: id,
+            meta_key: key,
+        },
+        defaults: {
+            meta_value: value
+        }
+    }).spread((meta, created) => {
+        if (!created) {
+            meta.meta_value = value;
+            return meta.save()
+        }
+        return true
+    })
+}
+/**
  * 保存文章, 仅保存标题，内容，摘录，标签
  *
  * 如果文章是发布状态
@@ -183,6 +207,7 @@ const save = [
                 return res.status(200).json(Result.success(await _save_update(post, req.body)))
                 break
             case Enum.PostStatusEnum.PUBLISH:
+            case Enum.PostStatusEnum.PENDING:
                 debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
                 // 如果是发布状态
                 // 则去获取发布状态文章的自动草稿
@@ -195,7 +220,7 @@ const save = [
                     }
                 })
                 if (autoSavePost === null) {
-                    debug(`文章 = ${id} 不存在自动存档，自动创建存档，存档内容与发布版本一致`)
+                    debug(`文章 = ${id} 不存在自动存档，根据提交自动创建存档`)
                     let values = post.toJSON()
                     values.id = undefined
                     values.post_name = `${id}-autosave-v1`
@@ -205,60 +230,53 @@ const save = [
                     values.post_content = post_content
                     values.post_excerpt = post_excerpt
                     autoSavePost = await postDao.create(values)
-
-                    // 保存的是当前提交的版本，所以不是从就文章中拷贝
-                    // 保存文章的标签信息到 meta 中 不创建 term
-                    // 保存文章的分类信息
-                    req.sanitizeBody('new_tag').toArray()
-                    req.sanitizeBody('tags_id').toArray()
-                    let {new_tag, tags_id, category_id} = req.body
-                    new_tag = new_tag || []
-                    tags_id = tags_id || []
-
-                    let testReg = new_tag.every((tag) => utils.termReg.test(tag))
-                    if (!testReg) {
-                        return res.status(200).json(Result.info('错误的标签名称'))
-                    }
-
-                    // tags_id  转换成名称 meta 中不保存id
-                    let tags = await termDao.findAll({
-                        attributes: ['name'],
-                        where: {
-                            taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                            term_id: {[Op.in]: tags_id}
-                        }
-                    }).map((item) => item.name)
-
-                    // 判断tags 的个数 个数的判断在创建标签之前
-                    new_tag = new_tag.concat(tags)
-                    if (TagsLength <= new_tag.length) {
-                        return res.status(200).json(Result.info('标签太多啦!'))
-                    }
-
-                    let category = await termDao.findById(category_id)
-                    if (category === null) {
-                        debug(`save 自动存档保存了一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
-                        category = SITE.defaultTerm
-                    }
-
-                    let pm = {
-                        post_id: autoSavePost.id,
-                        meta_key: 'tags',
-                        meta_value: JSON.stringify(new_tag)
-                    }
-                    let pm2 = {
-                        post_id: autoSavePost.id,
-                        meta_key: 'category',
-                        meta_value: JSON.stringify(category.term_id)
-                    }
-                    let pmd1 = await postMetaDao.create(pm)
-                    let pmd2 = await postMetaDao.create(pm2)
-                    debug(`save 文章存档 = [${autoSavePost}#${autoSavePost.post_name}]，保存分类标签记录`)
-                    await autoSavePost.setPostMetas([pmd1, pmd2])
                 } else {
                     debug(`文章 = ${id} 更新存档内容！`)
-                    return res.status(200).json(Result.success(await _save_update(autoSavePost, req.body)))
+                    await _save_update(autoSavePost, req.body)
                 }
+
+                // 保存的是当前提交的版本，所以不是从就文章中拷贝
+                // 保存文章的标签信息到 meta 中 不创建 term
+                // 保存文章的分类信息
+                req.sanitizeBody('new_tag').toArray()
+                req.sanitizeBody('tags_id').toArray()
+                let {new_tag, tags_id, category_id} = req.body
+                new_tag = new_tag || []
+                tags_id = tags_id || []
+
+                let testReg = new_tag.every((tag) => utils.termReg.test(tag))
+                if (!testReg) {
+                    return res.status(200).json(Result.info('错误的标签名称'))
+                }
+
+                // tags_id  转换成名称 meta 中不保存id
+                let tags = await termDao.findAll({
+                    attributes: ['name'],
+                    where: {
+                        taxonomy: Enum.TaxonomyEnum.POST_TAG,
+                        term_id: {[Op.in]: tags_id}
+                    }
+                }).map((item) => item.name)
+
+                // 判断tags 的个数 个数的判断在创建标签之前
+                new_tag = new_tag.concat(tags)
+                if (TagsLength <= new_tag.length) {
+                    return res.status(200).json(Result.info('标签太多啦!'))
+                }
+
+                let category = await termDao.findById(category_id)
+                if (category === null) {
+                    debug(`save 自动存档保存了一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
+                    category = SITE.defaultTerm
+                }
+
+                Promise.all([
+                    _save_postMeta(autoSavePost.id, 'tags', JSON.stringify(new_tag)),
+                    _save_postMeta(autoSavePost.id, 'category', JSON.stringify(category.term_id))
+                ]).then(()=>{
+                    debug(`save 文章存档 = [${autoSavePost.id}#${autoSavePost.post_name}]，保存分类标签记录!`)
+                })
+                return res.status(200).json(Result.success(autoSavePost))
                 break
             default:
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
@@ -299,13 +317,16 @@ const newPost = [
 // 文章的公开度
 //    密码，置顶，
 // 文章的发布时间 允许自定义，不提交为当前时间
-// 评论状态
-// 可选
-// 作者
+// 文章状态
 //
+// 评论状态
+// 可选参数
+// 作者
+// 封面图
+//
+
 // 更新 ，发布接口
 // 更新或发布将创建一个版本记录
-
 
 const release = [
     sanitizeTitle,
@@ -348,7 +369,7 @@ const release = [
             post.post_name = post_name || post.id
             post.post_status = Enum.PostStatusEnum.PUBLISH
 
-            // 版本只对做 内容，标题，摘录信息敏感
+            // 版本只对做 内容，标题，摘录信息, 标签，分类，文章状态敏感
             await post.save()
             // 检查内容是否修改了，没有修改则不创建版本
             // debug(`是否修改了文章 = ${id}, result = ${result}`)
@@ -371,7 +392,6 @@ const release = [
     }
 ]
 
-// todo 删除，移动到回收站，都需要支持批量
 const moverTrash = [
     // body('ids').exists().isArray().withMessage('请提交正确的文章ID列表'),
     utils.validationResult,
@@ -459,9 +479,7 @@ const getAllPost = [
                     },
                     {
                         model: termDao,
-                        attributes: {
-                            exclude: ['term_relationships']
-                        }
+                        attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'term_id']
                     }
                 ]
 
@@ -538,10 +556,26 @@ const postInfo = [
                 //     exclude: ['']
                 // },
                 where: {id, post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT]},
-                include: [{model: termDao}]
+                include: [
+                    {model: termDao},
+                    {model: userDao, attributes: {exclude: ['user_pass']}}
+                ]
             })
 
             if (result !== null) {
+                // 调取文章的历史版本
+                // 草稿类型调取不检查
+                // if (result.post_status !== Enum.PostStatusEnum.DRAFT) {
+                let revision = await postDao.findAll({
+                    attributes: ['id', 'createdAt', ['post_name', 'type']],
+                    where: {
+                        post_type: 'revision',
+                        post_status: Enum.PostStatusEnum.INHERIT,
+                        post_name: [`${id}-autosave-v1`, `${id}-revision-v1`,]
+                    },
+                    include: [{model: userDao, attributes: {exclude: ['user_pass']}}]
+                })
+                result.dataValues.revision = revision
                 return res.status(200).json(Result.success(result))
             }
             return res.status(200).json(Result.info('错误的id'))
@@ -575,8 +609,8 @@ router.route('/save').post(save)
 router.route('/release').post(release)
 router.route('/revert').post(revert)
 router.route('/del').post(del)
+router.route('/trash').get(getTrash).post(moverTrash)
 router.route('/:id').get(postInfo)
-router.route('/trash').post(moverTrash).get(getTrash)
 // router.route('/test').post(test)
 
 module.exports = router

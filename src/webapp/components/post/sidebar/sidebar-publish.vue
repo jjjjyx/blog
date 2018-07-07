@@ -93,6 +93,7 @@ export default {
     title: '发布',
     data: () => {
         return {
+            allowPostStatus: ['draft', 'pending'],
             collapseStatus1: false,
             collapseStatus2: false,
             collapseStatus3: false,

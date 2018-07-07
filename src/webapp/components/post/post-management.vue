@@ -26,6 +26,8 @@
                     </FormItem>
                 </i-Form>
                 <i-Button type="ghost" icon="document" @click="$router.push({name: 'post_writer'})">新建文章</i-Button>
+                <i-Button type="ghost" icon="trash-a" @click="trash()" :disabled="selectedNum === 0">移至回收站</i-Button>
+
             </i-col>
             <i-col span="6">
                 <div class="table-buttons" style="float: right">
@@ -52,7 +54,9 @@
             <span>全部文章</span>
         </div>
         <div class="cm-wrapper" ref="table-wrapper">
-            <i-table :columns="columns" :data="data" stripe class="cm-list-table" :height="tableHeight" :loading="tableStatus"></i-table>
+            <i-table :columns="columns" :data="data" stripe class="cm-list-table" ref="table"
+                     @on-selection-change="handleSelectChange"
+                     :height="tableHeight" :loading="tableStatus"></i-table>
         </div>
     </div>
 </template>
@@ -62,11 +66,19 @@ import Vue from 'vue'
 import {on} from '@/utils/dom'
 import _ from 'lodash'
 import api from '@/utils/api'
-import postTitle from './_post-title'
+import PostTitle from './col/post-title'
 // import
-Vue.component('post-title', postTitle)
+Vue.component('post-title', PostTitle)
 const renderTitle = function (h, {row}) {
-    return h('post-title', {props: {post: row}})
+    return h('post-title', {
+        props: {post: row},
+        on: {
+            trash: () => {
+                // this.multipleSelection = [row]
+                this.trash(row)
+            }
+        }
+    })
 }
 
 const renderAuthor = function (h, {row}) {
@@ -80,10 +92,35 @@ const renderCategory = function (h, {row}) {
         }
     }, category.name)
 }
+const renderTags = function (h, {row}) {
+    let tags = _.filter(row.terms, ['taxonomy', 'post_tag'])
+    let $tags = tags.map((tag) => {
+        return h('Tooltip', {
+            props: {
+                content: tag.description || tag.name
+            }
+        }, [
+            h('Tag', {props: {type: 'border'}}, tag.name)
+        ])
+    })
+    return h('div', $tags)
+}
+const renderDate = function (h, {row}) {
+    let flag
+    let date
+    if (row.post_status === 'publish') {
+        flag = h('span', {domProps: {className: 'd-block'}}, '发布时间')
+        date = h('span', row.post_date)
+    } else {
+        flag = h('span', {domProps: {className: 'd-block'}}, '最后修改时间')
+        date = h('span', row.updatedAt)
+    }
+    return h('div', [flag, date])
+}
 
 export default {
     name: 'post-management',
-    data: () => {
+    data () {
         return {
             filterForm: {
                 key: '', term: '', status: ''
@@ -94,13 +131,21 @@ export default {
                 // {title: 'ID', key: 'id', sortable: true},
                 {title: '标题', key: 'size', sortable: true, render: renderTitle.bind(this)},
                 {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
-                {title: '类别', key: 'uploader', width: 100, render: renderCategory.bind(this)},
-                {title: '标签', key: 'uploader', width: 180},
-                {title: '评论', key: 'uploader', width: 80, sortable: true},
-                {title: '日期', key: 'status', width: 220}
+                {title: '类别', key: '', width: 100, render: renderCategory.bind(this)},
+                {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
+                {title: '评论', key: '', width: 80, sortable: true},
+                {title: '日期', key: '', width: 220, render: renderDate.bind(this)}
             ],
             data: [],
             tableStatus: false
+        }
+    },
+    computed: {
+        selectedList: function () {
+            return this.data.filter((item) => item._checked)
+        },
+        selectedNum: function () {
+            return this.selectedList.length
         }
     },
     methods: {
@@ -111,6 +156,7 @@ export default {
             this.tableStatus = true
             try {
                 let data = await api.nget('/api/post/')
+                data.forEach(i => (i._checked = false))
                 this.data = data
             } catch (e) {
                 this.data = []
@@ -118,11 +164,42 @@ export default {
             } finally {
                 this.tableStatus = false
             }
+        },
+        async trash (item) {
+            // console.log(this.multipleSelection)
+            let ids
+            if (item) {
+                ids = [item.id]
+            } else {
+                ids = this.selectedList.map(i => (i.id))
+            }
+            try {
+                await api.npost('/api/post/trash', {ids})
+                if (item) {
+                    let index = _.findIndex(this.data, ['id', item.id])
+                    this.data.splice(index, 1)
+                } else {
+                    this.data = _.differenceBy(this.data, this.selectedList, 'id')
+                }
+            } catch (e) {
+                this.$Message.info('失败，请重试')
+            }
+        },
+        handleSelectChange () {
+            this.data.forEach((item, index) => {
+                let rowDate = this.$refs.table.objData[index]
+                item._checked = rowDate._isChecked
+            })
         }
     },
     created: function () {
         // console.log(this.$el,222)
-        this.fetchData()
+        // this.fetchData()
+    },
+    beforeRouteEnter: function (to, from, next) {
+        next(vm => {
+            vm.fetchData()
+        })
     },
     mounted () {
         let h = this.$refs['table-wrapper'].clientHeight

@@ -8,14 +8,14 @@ module.exports = function (sequelize, DataTypes) {
             primaryKey: true,
             autoIncrement: true
         },
-        post_id: {
-            type: DataTypes.BIGINT,
-            allowNull: true,
-            references: {
-                model: 'j_posts',
-                key: 'id'
-            }
-        },
+        // post_id: {
+        //     type: DataTypes.BIGINT,
+        //     allowNull: true,
+        //     references: {
+        //         model: 'j_posts',
+        //         key: 'id'
+        //     }
+        // },
         meta_key: {
             type: DataTypes.STRING(255),
             allowNull: true
@@ -29,9 +29,10 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: false,
     });
     const {post: postModel} = sequelize.models
-    const pk = {foreignKey: 'post_id', targetKey: 'id'}
-    postModel.hasMany(postMetaModel, pk)
-    postMetaModel.belongsTo(postModel, pk)
+
+    // postModel.hasMany(postMetaModel, {foreignKey: 'post_id', sourceKey: 'post_id'})
+    postModel.hasMany(postMetaModel, {as: 'metas', foreignKey: 'post_id', sourceKey: 'id'})
+    // postMetaModel.belongsTo(postModel, {foreignKey: 'post_id', targetKey: 'post_id'})
 
     return postMetaModel
 };

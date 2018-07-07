@@ -3,24 +3,30 @@
         <div class="post-body-content">
             <div class="post-title-wrap">
                 <input type="text" class="title" v-model="currentPost.post_title" placeholder="请输入一个标题">
-                <!--<div class="post-title-options table-buttons">-->
-                    <!--<tooltip content="标签">-->
-                        <!--<i-button type="text" icon="pricetags" @click="tagWrapShow = !tagWrapShow"></i-button>-->
-                    <!--</tooltip>-->
-                    <!--<tooltip content="附件">-->
-                        <!--<i-button type="text">-->
-                            <!--<i class="iconfont icon-fujian"></i>-->
-                        <!--</i-button>-->
-                    <!--</tooltip>-->
-                    <!--<tooltip content="笔记历史">-->
-                        <!--<i-button type="text" icon="merge"></i-button>-->
-                    <!--</tooltip>-->
-                <!--</div>-->
+                <div class="post-title-options table-buttons">
+                    <tooltip content="新笔记">
+                        <i-button type="text" icon="plus-round"></i-button>
+                    </tooltip>
+                    <tooltip content="标签">
+                        <i-button type="text" icon="pricetags" @click="tagWrapShow = !tagWrapShow"></i-button>
+                    </tooltip>
+                    <tooltip content="附件">
+                        <i-button type="text">
+                            <i class="iconfont icon-fujian"></i>
+                        </i-button>
+                    </tooltip>
+                    <tooltip content="笔记属性">
+                        <i-button type="text" icon="information-circled"></i-button>
+                    </tooltip>
+                    <tooltip content="关闭">
+                        <i-button type="text" icon="close-round"></i-button>
+                    </tooltip>
+                </div>
                 <span class="saving-notice">{{currentStatus}}</span>
             </div>
             <collapse-transition>
-                <!--v-show="tagWrapShow"-->
-            <div class="post-tag-wrap" >
+                <!---->
+            <div class="post-tag-wrap" v-show="tagWrapShow">
                 <span class="align-middle mr-2">标签</span>
                 <Poptip placement="bottom-start" width="200" transfer>
                     <Button icon="ios-plus-empty" type="dashed" size="small" ></Button>
@@ -60,6 +66,7 @@
 
 import SparkMD5 from 'spark-md5'
 import draggable from 'vuedraggable'
+import iView from 'iview'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import api from '@/utils/api'
@@ -68,7 +75,9 @@ import CollapseTransition from '@/utils/collapse-transition'
 import sidebars from './sidebar'
 import sidebarPanel from './sidebar/sidebar.vue'
 import {mapActions, mapGetters} from 'vuex'
-import {verification} from '../../utils/common'
+import {verification, getMetaKeyCode} from '../../utils/common'
+import {on, off} from '../../utils/dom'
+import _ from 'lodash'
 // import {on} from '@/utils/dom'
 // import { Base64 } from 'js-base64'
 const sidebarsOrder = Object.keys(sidebars)
@@ -108,7 +117,7 @@ export default {
     data () {
         return {
             maxTagLength: 16,
-            tagWrapShow: false,
+            tagWrapShow: true,
             newTagValue: '',
             // value: '',
             currentStatus: POST_WRITER_STATUS.normal,
@@ -143,6 +152,14 @@ export default {
     },
     computed: {
         ...mapGetters(['tagsList']),
+        categoryValue: {
+            get () {
+                return this.$store.state.postWriter.sidebarCategoryValue
+            },
+            set (value) {
+                this.$store.commit('updateSidebarCategoryValue', value)
+            }
+        },
         currTagLength: function () {
             return this.selectedTag.length + this.newTag.length
         },
@@ -264,6 +281,8 @@ export default {
             if (value && value !== this.currentPost.post_content) {
                 // this.showLeaveTip =
                 this.currentStatus = POST_WRITER_STATUS.edit
+            } else {
+                this.currentStatus = POST_WRITER_STATUS.normal
             }
 
             // 做出了修改 并且文章内容不等于当前文章内容的时候
@@ -280,6 +299,7 @@ export default {
             this.currentPost.post_content = value
             this.currentPost.render_value = render
             let obj = Object.assign({}, this.currentPost)
+            obj.category_id = this.categoryValue
             obj.new_tag = this.newTag.concat(this.selectedTag)
             // 保存的时候不需要提交分类
             try {
@@ -294,13 +314,11 @@ export default {
         },
         pushRouter (mode = 'push') {
             let id = this.currentPost.id
-            if (id) {
-                this.$router[mode]({
-                    query: {
-                        poi: id
-                    }
-                })
-            }
+            this.$router[mode]({
+                query: {
+                    poi: id
+                }
+            })
         },
         leaveConfirm (next) {
             this.$Modal.confirm({
@@ -316,6 +334,42 @@ export default {
                     next(false)
                 }
             })
+        },
+        handleKeyUp (e) {
+            let keyCode = getMetaKeyCode(e)
+
+            switch (keyCode) {
+            case 4179:
+                e.preventDefault()
+                e.stopPropagation()
+                // 保存
+                let target = e.target
+                // 如果对象是编辑框则退出 这个事件已经被处理了
+                if (target.nodeName === 'TEXTAREA') {
+                    return
+                }
+                let value = this.$refs.md.d_value
+                let render = this.$refs.md.d_render
+                this.handleMdSave(value, render)
+                break
+            }
+        },
+        async fetchData ({poi}) {
+            if (poi) {
+                try {
+                    // console.log('poi', poi)
+                    let result = await api.nget(`/api/post/${poi}`)
+                    this.currentPost = result
+                    let {category, post_tag: postTag} = _.groupBy(result.terms, 'taxonomy')
+                    this.selectedTag = postTag.map((i) => i.name)
+                    this.currentStatus = POST_WRITER_STATUS.normal
+                    this.categoryValue = category[0].term_id
+                    return true
+                } catch (e) {
+
+                }
+            }
+            return false
         }
     },
     watch: {
@@ -330,46 +384,63 @@ export default {
             }
         }
     },
-    // 路由的变化就不监听了 这个没有意义
-    beforeRouteEnter (to, from, next) {
+    // beforeRouteUpdate (to, f, next) {
+    //     if (this.showLeaveTip) {
+    //         this.leaveConfirm(next)
+    //     } else {
+    //         this.fetchData(to.query).then((a) => {
+    //             if (a) {
+    //                 next()
+    //             } else {
+    //                 next(false)
+    //             }
+    //         })
+    //     }
+    //     iView.LoadingBar.finish()
+    // },
+    async beforeRouteEnter (to, from, next) {
         next((vm) => {
             vm.pushRouter('replace')
+            vm._handleKeyUp = vm.handleKeyUp.bind(vm)
+            on(document.body, 'keydown', vm._handleKeyUp)
+            // vm.fetchData(to.query).then(async function () {
+            //     // 没有url 进入的情况 或者提交url不正确 创建新文章
+            //     // 创建新文章 - 自动草稿
+            //     if (this.currentPost.id === 0) {
+            //         try {
+            //             let result = await api.npost('/api/post/new_post', {post_title: ''})
+            //             this.currentPost = result
+            //             this.currentStatus = POST_WRITER_STATUS.auto_draft
+            //         } catch (e) {
+            //             this.$Message.info('创建新文章失败，请重新刷新页面')
+            //         }
+            //     }
+            // }.bind(vm))
         })
     },
     beforeRouteLeave (to, from, next) {
+        off(document.body, 'keydown', this._handleKeyUp)
         if (this.showLeaveTip) {
             this.leaveConfirm(next)
         } else {
             next()
         }
     },
-    async created () {
-        // 创建新文章 - 自动草稿
-        let {poi} = this.$route.query
-        if (poi) {
-            try {
-                let result = await api.nget(`/api/post/${poi}`)
-                this.currentPost = result
-                this.selectedTag = result.tags || []
-                this.currentStatus = POST_WRITER_STATUS.normal
-            } catch (e) {
-
-            }
-        }
-
-        if (this.currentPost.id === 0) {
-            try {
-                let result = await api.npost('/api/post/new_post', {post_title: ''})
-                this.currentPost = result
-                this.currentStatus = POST_WRITER_STATUS.auto_draft
-            } catch (e) {
-                this.$Message.info('创建新文章失败，请重新刷新页面')
-            }
-        }
+    created () {
+        let query = this.$route.query
+        this.fetchData(query).then(() => {
+            // 获取失败的情况 创建新文章
+        })
         this.fetchTerms(false)
     },
     mounted () {
-        console.log(this.$refs.md)
+        // console.log(this.$refs.md)
+        // 当前页面中按ctrl + s
+
+        // 直接进入 创建新文章
+        // 进入时带id 参数 检查id 参数 是文章加载文章内容，不是创建新文章
+        // 页面中路由被更新 检查是否有改动，有改动询问，无改动，跳转
+
         // let vNoteTextarea = this.$refs.md.$refs.vNoteTextarea;
         // let vTextarea = vNoteTextarea.$refs.vTextarea;
         // console.log(vTextarea)

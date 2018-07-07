@@ -1,16 +1,54 @@
 <template>
     <div>
-        版本列表
+        <div class="j-version-item" v-for="(version, index) in versions" v-bind:key="index">
+            <avatar :style="{background: color}" size="small">{{version.user.user_login}}</avatar>
+            <span class="j-version-username">{{version.user.user_login}}</span> &nbsp;
+            <span>{{getTimeText(new Date(version.createdAt).getTime())}}</span>
+            <a>({{dateFormat(version.createdAt)}})</a>
+            <Tooltip content="自动保存" v-if="version.type === `${currentPost.id}-autosave-v1`">
+            <span  style="cursor: pointer">[ <Icon type="flag" color="#2d8cf0"></Icon> ]</span>
+            </Tooltip>
+        </div>
     </div>
 </template>
 
 <script>
+// const UserList = ['U', 'Lucy', 'Tom', 'Edward'];
+import {getTimeText, dateFormat} from '../../../utils/common'
+
+const ColorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae']
+
 export default {
     name: 'sidebar-version',
-    title: '文章版本'
+    title: '文章版本',
+    props: {
+        currentPost: {
+            type: Object,
+            required: true
+        }
+    },
+    computed: {
+        versions: function () {
+            return this.currentPost.revision
+        }
+    },
+    methods: {
+        getTimeText,
+        dateFormat
+    },
+    data () {
+        return {
+            color: ColorList[0]
+        }
+    }
 }
 </script>
 
-<style scoped>
-
+<style>
+.j-version-item {
+    margin-bottom: 12px;
+}
+    .j-version-username {
+        cursor: default;
+    }
 </style>
