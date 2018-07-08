@@ -2,7 +2,7 @@
     <div class="post-writer-content">
         <div class="post-body-content">
             <div class="post-title-wrap">
-                <input type="text" class="title" v-model="currentPost.post_title" placeholder="请输入一个标题">
+                <input type="text" class="title" v-model="postTitle" placeholder="请输入一个标题">
                 <div class="post-title-options table-buttons">
                     <tooltip content="新笔记">
                         <i-button type="text" icon="plus-round"></i-button>
@@ -22,7 +22,8 @@
                         <i-button type="text" icon="close-round"></i-button>
                     </tooltip>
                 </div>
-                <span class="saving-notice">{{currentStatus}}</span>
+                <!-- todo 保存反馈 -->
+                <!--<span class="saving-notice">{{currentStatus}}</span>-->
             </div>
             <collapse-transition>
                 <!---->
@@ -36,8 +37,8 @@
                         </CheckboxGroup>
                     </div>
                 </Poptip>
-                <Tag v-for="(item, index) in selectedTag" :key="index" :name="item" closable @on-close="handleClose2(selectedTag, item)">{{item}}</Tag>
-                <Tag v-for="(item, index) in newTag" :key="'a_'+index+item" :name="item" closable @on-close="handleClose2(newTag, item)">{{item}}</Tag>
+                <Tag v-for="(item, index) in selectedTag" :key="index" :name="item" closable @on-close="$store.commit('splicePostTag',index)">{{item}}</Tag>
+                <Tag v-for="(item, index) in newTag" :key="item" :name="item" closable @on-close="newTag.splice(index, 1)">{{item}}</Tag>
                 <input class="input-tag" autocomplete="off" tabindex="0" type="text" ref="tagInput" v-model="newTagValue" placeholder="点击此处添加标签" @keyup.enter="addTag">
             </div>
             </collapse-transition>
@@ -49,7 +50,7 @@
             </div>
         </div>
         <div class="postbox-container">
-            <!--{{currentPost}}-->
+            {{currentPost}}
             <draggable :list="sidebarsOrder" class="dragArea">
                 <transition-group type="transition" :name="'flip-list'">
                     <sidebar-panel v-for="sidebar in sidebarsOrder" :key="sidebar" class="postbox">
@@ -59,25 +60,41 @@
                 </transition-group>
             </draggable>
         </div>
+        <Modal v-model="saveTipModel" width="360">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="information-circled"></Icon>
+                <span>离开提示</span>
+            </p>
+            <div >
+                是否保存当前文章？
+            </div>
+            <div slot="footer">
+                <Button type="ghost" @click="resolve && resolve(), saveTipModel = false">保存</Button>
+                <Button @click="reject && reject('no'), saveTipModel = false">不保存</Button>
+                <Button @click="reject && reject('cancel'), saveTipModel = false">取消</Button>
+            </div>
+        </Modal>
     </div>
 </template>
 
 <script>
 
+import _ from 'lodash'
 import SparkMD5 from 'spark-md5'
 import draggable from 'vuedraggable'
 import iView from 'iview'
+import {mapActions, mapGetters, mapState} from 'vuex'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+
 import api from '@/utils/api'
 import ajax from '@/utils/ajax'
 import CollapseTransition from '@/utils/collapse-transition'
+import {verification, getMetaKeyCode} from '@/utils/common'
+import {on, off} from '@/utils/dom'
+
 import sidebars from './sidebar'
 import sidebarPanel from './sidebar/sidebar.vue'
-import {mapActions, mapGetters} from 'vuex'
-import {verification, getMetaKeyCode} from '../../utils/common'
-import {on, off} from '../../utils/dom'
-import _ from 'lodash'
 // import {on} from '@/utils/dom'
 // import { Base64 } from 'js-base64'
 const sidebarsOrder = Object.keys(sidebars)
@@ -119,28 +136,12 @@ export default {
             maxTagLength: 16,
             tagWrapShow: true,
             newTagValue: '',
+            newTag: [],
             // value: '',
             currentStatus: POST_WRITER_STATUS.normal,
             sidebarsOrder,
-            // showLeaveTip: false,
-            currentPost: {
-                'comment_status': 'open',
-                'ping_status': 'open',
-                'menu_order': '0',
-                'post_type': 'post',
-                'comment_count': '0',
-                'seq_in_nb': '0',
-                'post_author': 1,
-                'post_content': '',
-                'post_title': '',
-                'post_excerpt': '',
-                'post_status': 'auto-draft',
-                'post_name': '',
-                'guid': '',
-                'id': 0
-            },
-            selectedTag: [],
-            newTag: []
+
+            saveTipModel: false
         }
     },
     components: {
@@ -151,24 +152,39 @@ export default {
         ...sidebars
     },
     computed: {
-        ...mapGetters(['tagsList']),
+        ...mapState({
+            'currentPost': state => state.post_writer
+        }),
+        ...mapGetters(['tagsList', 'showLeaveTip']),
         categoryValue: {
-            get () {
-                return this.$store.state.postWriter.sidebarCategoryValue
-            },
-            set (value) {
-                this.$store.commit('updateSidebarCategoryValue', value)
-            }
+            get () {return this.$store.state.post_writer.categoryValue},
+            set (value) {this.$store.commit('updateCategoryValue', value)}
+        },
+        postTitle: {
+            get () {return this.$store.state.post_writer.post_title},
+            set (value) {this.$store.commit('updatePostTitle', value)}
+        },
+        postContent: {
+            get () {return this.$store.state.post_writer.post_content},
+            set (value) {this.$store.commit('updatePostContent', value)}
+        },
+        renderValue: {
+            get () {return this.$store.state.post_writer.render_value},
+            set (value) {this.$store.commit('updateRenderValue', value)}
+        },
+        selectedTag: {
+            get () {return this.$store.state.post_writer.tags},
+            set (value) {this.$store.commit('updateTags', value)}
         },
         currTagLength: function () {
             return this.selectedTag.length + this.newTag.length
-        },
-        showLeaveTip: function () {
-            return this.currentStatus === POST_WRITER_STATUS.saveing || this.currentStatus === POST_WRITER_STATUS.edit
         }
     },
     methods: {
-        ...mapActions(['fetchTerms']),
+        ...mapActions({
+            'fetchTerms': 'fetchTerms',
+            'fetchData': 'fetchPostInfo'
+        }),
         checkTagLength () {
             if (this.currTagLength >= this.maxTagLength) {
                 return false
@@ -178,7 +194,8 @@ export default {
         handleSelectTag () {
             if (!this.checkTagLength()) {
                 this.$Message.info('标签太多啦')
-                this.selectedTag.shift()
+                // this.selectedTag.shift()
+                this.$store.commit('shiftPostTag')
             }
         },
         addTag () {
@@ -191,11 +208,10 @@ export default {
             } else if (this.newTag.indexOf(this.newTagValue) >= 0) { // 是否重复
                 console.log('重复的标签')
             } else {
-                // console.debug('添加标签', this.newTagValue)
-                // 检查是否在已有列表中
                 let tag = this.tagsList.find((item) => (item.name === this.newTagValue))
                 if (tag) {
-                    this.selectedTag.push(tag.name)
+                    // this.selectedTag.push(tag.name)
+                    this.$store.commit('pushPostTag')
                 } else {
                     this.newTag.push(this.newTagValue)
                 }
@@ -271,10 +287,19 @@ export default {
         imgDel (file) {
             console.log('del img', file)
         },
-        handleClose2 (list, name) {
-            let index = list.indexOf(name)
-            // const index = this.count.indexOf(name)
-            list.splice(index, 1)
+        handleClose (name) {
+            console.log('handleClose', name)
+            // let index = list.indexOf(name)
+            // // const index = this.count.indexOf(name)
+            // list.splice(index, 1)
+        },
+        handleClose2 (name) {
+            console.log('handleClose2', name)
+
+            let index = this.newTag.indexOf(name)
+            console.log(index)
+            // // const index = this.count.indexOf(name)
+            this.newTag.splice(index, 1)
         },
         handleMdChange (value, render) {
             // console.log(value, value === this.currentPost.post_content)
@@ -284,32 +309,27 @@ export default {
             } else {
                 this.currentStatus = POST_WRITER_STATUS.normal
             }
-
-            // 做出了修改 并且文章内容不等于当前文章内容的时候
-            // 给windows 绑定离开事件
-            // if () {
-            // } else {
-            //     window.onbeforeunload = null
-            // }
         },
         async handleMdSave (value, render) {
             // title 绑定了
             // this.currentPost.post_title =
-            this.currentStatus = POST_WRITER_STATUS.saveing
-            this.currentPost.post_content = value
-            this.currentPost.render_value = render
+            // this.currentStatus = POST_WRITER_STATUS.saveing
+            this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.saveing)
+            this.postContent = value
+            this.renderValue = render
+            // this.currentPost.render_value = render
             let obj = Object.assign({}, this.currentPost)
             obj.category_id = this.categoryValue
             obj.new_tag = this.newTag.concat(this.selectedTag)
             // 保存的时候不需要提交分类
             try {
-                let result = await api.npost('/api/post/save', obj)
-                console.log('save result = ', result)
-                this.pushRouter('replace')
-                this.currentStatus = POST_WRITER_STATUS.save
+                await api.npost('/api/post/save', obj)
+                // console.log('save result = ', result)
+                // this.pushRouter('replace')
+                this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.save)
             } catch (e) {
                 this.$Message.info('保存失败')
-                this.currentStatus = POST_WRITER_STATUS.edit
+                this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.edit)
             }
         },
         pushRouter (mode = 'push') {
@@ -321,18 +341,10 @@ export default {
             })
         },
         leaveConfirm (next) {
-            this.$Modal.confirm({
-                title: '离开提示',
-                okText: '确认离开',
-                cancelText: '取消',
-                content: '离开当前页面可能造成内容丢失，请谨慎！',
-                onOk: () => {
-                    next()
-                },
-                onCancel: () => {
-                    this.$Message.info('取消离开')
-                    next(false)
-                }
+            return new Promise((resolve, reject) => {
+                this.saveTipModel = true
+                this.resolve = resolve
+                this.reject = reject
             })
         },
         handleKeyUp (e) {
@@ -353,28 +365,10 @@ export default {
                 this.handleMdSave(value, render)
                 break
             }
-        },
-        async fetchData ({poi}) {
-            if (poi) {
-                try {
-                    // console.log('poi', poi)
-                    let result = await api.nget(`/api/post/${poi}`)
-                    this.currentPost = result
-                    let {category, post_tag: postTag} = _.groupBy(result.terms, 'taxonomy')
-                    this.selectedTag = postTag.map((i) => i.name)
-                    this.currentStatus = POST_WRITER_STATUS.normal
-                    this.categoryValue = category[0].term_id
-                    return true
-                } catch (e) {
-
-                }
-            }
-            return false
         }
     },
     watch: {
         currentStatus: function (val) {
-            console.log(val, 'currentStatus', this.showLeaveTip)
             if (this.showLeaveTip) {
                 window.onbeforeunload = function () {
                     return '确认离开页面，当前修改将会丢弃'
@@ -384,54 +378,76 @@ export default {
             }
         }
     },
-    // beforeRouteUpdate (to, f, next) {
-    //     if (this.showLeaveTip) {
-    //         this.leaveConfirm(next)
-    //     } else {
-    //         this.fetchData(to.query).then((a) => {
-    //             if (a) {
-    //                 next()
-    //             } else {
-    //                 next(false)
-    //             }
-    //         })
-    //     }
-    //     iView.LoadingBar.finish()
-    // },
+    async created () {
+        // let query = this.$route.query
+        // console.log('created', query)
+        // let result = await this.fetchData(query)
+        // if (!result) await this.createPost()
+        // this.pushRouter()
+        this.fetchTerms(false)
+    },
+    async beforeRouteUpdate (to, f, next) {
+        next()
+        // // 更新路由前检查是否保存
+        // if (this.showLeaveTip) {
+        //     this.leaveConfirm(next)
+        // } else {
+        //     // console.count('asd')
+        //     let query = to.query
+        //     let result = await this.fetchData(query)
+        //     console.log('beforeRouteUpdate', result)
+        //         // this.pushRouter('replace')
+        //     // }
+        //     // next()
+        // }
+    },
     async beforeRouteEnter (to, from, next) {
         next((vm) => {
-            vm.pushRouter('replace')
+             // await vm.fetchData(to.query)
+            // vm.pushRouter('replace')
+            let {poi} = to.query
+            if (_.toNumber(poi) !== vm.currentPost.id) { // 不相等的情况
+                // 获取新提交的poi 信息
+                vm.fetchData(poi).then((result) => {
+                    // 获取成功 不进行操作， 获取失败
+                    if (!result) {
+                        if (!vm.currentPost.id) {
+                            vm.$router.push({
+                                name: 'post_management'
+                            })
+                        } else {
+                            vm.pushRouter('replace')
+                        }
+                    }
+                })
+            }
+
             vm._handleKeyUp = vm.handleKeyUp.bind(vm)
             on(document.body, 'keydown', vm._handleKeyUp)
-            // vm.fetchData(to.query).then(async function () {
-            //     // 没有url 进入的情况 或者提交url不正确 创建新文章
-            //     // 创建新文章 - 自动草稿
-            //     if (this.currentPost.id === 0) {
-            //         try {
-            //             let result = await api.npost('/api/post/new_post', {post_title: ''})
-            //             this.currentPost = result
-            //             this.currentStatus = POST_WRITER_STATUS.auto_draft
-            //         } catch (e) {
-            //             this.$Message.info('创建新文章失败，请重新刷新页面')
-            //         }
-            //     }
-            // }.bind(vm))
         })
     },
-    beforeRouteLeave (to, from, next) {
+    async beforeRouteLeave (to, from, next) {
         off(document.body, 'keydown', this._handleKeyUp)
         if (this.showLeaveTip) {
-            this.leaveConfirm(next)
+            try {
+                await this.leaveConfirm(next)
+                // 点击保存，
+                let value = this.$refs.md.d_value
+                let render = this.$refs.md.d_render
+                this.handleMdSave(value, render)
+                next()
+            } catch (e) {
+                if (e === 'cancel') {
+                    // 点击取消
+                    next(false)
+                } else {
+                    next()
+                }
+            }
+
         } else {
             next()
         }
-    },
-    created () {
-        let query = this.$route.query
-        this.fetchData(query).then(() => {
-            // 获取失败的情况 创建新文章
-        })
-        this.fetchTerms(false)
     },
     mounted () {
         // console.log(this.$refs.md)

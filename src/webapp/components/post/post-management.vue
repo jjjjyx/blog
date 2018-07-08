@@ -36,7 +36,7 @@
                     <!--<i-Button type="text" icon="edit" :disabled="userMultipleSelection.length!=1"-->
                     <!--@click="active='edit',currentUser = userMultipleSelection[0],openEditUserInfo()"></i-Button>-->
                     <Tooltip content="刷新">
-                        <i-Button type="text" icon="loop" @click="fetchData"></i-Button>
+                        <i-Button type="text" icon="loop" @click="fetchData(true)"></i-Button>
                     </Tooltip>
                     <Dropdown>
                         <i-Button type="text" icon="arrow-swap" class="sort-order-btn"></i-Button>
@@ -65,8 +65,9 @@
 import Vue from 'vue'
 import {on} from '@/utils/dom'
 import _ from 'lodash'
-import api from '@/utils/api'
+// import api from '@/utils/api'
 import PostTitle from './col/post-title'
+import {mapState, mapActions, mapGetters} from 'vuex'
 // import
 Vue.component('post-title', PostTitle)
 const renderTitle = function (h, {row}) {
@@ -136,54 +137,29 @@ export default {
                 {title: '评论', key: '', width: 80, sortable: true},
                 {title: '日期', key: '', width: 220, render: renderDate.bind(this)}
             ],
-            data: [],
+            // data: [],
             tableStatus: false
         }
     },
     computed: {
-        selectedList: function () {
-            return this.data.filter((item) => item._checked)
-        },
+        ...mapState({
+            data: state => state.post.posts
+        }),
+        ...mapGetters({
+            selectedList: 'selectedPost',
+            'categoryValue': 'categoryValue'
+        }),
         selectedNum: function () {
             return this.selectedList.length
         }
     },
     methods: {
+        ...mapActions({
+            'fetchData': 'fetchPosts',
+            'trash': 'trashPosts'
+        }),
         search: function search () {
 
-        },
-        fetchData: async function fetchData () {
-            this.tableStatus = true
-            try {
-                let data = await api.nget('/api/post/')
-                data.forEach(i => (i._checked = false))
-                this.data = data
-            } catch (e) {
-                this.data = []
-                this.$Message.info('获取文章数据失败!')
-            } finally {
-                this.tableStatus = false
-            }
-        },
-        async trash (item) {
-            // console.log(this.multipleSelection)
-            let ids
-            if (item) {
-                ids = [item.id]
-            } else {
-                ids = this.selectedList.map(i => (i.id))
-            }
-            try {
-                await api.npost('/api/post/trash', {ids})
-                if (item) {
-                    let index = _.findIndex(this.data, ['id', item.id])
-                    this.data.splice(index, 1)
-                } else {
-                    this.data = _.differenceBy(this.data, this.selectedList, 'id')
-                }
-            } catch (e) {
-                this.$Message.info('失败，请重试')
-            }
         },
         handleSelectChange () {
             this.data.forEach((item, index) => {
@@ -194,13 +170,13 @@ export default {
     },
     created: function () {
         // console.log(this.$el,222)
-        // this.fetchData()
+        this.fetchData(false)
     },
-    beforeRouteEnter: function (to, from, next) {
-        next(vm => {
-            vm.fetchData()
-        })
-    },
+    // beforeRouteEnter: function (to, from, next) {
+    //     next(vm => {
+    //         vm.fetchData(false)
+    //     })
+    // },
     mounted () {
         let h = this.$refs['table-wrapper'].clientHeight
         this.tableHeight = h
@@ -209,6 +185,7 @@ export default {
             this.tableHeight = h
         }, 1000)
         on(window, 'resize', onResize)
+        console.log('this.categoryValue', this.categoryValue)
     }
 }
 </script>

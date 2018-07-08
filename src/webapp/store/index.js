@@ -11,10 +11,12 @@ Vue.use(Vuex)
 const state = {
     // 全局
     dict: {},
-    site: []
+    site: [],
+    siteMap: {}
 }
 const getters = {
-    postStatusDict: state => state.dict.postStatus
+    postStatusDict: state => state.dict.postStatus,
+    defaultCategoryValue: state => _.toNumber(state.siteMap['defaultCategoryId'].value)
 }
 const debug = process.env.NODE_ENV !== 'production'
 

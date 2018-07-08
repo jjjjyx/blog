@@ -53,7 +53,7 @@ const createTags = async function (req, res, post, dealWithCategory) {
         tags_id = tags_id || []
 
         // 验证分类是否存在
-        let category = await termDao.findById(category_id, {attributes: ['term_id']})
+        let category = await termDao.findById(category_id, {attributes: ['term_id','name']})
         if (category === null) {
             debug(`createTags 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
             category_id = SITE.defaultCategoryId * 1
@@ -555,7 +555,7 @@ const postInfo = [
                 // attributes: {
                 //     exclude: ['']
                 // },
-                where: {id, post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT]},
+                where: {id, post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT]},
                 include: [
                     {model: termDao},
                     {model: userDao, attributes: {exclude: ['user_pass']}}

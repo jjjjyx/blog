@@ -37,11 +37,12 @@
 </template>
 
 <script>
-import CollapseTransition from '@/utils/collapse-transition'
-import {verification} from '../../../utils/common'
+import _ from 'lodash'
 import {mapGetters} from 'vuex'
 import api from '@/utils/api'
-import _ from 'lodash'
+import {verification} from '@/utils/common'
+import CollapseTransition from '@/utils/collapse-transition'
+
 export default {
     name: 'sidebar-category',
     title: '分类',
@@ -60,10 +61,10 @@ export default {
         },
         categoryValue: {
             get () {
-                return this.$store.state.postWriter.sidebarCategoryValue
+                return this.$store.getters.categoryValue
             },
             set (value) {
-                this.$store.commit('updateSidebarCategoryValue', value)
+                this.$store.commit('updateCategoryValue', value)
             }
         }
     },

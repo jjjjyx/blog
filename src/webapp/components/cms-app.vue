@@ -192,7 +192,21 @@ export default {
         },
         handleSelectRouter: function (menu, parent) {
             let name = menu.name
-            this.$router.push({name})
+            if (name === 'post_writer') { // 撰写文章单独处理
+                let poi = this.$store.state.post_writer.id
+                if (poi && _.isNumber(poi)) { // 存在文章
+                    // 检查当前文章状态
+                    this.$router.push({name, query: {poi}})
+                } else { // 不存在， 创建文章，在跳转
+                    this.$store.dispatch('createNewPost').then(()=>{
+                        poi = this.$store.state.post_writer.id
+                        this.$router.push({name, query: {poi}})
+                    })
+                }
+            } else {
+                this.$router.push({name})
+            }
+
         }
     },
     watch: {
