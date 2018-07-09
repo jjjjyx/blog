@@ -2,7 +2,7 @@
 
 // import _ from 'lodash'
 import api from '@/utils/api'
-import Vue from 'vue'
+// import Vue from 'vue'
 const state = {
     // user: null
     termList: []

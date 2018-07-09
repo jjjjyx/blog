@@ -1,5 +1,6 @@
 'use strict'
 
+import _ from 'lodash'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createLogger from 'vuex/dist/logger'

@@ -11,7 +11,7 @@
                 <collapse-transition>
                 <div class="j-collapse-body" v-show="collapseStatus1">
                     <Select size="small" style="width:100px">
-                        <Option v-for="item in statusList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                        <Option v-for="item in allowPostStatus" :value="item" :key="item">{{ postStatusDict[item] }}</Option>
                     </Select>
                     <Button size="small" type="ghost">确定</Button>
                     <Button size="small" type="text">取消</Button>
@@ -28,24 +28,25 @@
                 </div>
                 <collapse-transition>
                     <div class="j-collapse-body" v-show="collapseStatus2">
-                        <RadioGroup v-model="tmpp" vertical>
-                           <Radio label="apple">
-                               <Icon type="social-apple"></Icon>
-                               <span>Apple</span>
-                           </Radio>
-                           <Checkbox class="ml-4" :disabled="tmpp !='apple'">Checkbox</Checkbox>
-                            <Radio label="android">
+                        <radio-group v-model="tmpStatus" vertical>
+                            <radio label="public">
+                                <Icon type="social-apple"></Icon>
+                                <span>公开</span>
+                            </radio>
+                            <checkbox class="ml-4" v-model="sticky" true-value="sticky" false-value="''" :disabled="tmpStatus !='public'">置顶</checkbox>
+                            <radio label="pass">
                                 <Icon type="social-android"></Icon>
-                                <span>Android</span>
-                            </Radio>
-                            <Radio label="windows">
+                                <span>密码保护</span>
+                            </radio>
+                            <i-input v-model="postPass" v-show="tmpStatus ==='pass'" class="ml-4" type="password" placeholder="密码" size="small"></i-input>
+                            <radio label="private">
                                 <Icon type="social-windows"></Icon>
-                                <span>Windows</span>
-                            </Radio>
-                        </RadioGroup>
+                                <span>私密</span>
+                            </radio>
+                        </radio-group>
                         <br>
-                        <Button size="small" type="ghost">确定</Button>
-                        <Button size="small" type="text">取消</Button>
+                        <Button size="small" type="ghost" @click="save">确定</Button>
+                        <Button size="small" type="text" @click="reset">取消</Button>
                     </div>
                 </collapse-transition>
             </div>
@@ -84,6 +85,8 @@
 </template>
 
 <script>
+
+import {mapGetters} from 'vuex'
 import CollapseTransition from '@/utils/collapse-transition'
 export default {
     components: {
@@ -93,29 +96,56 @@ export default {
     title: '发布',
     data: () => {
         return {
-            allowPostStatus: ['draft', 'pending'],
+            // 如果是已发布的文章则多一个发布状态
+            // allowPostStatus: ['pending', 'draft'],
             collapseStatus1: false,
             collapseStatus2: false,
             collapseStatus3: false,
             collapseStatus4: false,
-            tmpp: '',
-            statusList: [
-                {
-                    value: 'New York',
-                    label: 'New York'
-                },
-                {
-                    value: 'London',
-                    label: 'London'
-                },
-                {
-                    value: 'Sydney',
-                    label: 'Sydney'
-                }
-            ]
+            tmpStatus: '',
+            sticky: '',
+            passValue: ''
+        }
+    },
+    computed:{
+        // ...mapState({
+        //     'postStatus': state => state.post_writer.post_status
+        // }),
+        ...mapGetters(['postStatusDict']),
+        allowPostStatus: function (){
+            if (this.postStatus === 'publish') {
+                return ['publish', 'pending', 'draft']
+            } else {
+                return ['pending', 'draft']
+            }
+        },
+        postPass: {
+            get () { return this.$store.state.post_writer.post_password },
+            set (value) { this.$store.commit('updatePostPass', value) }
+        },
+        // sticky: {
+        //     get () { return this.$store.state.post_writer.sticky },
+        //     set (value) { this.$store.commit('updateSticky', value) }
+        // },
+        postStatus: {
+            get () { return this.$store.state.post_writer.post_status },
+            set (value) { this.$store.commit('updateSticky', value) }
         }
     },
     props: ['currentPost'],
-    methods: {}
+    methods: {
+        save () {
+            switch (this.tmpStatus) {
+            case 'public':
+                // this.
+                break
+            case 'pass':
+                break
+            case 'private':
+                break
+            }
+        },
+        reset () {},
+    }
 }
 </script>

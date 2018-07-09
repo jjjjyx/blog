@@ -123,6 +123,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import store from '../store/index'
 
 export default {
@@ -198,7 +199,7 @@ export default {
                     // 检查当前文章状态
                     this.$router.push({name, query: {poi}})
                 } else { // 不存在， 创建文章，在跳转
-                    this.$store.dispatch('createNewPost').then(()=>{
+                    this.$store.dispatch('createNewPost').then(() => {
                         poi = this.$store.state.post_writer.id
                         this.$router.push({name, query: {poi}})
                     })
@@ -206,7 +207,6 @@ export default {
             } else {
                 this.$router.push({name})
             }
-
         }
     },
     watch: {

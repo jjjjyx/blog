@@ -3,6 +3,7 @@ const PostStatusEnum = {
     'DRAFT': 'draft',
     'AUTO_DRAFT': 'auto-draft',
     'PUBLISH': 'publish',
+    'PRIVATE': 'private',
     'PENDING': 'pending',
     'INHERIT': 'inherit'
 }

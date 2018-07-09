@@ -206,6 +206,12 @@ const save = [
                 debug(`文章 = ${id} 更新草稿内容！`)
                 return res.status(200).json(Result.success(await _save_update(post, req.body)))
                 break
+            case Enum.PostStatusEnum.PRIVATE:
+                // 私密的文章需要验证是否是本人创建的
+                let user = req.user
+                if (user.id !== post.post_author) {
+                    return res.status(200).json(Result.info('保存失败，文章私密，您无权修改'))
+                }
             case Enum.PostStatusEnum.PUBLISH:
             case Enum.PostStatusEnum.PENDING:
                 debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
@@ -400,12 +406,20 @@ const moverTrash = [
             req.sanitizeBody('ids').toArray()
             let {ids} = req.body
 
-            // 只能移动发布的文章 跟草稿对象
+            // 只能移动发布的文章 跟草稿对象， 以及当前用户的私密文章
             let result = await postDao.destroy({
                 where: {
                     id: ids,
-                    post_status: [
-                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    [Op.or]: [
+                        {
+                            post_status: Enum.PostStatusEnum.PRIVATE,
+                            post_author: req.user.id
+                        },
+                        {
+                            post_status: [
+                                Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                            ]
+                        }
                     ]
                 }
             })
@@ -465,8 +479,16 @@ const getAllPost = [
         try {
             let posts = await postDao.findAll({
                 where: {
-                    post_status: [
-                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    [Op.or]: [
+                        {
+                            post_status: Enum.PostStatusEnum.PRIVATE,
+                            post_author: req.user.id
+                        },
+                        {
+                            post_status: [
+                                Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                            ]
+                        }
                     ]
                 },
                 include: [
@@ -507,8 +529,21 @@ const getTrash = [
                 where: {
                     [Op.or]: [
                         {deleteAt: {[Op.not]: null}},
-                        {deleteAt: {[Op.gte]: date}}
+                        {deleteAt: {[Op.gte]: date}},
+                    ],
+                    // [Op.and] :{
+                    [Op.or]: [
+                        {
+                            post_status: Enum.PostStatusEnum.PRIVATE,
+                            post_author: req.user.id
+                        },
+                        {
+                            post_status: [
+                                Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                            ]
+                        }
                     ]
+                    // }
                 }
             })
             return res.status(200).json(Result.success(posts))
@@ -531,7 +566,7 @@ const revert = [
                 where: {
                     id: ids,
                     [Op.or]: [
-                        {deleteAt: {[Op.not]: null}},
+                        {deleteAt: {[Op.not]: null}}
                     ]
                 }
             })
@@ -548,15 +583,27 @@ const postInfo = [
     param('id').isInt().exists().withMessage('错误的id'),
     utils.validationResult,
     async function (req, res) {
-        // todo 标签的回填
+        console.log(req.user)
         let {id} = req.params
         try {
             let result = await postDao.findOne({
                 // attributes: {
                 //     exclude: ['']
                 // },
-                where: {id, post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT]},
+                where: {
+                    id,
+                    [Op.or]: [
+                        {
+                            post_status: Enum.PostStatusEnum.PRIVATE,
+                            post_author: req.user.id
+                        },
+                        {
+                            post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT]
+                        }
+                    ]
+                },
                 include: [
+                    {model: postMetaDao, as: 'metas'},
                     {model: termDao},
                     {model: userDao, attributes: {exclude: ['user_pass']}}
                 ]
@@ -573,7 +620,10 @@ const postInfo = [
                         post_status: Enum.PostStatusEnum.INHERIT,
                         post_name: [`${id}-autosave-v1`, `${id}-revision-v1`,]
                     },
-                    include: [{model: userDao, attributes: {exclude: ['user_pass']}}]
+                    include: [
+                        {model: postMetaDao, as: 'metas'},
+                        {model: userDao, attributes: {exclude: ['user_pass']}}
+                    ]
                 })
                 result.dataValues.revision = revision
                 return res.status(200).json(Result.success(result))

@@ -50,7 +50,7 @@
             </div>
         </div>
         <div class="postbox-container">
-            {{currentPost}}
+            <!--{{currentPost}}-->
             <draggable :list="sidebarsOrder" class="dragArea">
                 <transition-group type="transition" :name="'flip-list'">
                     <sidebar-panel v-for="sidebar in sidebarsOrder" :key="sidebar" class="postbox">
@@ -82,7 +82,6 @@
 import _ from 'lodash'
 import SparkMD5 from 'spark-md5'
 import draggable from 'vuedraggable'
-import iView from 'iview'
 import {mapActions, mapGetters, mapState} from 'vuex'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
@@ -157,24 +156,24 @@ export default {
         }),
         ...mapGetters(['tagsList', 'showLeaveTip']),
         categoryValue: {
-            get () {return this.$store.state.post_writer.categoryValue},
-            set (value) {this.$store.commit('updateCategoryValue', value)}
+            get () { return this.$store.state.post_writer.categoryValue },
+            set (value) { this.$store.commit('updateCategoryValue', value) }
         },
         postTitle: {
-            get () {return this.$store.state.post_writer.post_title},
-            set (value) {this.$store.commit('updatePostTitle', value)}
+            get () { return this.$store.state.post_writer.post_title },
+            set (value) { this.$store.commit('updatePostTitle', value) }
         },
         postContent: {
-            get () {return this.$store.state.post_writer.post_content},
-            set (value) {this.$store.commit('updatePostContent', value)}
+            get () { return this.$store.state.post_writer.post_content },
+            set (value) { this.$store.commit('updatePostContent', value) }
         },
         renderValue: {
-            get () {return this.$store.state.post_writer.render_value},
-            set (value) {this.$store.commit('updateRenderValue', value)}
+            get () { return this.$store.state.post_writer.render_value },
+            set (value) { this.$store.commit('updateRenderValue', value) }
         },
         selectedTag: {
-            get () {return this.$store.state.post_writer.tags},
-            set (value) {this.$store.commit('updateTags', value)}
+            get () { return this.$store.state.post_writer.tags },
+            set (value) { this.$store.commit('updateTags', value) }
         },
         currTagLength: function () {
             return this.selectedTag.length + this.newTag.length
@@ -325,7 +324,7 @@ export default {
             try {
                 await api.npost('/api/post/save', obj)
                 // console.log('save result = ', result)
-                // this.pushRouter('replace')
+                this.pushRouter('replace')
                 this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.save)
             } catch (e) {
                 this.$Message.info('保存失败')
@@ -340,7 +339,7 @@ export default {
                 }
             })
         },
-        leaveConfirm (next) {
+        leaveConfirm () {
             return new Promise((resolve, reject) => {
                 this.saveTipModel = true
                 this.resolve = resolve
@@ -379,11 +378,6 @@ export default {
         }
     },
     async created () {
-        // let query = this.$route.query
-        // console.log('created', query)
-        // let result = await this.fetchData(query)
-        // if (!result) await this.createPost()
-        // this.pushRouter()
         this.fetchTerms(false)
     },
     async beforeRouteUpdate (to, f, next) {
@@ -403,7 +397,7 @@ export default {
     },
     async beforeRouteEnter (to, from, next) {
         next((vm) => {
-             // await vm.fetchData(to.query)
+            // await vm.fetchData(to.query)
             // vm.pushRouter('replace')
             let {poi} = to.query
             if (_.toNumber(poi) !== vm.currentPost.id) { // 不相等的情况
@@ -444,7 +438,6 @@ export default {
                     next()
                 }
             }
-
         } else {
             next()
         }

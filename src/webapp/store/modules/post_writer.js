@@ -29,7 +29,9 @@ const state = {
     'guid': '',
     'render_value': '',
 
+    sticky: '',
     user: {},
+    metas: [], // metas 信息
     terms: [], // 标签 + 分类
     tags: [], // 标签 用作回填
     categoryValue: null, // 分类
@@ -39,6 +41,7 @@ const state = {
 }
 
 const copyPost = _.cloneDeep(state)
+let currCopy = _.cloneDeep(state)
 
 const getters = {
     categoryValue: (state, getters) => state.categoryValue || getters.defaultCategoryValue,
@@ -75,8 +78,10 @@ const actions = {
             }
         }
         return false
+    },
+    getOriginPost () {
+        return currCopy
     }
-
 }
 const mutations = {
     // USER_SIGNOUT (state) {
@@ -104,7 +109,7 @@ const mutations = {
         state.tags.shift()
     },
     splicePostTag (state, index) {
-        if (index>=0) {
+        if (index >= 0) {
             state.tags.splice(index, 1)
         }
     },
@@ -113,6 +118,12 @@ const mutations = {
     },
     updatePostExcerpt (state, value) {
         state.post_excerpt = value
+    },
+    updatePostPass (state, value) {
+        state.post_password = value
+    },
+    updateSticky (state, value) {
+        state.sticky = value
     },
     updateRenderValue (state, value) {
         state.render_value = value
@@ -133,6 +144,8 @@ const mutations = {
             let {category, post_tag: postTag} = _.groupBy(value.terms, 'taxonomy')
             if (postTag) state.tags = postTag.map((i) => i.name)
             if (category) state.categoryValue = category[0].term_id
+
+            currCopy = _.cloneDeep(state)
         }
     }
 }
