@@ -51,7 +51,7 @@
         </div>
         <div class="postbox-container">
             <!--{{currentPost}}-->
-            <draggable :list="sidebarsOrder" class="dragArea">
+            <draggable :list="sidebarsOrder" class="dragArea" >
                 <transition-group type="transition" :name="'flip-list'">
                     <sidebar-panel v-for="sidebar in sidebarsOrder" :key="sidebar" class="postbox">
                         <template slot="title">{{$options.components[sidebar].title}}</template>

@@ -21,6 +21,7 @@ const state = {
     'comment_count': '0',
     'seq_in_nb': '0',
     'post_author': null,
+    'post_date': null,
     'post_content': '',
     'post_title': '',
     'post_excerpt': '',
@@ -104,6 +105,9 @@ const mutations = {
     },
     updateTags (state, value) {
         state.tags = value
+    },
+    updatePostDate (state, value) {
+        state.post_date = value
     },
     shiftPostTag (state, value) {
         state.tags.shift()

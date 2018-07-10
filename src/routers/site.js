@@ -36,7 +36,7 @@ const update = [
             }).then((sites)=>{
             // 更新后 更新全局对象
                 debug('更新全局SITE')
-                console.log('sites', sites)
+                // console.log('sites', sites)
                 let site = {}
                 sites.forEach((item)=>{
                     site[item.key] = item.value

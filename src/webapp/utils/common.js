@@ -67,10 +67,11 @@ export function getTimeText (timeInMs, pattern = 'yy/MM/dd') {
 }
 
 export function dateFormat (timeInMs, pattern) {
-    let t = timeInMs * 1000
-    if (isNaN(t)) {
-        return timeInMs ? new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm') : '-'
+    if (_.isNumber(timeInMs)) {
+        return new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm')
+    } else if(_.isDate(timeInMs)) {
+        return timeInMs.format(pattern || 'yyyy/MM/dd hh:mm') || '-'
     } else {
-        return new Date(t).format(pattern || 'yyyy/MM/dd hh:mm') || '-'
+        return new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm') || '-'
     }
 }
