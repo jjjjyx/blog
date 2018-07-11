@@ -36,24 +36,84 @@ const checkTitle = body('post_title').exists().isString().isLength({
 
 // const sanitizeContent = sanitizeBody('sanitizeContent')
 const checkContent = body('post_content').exists().isString().isLength({min: 0}).withMessage('请提交文章内容')
-// 文章别名 必须提交 但是不满足格式不会报错而是启用
-const checkPostName = body('post_name').exists().isString().isLength({min: 0}).withMessage('请提交文章内容')
+// 文章别名 必须提交 但是不满足格式不会报错而是启用id
 const postNameReg = /^[_a-zA-Z0-9\-]{1,60}$/
+const sanitizePostName = sanitizeBody('post_name')
+    .customSanitizer((value)=>{
+        debug(`sanitizePostName v = ${value}`)
+        return postNameReg.test(value) ? value : undefined
+    })
+// const checkPostName = body('post_name').exists().isString().isLength({min: 0}).withMessage('请提交文章')
+// 长度在3 - 30
+const checkPostPass = body('post_password').custom((value) => {
+    // 如果有提交 则验证
+    debug(`checkPostPass v = ${value}`)
+    return value ? value.length >=3 && value.length < 30 : true
+})
 // 摘录
 const checkExcerpt = body('post_excerpt').exists().isString().isLength({min: 0}).withMessage('请提交文章摘录')
+
+// 允许提交的文章状态
+const allowPostStatus = [
+    Enum.PostStatusEnum.PENDING,
+    Enum.PostStatusEnum.PRIVATE,
+    Enum.PostStatusEnum.PUBLISH,
+    Enum.PostStatusEnum.DRAFT
+]
+// 发布的文章状态
+const sanitizeReleasePostStatus = sanitizeBody('post_status').customSanitizer((value) => {
+    debug(`sanitizeReleasePostStatus v = ${value}`)
+    if (allowPostStatus.indexOf(value) === -1) {
+        return Enum.PostStatusEnum.PUBLISH
+    } else {
+        return value
+    }
+})
+const sanitizeAuthor= sanitizeBody('post_author').toInt()
+const checkAuthor = body('post_author')
+    .exists().withMessage('请提交作者')
+    .isInt().withMessage("文章作者不合法")
+    .custom((value, { req })=>{
+        let {id} = req.user
+        if (id === value) {
+            return true
+        } else {
+            return userDao.findById(value, {attributes: {exclude: ['user_pass']}}).then((u)=>{
+                if (u === null) return Promise.reject('用户不存在')
+                req._post_author = u
+            })
+        }
+    })
+// const sanitizeSticky
+const sanitizePostDate = sanitizeBody('post_date').toDate()
+const sanitizeSticky = sanitizeBody('sticky').toBoolean()
+// 允许提交的文章状态
+const allowStatus = [
+    Enum.StatusEnum.OPEN,
+    Enum.StatusEnum.CLOSE
+]
+const sanitizeCommentStatus = sanitizeBody('comment_status').customSanitizer((value) => {
+    debug(`sanitizeCommentStatus v = ${value}`)
+    if (allowStatus.indexOf(value) === -1) {
+        return Enum.PostStatusEnum.OPEN
+    } else {
+        return value
+    }
+})
 
 const TagsLength = 16
 const tagToString = t =>`${t.name}#${t.term_id}`
 const createTags = async function (req, res, post, dealWithCategory) {
     req.sanitizeBody('new_tag').toArray()
     req.sanitizeBody('tags_id').toArray()
+    // req.sanitizeBody('category_id').toInt()
     try {
         let {new_tag, tags_id, category_id} = req.body
         new_tag = new_tag || []
         tags_id = tags_id || []
 
         // 验证分类是否存在
-        let category = await termDao.findById(category_id, {attributes: ['term_id','name']})
+        let category = await termDao.findById(category_id || SITE.defaultCategoryId, {attributes: ['term_id','name']})
         if (category === null) {
             debug(`createTags 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
             category_id = SITE.defaultCategoryId * 1
@@ -193,6 +253,7 @@ const save = [
             case Enum.PostStatusEnum.AUTO_DRAFT:
                 debug(`修改文章 = ${id} 状态为：${Enum.PostStatusEnum.DRAFT}`)
                 post.post_status = Enum.PostStatusEnum.DRAFT
+                post.post_name = id
                 debug(`修改文章 = ${id} 分类为默认分类：${SITE.defaultTerm.name}#${SITE.defaultTerm.term_id}`)
                 await post.setTerms([SITE.defaultTerm])
             case Enum.PostStatusEnum.DRAFT:
@@ -338,60 +399,108 @@ const release = [
     sanitizeTitle,
     sanitizeId,
     sanitizeCategoryId,
+    sanitizePostName,
+    sanitizeReleasePostStatus,
+    sanitizeAuthor,
+    sanitizePostDate,
+    sanitizeCommentStatus,
+    sanitizeSticky,
     checkTitle,
     checkId,
     checkContent,
-    checkPostName,
     checkExcerpt,
-    checkCategoryId,
+    checkPostPass,
+    // checkPostName,
+    // checkCategoryId,
+    checkAuthor,
     // checkTagsId,
     utils.validationResult,
     async function (req, res) {
-        // todo 文章状态！！
-        let {post_title, id, post_content, post_name, post_excerpt, new_tag, tags_id, category_id} = req.body
+        // todo 评论状态
+        let {
+            id,
+            post_title,
+            post_content,
+            post_name,
+            post_excerpt,
+            post_date,
+            post_author,
+            render_value,
+            sticky,
+            post_status,
+            post_password,
+            comment_status,
+            _post_author
+        } = req.body
 
         try {
             let post = await postDao.findById(id)
             if (post === null) {
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
             }
+            // 只能对自己的文章进行转私密, 加密码 在这里进行判断下
+            let user = req.user
+            if (post_author !== user.id && (post_status === Enum.PostStatusEnum.PRIVATE || post_password)) {
+                return res.status(200).json(Result.info('您不可以对别人的文章加密'))
+            }
+
+            debug(`release 提交 body = ${JSON.stringify(req.body)}`)
+            // return res.status(200).json('null')
 
             let createTagsResult = await createTags(req, res, post, true)
             if (createTagsResult instanceof Result) {
                 return res.status(200).json(createTagsResult)
             }
-            // 修改post 状态
-            let oldValues = {
-                post_title: post.post_title,
-                post_content: post.post_content,
-                post_excerpt: post.post_excerpt
-            }
-            let newValues = {
-                post_title, post_content, post_excerpt
-            }
+
+            // 记录文章旧状态
+            // # 版本只对做 内容，标题，摘录信息，密码，评论状态敏感
+            let oldValues = post.toJSON()
+            delete oldValues.post_status
+            delete oldValues.post_date
+            delete oldValues.post_name
+            delete oldValues.updatedAt
+
             post.post_title = post_title
             post.post_content = post_content
+            post.post_name = post_name
             post.post_excerpt = post_excerpt
-            post.post_name = post_name || post.id
-            post.post_status = Enum.PostStatusEnum.PUBLISH
+            post.post_date = post_date || new Date()
+            // post.post_author = // 最初的创建者不能修改的 提交的文章作者只会存在版本记录中
+            // sticky
+            _save_postMeta(id, 'sticky', sticky)
+            _save_postMeta(id, 'render', render_value)
+            post.post_status = post_status
+            post.post_password = post_password
+            post.comment_status = comment_status
 
-            // 版本只对做 内容，标题，摘录信息, 标签，分类，文章状态敏感
             await post.save()
+            let newValues = post.toJSON()
+            delete newValues.post_status
+            delete newValues.post_date
+            delete newValues.post_name
+            delete newValues.updatedAt
             // 检查内容是否修改了，没有修改则不创建版本
             // debug(`是否修改了文章 = ${id}, result = ${result}`)
             let isModify = _.isEqual(newValues, oldValues)
+            console.log('newValues: =', newValues)
+            console.log('oldValues: =', oldValues)
             debug(`是否修改了文章 isModify = ${!isModify}`)
             if (!isModify) {
                 // 创建版本
-                let values = post.toJSON()
+                let values = newValues
                 values.post_name = `${id}-revision-v1`
                 values.post_status = Enum.PostStatusEnum.INHERIT
                 values.post_type = 'revision'
+                values.post_date = post.post_date
                 values.id = undefined
-                postDao.create(values)
+                postDao.create(values).then((rp)=>{
+                    _save_postMeta(rp.id, 'author', _post_author || req.user)
+                    // _save_postMeta(rp.id, 'author_user_name', post_author)
+                })
             }
             return res.status(200).json(Result.success())
         } catch (e) {
+            console.log(e)
             debug('release post error by:', e.message)
             return res.status(200).json(Result.error())
         }
@@ -614,7 +723,7 @@ const postInfo = [
                 // 草稿类型调取不检查
                 // if (result.post_status !== Enum.PostStatusEnum.DRAFT) {
                 let revision = await postDao.findAll({
-                    attributes: ['id', 'createdAt', ['post_name', 'type']],
+                    attributes: ['id', 'createdAt', ['post_name', 'type'], 'updatedAt'],
                     where: {
                         post_type: 'revision',
                         post_status: Enum.PostStatusEnum.INHERIT,
@@ -623,7 +732,8 @@ const postInfo = [
                     include: [
                         {model: postMetaDao, as: 'metas'},
                         {model: userDao, attributes: {exclude: ['user_pass']}}
-                    ]
+                    ],
+                    order: [['updatedAt', 'DESC']]
                 })
                 result.dataValues.revision = revision
                 return res.status(200).json(Result.success(result))

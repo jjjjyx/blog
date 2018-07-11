@@ -185,7 +185,6 @@ export default {
             this.tableHeight = h
         }, 1000)
         on(window, 'resize', onResize)
-        console.log('this.categoryValue', this.categoryValue)
     }
 }
 </script>

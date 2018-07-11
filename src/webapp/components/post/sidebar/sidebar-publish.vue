@@ -5,16 +5,21 @@
                 <div class="j-collapse-header">
                     <Icon type="flag"></Icon>
                     <span>状态:</span>
+                    <template v-if="tmpStatus != 'private'">
                     <b>{{ postStatusDict[postStatus] }}</b>
                     <a href="javascript:void(0);" @click.prevent="collapseStatus1 = !collapseStatus1">编辑</a>
+                    </template>
+                    <template v-else>
+                        <b>私密、已发布</b>
+                    </template>
                 </div>
                 <collapse-transition>
                 <div class="j-collapse-body" v-show="collapseStatus1">
-                    <Select size="small" style="width:100px">
+                    <Select size="small" style="width:100px" v-model="tmpPostStatus">
                         <Option v-for="item in allowPostStatus" :value="item" :key="item">{{ postStatusDict[item] }}</Option>
                     </Select>
-                    <Button size="small" type="ghost" @click="savePostStatus">确定</Button>
-                    <Button size="small" type="text">取消</Button>
+                    <Button size="small" type="ghost" @click="savePostStatus(), collapseStatus1 = false">确定</Button>
+                    <Button size="small" type="text" @click="resetPostStatus(), collapseStatus1 = false">取消</Button>
                 </div>
                 </collapse-transition>
             </div>
@@ -23,32 +28,33 @@
                 <div class="j-collapse-header">
                     <Icon type="eye"></Icon>
                     <span>公开度:</span>
-                    <b>已发布</b>
+                    <b v-text="publicText"></b>
                     <a href="javascript:void(0);" @click.prevent="collapseStatus2 = !collapseStatus2">编辑</a>
                 </div>
                 <collapse-transition>
                     <div class="j-collapse-body" v-show="collapseStatus2">
-                        <radio-group v-model="tmpStatus" vertical>
+                        <radio-group v-model="tmpStatus" vertical @on-change="handleRadioChange">
                             <radio label="public">
                                 <!--<Icon type="social-apple"></Icon>-->
                                 <i class="iconfont icon-gongkai"></i>
                                 <span>公开</span>
                             </radio>
-                            <checkbox class="ml-4" v-model="sticky" true-value="sticky" false-value="''" :disabled="tmpStatus !='public'">置顶</checkbox>
+                            <checkbox class="ml-4" v-model="sticky" true-value="sticky" false-value="" :disabled="tmpStatus !='public'">置顶</checkbox>
                             <radio label="pass">
                                 <!--<Icon type="social-android"></Icon>-->
                                 <i class="iconfont icon-simi"></i>
                                 <span>密码保护</span>
                             </radio>
-                            <i-input v-model="postPass" v-show="tmpStatus ==='pass'" class="ml-4" type="password" placeholder="密码" size="small"></i-input>
+                            <i-input v-model="tmpPass" v-show="tmpStatus ==='pass'" ref="pass" class="ml-4" type="password"
+                                     placeholder="密码" size="small" style="width: 150px"></i-input>
                             <radio label="private">
                                 <i class="iconfont icon-simi1"></i>
                                 <span>仅自己可见</span>
                             </radio>
                         </radio-group>
                         <br>
-                        <Button size="small" type="ghost" @click="save">确定</Button>
-                        <Button size="small" type="text" @click="reset">取消</Button>
+                        <Button size="small" type="ghost" @click="save(), collapseStatus2 = false">确定</Button>
+                        <Button size="small" type="text" @click="reset(), collapseStatus2 = false">取消</Button>
                     </div>
                 </collapse-transition>
             </div>
@@ -92,9 +98,9 @@
                 </collapse-transition>
             </div>
         </div>
-        <div class="postbox-options">
-            <Button size="small" type="text" style="color: #ed3f14">移至回收站</Button>
-            <Button size="small" class="float-right" type="primary">发布</Button>
+        <div class="postbox-options clearfix">
+            <Button size="small" type="text" style="color: #ed3f14" v-show="originPostStatus != 'auto-draft'">移至回收站</Button>
+            <Button size="small" class="float-right" type="primary" @click="release">发布</Button>
             <Button size="small" class="float-right mr-1" type="success">
                 <a href="" style="color: inherit;">预览更改</a>
             </Button>
@@ -104,9 +110,11 @@
 
 <script>
 
+// import _ from 'lodash'
 import {mapGetters, mapState} from 'vuex'
 import CollapseTransition from '@/utils/collapse-transition'
-import {dateFormat} from '../../../utils/common'
+import api from '@/utils/api'
+import {dateFormat} from '@/utils/common'
 
 export default {
     components: {
@@ -122,47 +130,54 @@ export default {
             collapseStatus2: false,
             collapseStatus3: false,
             collapseStatus4: false,
-            tmpStatus: '',
+            tmpStatus: 'public',
+            tmpPass: '',
+            tmpPostStatus: '',
             sticky: '',
             passValue: '',
-            originDate: null
-            // postDate: new Date()
+            originDate: null,
+            originPostStatus: null // 用于记录原始的文章状态
         }
     },
     computed: {
-        // ...mapState({
-        //     'postStatus': state => state.post_writer.post_status
-        // }),
         ...mapState({
+            'postStatus': state => state.post_writer.post_status,
             'publishDate': state => state.post_writer.post_date,
             'versionNum': state => state.post_writer.revision.length,
-            'currentPost': state => state.post_writer,
+            'currentPost': state => state.post_writer
         }),
         ...mapGetters({
             'postStatusDict': 'postStatusDict'
         }),
+        publicText () {
+            switch (this.tmpStatus) {
+            case 'public':
+                // this.
+                // 要获取到原始状态
+                // this.postStatus = 'publish'
+                return '公开'
+            case 'pass':
+                return '密码保护'
+            case 'private':
+                return '仅自己可见'
+            }
+        },
         allowPostStatus: function () {
-            if (this.postStatus === 'publish') {
+            // 如果修改当前状态 为公开，可以预选 'pending', 'draft'
+            // 如果修改当前状态 为公开，且当前状态就是发布状态可以预选 'publish', 'pending', 'draft'
+            // 如果修改当前状态 为密码，跟文章状态不冲突
+            // 如果修改当前状态 为私密，则不可以预选
+            if (this.tmpStatus === 'private') {
+                return []
+            } else if (this.postStatus === 'publish') {
                 return ['publish', 'pending', 'draft']
             } else {
                 return ['pending', 'draft']
             }
         },
-        postPass: {
-            get () { return this.$store.state.post_writer.post_password },
-            set (value) { this.$store.commit('updatePostPass', value) }
-        },
-        // sticky: {
-        //     get () { return this.$store.state.post_writer.sticky },
-        //     set (value) { this.$store.commit('updateSticky', value) }
-        // },
-        postStatus: {
-            get () { return this.$store.state.post_writer.post_status },
-            set (value) { this.$store.commit('updateSticky', value) }
-        },
         postDate: {
             get () { return this.$store.state.post_writer.post_date || this.originDate },
-            set (value) {this.$store.commit('updatePostDate', value)}
+            set (value) { this.$store.commit('updatePostDate', value) }
         }
     },
     // props: ['currentPost'],
@@ -175,13 +190,34 @@ export default {
             //     this.postDate = post_date
             // }
             this.originDate = new Date()
-        },
-        postDate: function (val) {
-            // 在页面中修改了时间
+            this.fillTmp()
+            this.$store.dispatch('getOriginPost').then((originDate) => {
+                this.originPostStatus = originDate.post_status
+            })
+
+            // this.
         }
     },
     methods: {
+        // 回填状态信息
+        fillTmp () {
+            this.tmpPass = this.currentPost.post_password
+            this.tmpPostStatus = this.currentPost.post_status
+            this.sticky = this.currentPost.sticky
+            if (this.currentPost.post_password) {
+                this.tmpStatus = 'pass'
+            } else if (this.currentPost.post_status === 'private') {
+                this.tmpStatus = 'private'
+            } else {
+                this.tmpStatus = 'public'
+            }
+        },
         dateFormat,
+        handleRadioChange () {
+            if (this.tmpStatus === 'private') {
+                this.collapseStatus1 = false
+            }
+        },
         savePostDate () {
             let data = this.$refs.date.visualValue
             let time = this.$refs.time.visualValue
@@ -193,7 +229,11 @@ export default {
             this.postDate = _d
         },
         savePostStatus () {
-
+            this.$store.commit('updatePostStatus', this.tmpPostStatus)
+        },
+        async resetPostStatus () {
+            let originDate = await this.$store.dispatch('getOriginPost')
+            this.$store.commit('updatePostStatus', originDate.post_status)
         },
         async resetPostDate () {
             let originDate = await this.$store.dispatch('getOriginPost')
@@ -204,14 +244,40 @@ export default {
             switch (this.tmpStatus) {
             case 'public':
                 // this.
+                // 要获取到原始状态
+                // this.postStatus = 'publish'
+                this.$store.dispatch('getOriginPost').then((originDate) => {
+                    this.$store.commit('updatePostStatus', this.tmpPostStatus || originDate.post_status)
+                })
+                this.$store.commit('updateSticky', this.sticky)
                 break
             case 'pass':
+                this.$store.commit('updatePostPass', this.tmpPass)
                 break
             case 'private':
+                this.$store.commit('updatePostStatus', 'private')
                 break
             }
         },
-        reset () {}
+        async reset () {
+            // 主要重置 状态， 密码 置顶
+            let originDate = await this.$store.dispatch('getOriginPost')
+            this.$store.commit('updatePostPass', originDate.post_password)
+            this.$store.commit('updatePostStatus', this.tmpPostStatus || originDate.post_status)
+            this.$store.commit('updateSticky', originDate.sticky)
+
+            // this.tmpPass = this.currentPost.post_password
+            // this.tmpPostStatus = this.currentPost.post_status
+            // this.sticky = this.currentPost.sticky
+            this.fillTmp()
+        },
+        async release () {
+            let obj = this.$store.getters.ajaxPostClone
+            // delete  obj,metas
+            // delete  obj,metas
+            api.npost('/api/post/release', obj)
+        }
+
     }
 }
 </script>

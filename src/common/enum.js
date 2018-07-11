@@ -1,4 +1,6 @@
 
+// 只有发布才能将状态设置成 除了草稿之外的状态，
+// 其他情况不能修改文章状态
 const PostStatusEnum = {
     'DRAFT': 'draft',
     'AUTO_DRAFT': 'auto-draft',

@@ -4,7 +4,7 @@
             <avatar :style="{background: color}" size="small">{{version.user.user_login}}</avatar>
             <span class="j-version-username">{{version.user.user_login}}</span> &nbsp;
             <span>{{getTimeText(new Date(version.createdAt).getTime())}}</span>
-            <a>({{dateFormat(version.createdAt)}})</a>
+            <a>({{dateFormat(version.createdAt, 'yyyy/MM/dd hh:mm:ss')}})</a>
             <Tooltip content="自动保存" v-if="version.type === `${currentPost.id}-autosave-v1`">
             <span  style="cursor: pointer">[ <Icon type="flag" color="#2d8cf0"></Icon> ]</span>
             </Tooltip>
@@ -47,6 +47,7 @@ export default {
 <style>
 .j-version-item {
     margin-bottom: 12px;
+    font-size: 12px;
 }
     .j-version-username {
         cursor: default;

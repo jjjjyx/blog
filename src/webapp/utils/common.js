@@ -1,3 +1,6 @@
+
+import _ from 'lodash'
+
 /**
  * 时间格式化
  * @param format
@@ -69,7 +72,7 @@ export function getTimeText (timeInMs, pattern = 'yy/MM/dd') {
 export function dateFormat (timeInMs, pattern) {
     if (_.isNumber(timeInMs)) {
         return new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm')
-    } else if(_.isDate(timeInMs)) {
+    } else if (_.isDate(timeInMs)) {
         return timeInMs.format(pattern || 'yyyy/MM/dd hh:mm') || '-'
     } else {
         return new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm') || '-'

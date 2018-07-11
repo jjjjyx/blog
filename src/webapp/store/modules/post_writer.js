@@ -15,7 +15,7 @@ const POST_WRITER_STATUS = {
 const state = {
     'id': 0,
     'comment_status': 'open',
-    'ping_status': 'open',
+    // 'ping_status': 'open',
     'menu_order': '0',
     'post_type': 'post',
     'comment_count': '0',
@@ -29,13 +29,15 @@ const state = {
     'post_name': '',
     'guid': '',
     'render_value': '',
+    'post_password': '',
 
     sticky: '',
     user: {},
     metas: [], // metas 信息
     terms: [], // 标签 + 分类
-    tags: [], // 标签 用作回填
-    categoryValue: null, // 分类
+    new_tag: [], // 标签 用作回填
+    // newTags: [], // 新增的标签
+    category_id: null, // 分类
     revision: [], // 历史版本
     status: POST_WRITER_STATUS.normal
     // sidebarCategoryValue: 1
@@ -45,11 +47,22 @@ const copyPost = _.cloneDeep(state)
 let currCopy = _.cloneDeep(state)
 
 const getters = {
-    categoryValue: (state, getters) => state.categoryValue || getters.defaultCategoryValue,
+    categoryValue: (state, getters) => state.category_id || getters.defaultCategoryValue,
     // 在离开的时候是否显示提示
     // 仅在保存中， 编辑 状态时提示
-    showLeaveTip: state => state.status === POST_WRITER_STATUS.saveing || state.status === POST_WRITER_STATUS.edit
-
+    showLeaveTip: state => state.status === POST_WRITER_STATUS.saveing || state.status === POST_WRITER_STATUS.edit,
+    ajaxPostClone: state => {
+        let obj = _.cloneDeep(state)
+        delete obj.terms
+        delete obj.metas
+        delete obj.user
+        delete obj.revision
+        // obj.new_tag = obj.newTags.concat(obj.tags)
+        // delete obj.newTags
+        // delete obj.tags
+        delete obj.status
+        return obj
+    }
     // user: state => state.user
 }
 
@@ -92,7 +105,7 @@ const mutations = {
     //     _.merge(state.user, obj)
     // }
     updateCategoryValue (state, value) {
-        state.categoryValue = value
+        state.category_id = value
     },
     updateCurrentPostStatus (state, value) {
         state.status = value
@@ -100,25 +113,29 @@ const mutations = {
     updatePostTitle (state, value) {
         state.post_title = value
     },
-    updatePostContent (state, value) {
+    updatePostContent (state, {value, render}) {
         state.post_content = value
+        state.render_value = render
     },
     updateTags (state, value) {
-        state.tags = value
+        state.new_tag = value
     },
     updatePostDate (state, value) {
         state.post_date = value
     },
+    updatePostStatus (state, value) {
+        state.post_status = value
+    },
     shiftPostTag (state, value) {
-        state.tags.shift()
+        state.new_tag.shift()
     },
     splicePostTag (state, index) {
         if (index >= 0) {
-            state.tags.splice(index, 1)
+            state.new_tag.splice(index, 1)
         }
     },
     pushPostTag (state, value) {
-        state.tags.push(value)
+        state.new_tag.push(value)
     },
     updatePostExcerpt (state, value) {
         state.post_excerpt = value
@@ -128,9 +145,6 @@ const mutations = {
     },
     updateSticky (state, value) {
         state.sticky = value
-    },
-    updateRenderValue (state, value) {
-        state.render_value = value
     },
     SET_CURRENT_POST (state, value) {
         // 先重置， 在设置
@@ -146,9 +160,8 @@ const mutations = {
                 }
             }
             let {category, post_tag: postTag} = _.groupBy(value.terms, 'taxonomy')
-            if (postTag) state.tags = postTag.map((i) => i.name)
-            if (category) state.categoryValue = category[0].term_id
-
+            if (postTag) state.new_tag = postTag.map((i) => i.name)
+            if (category) state.category_id = category[0].term_id
             currCopy = _.cloneDeep(state)
         }
     }

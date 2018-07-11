@@ -55,7 +55,7 @@ module.exports = function (sequelize, DataTypes) {
             // allowNull: false,
             // defaultValue: 'auto-draft'
             type: DataTypes.ENUM,
-            values: Object.values(Enum.PostStatusEnum), //['draft', 'auto-draft', 'publish', 'inherit'],
+            values: Object.values(Enum.PostStatusEnum), //['draft', 'auto-draft', 'publish', 'inherit', ..],
             allowNull: false
         },
         comment_status: {

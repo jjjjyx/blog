@@ -7,7 +7,7 @@
             <Button type="text" size="small" :icon="showBody?'arrow-up-b':'arrow-down-b'" @click.prevent="toggleBody"></Button>
         </div>
         <collapse-transition>
-            <div class="ivu-card-body" v-show="showBody" @mousedown.stop.prevent>
+            <div class="ivu-card-body" v-show="showBody">
                 <slot></slot>
             </div>
         </collapse-transition>

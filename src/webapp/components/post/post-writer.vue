@@ -38,7 +38,7 @@
                     </div>
                 </Poptip>
                 <Tag v-for="(item, index) in selectedTag" :key="index" :name="item" closable @on-close="$store.commit('splicePostTag',index)">{{item}}</Tag>
-                <Tag v-for="(item, index) in newTag" :key="item" :name="item" closable @on-close="newTag.splice(index, 1)">{{item}}</Tag>
+                <!--<Tag v-for="(item, index) in newTags" :key="item" :name="item" closable @on-close="$store.commit('splicePostNewTag',index)">{{item}}</Tag>-->
                 <input class="input-tag" autocomplete="off" tabindex="0" type="text" ref="tagInput" v-model="newTagValue" placeholder="点击此处添加标签" @keyup.enter="addTag">
             </div>
             </collapse-transition>
@@ -135,8 +135,6 @@ export default {
             maxTagLength: 16,
             tagWrapShow: true,
             newTagValue: '',
-            newTag: [],
-            // value: '',
             currentStatus: POST_WRITER_STATUS.normal,
             sidebarsOrder,
 
@@ -153,35 +151,25 @@ export default {
     computed: {
         ...mapState({
             'currentPost': state => state.post_writer
+            // newTags: state => state.post_writer.newTags
         }),
         ...mapGetters(['tagsList', 'showLeaveTip']),
-        categoryValue: {
-            get () { return this.$store.state.post_writer.categoryValue },
-            set (value) { this.$store.commit('updateCategoryValue', value) }
-        },
         postTitle: {
             get () { return this.$store.state.post_writer.post_title },
             set (value) { this.$store.commit('updatePostTitle', value) }
         },
-        postContent: {
-            get () { return this.$store.state.post_writer.post_content },
-            set (value) { this.$store.commit('updatePostContent', value) }
-        },
-        renderValue: {
-            get () { return this.$store.state.post_writer.render_value },
-            set (value) { this.$store.commit('updateRenderValue', value) }
-        },
         selectedTag: {
-            get () { return this.$store.state.post_writer.tags },
+            get () { return this.$store.state.post_writer.new_tag },
             set (value) { this.$store.commit('updateTags', value) }
         },
         currTagLength: function () {
-            return this.selectedTag.length + this.newTag.length
+            return this.selectedTag.length
         }
     },
     methods: {
         ...mapActions({
             'fetchTerms': 'fetchTerms',
+            // todo 获取文章时候比较版本，提示加载最新的版本， 而不是发布文章的内容
             'fetchData': 'fetchPostInfo'
         }),
         checkTagLength () {
@@ -204,16 +192,10 @@ export default {
                 this.$Message.info('标签太多啦')
             } else if (!verification(this.newTagValue)) {
                 this.$Message.info('请提交正确的标签名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！')
-            } else if (this.newTag.indexOf(this.newTagValue) >= 0) { // 是否重复
+            } else if (this.selectedTag.indexOf(this.newTagValue) >= 0) { // 是否重复
                 console.log('重复的标签')
             } else {
-                let tag = this.tagsList.find((item) => (item.name === this.newTagValue))
-                if (tag) {
-                    // this.selectedTag.push(tag.name)
-                    this.$store.commit('pushPostTag')
-                } else {
-                    this.newTag.push(this.newTagValue)
-                }
+                this.$store.commit('pushPostTag', this.newTagValue)
             }
             this.newTagValue = ''
         },
@@ -286,20 +268,6 @@ export default {
         imgDel (file) {
             console.log('del img', file)
         },
-        handleClose (name) {
-            console.log('handleClose', name)
-            // let index = list.indexOf(name)
-            // // const index = this.count.indexOf(name)
-            // list.splice(index, 1)
-        },
-        handleClose2 (name) {
-            console.log('handleClose2', name)
-
-            let index = this.newTag.indexOf(name)
-            console.log(index)
-            // // const index = this.count.indexOf(name)
-            this.newTag.splice(index, 1)
-        },
         handleMdChange (value, render) {
             // console.log(value, value === this.currentPost.post_content)
             if (value && value !== this.currentPost.post_content) {
@@ -308,19 +276,14 @@ export default {
             } else {
                 this.currentStatus = POST_WRITER_STATUS.normal
             }
+            this.$store.commit('updatePostContent', {value, render})
         },
         async handleMdSave (value, render) {
             // title 绑定了
-            // this.currentPost.post_title =
-            // this.currentStatus = POST_WRITER_STATUS.saveing
             this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.saveing)
-            this.postContent = value
-            this.renderValue = render
-            // this.currentPost.render_value = render
-            let obj = Object.assign({}, this.currentPost)
-            obj.category_id = this.categoryValue
-            obj.new_tag = this.newTag.concat(this.selectedTag)
-            // 保存的时候不需要提交分类
+            // this.postContent = value
+            // this.renderValue = render
+            let obj = this.$store.getters.ajaxPostClone
             try {
                 await api.npost('/api/post/save', obj)
                 // console.log('save result = ', result)
@@ -359,9 +322,7 @@ export default {
                 if (target.nodeName === 'TEXTAREA') {
                     return
                 }
-                let value = this.$refs.md.d_value
-                let render = this.$refs.md.d_render
-                this.handleMdSave(value, render)
+                this.handleMdSave()
                 break
             }
         }
@@ -379,21 +340,6 @@ export default {
     },
     async created () {
         this.fetchTerms(false)
-    },
-    async beforeRouteUpdate (to, f, next) {
-        next()
-        // // 更新路由前检查是否保存
-        // if (this.showLeaveTip) {
-        //     this.leaveConfirm(next)
-        // } else {
-        //     // console.count('asd')
-        //     let query = to.query
-        //     let result = await this.fetchData(query)
-        //     console.log('beforeRouteUpdate', result)
-        //         // this.pushRouter('replace')
-        //     // }
-        //     // next()
-        // }
     },
     async beforeRouteEnter (to, from, next) {
         next((vm) => {
