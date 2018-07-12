@@ -1,6 +1,7 @@
 <template>
     <div class="post-writer-content">
         <div class="post-body-content">
+            <!--<Alert banner type="warning">Notice: notification contents...</Alert>-->
             <div class="post-title-wrap">
                 <input type="text" class="title" v-model="postTitle" placeholder="请输入一个标题">
                 <div class="post-title-options table-buttons">
@@ -74,6 +75,15 @@
                 <Button @click="reject && reject('cancel'), saveTipModel = false">取消</Button>
             </div>
         </Modal>
+
+        <Modal v-model="versionModel" width="80%">
+            <p slot="header" style="color:#f60;text-align:center">
+                <Icon type="information-circled"></Icon>
+                <span>版本记录</span>
+            </p>
+            <div class="acediff"></div>
+
+        </Modal>
     </div>
 </template>
 
@@ -85,6 +95,9 @@ import draggable from 'vuedraggable'
 import {mapActions, mapGetters, mapState} from 'vuex'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
+// import AceDiff from 'ace-diff/dist/ace-diff.min';
+// optionally, include CSS, or use your own
+// import 'ace-diff/dist/ace-diff.min.css';
 
 import api from '@/utils/api'
 import ajax from '@/utils/ajax'
@@ -138,7 +151,8 @@ export default {
             currentStatus: POST_WRITER_STATUS.normal,
             sidebarsOrder,
 
-            saveTipModel: false
+            saveTipModel: false,
+            versionModel: false
         }
     },
     components: {
@@ -325,6 +339,46 @@ export default {
                 this.handleMdSave()
                 break
             }
+        },
+        checkVersion () {
+             // 如果版本记录中 有最后修改时间大于当前修改时间的
+            let revisionFirstTime = new Date(_.first(this.currentPost.revision).updatedAt).getTime()
+            let currUpdatedAt = new Date(this.currentPost.updatedAt).getTime()
+            if (revisionFirstTime > currUpdatedAt) {
+                // console.log('存在更新的记录')
+                // this.$Notice
+                this.$Message.info({
+                    render: h => {
+                        let a = h('a', {
+                            on:{
+                                click: ()=> {
+                                    this.openVersionModel()
+                                    this.$Message.destroy()
+                                }
+                            }
+                        },'查看自动保存的版本')
+                        return h('span', [
+                            '有一个自动保存的版本比如下显示的版本还要新。',
+                            a
+                        ])
+                    },
+                    duration: 0,
+                    closable: true
+                });
+            }
+        },
+        openVersionModel () {
+            console.log('openVersionModel')
+            this.versionModel = true
+            // var differ = new AceDiff({
+            //     element: '.acediff',
+            //     left: {
+            //         content: 'your first file content here',
+            //     },
+            //     right: {
+            //         content: 'your second file content here',
+            //     },
+            // });
         }
     },
     watch: {
@@ -358,6 +412,9 @@ export default {
                         } else {
                             vm.pushRouter('replace')
                         }
+                    } else {
+                        // 获取成功 判断版本
+                        vm.checkVersion()
                     }
                 })
             }
@@ -391,6 +448,7 @@ export default {
     mounted () {
         // console.log(this.$refs.md)
         // 当前页面中按ctrl + s
+
 
         // 直接进入 创建新文章
         // 进入时带id 参数 检查id 参数 是文章加载文章内容，不是创建新文章

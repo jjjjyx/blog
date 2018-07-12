@@ -56,7 +56,6 @@ export function getMetaKeyCode (e) {
 }
 
 export function getTimeText (timeInMs, pattern = 'yy/MM/dd') {
-    console.log(timeInMs, pattern)
     let ms = Math.abs(timeInMs - new Date())
     let s = ms / 1000
     let m = s / 60

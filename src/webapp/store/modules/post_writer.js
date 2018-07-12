@@ -31,6 +31,9 @@ const state = {
     'render_value': '',
     'post_password': '',
 
+    updatedAt: '',
+    createdAt: '',
+
     sticky: '',
     user: {},
     metas: [], // metas 信息
@@ -61,6 +64,8 @@ const getters = {
         // delete obj.newTags
         // delete obj.tags
         delete obj.status
+        delete obj.updatedAt
+        delete obj.createdAt
         return obj
     }
     // user: state => state.user
