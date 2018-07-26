@@ -2,6 +2,7 @@
 
 import _ from 'lodash'
 import api from '@/utils/api'
+import {transformMetas} from '../../utils/common'
 // import Vue from 'vue'
 
 const POST_WRITER_STATUS = {
@@ -36,7 +37,7 @@ const state = {
 
     sticky: '',
     user: {},
-    metas: [], // metas 信息
+    metas: {}, // metas 信息
     terms: [], // 标签 + 分类
     new_tag: [], // 标签 用作回填
     // newTags: [], // 新增的标签
@@ -151,6 +152,11 @@ const mutations = {
     updateSticky (state, value) {
         state.sticky = value
     },
+    restore (state, value) {
+        state.post_content = value.post_content
+        state.post_title = value.post_title
+        state.post_excerpt = value.post_excerpt
+    },
     SET_CURRENT_POST (state, value) {
         // 先重置， 在设置
         if (_.isObject(value)) {
@@ -159,6 +165,17 @@ const mutations = {
                     state[key] = copyPost[key]
                 }
             }
+            // 标记自动版本
+            if (value.revision && _.isArray(value.revision)) {
+                value.revision.forEach((item) => {
+                    item.autosave = item.type === `${value.id}-autosave-v1`
+                    item.curr = item.updatedAt === value.updatedAt
+                    item.metas = transformMetas(item.metas)
+                    // item.post_content = false
+                })
+            }
+            // 转换metas
+            value.metas = transformMetas(value.metas)
             for (let key in value) {
                 if (state.hasOwnProperty(key)) {
                     state[key] = value[key]
@@ -167,6 +184,7 @@ const mutations = {
             let {category, post_tag: postTag} = _.groupBy(value.terms, 'taxonomy')
             if (postTag) state.new_tag = postTag.map((i) => i.name)
             if (category) state.category_id = category[0].term_id
+
             currCopy = _.cloneDeep(state)
         }
     }

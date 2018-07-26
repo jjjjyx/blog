@@ -6,6 +6,7 @@ import iView from 'iview'
 import Index from '@/components/index.vue'
 import postManagement from '@/components/post/post-management'
 import postWriter from '@/components/post/post-writer'
+import postTest from '@/components/post/post-test'
 import NotFound from '../404'
 
 import store from '../store'
@@ -47,6 +48,11 @@ const routes = [
         path: '/post/writer',
         name: 'post_writer',
         component: postWriter
+    },
+    {
+        path: '/post/test',
+        name: 'post_test',
+        component: postTest
     },
     {path: '*', component: NotFound, name: '*'}
 ]

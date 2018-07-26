@@ -56,7 +56,7 @@
                 <transition-group type="transition" :name="'flip-list'">
                     <sidebar-panel v-for="sidebar in sidebarsOrder" :key="sidebar" class="postbox">
                         <template slot="title">{{$options.components[sidebar].title}}</template>
-                        <components :is="sidebar" :current-post="currentPost"></components>
+                        <components :is="sidebar" :current-post="currentPost" @viewVersion="openVersionModel"></components>
                     </sidebar-panel>
                 </transition-group>
             </draggable>
@@ -75,16 +75,10 @@
                 <Button @click="reject && reject('cancel'), saveTipModel = false">取消</Button>
             </div>
         </Modal>
-
-        <Modal v-model="versionModel" width="80%">
-            <p slot="header" style="color:#f60;text-align:center">
-                <Icon type="information-circled"></Icon>
-                <span>版本记录</span>
-            </p>
-            <div class="acediff"></div>
-
-        </Modal>
+        <version-modal ref="versionModal" :visible.sync="versionModel" @restore="showVersionWarning = false"></version-modal>
+        <Alert ref="alert" v-show="showVersionWarning" closable show-icon type="warning">有一个自动保存的版本比如下显示的版本还要新 <a href="javascript:;" @click="openVersionModel">查看自动保存的版本</a></Alert>
     </div>
+
 </template>
 
 <script>
@@ -106,6 +100,7 @@ import {verification, getMetaKeyCode} from '@/utils/common'
 import {on, off} from '@/utils/dom'
 
 import sidebars from './sidebar'
+import VersionModal from './modal/version'
 import sidebarPanel from './sidebar/sidebar.vue'
 // import {on} from '@/utils/dom'
 // import { Base64 } from 'js-base64'
@@ -152,7 +147,8 @@ export default {
             sidebarsOrder,
 
             saveTipModel: false,
-            versionModel: false
+            versionModel: false,
+            showVersionWarning: false
         }
     },
     components: {
@@ -160,6 +156,7 @@ export default {
         draggable,
         CollapseTransition,
         sidebarPanel,
+        VersionModal,
         ...sidebars
     },
     computed: {
@@ -168,6 +165,9 @@ export default {
             // newTags: state => state.post_writer.newTags
         }),
         ...mapGetters(['tagsList', 'showLeaveTip']),
+        versions: function () {
+            return this.currentPost.revision
+        },
         postTitle: {
             get () { return this.$store.state.post_writer.post_title },
             set (value) { this.$store.commit('updatePostTitle', value) }
@@ -292,8 +292,24 @@ export default {
             }
             this.$store.commit('updatePostContent', {value, render})
         },
+        showSaveWarning () {
+            return new Promise((resolve, reject) => {
+                this.$Modal.confirm({
+                    title: 'Title',
+                    content: '当前存在更新的版本记录，此次操作将会覆盖上次自动保存记录',
+                    onOk: resolve,
+                    onCancel: reject
+                });
+            })
+
+        },
         async handleMdSave (value, render) {
             // title 绑定了
+            // 如果当前的通知没有被关闭 这个提示用户是否覆盖
+            if (this.showVersionWarning) {
+                await this.showSaveWarning()
+                this.showVersionWarning = false
+            }
             this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.saveing)
             // this.postContent = value
             // this.renderValue = render
@@ -341,44 +357,40 @@ export default {
             }
         },
         checkVersion () {
-             // 如果版本记录中 有最后修改时间大于当前修改时间的
+            // 如果版本记录中 有最后修改时间大于当前修改时间的
             let revisionFirstTime = new Date(_.first(this.currentPost.revision).updatedAt).getTime()
             let currUpdatedAt = new Date(this.currentPost.updatedAt).getTime()
             if (revisionFirstTime > currUpdatedAt) {
+                this.showVersionWarning = true
                 // console.log('存在更新的记录')
                 // this.$Notice
-                this.$Message.info({
-                    render: h => {
-                        let a = h('a', {
-                            on:{
-                                click: ()=> {
-                                    this.openVersionModel()
-                                    this.$Message.destroy()
-                                }
-                            }
-                        },'查看自动保存的版本')
-                        return h('span', [
-                            '有一个自动保存的版本比如下显示的版本还要新。',
-                            a
-                        ])
-                    },
-                    duration: 0,
-                    closable: true
-                });
+                // let $a = this.$createElement('a', {
+                //         domProps: {
+                //             href: 'javascript:;'
+                //         },
+                //         on: {
+                //             click: () => {
+                //                 this.openVersionModel()
+                //                 this.$Message.destroy()
+                //             }
+                //         }
+                //     }, '查看自动保存的版本')
+                //
+                // let $alert = this.$createElement('Alert', {
+                //     props: {
+                //         'show-icon': true,
+                //         'type': 'warning'
+                //     }
+                // }, ['有一个自动保存的版本比如下显示的版本还要新。', $a])
+
+                // console.log($alert)
             }
         },
-        openVersionModel () {
+        openVersionModel (ver) {
             console.log('openVersionModel')
             this.versionModel = true
-            // var differ = new AceDiff({
-            //     element: '.acediff',
-            //     left: {
-            //         content: 'your first file content here',
-            //     },
-            //     right: {
-            //         content: 'your second file content here',
-            //     },
-            // });
+            this.$refs.versionModal.active = ver
+            // this.showVersionWarning = false
         }
     },
     watch: {
@@ -446,9 +458,11 @@ export default {
         }
     },
     mounted () {
+        console.log(this.$refs.alert)
+        let $alert = this.$refs.alert.$el
+        this.$el.parentNode.insertBefore($alert, this.$el)
         // console.log(this.$refs.md)
         // 当前页面中按ctrl + s
-
 
         // 直接进入 创建新文章
         // 进入时带id 参数 检查id 参数 是文章加载文章内容，不是创建新文章

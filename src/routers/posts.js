@@ -296,6 +296,7 @@ const save = [
                     values.post_title = post_title
                     values.post_content = post_content
                     values.post_excerpt = post_excerpt
+                    values.createdAt = null
                     autoSavePost = await postDao.create(values)
                 } else {
                     debug(`文章 = ${id} 更新存档内容！`)
@@ -493,6 +494,7 @@ const release = [
                 values.post_type = 'revision'
                 values.post_date = post.post_date
                 values.id = undefined
+                values.createdAt = undefined
                 postDao.create(values).then((rp)=>{
                     _save_postMeta(rp.id, 'author', _post_author || req.user)
                     // _save_postMeta(rp.id, 'author_user_name', post_author)
@@ -723,7 +725,7 @@ const postInfo = [
                 // 草稿类型调取不检查
                 // if (result.post_status !== Enum.PostStatusEnum.DRAFT) {
                 let revision = await postDao.findAll({
-                    attributes: ['id', 'createdAt', ['post_name', 'type'], 'updatedAt'],
+                    attributes: ['id', 'createdAt', ['post_name', 'type'], 'updatedAt', 'post_content', 'post_title', 'post_excerpt'],
                     where: {
                         post_type: 'revision',
                         post_status: Enum.PostStatusEnum.INHERIT,

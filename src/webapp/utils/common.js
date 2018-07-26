@@ -77,3 +77,14 @@ export function dateFormat (timeInMs, pattern) {
         return new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm') || '-'
     }
 }
+
+
+export function transformMetas (metas = []) {
+    let obj = {}
+    if (_.isArray(metas)) {
+        metas.forEach((item) => {
+            obj[item.meta_key] = item
+        })
+    }
+    return obj
+}

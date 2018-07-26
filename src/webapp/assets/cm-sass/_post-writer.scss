@@ -149,3 +149,80 @@
         padding: 5px 0;
     }
 }
+
+// 文章版本
+.post-version-wrapper {
+    display: flex;
+    //padding: 1rem;
+}
+
+.post-version__list {
+    width: 220px;
+    flex-shrink: 0;
+    margin-right: 1rem;
+    display: flex;
+    flex-direction: column;
+    @at-root #{&}--body {
+        border-right: 1px solid $border-color;
+        height: 600px;
+        overflow-y: scroll;
+        padding: 1rem 0;
+        .ivu-timeline-item.active {
+            color: $primary;
+        }
+    }
+    @at-root #{&}--footer {
+        flex: 1;
+        text-align: center;
+        color: $gray-400;
+        padding: 1rem;
+    }
+    @at-root #{&}--time {
+        font-weight: 600;
+    }
+    @at-root #{&}--author {
+        font-size: 1.2rem;
+        padding-left: 1rem;
+        cursor: default;
+    }
+}
+
+.post-version__content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    // 文章标题
+    @at-root #{&}--footer {
+        flex-shrink: 0;
+        text-align: right;
+    }
+    @at-root #{&}--body {
+        height: 100%;
+        position: relative;
+    }
+    @at-root #{&}--header {
+        //font-weight: 600;
+        flex-shrink: 0;
+        font-size: 1.2rem;
+        position: relative;
+    }
+    @at-root #{&}--title {
+        padding: 1rem 0;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid $border-color;
+        @at-root #{&}--pt {
+            display: inline-block;
+            max-width: 120px;
+            overflow: hidden;
+            word-wrap: normal; /* for IE */
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            //vertical-align: middle;
+        }
+    }
+    @at-root #{&}--desc {
+        padding: 1rem 0;
+        font-size: 1rem;
+    }
+}

@@ -273,8 +273,6 @@ export default {
         },
         async release () {
             let obj = this.$store.getters.ajaxPostClone
-            // delete  obj,metas
-            // delete  obj,metas
             api.npost('/api/post/release', obj)
         }
 

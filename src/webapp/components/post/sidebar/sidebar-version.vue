@@ -3,10 +3,13 @@
         <div class="j-version-item" v-for="(version, index) in versions" v-bind:key="index">
             <avatar :style="{background: color}" size="small">{{version.user.user_login}}</avatar>
             <span class="j-version-username">{{version.user.user_login}}</span> &nbsp;
-            <span>{{getTimeText(new Date(version.createdAt).getTime())}}</span>
-            <a>({{dateFormat(version.createdAt, 'yyyy/MM/dd hh:mm:ss')}})</a>
-            <Tooltip content="自动保存" v-if="version.type === `${currentPost.id}-autosave-v1`">
+            <span>{{getTimeText(new Date(version.updatedAt).getTime())}}</span>
+            <a href="javascript:;" @click="$emit('viewVersion', version)">({{dateFormat(version.updatedAt, 'M/d hh:mm:ss')}})</a>
+            <Tooltip content="自动保存" v-if="version.autosave">
             <span  style="cursor: pointer">[ <Icon type="flag" color="#2d8cf0"></Icon> ]</span>
+            </Tooltip>
+            <Tooltip content="当前版本" v-if="version.curr">
+            <span  style="cursor: pointer">[ <Icon type="flag" color="#ffbf00"></Icon> ]</span>
             </Tooltip>
         </div>
     </div>
