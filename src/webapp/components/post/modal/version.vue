@@ -39,7 +39,7 @@
                     <h2 v-if="showCategory">分类</h2>
                     <div class="d2h-file-header" style="display: block" v-if="showCategory">
                         <span class="d2h-file-name-wrapper">
-                            <span class="d2h-file-name">{{this.currentPost.category_id}}	-> {{this.activeCategory}}</span>
+                            <span class="d2h-file-name">{{this.currentPost.category_id}}-> {{this.activeCategory}}</span>
                             <!--<span class="d2h-tag d2h-changed d2h-changed-tag">CHANGED</span>-->
                         </span>
                     </div>
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import CodeDiff from '../../code-diff/code-diff'
 import {mapState, mapGetters} from 'vuex'
 import {dateFormat} from '@/utils/common'
@@ -81,9 +82,7 @@ export default {
     data () {
         return {
             versionModel: this.visible,
-            active: null,
-            oldStr: 'old code',
-            newStr: 'new code'
+            active: null
         }
     },
     components: {
@@ -91,8 +90,8 @@ export default {
     },
     computed: {
         ...mapState({
-            'currentPost': state => state.post_writer
-            // newTags: state => state.post_writer.newTags
+            'currentPost': state => state.post
+            // newTags: state => state.post.newTags
         }),
         ...mapGetters(['defaultCategoryValue']),
         versions: function () {

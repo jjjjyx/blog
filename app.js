@@ -24,8 +24,8 @@ app.set('view engine', 'html')
 app.set('views', path.resolve(__dirname, './src/views'))
 
 debug('Attaching plugins')
-app.use(bodyParser.urlencoded({extended: true})) // for parsing application/x-www-form-urlencoded
-app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.json({limit: '50mb'})) // for parsing application/json
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true})) // for parsing application/x-www-form-urlencoded
 // 没有使用文件上传的操作
 // app.use(multer()); // for parsing multipart/form-data
 app.use(cookieParser())

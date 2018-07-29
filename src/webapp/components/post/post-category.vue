@@ -5,27 +5,14 @@
                 <i-Form :model="filterForm" :label-width="50" inline class="filter-form"
                         @submit.native.prevent="search">
                     <Form-Item label="关键字">
-                        <Input v-model="filterForm.key" placeholder="标题/分类/标签/id" clearable/>
+                        <Input v-model="filterForm.key" placeholder="名称" clearable/>
                     </Form-Item>
-                    <Form-Item label="类别">
-                        <i-Select v-model="filterForm.term">
-                            <i-Option value="any">不限</i-Option>
-                            <!--<i-Option value="male">男</i-Option>-->
-                            <!--<i-Option value="girl">女</i-Option>-->
-                        </i-Select>
-                    </Form-Item>
-                    <Form-Item label="状态">
-                        <i-Select v-model="filterForm.status">
-                            <i-Option value="all">所有</i-Option>
-                            <!--<i-Option value="online">在职</i-Option>-->
-                            <!--<i-Option value="offline">离职</i-Option>-->
-                        </i-Select>
-                    </Form-Item>
+
                     <FormItem>
                         <i-Button type="primary" shape="circle" icon="ios-search" @click="search"></i-Button>
                     </FormItem>
                 </i-Form>
-                <i-Button type="ghost" icon="document" @click="$router.push({name: 'post_writer'})">新建文章</i-Button>
+                <i-Button type="ghost" icon="document" @click="createCategory">新建分类</i-Button>
                 <i-Button type="ghost" icon="trash-a" @click="trash()" :disabled="selectedNum === 0">移至回收站</i-Button>
 
             </i-col>
@@ -50,7 +37,7 @@
             </i-col>
         </row>
         <div class="cm-header">
-            <span style="float: right">已全部加载，共{{data.length}}篇文章</span>
+            <span style="float: right">已全部加载，共{{data.length}}个分类</span>
             <span>全部文章</span>
         </div>
         <div class="cm-wrapper" ref="table-wrapper">
@@ -65,64 +52,28 @@
 <script>
 import Vue from 'vue'
 import {on} from '@/utils/dom'
-import {dateFormat} from '../../utils/common'
-import _ from 'lodash'
-import PostTitle from './col/post-title'
+// import _ from 'lodash'
+import CategoryName from './col/category-name'
 import {mapState, mapActions, mapGetters} from 'vuex'
-// import api from '@/utils/api'
-// import
-Vue.component('post-title', PostTitle)
-const renderTitle = function (h, {row}) {
-    return h('post-title', {
-        props: {post: row},
-        on: {
-            trash: () => {
-                // this.multipleSelection = [row]
-                this.trash(row)
-            }
-        }
-    })
-}
+import {dateFormat} from '../../utils/common'
 
-const renderAuthor = function (h, {row}) {
-    return h('span', row.user.user_nickname)
-}
-const renderCategory = function (h, {row}) {
-    let category = _.find(row.terms, ['taxonomy', 'category'])
-    return h('Tooltip', {
-        props: {
-            content: category.description
-        }
-    }, category.name)
-}
-const renderTags = function (h, {row}) {
-    let tags = _.filter(row.terms, ['taxonomy', 'post_tag'])
-    let $tags = tags.map((tag) => {
-        return h('Tooltip', {
-            props: {
-                content: tag.description || tag.name
-            }
-        }, [
-            h('Tag', {props: {type: 'border'}}, tag.name)
-        ])
-    })
-    return h('div', $tags)
-}
+Vue.component('category-name', CategoryName)
 const renderDate = function (h, {row}) {
-    let flag
-    let date
-    if (row.post_status === 'publish') {
-        flag = h('span', {domProps: {className: 'd-block'}}, '发布时间')
-        date = h('span', dateFormat(row.post_date))
-    } else {
-        flag = h('span', {domProps: {className: 'd-block'}}, '最后修改时间')
-        date = h('span', dateFormat(row.updatedAt))
-    }
-    return h('div', [flag, date])
+    return h('div', dateFormat(row.createdAt))
 }
+const renderName = function (h, {row}) {
+    return h('category-name', {
+        props: {category: row},
+        on: {
+            // trash: () => {
+            //     this.trash(row)
+            // }
+        }
+    })
 
+}
 export default {
-    name: 'post-management',
+    name: 'post-category',
     data () {
         return {
             filterForm: {
@@ -131,13 +82,16 @@ export default {
             tableHeight: 400,
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
-                // {title: 'ID', key: 'id', sortable: true},
-                {title: '标题', key: 'size', sortable: true, render: renderTitle.bind(this)},
-                {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
-                {title: '类别', key: '', width: 100, render: renderCategory.bind(this)},
-                {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
-                {title: '评论', key: '', width: 80, sortable: true},
-                {title: '日期', key: '', width: 220, render: renderDate.bind(this)}
+                // {title: 'ID', key: 'term_id', width: 100, sortable: true},
+                {title: '分类名称', key: 'name', width: 300, sortable: true, render: renderName.bind(this)},
+                {title: '文章数', key: 'count', width: 100, sortable: true},
+                {title: '说明', key: 'description'},
+                {title: '创建时间', key: '', width: 220, render: renderDate.bind(this)}
+                // {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
+                // {title: '类别', key: '', width: 100, render: renderCategory.bind(this)},
+                // {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
+                // {title: '评论', key: '', width: 80, sortable: true},
+
             ],
             // data: [],
             tableStatus: false
@@ -145,10 +99,11 @@ export default {
     },
     computed: {
         ...mapState({
-            data: state => state.posts.list
+            data: state => state.term.categoryList
         }),
         ...mapGetters({
             'selectedList': 'selectedPost',
+            // 'data': 'categoryList'
             // 'categoryValue': 'categoryValue'
         }),
         selectedNum: function () {
@@ -157,15 +112,18 @@ export default {
     },
     methods: {
         ...mapActions({
-            'fetchPosts': 'fetchPosts',
-            'trash': 'trashPosts'
+            'fetchTerms': 'fetchTerms',
         }),
         search: function search () {
 
         },
+        // 创建新分类
+        createCategory: function createCategory () {
+
+        },
         async fetchData (force) {
             this.tableStatus = true
-            await this.fetchPosts(force)
+            await this.fetchTerms(force)
             this.tableStatus = false
         },
         handleSelectChange () {

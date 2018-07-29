@@ -38,7 +38,7 @@
 
 <script>
 import _ from 'lodash'
-import {mapGetters} from 'vuex'
+import {mapState} from 'vuex'
 import api from '@/utils/api'
 import {verification} from '@/utils/common'
 import CollapseTransition from '@/utils/collapse-transition'
@@ -54,7 +54,9 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(['categoryList']),
+        ...mapState({
+            'categoryList': state => state.term.categoryList
+        }),
         commonCategoryList: function () {
             let arr = _.orderBy(this.categoryList, ['count'], ['desc']).slice(0, 5)
             return arr

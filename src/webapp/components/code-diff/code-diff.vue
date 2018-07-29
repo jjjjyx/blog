@@ -30,7 +30,7 @@ export default {
             default: 'line-by-line'
         },
         header: {
-            type: String,
+            type: String
         }
     },
     directives: {

@@ -100,7 +100,7 @@
         </div>
         <div class="postbox-options clearfix">
             <Button size="small" type="text" style="color: #ed3f14" v-show="originPostStatus != 'auto-draft'">移至回收站</Button>
-            <Button size="small" class="float-right" type="primary" @click="release">发布</Button>
+            <Button size="small" class="float-right" type="primary" @click="release">{{isPublish ? '更新':'发布'}}</Button>
             <Button size="small" class="float-right mr-1" type="success">
                 <a href="" style="color: inherit;">预览更改</a>
             </Button>
@@ -141,13 +141,14 @@ export default {
     },
     computed: {
         ...mapState({
-            'postStatus': state => state.post_writer.post_status,
-            'publishDate': state => state.post_writer.post_date,
-            'versionNum': state => state.post_writer.revision.length,
-            'currentPost': state => state.post_writer
+            'postStatus': state => state.post.post_status,
+            'publishDate': state => state.post.post_date,
+            'versionNum': state => state.post.revision.length,
+            'currentPost': state => state.post
         }),
         ...mapGetters({
-            'postStatusDict': 'postStatusDict'
+            'postStatusDict': 'postStatusDict',
+            'isPublish': 'isPublish'
         }),
         publicText () {
             switch (this.tmpStatus) {
@@ -176,7 +177,7 @@ export default {
             }
         },
         postDate: {
-            get () { return this.$store.state.post_writer.post_date || this.originDate },
+            get () { return this.$store.state.post.post_date || this.originDate },
             set (value) { this.$store.commit('updatePostDate', value) }
         }
     },
@@ -273,7 +274,23 @@ export default {
         },
         async release () {
             let obj = this.$store.getters.ajaxPostClone
-            api.npost('/api/post/release', obj)
+            try {
+                await api.npost('/api/post/release', obj)
+                this.$Message.success({
+                    render: h => {
+                        let a = h('a', {
+                            domProps: {
+                                target: '_blank',
+                                href: '/' // todo 跳转到文章
+                            }
+                        }, '立即查看')
+                        return h('span', ['更新文章成功', a,])
+                    }
+                })
+            } catch (e) {
+
+            }
+
         }
 
     }

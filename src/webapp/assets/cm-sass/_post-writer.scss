@@ -69,6 +69,12 @@
     height: 100%;
     overflow: hidden;
 }
+.post-status-bar {
+    flex-shrink: 0;
+    padding: 5px 20px;
+    border-top: 1px solid #dddee1;
+    text-align: right;
+}
 
 // 右侧
 .postbox-container {

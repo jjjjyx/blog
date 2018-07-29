@@ -1,6 +1,6 @@
 <template>
     <div class="post-writer-content">
-        <div class="post-body-content">
+        <div class="post-body-content" ref="postBody">
             <!--<Alert banner type="warning">Notice: notification contents...</Alert>-->
             <div class="post-title-wrap">
                 <input type="text" class="title" v-model="postTitle" placeholder="请输入一个标题">
@@ -49,8 +49,15 @@
                               @save="handleMdSave"
                               @imgAdd="uploadImg" @imgDel="imgDel"></mavon-editor>
             </div>
+            <div class="post-status-bar">
+                <!--xx 创建 date    初始状态-->
+                <!--xx 编辑于 date  修改后没保存-->
+                <!--xx 保存于 date  保存后-->
+                <!--xx 发布于 date  加载已发布-->
+                <span>{{user.user_nickname}}</span>&nbsp;<span v-text="editorStatus"></span> <span v-text="editorTime"></span>
+            </div>
         </div>
-        <div class="postbox-container">
+        <div class="postbox-container" ref="postBox">
             <!--{{currentPost}}-->
             <draggable :list="sidebarsOrder" class="dragArea" >
                 <transition-group type="transition" :name="'flip-list'">
@@ -76,7 +83,7 @@
             </div>
         </Modal>
         <version-modal ref="versionModal" :visible.sync="versionModel" @restore="showVersionWarning = false"></version-modal>
-        <Alert ref="alert" v-show="showVersionWarning" closable show-icon type="warning">有一个自动保存的版本比如下显示的版本还要新 <a href="javascript:;" @click="openVersionModel">查看自动保存的版本</a></Alert>
+        <Alert ref="alert" v-show="showVersionWarning" closable show-icon type="warning">有一个自动保存的版本比如下显示的版本还要新 <a href="javascript:;" @click="openVersionModel()">查看自动保存的版本</a></Alert>
     </div>
 
 </template>
@@ -96,12 +103,13 @@ import 'mavon-editor/dist/css/index.css'
 import api from '@/utils/api'
 import ajax from '@/utils/ajax'
 import CollapseTransition from '@/utils/collapse-transition'
-import {verification, getMetaKeyCode} from '@/utils/common'
+import {verification, getMetaKeyCode, POST_WRITER_STATUS} from '@/utils/common'
 import {on, off} from '@/utils/dom'
 
 import sidebars from './sidebar'
 import VersionModal from './modal/version'
 import sidebarPanel from './sidebar/sidebar.vue'
+import {dateFormat} from '../../utils/common'
 // import {on} from '@/utils/dom'
 // import { Base64 } from 'js-base64'
 const sidebarsOrder = Object.keys(sidebars)
@@ -128,13 +136,7 @@ function fileMd5 (file) {
     })
 }
 
-const POST_WRITER_STATUS = {
-    normal: '',
-    save: '已保存',
-    saveing: '保存中',
-    edit: '已修改 - 未保存',
-    auto_draft: '自动草稿'
-}
+
 
 export default {
     name: 'post-writer',
@@ -143,12 +145,13 @@ export default {
             maxTagLength: 16,
             tagWrapShow: true,
             newTagValue: '',
-            currentStatus: POST_WRITER_STATUS.normal,
+            // currentStatus: POST_WRITER_STATUS.normal,
             sidebarsOrder,
 
             saveTipModel: false,
             versionModel: false,
-            showVersionWarning: false
+            showVersionWarning: false,
+            defaultDatePattern: 'yyyy/MM/dd hh:mm:ss'
         }
     },
     components: {
@@ -161,24 +164,41 @@ export default {
     },
     computed: {
         ...mapState({
-            'currentPost': state => state.post_writer
-            // newTags: state => state.post_writer.newTags
+            'user': 'user',
+            'currentPost': state => state.post,
+            'tagsList': state => state.term.tagList
         }),
-        ...mapGetters(['tagsList', 'showLeaveTip']),
+        ...mapGetters(['showLeaveTip']),
+        editorStatus: {
+            get () { return this.$store.state.post.status },
+            set (value) { this.$store.commit('updateEditorStatus', value) }
+        },
+        editorTime: function () {
+            // let s = th
+            if (this.editorStatus === POST_WRITER_STATUS.created) {
+                return dateFormat(this.currentPost.createdAt)
+            } else if (this.editorStatus === POST_WRITER_STATUS.posted) {
+                return dateFormat(this.currentPost.post_date)
+            }
+            return dateFormat(new Date())
+        },
         versions: function () {
             return this.currentPost.revision
         },
         postTitle: {
-            get () { return this.$store.state.post_writer.post_title },
+            get () { return this.$store.state.post.post_title },
             set (value) { this.$store.commit('updatePostTitle', value) }
         },
         selectedTag: {
-            get () { return this.$store.state.post_writer.new_tag },
+            get () { return this.$store.state.post.new_tag },
             set (value) { this.$store.commit('updateTags', value) }
         },
         currTagLength: function () {
             return this.selectedTag.length
-        }
+        },
+        // user: function () {
+        //     return this.$
+        // }
     },
     methods: {
         ...mapActions({
@@ -286,9 +306,9 @@ export default {
             // console.log(value, value === this.currentPost.post_content)
             if (value && value !== this.currentPost.post_content) {
                 // this.showLeaveTip =
-                this.currentStatus = POST_WRITER_STATUS.edit
+                this.editorStatus = POST_WRITER_STATUS.edited
             } else {
-                this.currentStatus = POST_WRITER_STATUS.normal
+                this.editorStatus = POST_WRITER_STATUS.created
             }
             this.$store.commit('updatePostContent', {value, render})
         },
@@ -299,9 +319,8 @@ export default {
                     content: '当前存在更新的版本记录，此次操作将会覆盖上次自动保存记录',
                     onOk: resolve,
                     onCancel: reject
-                });
+                })
             })
-
         },
         async handleMdSave (value, render) {
             // title 绑定了
@@ -310,7 +329,7 @@ export default {
                 await this.showSaveWarning()
                 this.showVersionWarning = false
             }
-            this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.saveing)
+            this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saving)
             // this.postContent = value
             // this.renderValue = render
             let obj = this.$store.getters.ajaxPostClone
@@ -318,10 +337,10 @@ export default {
                 await api.npost('/api/post/save', obj)
                 // console.log('save result = ', result)
                 this.pushRouter('replace')
-                this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.save)
+                this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saved)
             } catch (e) {
                 this.$Message.info('保存失败')
-                this.$store.commit('updateCurrentPostStatus', POST_WRITER_STATUS.edit)
+                this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.edited)
             }
         },
         pushRouter (mode = 'push') {
@@ -389,12 +408,13 @@ export default {
         openVersionModel (ver) {
             console.log('openVersionModel')
             this.versionModel = true
-            this.$refs.versionModal.active = ver
+            if (ver)
+                this.$refs.versionModal.active = ver
             // this.showVersionWarning = false
         }
     },
     watch: {
-        currentStatus: function (val) {
+        editorStatus: function (val) {
             if (this.showLeaveTip) {
                 window.onbeforeunload = function () {
                     return '确认离开页面，当前修改将会丢弃'
@@ -458,9 +478,21 @@ export default {
         }
     },
     mounted () {
-        console.log(this.$refs.alert)
         let $alert = this.$refs.alert.$el
         this.$el.parentNode.insertBefore($alert, this.$el)
+
+        // postBody
+
+        // let h = this.$refs['table-wrapper'].clientHeight
+        // this.tableHeight = h
+        let onResize = _.debounce((e) => {
+            // 这里地方 不知道什么缘故需要设置一下容易的宽度，好像flex 布局有什么坑
+            let width = this.$el.clientWidth - this.$refs['postBody'].clientWidth
+            this.$refs['postBody'].style.width = `${width}px`
+        }, 1000)
+        onResize()
+        on(window, 'resize', onResize)
+
         // console.log(this.$refs.md)
         // 当前页面中按ctrl + s
 

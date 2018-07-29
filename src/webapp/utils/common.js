@@ -67,17 +67,16 @@ export function getTimeText (timeInMs, pattern = 'yy/MM/dd') {
     // if (h > 24 * 30) return ``
     return dateFormat(timeInMs, pattern)
 }
-
-export function dateFormat (timeInMs, pattern) {
+const defaultDatePattern = 'yyyy/MM/dd hh:mm'
+export function dateFormat (timeInMs, pattern = defaultDatePattern) {
     if (_.isNumber(timeInMs)) {
-        return new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm')
+        return new Date(timeInMs).format(pattern)
     } else if (_.isDate(timeInMs)) {
-        return timeInMs.format(pattern || 'yyyy/MM/dd hh:mm') || '-'
+        return timeInMs.format(pattern) || '-'
     } else {
-        return new Date(timeInMs).format(pattern || 'yyyy/MM/dd hh:mm') || '-'
+        return new Date(timeInMs).format(pattern) || '-'
     }
 }
-
 
 export function transformMetas (metas = []) {
     let obj = {}
@@ -87,4 +86,19 @@ export function transformMetas (metas = []) {
         })
     }
     return obj
+}
+
+
+export const POST_WRITER_STATUS = {
+    // normal: '',
+    // save: '已保存',
+    // saveing: '保存中',
+    // edit: '已修改 - 未保存',
+    // auto_draft: '自动草稿',
+
+    created: '创建于',
+    edited: '编辑于',
+    saved: '保存于',
+    saving: '保存中',
+    posted: '发布于'
 }
