@@ -1,5 +1,5 @@
 <template>
-    <div class="post-table-title-wrap">
+    <div class="cms-table-title-wrap">
         <div class="post-table-title">
             <!--已发布的不显示 -->
             <!--<a>{{post.post_title || '（无标题）'}}</a>-->
@@ -11,7 +11,7 @@
         <div class="post-table-content">
             这是内容
         </div>
-        <button-group size="small" class="post-table-options">
+        <button-group size="small" class="cms-table-options">
             <i-button type="ghost">编辑</i-button>
             <i-button type="ghost" style="color: rgb(237, 63, 20);" @click="$emit('trash')">移至回收站</i-button>
             <i-button type="ghost">预览</i-button>
@@ -41,21 +41,10 @@ export default {
 </script>
 
 <style scoped>
-    .post-table-title-wrap {
-        padding: 12px 0;
-    }
-    .post-table-content {
-        margin-bottom: .5em;
-    }
     .post-table-title {
         font-size: 16px;
     }
-    .post-table-options {
-        opacity: 0;
-        pointer-events: none;
-    }
-    .ivu-table-row-hover .post-table-options {
-        opacity: 1;
-        pointer-events: all;
+    .post-table-content {
+        margin-bottom: .5em;
     }
 </style>

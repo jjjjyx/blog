@@ -1,0 +1,12 @@
+
+.cms-table-title-wrap {
+    padding: 12px 0;
+}
+.cms-table-options {
+    opacity: 0;
+    pointer-events: none;
+}
+.ivu-table-row-hover .cms-table-options {
+    opacity: 1;
+    pointer-events: all;
+}

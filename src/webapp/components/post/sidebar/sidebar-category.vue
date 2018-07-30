@@ -89,7 +89,7 @@ export default {
                     this.createStatusLoading = true
                     try {
                         let result = await api.npost('/api/term/c/add', {name: this.value, description: '来自文章编辑', icon: '', slug: ''})
-                        this.$store.commit('updateAddCategoryList', result)
+                        this.$store.commit('addCategoryList', result)
                         this.vertical = result.term_id
                         this.collapseStatus1 = false
                         this.value = ''

@@ -12,8 +12,8 @@
                         <i-Button type="primary" shape="circle" icon="ios-search" @click="search"></i-Button>
                     </FormItem>
                 </i-Form>
-                <i-Button type="ghost" icon="document" @click="createCategory">新建分类</i-Button>
-                <i-Button type="ghost" icon="trash-a" @click="trash()" :disabled="selectedNum === 0">移至回收站</i-Button>
+                <i-button type="ghost" icon="document" @click="createCategory">新建分类</i-button>
+                <i-button type="ghost" icon="trash-a" @click="deleteCategory()" :disabled="selectedNum === 0">移至回收站</i-button>
 
             </i-col>
             <i-col span="6">
@@ -46,6 +46,7 @@
                      @on-selection-change="handleSelectChange"
                      :height="tableHeight" :loading="tableStatus"></i-table>
         </div>
+        {{selectedList}}
     </div>
 </template>
 
@@ -65,9 +66,7 @@ const renderName = function (h, {row}) {
     return h('category-name', {
         props: {category: row},
         on: {
-            // trash: () => {
-            //     this.trash(row)
-            // }
+            del: this.deleteCategory
         }
     })
 
@@ -83,8 +82,8 @@ export default {
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 // {title: 'ID', key: 'term_id', width: 100, sortable: true},
-                {title: '分类名称', key: 'name', width: 300, sortable: true, render: renderName.bind(this)},
-                {title: '文章数', key: 'count', width: 100, sortable: true},
+                {title: '分类名称', key: 'name', width: 380, sortable: true, render: renderName.bind(this)},
+                // {title: '文章数', key: 'count', width: 100, sortable: true},
                 {title: '说明', key: 'description'},
                 {title: '创建时间', key: '', width: 220, render: renderDate.bind(this)}
                 // {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
@@ -102,7 +101,7 @@ export default {
             data: state => state.term.categoryList
         }),
         ...mapGetters({
-            'selectedList': 'selectedPost',
+            'selectedList': 'selectedCategory',
             // 'data': 'categoryList'
             // 'categoryValue': 'categoryValue'
         }),
@@ -131,6 +130,9 @@ export default {
                 let rowDate = this.$refs.table.objData[index]
                 item._checked = rowDate._isChecked
             })
+        },
+        deleteCategory (e, category) {
+            console.log(e, category)
         }
     },
     created: function () {
