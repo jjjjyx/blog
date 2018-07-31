@@ -6,7 +6,7 @@
         </div>
         <div class="category-name-wrap">
             <div class="category-name">
-                <a href="javascript:;">{{category.name}}</a> <span> -- 文章个数 (<a href="javascript:;" class="u">{{category.count}}</a>)</span>
+                <a href="javascript:;">{{category.name}}</a> <span> -- 文章个数 ( <a href="javascript:;" class="u">{{category.count}}</a> )</span>
             </div>
             <button-group size="small" class="cms-table-options">
                 <i-button type="ghost">编辑</i-button>
@@ -56,6 +56,9 @@ export default {
         justify-content: center;
         align-items: center;
         font-size: 2rem;
+    }
+    .category-name {
+        margin-bottom: .5rem;
     }
     .category-name span {
         font-size: 1rem;

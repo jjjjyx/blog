@@ -46,18 +46,17 @@
                      @on-selection-change="handleSelectChange"
                      :height="tableHeight" :loading="tableStatus"></i-table>
         </div>
-        {{selectedList}}
     </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import {on} from '@/utils/dom'
+
 // import _ from 'lodash'
 import CategoryName from './col/category-name'
 import {mapState, mapActions, mapGetters} from 'vuex'
 import {dateFormat} from '../../utils/common'
-
+import crud from './crud'
 Vue.component('category-name', CategoryName)
 const renderDate = function (h, {row}) {
     return h('div', dateFormat(row.createdAt))
@@ -73,12 +72,10 @@ const renderName = function (h, {row}) {
 }
 export default {
     name: 'post-category',
+    mixins: [crud],
     data () {
         return {
-            filterForm: {
-                key: '', term: '', status: ''
-            },
-            tableHeight: 400,
+
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 // {title: 'ID', key: 'term_id', width: 100, sortable: true},
@@ -90,10 +87,7 @@ export default {
                 // {title: '类别', key: '', width: 100, render: renderCategory.bind(this)},
                 // {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
                 // {title: '评论', key: '', width: 80, sortable: true},
-
-            ],
-            // data: [],
-            tableStatus: false
+            ]
         }
     },
     computed: {
@@ -101,57 +95,18 @@ export default {
             data: state => state.term.categoryList
         }),
         ...mapGetters({
-            'selectedList': 'selectedCategory',
-            // 'data': 'categoryList'
-            // 'categoryValue': 'categoryValue'
-        }),
-        selectedNum: function () {
-            return this.selectedList.length
-        }
+        })
     },
     methods: {
-        ...mapActions({
-            'fetchTerms': 'fetchTerms',
-        }),
-        search: function search () {
-
-        },
-        // 创建新分类
-        createCategory: function createCategory () {
-
-        },
-        async fetchData (force) {
-            this.tableStatus = true
-            await this.fetchTerms(force)
-            this.tableStatus = false
-        },
-        handleSelectChange () {
-            this.data.forEach((item, index) => {
-                let rowDate = this.$refs.table.objData[index]
-                item._checked = rowDate._isChecked
-            })
-        },
+        ...mapActions({'fetch': 'fetchTerms'}),
         deleteCategory (e, category) {
             console.log(e, category)
-        }
+        },
+        search: function search () {},
+        // 创建新分类
+        createCategory: function createCategory () {},
     },
-    created: function () {
-        // console.log(this.$el,222)
-        this.fetchData(false)
-    },
-    // beforeRouteEnter: function (to, from, next) {
-    //     next(vm => {
-    //         vm.fetchData(false)
-    //     })
-    // },
     mounted () {
-        let h = this.$refs['table-wrapper'].clientHeight
-        this.tableHeight = h
-        let onResize = _.debounce((e) => {
-            let h = this.$refs['table-wrapper'].clientHeight
-            this.tableHeight = h
-        }, 1000)
-        on(window, 'resize', onResize)
     }
 }
 </script>

@@ -69,8 +69,7 @@ import {dateFormat} from '../../utils/common'
 import _ from 'lodash'
 import PostTitle from './col/post-title'
 import {mapState, mapActions, mapGetters} from 'vuex'
-// import api from '@/utils/api'
-// import
+import crud from './crud'
 Vue.component('post-title', PostTitle)
 const renderTitle = function (h, {row}) {
     return h('post-title', {
@@ -123,12 +122,9 @@ const renderDate = function (h, {row}) {
 
 export default {
     name: 'post-management',
+    mixins: [crud],
     data () {
         return {
-            filterForm: {
-                key: '', term: '', status: ''
-            },
-            tableHeight: 400,
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 // {title: 'ID', key: 'id', sortable: true},
@@ -138,9 +134,7 @@ export default {
                 {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
                 {title: '评论', key: '', width: 80, sortable: true},
                 {title: '日期', key: '', width: 220, render: renderDate.bind(this)}
-            ],
-            // data: [],
-            tableStatus: false
+            ]
         }
     },
     computed: {
@@ -148,50 +142,18 @@ export default {
             data: state => state.posts.list
         }),
         ...mapGetters({
-            'selectedList': 'selectedPost',
-            // 'categoryValue': 'categoryValue'
-        }),
-        selectedNum: function () {
-            return this.selectedList.length
-        }
+        })
     },
     methods: {
         ...mapActions({
-            'fetchPosts': 'fetchPosts',
+            'fetch': 'fetchPosts',
             'trash': 'trashPosts'
         }),
         search: function search () {
 
-        },
-        async fetchData (force) {
-            this.tableStatus = true
-            await this.fetchPosts(force)
-            this.tableStatus = false
-        },
-        handleSelectChange () {
-            this.data.forEach((item, index) => {
-                let rowDate = this.$refs.table.objData[index]
-                item._checked = rowDate._isChecked
-            })
         }
     },
-    created: function () {
-        // console.log(this.$el,222)
-        this.fetchData(false)
-    },
-    // beforeRouteEnter: function (to, from, next) {
-    //     next(vm => {
-    //         vm.fetchData(false)
-    //     })
-    // },
     mounted () {
-        let h = this.$refs['table-wrapper'].clientHeight
-        this.tableHeight = h
-        let onResize = _.debounce((e) => {
-            let h = this.$refs['table-wrapper'].clientHeight
-            this.tableHeight = h
-        }, 1000)
-        on(window, 'resize', onResize)
     }
 }
 </script>
