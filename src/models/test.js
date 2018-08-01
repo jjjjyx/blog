@@ -5,7 +5,7 @@ const Op = sequelize.Op;
 //     attributes: ['name'],
 //     where:{
 //         taxonomy: Enum.TaxonomyEnum.POST_TAG,
-//         term_id:{[Op.in]: [1,3,30,27]}
+//         id:{[Op.in]: [1,3,30,27]}
 //     }
 // }).then((aa)=>{
 //     console.log(aa)

@@ -3,7 +3,7 @@
         <Tabs size="small" type="card">
             <TabPane label="所有分类">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
-                    <Radio v-for="(item, index) in categoryList" :label="item.term_id" :key="index">
+                    <Radio v-for="(item, index) in categoryList" :label="item.id" :key="index">
                         <Icon  v-if="item.icon.indexOf('iconfont') == -1" :type="item.icon" ></Icon>
                         <i v-else  :class="item.icon"></i>
                         <span>{{item.name}}</span>
@@ -12,7 +12,7 @@
             </TabPane>
             <TabPane label="常用">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
-                    <Radio v-for="(item, index) in commonCategoryList" :label="item.term_id" :key="index">
+                    <Radio v-for="(item, index) in commonCategoryList" :label="item.id" :key="index">
                         <Icon  v-if="item.icon.indexOf('iconfont') == -1" :type="item.icon" ></Icon>
                         <i v-else  :class="item.icon"></i>
                         <span>{{item.name}}</span>
@@ -55,7 +55,7 @@ export default {
     },
     computed: {
         ...mapState({
-            'categoryList': state => state.term.categoryList
+            'categoryList': state => state.data.categoryList
         }),
         commonCategoryList: function () {
             let arr = _.orderBy(this.categoryList, ['count'], ['desc']).slice(0, 5)
@@ -83,14 +83,14 @@ export default {
                 if (c) {
                     // 添加失败
                     // 选中
-                    this.vertical = c.term_id
+                    this.vertical = c.id
                 } else {
                     // 创建标签并且选中
                     this.createStatusLoading = true
                     try {
-                        let result = await api.npost('/api/term/c/add', {name: this.value, description: '来自文章编辑', icon: '', slug: ''})
+                        let result = await api.npost('/api/term/category/add', {name: this.value, description: '来自文章编辑', icon: '', slug: ''})
                         this.$store.commit('addCategoryList', result)
-                        this.vertical = result.term_id
+                        this.vertical = result.id
                         this.collapseStatus1 = false
                         this.value = ''
                     } catch (e) {

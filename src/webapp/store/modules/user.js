@@ -1,7 +1,7 @@
 'use strict'
 
 import _ from 'lodash'
-import store from '../index'
+// import store from '../index'
 
 const state = {
     // user: null

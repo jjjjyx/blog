@@ -1,5 +1,6 @@
+import _ from 'lodash'
 import {on} from '@/utils/dom'
-
+import api from '@/utils/api'
 export default {
     data () {
         return {
@@ -7,8 +8,9 @@ export default {
             tableHeight: 400,
             columns: [],
             tableStatus: false,
-            selectedList: []
-            // data: []
+            selectedList: [],
+            delTip: '确认删除？',
+            idKey: 'id'
         }
     },
     computed: {
@@ -33,7 +35,26 @@ export default {
             this.tableStatus = false
         },
         // 删除数据
-        remove: function remove () {},
+        remove: function remove (selected) {
+            if (!(selected instanceof Array)) {
+                selected = this.selectedList
+            }
+
+            let ids = selected.map((item) => (item[this.idKey]))
+            // 删除提示
+            this.$Modal.warning({
+                title: '删除提示',
+                content: this.delTip,
+                onOk: async () => {
+                    try {
+                        await api.npost(`/api/${this.active}/del`, {ids})
+                        this.$store.dispatch('del_' + this.active, selected)
+                    } catch (e) {
+                        this.$Message.info('删除失败')
+                    }
+                }
+            })
+        },
         // 增加数据
         add: function add () {},
         // 修改数据

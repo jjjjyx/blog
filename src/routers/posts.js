@@ -11,6 +11,7 @@ const Result = require('../common/resultUtils')
 const {Enum} = require('../common/enum')
 
 const {termDao,userDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
+const {term_relationships: termRelationshipsDao } = sequelize.models
 const Op = sequelize.Op
 
 // id
@@ -102,7 +103,7 @@ const sanitizeCommentStatus = sanitizeBody('comment_status').customSanitizer((va
 })
 
 const TagsLength = 16
-const tagToString = t =>`${t.name}#${t.term_id}`
+const tagToString = t =>`${t.name}#${t.id}`
 const createTags = async function (req, res, post, dealWithCategory) {
     req.sanitizeBody('new_tag').toArray()
     req.sanitizeBody('tags_id').toArray()
@@ -113,7 +114,7 @@ const createTags = async function (req, res, post, dealWithCategory) {
         tags_id = tags_id || []
 
         // 验证分类是否存在
-        let category = await termDao.findById(category_id || SITE.defaultCategoryId, {attributes: ['term_id','name']})
+        let category = await termDao.findById(category_id || SITE.defaultCategoryId, {attributes: ['id','name']})
         if (category === null) {
             debug(`createTags 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
             category_id = SITE.defaultCategoryId * 1
@@ -134,7 +135,7 @@ const createTags = async function (req, res, post, dealWithCategory) {
         let tags = await termDao.findAll({
             where:{
                 taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                term_id:{[Op.in]: tags_id}
+                id:{[Op.in]: tags_id}
             }
         })
         debug(`createTags 提交了标签ID个数 = ${tags_id.length} 个，其中 [${tags.map(tagToString)}] 有效`)
@@ -171,7 +172,7 @@ const createTags = async function (req, res, post, dealWithCategory) {
         // post.getTerms().then((termRelationships)=>{
         //     let thatIds = termRelationships.map(tagToString)
         //     debug(`createTags 文章${post.id} 原先对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
-        //     tags = _.unionBy(termRelationships, tags, 'term_id')
+        //     tags = _.unionBy(termRelationships, tags, 'id')
         //
         //     return post.setTerms(tags)
         // }).catch((e)=>{
@@ -254,7 +255,7 @@ const save = [
                 debug(`修改文章 = ${id} 状态为：${Enum.PostStatusEnum.DRAFT}`)
                 post.post_status = Enum.PostStatusEnum.DRAFT
                 post.post_name = id
-                debug(`修改文章 = ${id} 分类为默认分类：${SITE.defaultTerm.name}#${SITE.defaultTerm.term_id}`)
+                debug(`修改文章 = ${id} 分类为默认分类：${SITE.defaultTerm.name}#${SITE.defaultTerm.id}`)
                 await post.setTerms([SITE.defaultTerm])
             case Enum.PostStatusEnum.DRAFT:
                 debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
@@ -322,7 +323,7 @@ const save = [
                     attributes: ['name'],
                     where: {
                         taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                        term_id: {[Op.in]: tags_id}
+                        id: {[Op.in]: tags_id}
                     }
                 }).map((item) => item.name)
 
@@ -340,7 +341,7 @@ const save = [
 
                 Promise.all([
                     _save_postMeta(autoSavePost.id, 'tags', JSON.stringify(new_tag)),
-                    _save_postMeta(autoSavePost.id, 'category', JSON.stringify(category.term_id))
+                    _save_postMeta(autoSavePost.id, 'category', JSON.stringify(category.id))
                 ]).then(()=>{
                     debug(`save 文章存档 = [${autoSavePost.id}#${autoSavePost.post_name}]，保存分类标签记录!`)
                 })
@@ -360,7 +361,7 @@ const save = [
 const newPost = [
     sanitizeTitle,
     checkTitle,
-    // body('term_id').isEmpty().withMessage('test').isInt().withMessage('分类id 不正确'),
+    // body('id').isEmpty().withMessage('test').isInt().withMessage('分类id 不正确'),
     utils.validationResult,
     async function (req, res) {
         let {post_title} = req.body
@@ -612,7 +613,7 @@ const getAllPost = [
                     },
                     {
                         model: termDao,
-                        attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'term_id']
+                        attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id']
                     }
                 ]
 

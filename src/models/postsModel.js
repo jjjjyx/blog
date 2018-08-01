@@ -77,12 +77,12 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING(60),
             allowNull: true
         },
-        // term_id: {
+        // id: {
         //     type: DataTypes.BIGINT,
         //     allowNull: true,
         //     references: {
         //         model: 'j_terms',
-        //         key: 'term_id'
+        //         key: 'id'
         //     }
         // },
         pinged: {

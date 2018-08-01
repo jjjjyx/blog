@@ -2,7 +2,7 @@
 
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('comment', {
-        comment_id: {
+        id: {
             type: DataTypes.BIGINT,
             allowNull: false,
             primaryKey: true,
@@ -60,7 +60,7 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: '0',
             references: {
                 model: 'j_comments',
-                key: 'comment_id'
+                key: 'id'
             }
         },
         user_id: {

@@ -26,7 +26,7 @@
                     </FormItem>
                 </i-Form>
                 <i-Button type="ghost" icon="document" @click="$router.push({name: 'post_writer'})">新建文章</i-Button>
-                <i-Button type="ghost" icon="trash-a" @click="trash()" :disabled="selectedNum === 0">移至回收站</i-Button>
+                <i-Button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">移至回收站</i-Button>
 
             </i-col>
             <i-col span="6">
@@ -63,12 +63,13 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import {on} from '@/utils/dom'
-import {dateFormat} from '../../utils/common'
 import _ from 'lodash'
-import PostTitle from './col/post-title'
+import Vue from 'vue'
 import {mapState, mapActions, mapGetters} from 'vuex'
+// import {on} from '@/utils/dom'
+import {dateFormat} from '@/utils/common'
+import api from '@/utils/api'
+import PostTitle from './col/post-title'
 import crud from './crud'
 Vue.component('post-title', PostTitle)
 const renderTitle = function (h, {row}) {
@@ -76,8 +77,7 @@ const renderTitle = function (h, {row}) {
         props: {post: row},
         on: {
             trash: () => {
-                // this.multipleSelection = [row]
-                this.trash(row)
+                this.remove([row])
             }
         }
     })
@@ -134,22 +134,37 @@ export default {
                 {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
                 {title: '评论', key: '', width: 80, sortable: true},
                 {title: '日期', key: '', width: 220, render: renderDate.bind(this)}
-            ]
+            ],
+            active: 'post',
+            // delTip: '<p>确认?</p><p>删除分类不会删除分类下的文章</p>'
         }
     },
     computed: {
         ...mapState({
-            data: state => state.posts.list
+            data: state => state.data.posts
         }),
         ...mapGetters({
         })
     },
     methods: {
         ...mapActions({
-            'fetch': 'fetchPosts',
-            'trash': 'trashPosts'
+            'fetch': 'fetchPosts'
+            // 'trash': 'trashPosts'
         }),
-        search: function search () {
+        async remove (selected) {
+            // 删除数据
+
+            if (!(selected instanceof Array)) {
+                selected = this.selectedList
+            }
+
+            let ids = selected.map((item) => (item[this.idKey]))
+            try {
+                await api.npost(`/api/${this.active}/trash`, {ids})
+                this.$store.dispatch('del_' + this.active, selected)
+            } catch (e) {
+                this.$Message.info('删除失败')
+            }
 
         }
     },

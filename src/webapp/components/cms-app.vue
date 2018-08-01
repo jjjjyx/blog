@@ -155,7 +155,7 @@ export default {
                                 {title: '所有文章', name: 'post_management', className: 'iconfont icon-fabuwenzhang'},
                                 {title: '撰写文章', name: 'post_writer', className: 'iconfont icon-combinedshapecopy2'},
                                 {title: '分类管理', name: 'post_category', className: 'iconfont icon-ziyuan1'},
-                                {title: '标签管理', name: 'post_tags', icon: 'pricetag'},
+                                {title: '标签管理', name: 'post_tag', icon: 'pricetag'},
                                 // {title: 'test', name: 'post_test', icon: 'pricetag'},
                                 {title: '回收站', name: 'post_trash', icon: 'ios-trash'}
                             ]

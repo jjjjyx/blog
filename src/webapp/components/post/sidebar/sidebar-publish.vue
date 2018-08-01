@@ -284,13 +284,12 @@ export default {
                                 href: '/' // todo 跳转到文章
                             }
                         }, '立即查看')
-                        return h('span', ['更新文章成功', a,])
+                        return h('span', ['更新文章成功', a])
                     }
                 })
             } catch (e) {
 
             }
-
         }
 
     }

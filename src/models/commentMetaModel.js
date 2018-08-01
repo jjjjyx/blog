@@ -2,19 +2,19 @@
 
 module.exports = function (sequelize, DataTypes) {
     const commentMetaModel = sequelize.define('commentMeta', {
-        meta_id: {
+        id: {
             type: DataTypes.BIGINT,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
-        // comment_id: {
+        // id: {
         //     type: DataTypes.BIGINT,
         //     allowNull: true,
         //     defaultValue: '0',
         //     references: {
         //         model: 'j_comments',
-        //         key: 'comment_id'
+        //         key: 'id'
         //     }
         // },
         meta_key: {
@@ -31,8 +31,8 @@ module.exports = function (sequelize, DataTypes) {
     });
     // const {j_users} = sequelize.models
     const {comment: commentModel} = sequelize.models
-    // const pk = {foreignKey: 'comment_id', targetKey: 'comment_id'}
-    commentModel.hasMany(commentMetaModel, {as: 'metas', foreignKey: 'comment_id', sourceKey: 'comment_id'})
+    // const pk = {foreignKey: 'id', targetKey: 'id'}
+    commentModel.hasMany(commentMetaModel, {as: 'metas', foreignKey: 'id', sourceKey: 'id'})
     // commentMetaModel.belongsTo(commentModel, pk)
 
     return commentMetaModel

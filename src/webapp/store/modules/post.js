@@ -92,7 +92,7 @@ const actions = {
                 // console.log('poi', poi)
                 let result = await api.nget(`/api/post/${poi}`)
                 commit('SET_CURRENT_POST', result)
-                    commit('updateEditorStatus', POST_WRITER_STATUS.created)
+                commit('updateEditorStatus', POST_WRITER_STATUS.created)
                 //     commit('updateEditorStatus', POST_WRITER_STATUS.posted)
                 // if (result.post_status === 'publish') {
                 // } else {
@@ -119,8 +119,9 @@ const mutations = {
         state.category_id = value
     },
     updateEditorStatus (state, value) {
-        if (state.post_status === 'publish' && value === POST_WRITER_STATUS.created)
+        if (state.post_status === 'publish' && value === POST_WRITER_STATUS.created) {
             value = POST_WRITER_STATUS.posted
+        }
         state.status = value
     },
     updatePostTitle (state, value) {
@@ -190,7 +191,7 @@ const mutations = {
             }
             let {category, post_tag: postTag} = _.groupBy(value.terms, 'taxonomy')
             if (postTag) state.new_tag = postTag.map((i) => i.name)
-            if (category) state.category_id = category[0].term_id
+            if (category) state.category_id = category[0].id
 
             currCopy = _.cloneDeep(state)
         }

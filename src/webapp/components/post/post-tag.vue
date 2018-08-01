@@ -12,7 +12,7 @@
                         <i-Button type="primary" shape="circle" icon="ios-search" @click="search"></i-Button>
                     </FormItem>
                 </i-Form>
-                <i-button type="ghost" icon="document" @click="createCategory">新建分类</i-button>
+                <i-button type="ghost" icon="document" @click="createCategory">新建标签</i-button>
                 <i-button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">删除</i-button>
 
             </i-col>
@@ -60,16 +60,16 @@ Vue.component('category-name', CategoryName)
 const renderDate = function (h, {row}) {
     return h('div', dateFormat(row.createdAt))
 }
-const renderName = function (h, {row}) {
-    return h('category-name', {
-        props: {category: row},
-        on: {
-            del: ()=>{
-                this.remove([row])
-            }
-        }
-    })
-}
+// const renderName = function (h, {row}) {
+//     return h('category-name', {
+//         props: {category: row},
+//         on: {
+//             del: ()=>{
+//                 this.remove([row])
+//             }
+//         }
+//     })
+// }
 
 export default {
     name: 'post-category',
@@ -79,8 +79,9 @@ export default {
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 // {title: 'ID', key: 'id', width: 100, sortable: true},
-                {title: '分类名称', key: 'name', width: 380, sortable: true, render: renderName.bind(this)},
-                // {title: '文章数', key: 'count', width: 100, sortable: true},
+                {title: '标签名称', key: 'name', width: 250, sortable: true},
+                {title: '使用计数', key: 'count', width: 120, sortable: true},
+                {title: '标识', key: 'slug', width: 100},
                 {title: '说明', key: 'description'},
                 {title: '创建时间', key: '', width: 220, render: renderDate.bind(this)}
                 // {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
@@ -88,13 +89,13 @@ export default {
                 // {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
                 // {title: '评论', key: '', width: 80, sortable: true},
             ],
-            active: 'term/category',
-            delTip: '<p>确认删除分类?</p><p>删除分类不会删除分类下的文章</p>'
+            active: 'term/tag',
+            delTip: '<p>确认删除标签?</p><p>删除标签导致引用失效</p>'
         }
     },
     computed: {
         ...mapState({
-            data: state => state.data.categoryList
+            data: state => state.data.tagList
         }),
         ...mapGetters({
         })

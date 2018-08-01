@@ -11,7 +11,7 @@
             <button-group size="small" class="cms-table-options">
                 <i-button type="ghost">编辑</i-button>
 
-                <i-button type="ghost" :disabled="isDefaultCategory" @click="$emit('del', $event, category)">
+                <i-button type="ghost" :disabled="isDefaultCategory" @click="$emit('del', $event, category)" style="color: rgb(237, 63, 20);">
                     <!--<Tooltip content="默认分类不可删除">-->
                     删除
                 </i-button>
@@ -33,7 +33,7 @@ export default {
     },
     computed: {
         isDefaultCategory () {
-            return this.category.term_id === this.$store.getters.defaultCategoryValue
+            return this.category.id === this.$store.getters.defaultCategoryValue
         }
     },
     methods: {

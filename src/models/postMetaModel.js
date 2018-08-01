@@ -2,7 +2,7 @@
 
 module.exports = function (sequelize, DataTypes) {
     const postMetaModel = sequelize.define('postMeta', {
-        meta_id: {
+        id: {
             type: DataTypes.BIGINT,
             allowNull: false,
             primaryKey: true,

@@ -136,8 +136,6 @@ function fileMd5 (file) {
     })
 }
 
-
-
 export default {
     name: 'post-writer',
     data () {
@@ -166,7 +164,7 @@ export default {
         ...mapState({
             'user': 'user',
             'currentPost': state => state.post,
-            'tagsList': state => state.term.tagList
+            'tagsList': state => state.data.tagList
         }),
         ...mapGetters(['showLeaveTip']),
         editorStatus: {
@@ -195,7 +193,7 @@ export default {
         },
         currTagLength: function () {
             return this.selectedTag.length
-        },
+        }
         // user: function () {
         //     return this.$
         // }
@@ -408,8 +406,9 @@ export default {
         openVersionModel (ver) {
             console.log('openVersionModel')
             this.versionModel = true
-            if (ver)
+            if (ver) {
                 this.$refs.versionModal.active = ver
+            }
             // this.showVersionWarning = false
         }
     },
@@ -459,6 +458,7 @@ export default {
         off(document.body, 'keydown', this._handleKeyUp)
         if (this.showLeaveTip) {
             try {
+                console.log('==========')
                 await this.leaveConfirm(next)
                 // 点击保存，
                 let value = this.$refs.md.d_value

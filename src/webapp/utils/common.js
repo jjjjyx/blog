@@ -88,7 +88,6 @@ export function transformMetas (metas = []) {
     return obj
 }
 
-
 export const POST_WRITER_STATUS = {
     // normal: '',
     // save: '已保存',

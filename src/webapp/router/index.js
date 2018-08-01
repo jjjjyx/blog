@@ -7,9 +7,10 @@ import Index from '@/components/index.vue'
 import postManagement from '@/components/post/post-management'
 import postWriter from '@/components/post/post-writer'
 import postCategory from '@/components/post/post-category.vue'
+import postTag from '@/components/post/post-tag.vue'
+import postTrash from '@/components/post/post-Trash.vue'
 // import postTest from '@/components/post/post-test'
 import NotFound from '../404'
-
 import store from '../store'
 import api from '../utils/api'
 // import filter from '@/components/filter.vue'
@@ -54,6 +55,16 @@ const routes = [
         path: '/post/category',
         name: 'post_category',
         component: postCategory
+    },
+    {
+        path: '/post/tag',
+        name: 'post_tag',
+        component: postTag
+    },
+    {
+        path: '/post/trash',
+        name: 'post_trash',
+        component: postTrash
     },
     // {
     //     path: '/post/test',

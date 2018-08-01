@@ -8,7 +8,7 @@ const {Enum} = require('../common/enum')
  */
 module.exports = function (sequelize, DataTypes) {
     const termModel = sequelize.define('term', {
-        term_id: {
+        id: {
             type: DataTypes.BIGINT,
             allowNull: false,
             primaryKey: true,

@@ -110,7 +110,7 @@ const editTerm = [
             let result = await termDao.findOne({
                 where: {
                     taxonomy: Enum.TaxonomyEnum.CATEGORY,
-                    term_id: { [Op.ne]: id },
+                    id: { [Op.ne]: id },
                     [Op.or]: [{name}, {slug}]
                 }
             })
@@ -120,7 +120,7 @@ const editTerm = [
 
             await termDao.update(values,{
                 where:{
-                    term_id: id
+                    id: id
                 }
             })
             return res.status(200).json(Result.success())
@@ -144,7 +144,7 @@ const del = [
         try {
             let terms = await termDao.findAll({
                 where:{
-                    term_id:{
+                    id:{
                         [Op.in]: ids,
                         [Op.not]: SITE.defaultCategoryId
                     }
@@ -152,7 +152,7 @@ const del = [
             })
             if (terms.length) {
                 // 调出标签与分类
-                let fn = (item) => item.term_id
+                let fn = (item) => item.id
                 let {category, post_tag} = _.groupBy(terms, (item) => item.taxonomy)
                 category = category || []
                 post_tag = post_tag || []
@@ -166,7 +166,7 @@ const del = [
                         {where: {term_id: category_ids}}
                     ).then(()=>{
                         // 删除分类
-                        termDao.destroy({paranoid: false, force: true, where: {term_id: category_ids}})
+                        termDao.destroy({paranoid: false, force: true, where: {id: category_ids}})
                     })
                 }
                 // 标签直接删除
@@ -239,7 +239,7 @@ const editTag = [
             let result = await termDao.findOne({
                 where: {
                     taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                    term_id: { [Op.ne]: id },
+                    id: { [Op.ne]: id },
                     [Op.or]: [{name}, {slug}]
                 }
             })
@@ -249,7 +249,7 @@ const editTag = [
 
             await termDao.update(values,{
                 where:{
-                    term_id: id
+                    id: id
                 }
             })
             return res.status(200).json(Result.success())
@@ -267,7 +267,7 @@ const getAll = [
             let result = await termDao.findAll({
                 attributes: {
                     include:[
-                        [sequelize.literal('(SELECT COUNT(`term_relationships`.`object_id`) FROM  `j_term_relationships` AS `term_relationships` WHERE `term_relationships`.`term_id` = `term`.`term_id` )'), 'count']
+                        [sequelize.literal('(SELECT COUNT(`term_relationships`.`object_id`) FROM  `j_term_relationships` AS `term_relationships` WHERE `term_relationships`.`term_id` = `term`.`id` )'), 'count']
                     ]
                 }
             })
@@ -302,7 +302,7 @@ const test = [
 
         // let tags = await termDao.findAll({
         //     where: {
-        //         term_id: [22,23,24]
+        //         id: [22,23,24]
         //     }
         // })
         // try {
@@ -316,11 +316,13 @@ const test = [
     }
 ]
 
-router.route('/c/add').post(addTerm)
-router.route('/c/edit').post(editTerm)
+router.route('/category/add').post(addTerm)
+router.route('/category/edit').post(editTerm)
+router.route('/category/del').post(del)
 
-router.route('/t/add').post(addTag)
-router.route('/t/edit').post(editTag)
+router.route('/tag/add').post(addTag)
+router.route('/tag/edit').post(editTag)
+router.route('/tag/del').post(del)
 
 router.route('/del').post(del)
 router.route('/').get(getAll)
