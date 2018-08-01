@@ -54,7 +54,7 @@ const getters = {
     categoryValue: (state, getters) => state.category_id || getters.defaultCategoryValue,
     // 在离开的时候是否显示提示
     // 仅在保存中， 编辑 状态时提示
-    showLeaveTip: state => state.status === POST_WRITER_STATUS.saveing || state.status === POST_WRITER_STATUS.edit,
+    showLeaveTip: state => state.status === POST_WRITER_STATUS.saving || state.status === POST_WRITER_STATUS.edited,
     ajaxPostClone: state => {
         let obj = _.cloneDeep(state)
         delete obj.terms

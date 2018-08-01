@@ -6,7 +6,7 @@
                 <input type="text" class="title" v-model="postTitle" placeholder="请输入一个标题">
                 <div class="post-title-options table-buttons">
                     <tooltip content="新笔记">
-                        <i-button type="text" icon="plus-round"></i-button>
+                        <i-button type="text" icon="plus-round" @click="newPost"></i-button>
                     </tooltip>
                     <tooltip content="标签">
                         <i-button type="text" icon="pricetags" @click="tagWrapShow = !tagWrapShow"></i-button>
@@ -96,9 +96,7 @@ import draggable from 'vuedraggable'
 import {mapActions, mapGetters, mapState} from 'vuex'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-// import AceDiff from 'ace-diff/dist/ace-diff.min';
-// optionally, include CSS, or use your own
-// import 'ace-diff/dist/ace-diff.min.css';
+
 
 import api from '@/utils/api'
 import ajax from '@/utils/ajax'
@@ -110,6 +108,7 @@ import sidebars from './sidebar'
 import VersionModal from './modal/version'
 import sidebarPanel from './sidebar/sidebar.vue'
 import {dateFormat} from '../../utils/common'
+import store from '../../store'
 // import {on} from '@/utils/dom'
 // import { Base64 } from 'js-base64'
 const sidebarsOrder = Object.keys(sidebars)
@@ -202,7 +201,8 @@ export default {
         ...mapActions({
             'fetchTerms': 'fetchTerms',
             // todo 获取文章时候比较版本，提示加载最新的版本， 而不是发布文章的内容
-            'fetchData': 'fetchPostInfo'
+            'fetchData': 'fetchPostInfo',
+            'createNewPost': 'createNewPost'
         }),
         checkTagLength () {
             if (this.currTagLength >= this.maxTagLength) {
@@ -210,6 +210,9 @@ export default {
             }
             return true
         },
+        // async fetchData() {
+        //     // 加载数据
+        // },
         handleSelectTag () {
             if (!this.checkTagLength()) {
                 this.$Message.info('标签太多啦')
@@ -310,16 +313,6 @@ export default {
             }
             this.$store.commit('updatePostContent', {value, render})
         },
-        showSaveWarning () {
-            return new Promise((resolve, reject) => {
-                this.$Modal.confirm({
-                    title: 'Title',
-                    content: '当前存在更新的版本记录，此次操作将会覆盖上次自动保存记录',
-                    onOk: resolve,
-                    onCancel: reject
-                })
-            })
-        },
         async handleMdSave (value, render) {
             // title 绑定了
             // 如果当前的通知没有被关闭 这个提示用户是否覆盖
@@ -352,8 +345,23 @@ export default {
         leaveConfirm () {
             return new Promise((resolve, reject) => {
                 this.saveTipModel = true
-                this.resolve = resolve
+                this.resolve = () => {
+                    let value = this.$refs.md.d_value
+                    let render = this.$refs.md.d_render
+                    this.handleMdSave(value, render)
+                    resolve()
+                }
                 this.reject = reject
+            })
+        },
+        showSaveWarning () {
+            return new Promise((resolve, reject) => {
+                this.$Modal.confirm({
+                    title: 'Title',
+                    content: '当前存在更新的版本记录，此次操作将会覆盖上次自动保存记录',
+                    onOk: resolve,
+                    onCancel: reject
+                })
             })
         },
         handleKeyUp (e) {
@@ -375,6 +383,8 @@ export default {
         },
         checkVersion () {
             // 如果版本记录中 有最后修改时间大于当前修改时间的
+            let firstRevision = _.first(this.currentPost.revision)
+            if (!firstRevision) return null
             let revisionFirstTime = new Date(_.first(this.currentPost.revision).updatedAt).getTime()
             let currUpdatedAt = new Date(this.currentPost.updatedAt).getTime()
             if (revisionFirstTime > currUpdatedAt) {
@@ -410,6 +420,23 @@ export default {
                 this.$refs.versionModal.active = ver
             }
             // this.showVersionWarning = false
+        },
+        async newPost (from = {}) {
+            // 如果有尚未保存的文章 给出提示
+            if (this.showLeaveTip) {
+                try {
+                    await this.leaveConfirm()
+                } catch (e) {
+                    if (e === 'cancel') {
+                        let fromName = from.name
+                        if (fromName) {
+                            this.$router.push({name: fromName})
+                        }
+                        return
+                    }
+                }
+            }
+            this.createNewPost()
         }
     },
     watch: {
@@ -427,55 +454,43 @@ export default {
         this.fetchTerms(false)
     },
     async beforeRouteEnter (to, from, next) {
-        next((vm) => {
-            // await vm.fetchData(to.query)
-            // vm.pushRouter('replace')
-            let {poi} = to.query
-            if (_.toNumber(poi) !== vm.currentPost.id) { // 不相等的情况
-                // 获取新提交的poi 信息
-                vm.fetchData(poi).then((result) => {
-                    // 获取成功 不进行操作， 获取失败
-                    if (!result) {
-                        if (!vm.currentPost.id) {
-                            vm.$router.push({
-                                name: 'post_management'
-                            })
-                        } else {
-                            vm.pushRouter('replace')
-                        }
-                    } else {
-                        // 获取成功 判断版本
-                        vm.checkVersion()
-                    }
-                })
+        let {poi, active} = to.query
+        poi = _.toNumber(poi)
+        // 如果有尚未保存的文章 给出提示
+        next(async (vm) => {
+            let thisId = vm.currentPost.id
+            if (active === 'new') { // 创建
+               vm.newPost(from)
+            } else if (poi !== thisId){ // 编辑文章
+                let result = await vm.fetchData(poi)
+                if (result) {
+                    vm.checkVersion()
+                } else { // 提交了错误的id
+                    //console.log(vm.showLeaveTip, vm.currentPost.status)
+                    vm.$Message.error('找不到此文章信息！已为您跳转到文章管理页面')
+                    vm.$router.push({name: 'post_management'})
+                }
+            } else if (poi === thisId) {
+                // 不做处理
             }
-
             vm._handleKeyUp = vm.handleKeyUp.bind(vm)
             on(document.body, 'keydown', vm._handleKeyUp)
         })
+
     },
     async beforeRouteLeave (to, from, next) {
-        off(document.body, 'keydown', this._handleKeyUp)
         if (this.showLeaveTip) {
             try {
-                console.log('==========')
-                await this.leaveConfirm(next)
-                // 点击保存，
-                let value = this.$refs.md.d_value
-                let render = this.$refs.md.d_render
-                this.handleMdSave(value, render)
-                next()
+                await this.leaveConfirm()
             } catch (e) {
                 if (e === 'cancel') {
                     // 点击取消
-                    next(false)
-                } else {
-                    next()
+                    return next(false)
                 }
             }
-        } else {
-            next()
         }
+        off(document.body, 'keydown', this._handleKeyUp)
+        next()
     },
     mounted () {
         let $alert = this.$refs.alert.$el

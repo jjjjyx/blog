@@ -197,13 +197,13 @@ export default {
             if (name === 'post_writer') { // 撰写文章单独处理
                 let poi = this.$store.state.post.id
                 if (poi && _.isNumber(poi)) { // 存在文章
-                    // 检查当前文章状态
                     this.$router.push({name, query: {poi}})
                 } else { // 不存在， 创建文章，在跳转
-                    this.$store.dispatch('createNewPost').then(() => {
-                        poi = this.$store.state.post.id
-                        this.$router.push({name, query: {poi}})
-                    })
+                    // this.$store.dispatch('createNewPost').then(() => {
+                    //     poi = this.$store.state.post.id
+                    //     this.$router.push({name, query: {poi}})
+                    // })
+                    this.$router.push({name, query: {active: 'new'}})
                 }
             } else {
                 this.$router.push({name})

@@ -25,7 +25,7 @@
                         <i-Button type="primary" shape="circle" icon="ios-search" @click="search"></i-Button>
                     </FormItem>
                 </i-Form>
-                <i-Button type="ghost" icon="document" @click="$router.push({name: 'post_writer'})">新建文章</i-Button>
+                <i-Button type="ghost" icon="document" @click="$router.push({name: 'post_writer', query: {active: 'new'}})">新建文章</i-Button>
                 <i-Button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">移至回收站</i-Button>
 
             </i-col>
@@ -165,7 +165,6 @@ export default {
             } catch (e) {
                 this.$Message.info('删除失败')
             }
-
         }
     },
     mounted () {

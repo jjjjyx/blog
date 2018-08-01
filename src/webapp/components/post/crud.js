@@ -1,5 +1,6 @@
 import _ from 'lodash'
-import {on} from '@/utils/dom'
+import {on, off} from '@/utils/dom'
+import {getMetaKeyCode} from '@/utils/common'
 import api from '@/utils/api'
 export default {
     data () {
@@ -64,7 +65,34 @@ export default {
         // 选择变化
         handleSelectChange (value) {
             this.selectedList = value
+        },
+        handleKeyDown: function (e) {
+            let keyCode = getMetaKeyCode(e)
+            switch (keyCode) {
+            case 4113: // 按下了 ctrl
+            case 16400: // 按下了 shift
+            case 20497: // 同时按下了 shift ctrl
+            case 20496: // 同时按下了 ctrl shift
+                this.keydownCode = keyCode
+                break
+            case 116: // 按下了F5
+                this.fetchData()
+                e.preventDefault()
+                break
+            default:
+                this.keydownCode = null
+            }
         }
+    },
+    beforeRouteEnter (to, from, next) {
+        next((vm) => {
+            vm.handleKeyDown = vm.handleKeyDown.bind(vm)
+            on(document.body, 'keydown', vm.handleKeyDown)
+        })
+    },
+    beforeRouteLeave (to, from, next) {
+        off(document.body, 'keydown', this.handleKeyDown)
+        next()
     },
     created: function () {
         this.fetchData(false)
