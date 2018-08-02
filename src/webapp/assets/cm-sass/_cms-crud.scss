@@ -10,3 +10,15 @@
     opacity: 1;
     pointer-events: all;
 }
+.cms-table-options2 .ivu-btn-text{
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: .5rem;
+    text-decoration: underline;
+}
+//.cms-table-options2 .ivu-btn-text span {
+//    cursor: pointer;
+//}
+.cms-table-options2 .ivu-btn-text:hover {
+    text-decoration: underline;
+}

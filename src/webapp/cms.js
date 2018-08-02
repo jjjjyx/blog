@@ -2,6 +2,7 @@
 
 import Vue from 'vue'
 import App from './components/cms-app.vue'
+import Icon from './components/icon'
 import router from './router'
 import iView from 'iview'
 import 'normalize.css'
@@ -11,7 +12,7 @@ import api from '@/utils/api'
 import store from './store'
 
 Vue.use(iView)
-
+Vue.use(Icon)
 Vue.config.productionTip = false
 
 function appInit () {

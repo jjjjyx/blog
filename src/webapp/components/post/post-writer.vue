@@ -97,20 +97,16 @@ import {mapActions, mapGetters, mapState} from 'vuex'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
-
 import api from '@/utils/api'
 import ajax from '@/utils/ajax'
-import CollapseTransition from '@/utils/collapse-transition'
-import {verification, getMetaKeyCode, POST_WRITER_STATUS} from '@/utils/common'
 import {on, off} from '@/utils/dom'
+import {verification, getMetaKeyCode, POST_WRITER_STATUS} from '@/utils/common'
+import CollapseTransition from '@/utils/collapse-transition'
 
 import sidebars from './sidebar'
 import VersionModal from './modal/version'
 import sidebarPanel from './sidebar/sidebar.vue'
 import {dateFormat} from '../../utils/common'
-import store from '../../store'
-// import {on} from '@/utils/dom'
-// import { Base64 } from 'js-base64'
 const sidebarsOrder = Object.keys(sidebars)
 
 function fileMd5 (file) {
@@ -460,13 +456,13 @@ export default {
         next(async (vm) => {
             let thisId = vm.currentPost.id
             if (active === 'new') { // 创建
-               vm.newPost(from)
-            } else if (poi !== thisId){ // 编辑文章
+                vm.newPost(from)
+            } else if (poi !== thisId) { // 编辑文章
                 let result = await vm.fetchData(poi)
                 if (result) {
                     vm.checkVersion()
                 } else { // 提交了错误的id
-                    //console.log(vm.showLeaveTip, vm.currentPost.status)
+                    // console.log(vm.showLeaveTip, vm.currentPost.status)
                     vm.$Message.error('找不到此文章信息！已为您跳转到文章管理页面')
                     vm.$router.push({name: 'post_management'})
                 }
@@ -476,7 +472,6 @@ export default {
             vm._handleKeyUp = vm.handleKeyUp.bind(vm)
             on(document.body, 'keydown', vm._handleKeyUp)
         })
-
     },
     async beforeRouteLeave (to, from, next) {
         if (this.showLeaveTip) {

@@ -11,7 +11,9 @@ export default {
             tableStatus: false,
             selectedList: [],
             delTip: '确认删除？',
-            idKey: 'id'
+            idKey: 'id',
+            confirmStatus: false,
+            formItem: {}
         }
     },
     computed: {
@@ -56,8 +58,28 @@ export default {
                 }
             })
         },
+        reset: function reset (name) {
+            this.$refs[name].resetFields()
+        },
         // 增加数据
-        add: function add () {},
+        add: function add (name) {
+            this.confirmStatus = true
+            this.$refs[name].validate(async (valid) => {
+                if (valid) {
+                    try {
+                        let result = await api.npost(`/api/${this.active}/add`, this.formItem)
+                        console.log(result)
+                        this.$store.dispatch('add_' + this.active, result)
+                    } catch (e) {
+                        this.$Message.error('参数错误, 添加失败');
+                    }
+                    this.confirmStatus = false
+                } else {
+                    this.$Message.error('Fail!');
+                    this.confirmStatus = false
+                }
+            })
+        },
         // 修改数据
         edit: function edit () {},
         // 查询数据
@@ -104,6 +126,7 @@ export default {
             let onResize = _.debounce((e) => {
                 let h = this.$refs['table-wrapper'].clientHeight
                 this.tableHeight = h
+                console.log(this.tableHeight)
             }, 1000)
             onResize()
             on(window, 'resize', onResize)

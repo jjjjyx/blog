@@ -4,8 +4,7 @@
             <TabPane label="所有分类">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
                     <Radio v-for="(item, index) in categoryList" :label="item.id" :key="index">
-                        <Icon  v-if="item.icon.indexOf('iconfont') == -1" :type="item.icon" ></Icon>
-                        <i v-else  :class="item.icon"></i>
+                        <font-icon :type="item.icon"></font-icon>
                         <span>{{item.name}}</span>
                     </Radio>
                 </RadioGroup>
@@ -13,8 +12,7 @@
             <TabPane label="常用">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
                     <Radio v-for="(item, index) in commonCategoryList" :label="item.id" :key="index">
-                        <Icon  v-if="item.icon.indexOf('iconfont') == -1" :type="item.icon" ></Icon>
-                        <i v-else  :class="item.icon"></i>
+                        <font-icon :type="item.icon"></font-icon>
                         <span>{{item.name}}</span>
                     </Radio>
                 </RadioGroup>

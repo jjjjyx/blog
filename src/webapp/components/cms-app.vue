@@ -26,15 +26,13 @@
                             <template v-if="item.subMenus">
                                 <submenu :name="item.name" v-bind:key="item_index">
                                     <template slot="title">
-                                        <i v-if="item.className" :class="item.className"></i>
-                                        <Icon :type="item.icon" v-else></Icon>
+                                        <font-icon :type="item.icon"></font-icon>
                                         <span>{{item.title}}</span>
                                     </template>
                                     <Menu-Item :name="menu.name || `${index}_${item_index}_${menu_index}`"
                                                v-for="(menu, menu_index) in item.subMenus" v-bind:key="menu_index"
                                                @click.native="handleSelectRouter(menu, item)">
-                                        <i v-if="menu.className" :class="menu.className"></i>
-                                        <Icon v-else :type="menu.icon" ></Icon>
+                                        <font-icon :type="menu.icon"></font-icon>
                                         <span>{{menu.title}}</span>
                                     </Menu-Item>
                                 </submenu>
@@ -51,7 +49,6 @@
             <layout :style="{marginLeft: '240px', minWidth:'1100px'}" class="wrapper-content">
                 <header class="wrapper-header">
                     <i-Menu mode="horizontal" theme="dark" @on-select="handleSelect" ref="nav" >
-
                         <div class="wrapper-header-nav-list-right">
                             <Menu-Item name="1">
                                 <Badge dot>
@@ -111,7 +108,7 @@
                 </Breadcrumb>
                 <!--缓存组件，不需要缓存的可以使用 include 和 exclude 过滤-->
                 <keep-alive>
-                    <router-view class="ivu-layout-content wrapper-content"></router-view>
+                    <router-view class="ivu-layout-content"></router-view>
                 </keep-alive>
                 <footer class="layout-footer-center">
                     皖ICP备18009045号-1 &copy;2018 jjjjyx 版权所有 E-mail: <a href="mailto:#">jyx@rpgame.net</a>
@@ -150,11 +147,11 @@ export default {
                         {
                             title: '文章管理',
                             name: 'post',
-                            className: 'iconfont icon-guanliwenzhang',
+                            icon: 'icon-guanliwenzhang',
                             subMenus: [ // 有subMenus 必须有name
-                                {title: '所有文章', name: 'post_management', className: 'iconfont icon-fabuwenzhang'},
-                                {title: '撰写文章', name: 'post_writer', className: 'iconfont icon-combinedshapecopy2'},
-                                {title: '分类管理', name: 'post_category', className: 'iconfont icon-ziyuan1'},
+                                {title: '所有文章', name: 'post_management', icon: 'icon-fabuwenzhang'},
+                                {title: '撰写文章', name: 'post_writer', icon: 'icon-combinedshapecopy2'},
+                                {title: '分类管理', name: 'post_category', icon: 'icon-ziyuan1'},
                                 {title: '标签管理', name: 'post_tag', icon: 'pricetag'},
                                 // {title: 'test', name: 'post_test', icon: 'pricetag'},
                                 {title: '回收站', name: 'post_trash', icon: 'ios-trash'}

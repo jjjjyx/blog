@@ -55,7 +55,7 @@
         </div>
         <div class="cm-wrapper" ref="table-wrapper">
             <i-table :columns="columns" :data="data" stripe
-                     class="cm-list-table" ref="table"
+                     class="cm-wrapper--table" ref="table"
                      @on-selection-change="handleSelectChange"
                      :height="tableHeight" :loading="tableStatus"></i-table>
         </div>
@@ -135,7 +135,7 @@ export default {
                 {title: '评论', key: '', width: 80, sortable: true},
                 {title: '日期', key: '', width: 220, render: renderDate.bind(this)}
             ],
-            active: 'post',
+            active: 'post'
             // delTip: '<p>确认?</p><p>删除分类不会删除分类下的文章</p>'
         }
     },

@@ -102,6 +102,14 @@ const actions = {
             key: 'trashPosts',
             arr: item
         })
+    },
+    // 'add_term/category' ({commit, state, getters, dispatch}, item) {}
+    'add_term/category' ({commit, state, getters, dispatch}, item) {
+        commit({
+            type: 'addData',
+            key: 'categoryList',
+            item
+        })
     }
 }
 const mutations = {
@@ -113,6 +121,9 @@ const mutations = {
     },
     removeData (state, {key, arr}) {
         state[key] = _.differenceBy(state[key], arr, 'id')
+    },
+    addData (state, {key, item}) {
+        state[key].push(item)
     },
     SET_TERMS (state, data) {
         let {category: categoryList, post_tag: tagList} = _.groupBy(data, 'taxonomy')

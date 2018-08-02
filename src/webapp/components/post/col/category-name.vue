@@ -1,21 +1,21 @@
 <template>
     <div class="cms-table-title-wrap">
         <div class="category-name-icon">
-            <Icon  v-if="category.icon.indexOf('iconfont') == -1" :type="category.icon" ></Icon>
-            <i v-else  :class="category.icon"></i>
+            <font-icon  :type="category.icon" ></font-icon>
         </div>
         <div class="category-name-wrap">
             <div class="category-name">
-                <a href="javascript:;">{{category.name}}</a> <span> -- 文章个数 ( <a href="javascript:;" class="u">{{category.count}}</a> )</span>
+                <a href="javascript:;">{{category.name}}</a>
+                <!--<span> &#45;&#45; 文章个数 ( <a href="javascript:;" class="u">{{category.count||0}}</a> )</span>-->
             </div>
-            <button-group size="small" class="cms-table-options">
-                <i-button type="ghost">编辑</i-button>
+            <button-group size="small" class="cms-table-options2">
+                <i-button type="text">编辑</i-button>
 
-                <i-button type="ghost" :disabled="isDefaultCategory" @click="$emit('del', $event, category)" style="color: rgb(237, 63, 20);">
+                <i-button type="text" :disabled="isDefaultCategory" @click="$emit('del', $event, category)" style="color: rgb(237, 63, 20);">
                     <!--<Tooltip content="默认分类不可删除">-->
                     删除
                 </i-button>
-                <i-button type="ghost">预览</i-button>
+                <i-button type="text">预览</i-button>
             </button-group>
         </div>
     </div>

@@ -3,6 +3,7 @@
 @import "./sass/var";
 @import "./sass/mixins";
 @import "./sass/utilities";
+@import "./sass/icon";
 @import "./cm-sass/reboot";
 
 $sider-bg-color : #282d2f;
@@ -22,6 +23,7 @@ $sider-bg-deep-color : #1f2224;
 
 .wrapper-content {
     //padding: 0 24px 24px;
+    //overflow-y: hidden;
     > .ivu-breadcrumb {
         flex-shrink:0;
         padding: 24px 24px;
@@ -31,6 +33,7 @@ $sider-bg-deep-color : #1f2224;
         background: rgb(255, 255, 255);
         border-radius: 6px;
         padding: 24px 24px 0;
+        min-height: 700px;
         //box-shadow: 0 0 2px #ccc;
     }
 }
@@ -39,4 +42,5 @@ $sider-bg-deep-color : #1f2224;
 .layout-footer-center {
     margin: 24px 24px;
     text-align: center;
+    flex-shrink: 0;
 }
