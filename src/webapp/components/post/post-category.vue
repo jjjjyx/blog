@@ -15,7 +15,6 @@
                     </i-Form>
                     <i-button type="ghost" icon="document" @click="createCategory">新建分类</i-button>
                     <i-button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">删除</i-button>
-
                 </i-col>
                 <i-col span="6">
                     <div class="table-buttons" style="float: right">
@@ -51,7 +50,7 @@
             </div>
         </div>
         <div class="cm-container--flex__modal">
-            <component :is="showRightComponent" :form-item="formItem"></component>
+            <component :is="showRightComponent" :form-item="formItem" :target="singleEditTarget"></component>
         </div>
     </div>
 </template>
@@ -64,6 +63,7 @@ import crud from './crud'
 
 import CategoryName from './col/category-name'
 import addTermCategory from './modal/add-term-category'
+import editTermCategory from './modal/edit-term-category'
 
 Vue.component('category-name', CategoryName)
 const renderDate = function (h, {row}) {
@@ -111,7 +111,8 @@ export default {
         }
     },
     components: {
-        addTermCategory
+        addTermCategory,
+        editTermCategory
     },
     computed: {
         ...mapState({

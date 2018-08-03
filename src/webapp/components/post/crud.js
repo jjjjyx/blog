@@ -2,6 +2,7 @@ import _ from 'lodash'
 import {on, off} from '@/utils/dom'
 import {getMetaKeyCode} from '@/utils/common'
 import api from '@/utils/api'
+import selectInfo from './modal/default-right'
 export default {
     data () {
         return {
@@ -19,6 +20,9 @@ export default {
             active: '_', // 当前 url
             delTip: '确认删除？' // 删除提示
         }
+    },
+    components: {
+        selectInfo
     },
     computed: {
         // ...mapState({
@@ -42,7 +46,7 @@ export default {
             } else if (this.selectedNum === 0){
                 return `add-${this.activeToLine}`
             } else {
-                return `select-info-${this.activeToLine}`
+                return `select-info`
             }
         }
     },
@@ -82,6 +86,7 @@ export default {
             try {
                 let result = await api.npost(`/api/${this.active}/add`, this.formItem)
                 this.$store.dispatch('add_' + this.active, result)
+                this.$Message.success('添加成功')
             } catch (e) {
                 this.$Message.error('参数错误, 添加失败')
                 flag = false
@@ -92,6 +97,22 @@ export default {
         // 修改数据
         edit: function edit (target) {
             this.singleEditTarget = target
+        },
+        saveEdit: async function saveEdit (target) {
+            this.confirmStatus = true
+            let flag = true
+            try {
+                await api.npost(`/api/${this.active}/edit`, target)
+                this.$store.dispatch('edit_' + this.active, target)
+                // 此时的target对象是表格copy 的对象 与vuex管理的不是同一个对象 需要手动更新target对象的值
+                _.merge(this.singleEditTarget, target)
+                this.$Message.success('修改成功')
+            } catch (e) {
+                this.$Message.error('参数错误, 添加失败')
+                flag = false
+            }
+            this.confirmStatus = false
+            return flag
         },
         unEdit: function unEdit () {
             this.singleEditTarget = null

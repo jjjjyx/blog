@@ -66,11 +66,7 @@ const actions = {
     },
     del_post ({commit, state, getters, dispatch}, item) {
         // state.posts = _.differenceBy(state.posts, arr, 'id')
-        commit({
-            type: 'removeData',
-            key: 'posts',
-            arr: item
-        })
+        commit({type: 'removeData', key: 'posts', arr: item})
         // 更新回收站
         dispatch('fetchTrash')
     },
@@ -89,27 +85,25 @@ const actions = {
         if (!item.length) {
             this._vm.$Message.info('默认分类不可删除')
         } else {
-            commit({
-                type: 'removeData',
-                key: 'categoryList',
-                arr: item
-            })
+            commit({type: 'removeData', key: 'categoryList', arr: item})
         }
     },
     del_trash ({commit, state, getters, dispatch}, item) {
-        commit({
-            type: 'removeData',
-            key: 'trashPosts',
-            arr: item
-        })
+        commit({type: 'removeData', key: 'trashPosts', arr: item})
     },
-    // 'add_term/category' ({commit, state, getters, dispatch}, item) {}
+
+    'add_term/tag' ({commit, state, getters, dispatch}, item) {
+        commit({type: 'addData', key: 'tagList', item})
+    },
     'add_term/category' ({commit, state, getters, dispatch}, item) {
-        commit({
-            type: 'addData',
-            key: 'categoryList',
-            item
-        })
+        commit({type: 'addData', key: 'categoryList', item})
+    },
+
+    'edit_term/category' ({commit, state, getters, dispatch}, item) {
+        commit({type: 'editData', key: 'categoryList', item})
+    },
+    'edit_term/tag' ({commit, state, getters, dispatch}, item) {
+        commit({type: 'editData', key: 'tagList', item})
     }
 }
 const mutations = {
@@ -124,6 +118,11 @@ const mutations = {
     },
     addData (state, {key, item}) {
         state[key].push(item)
+    },
+    editData (state, {key, item}) {
+        let index = state[key].find((i)=> i.id === item.id)
+        _.merge(index, item)
+        // state[key].push(item)
     },
     SET_TERMS (state, data) {
         let {category: categoryList, post_tag: tagList} = _.groupBy(data, 'taxonomy')
