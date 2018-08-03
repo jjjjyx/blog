@@ -14,6 +14,7 @@ const {termDao,userDao, postDao, postMetaDao, sequelize, Sequelize} = require('.
 const {term_relationships: termRelationshipsDao } = sequelize.models
 const Op = sequelize.Op
 
+const trashSaveDay = 30
 // id
 const sanitizeId = sanitizeBody('id').toInt()
 const checkId = body('id').exists().isInt().withMessage('请提交正确的文章ID')
@@ -562,9 +563,8 @@ const del = [
         let {ids} = req.body
         try {
             let date = new Date()
-            date.setDate(date.getDate() - 30)
+            date.setDate(date.getDate() - trashSaveDay)
             // 删除文章时需要清除掉关联关系
-
             await termRelationshipsDao.destroy({
                 paranoid: false,
                 force: true,
@@ -572,6 +572,7 @@ const del = [
                     object_id: ids
                 }
             })
+            //  删除文章不可以删除别人的私有有文章
             let result = await postDao.destroy({
                 paranoid: false,
                 force: true,
@@ -639,7 +640,7 @@ const getTrash = [
             // 是删除的 且删除时间小于 30天
             // 获取当前时间 - 30 天、
             let date = new Date()
-            date.setDate(date.getDate() - 30)
+            date.setDate(date.getDate() - trashSaveDay)
             //
             debug(`获取回收站中内容`)
             let posts = await postDao.findAll({
@@ -649,19 +650,19 @@ const getTrash = [
                         {deleteAt: {[Op.not]: null}},
                         {deleteAt: {[Op.gte]: date}},
                     ],
-                    // [Op.and] :{
-                    [Op.or]: [
-                        {
-                            post_status: Enum.PostStatusEnum.PRIVATE,
-                            post_author: req.user.id
-                        },
-                        {
-                            post_status: [
-                                Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
-                            ]
-                        }
-                    ]
-                    // }
+                    [Op.and] :{
+                        [Op.or]: [
+                            {
+                                post_status: Enum.PostStatusEnum.PRIVATE,
+                                post_author: req.user.id
+                            },
+                            {
+                                post_status: [
+                                    Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                                ]
+                            }
+                        ]
+                    }
                 }
             })
             return res.status(200).json(Result.success(posts))
@@ -776,8 +777,8 @@ router.route('/new_post').post(newPost)
 // 更新文章
 router.route('/save').post(save)
 router.route('/release').post(release)
-router.route('/revert').post(revert)
-router.route('/del').post(del)
+router.route('/trash/revert').post(revert)
+router.route('/trash/del').post(del)
 router.route('/trash').get(getTrash).post(moverTrash)
 router.route('/:id').get(postInfo)
 // router.route('/test').post(test)

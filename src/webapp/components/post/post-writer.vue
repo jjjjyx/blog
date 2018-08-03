@@ -316,7 +316,6 @@ export default {
                 await this.showSaveWarning()
                 this.showVersionWarning = false
                 // 点击了覆盖
-
             }
             this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saving)
             // this.postContent = value
@@ -329,7 +328,6 @@ export default {
                 this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saved)
                 this.$store.commit('updateAutoSaveContent', obj)
                 // 手动更新一下vuex 状态里的记录
-
             } catch (e) {
                 this.$Message.info('保存失败')
                 this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.edited)
@@ -502,7 +500,7 @@ export default {
         // this.tableHeight = h
         let onResize = _.debounce((e) => {
             // 这里地方 不知道什么缘故需要设置一下容易的宽度，好像flex 布局有什么坑
-            let width = this.$el.clientWidth - this.$refs['postBody'].clientWidth
+            let width = this.$el.clientWidth - this.$refs['postBox'].clientWidth
             this.$refs['postBody'].style.width = `${width}px`
         }, 1000)
         onResize()

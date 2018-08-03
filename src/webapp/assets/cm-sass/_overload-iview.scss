@@ -62,3 +62,9 @@
     padding-left: 14px;
     padding-right: 14px;
 }
+.ivu-table-tbody .ivu-table-row td:first-child {
+    border-left: 2px solid transparent;
+}
+.ivu-table-tbody .ivu-table-row.ivu-table-row-hover td:first-child {
+    border-left-color: $logo-color;
+}

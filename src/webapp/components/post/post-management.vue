@@ -127,7 +127,7 @@ export default {
         return {
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
-                // {title: 'ID', key: 'id', sortable: true},
+                {title: '#', key: 'id', sortable: true, width: 70},
                 {title: '标题', key: 'size', sortable: true, render: renderTitle.bind(this)},
                 {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
                 {title: '类别', key: '', width: 100, render: renderCategory.bind(this)},

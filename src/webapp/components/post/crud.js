@@ -55,8 +55,13 @@ export default {
         // 获取数据
         async fetchData (force) {
             this.tableStatus = true
+            const msg = this.$Message.loading({
+                content: 'Loading...',
+                duration: 0
+            })
             await this.fetch(force)
             this.tableStatus = false
+            msg()
         },
         // 删除数据
         remove: function remove (selected) {
@@ -66,18 +71,25 @@ export default {
 
             let ids = selected.map((item) => (item[this.idKey]))
             // 删除提示
-            this.$Modal.warning({
-                title: '删除提示',
-                content: this.delTip,
-                onOk: async () => {
-                    try {
-                        await api.npost(`/api/${this.active}/del`, {ids})
-                        this.$store.dispatch('del_' + this.active, selected)
-                    } catch (e) {
-                        this.$Message.info('删除失败')
-                    }
-                }
+            return new Promise((resolve, reject) => {
+                this.$Modal.warning({
+                    title: '删除提示',
+                    content: this.delTip,
+                    onOk: async () => {
+                        try {
+                            await api.npost(`/api/${this.active}/del`, {ids})
+                            this.$store.dispatch('del_' + this.active, selected)
+                            this.$Message.success('删除成功')
+                            resolve()
+                        } catch (e) {
+                            this.$Message.info('删除失败')
+                            reject(e)
+                        }
+                    },
+                    onCancel: reject
+                })
             })
+
         },
         // 增加数据
         add: async function add (name) {

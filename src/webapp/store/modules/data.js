@@ -88,7 +88,7 @@ const actions = {
             commit({type: 'removeData', key: 'categoryList', arr: item})
         }
     },
-    del_trash ({commit, state, getters, dispatch}, item) {
+    'del_post/trash' ({commit, state, getters, dispatch}, item) {
         commit({type: 'removeData', key: 'trashPosts', arr: item})
     },
 
@@ -104,6 +104,9 @@ const actions = {
     },
     'edit_term/tag' ({commit, state, getters, dispatch}, item) {
         commit({type: 'editData', key: 'tagList', item})
+    },
+    revert_post ({commit, state, getters, dispatch}, item) {
+        commit('REVERT_POST', item)
     }
 }
 const mutations = {
@@ -131,6 +134,10 @@ const mutations = {
     },
     addCategoryList (state, value) {
         state.categoryList.push(value)
+    },
+    REVERT_POST (state, value) {
+        let index = state.trashPosts.indexOf(value)
+        state.trashPosts.splice(index, 1)
     }
     // updateCategoryValue (state, value) {
     //     state.sidebarCategoryValue = value
