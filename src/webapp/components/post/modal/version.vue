@@ -36,12 +36,18 @@
                 <!-- 标题-->
                     <h2 v-if="showTitle">标题:</h2>
                     <code-diff v-if="showTitle"  :old-string="currentPost.post_title" :new-string="active.post_title" :context="1" header="标题"/>
+
                     <h2 v-if="showCategory">分类</h2>
-                    <div class="d2h-file-header" style="display: block" v-if="showCategory">
-                        <span class="d2h-file-name-wrapper">
-                            <span class="d2h-file-name">{{this.currentPost.category_id}}-> {{this.activeCategory}}</span>
-                            <!--<span class="d2h-tag d2h-changed d2h-changed-tag">CHANGED</span>-->
-                        </span>
+                    <div v-if="showCategory">
+                        <hr>
+                        当前版本: {{categoryName(this.currentPost.category_id)}}
+                        <br>
+                        此版本: {{categoryName(this.activeCategory)}}
+                        <!--<span class="d2h-file-name-wrapper">-->
+                            <!--<span class="d2h-file-name">{{this.currentPost.category_id}}-> {{this.activeCategory}}</span>-->
+                            <!--&lt;!&ndash;<span class="d2h-tag d2h-changed d2h-changed-tag">CHANGED</span>&ndash;&gt;-->
+                        <!--</span>-->
+                        <hr>
                     </div>
 
                     <h2 v-if="showTags">标签</h2>
@@ -50,9 +56,10 @@
                         当前：<Tag v-for="(item, index) in currentPost.new_tag" color="#fdf2d0" :key="index + '_'" :name="item">
                             <span style="color: #000000">{{item}}</span>
                         </Tag>
-                        <hr>
+                        <br>
                         此版本：<Tag v-for="(item, index) in activeTags" color="#ded"  :key="index " :name="item"  >
                         <span style="color: #000000">{{item}}</span></Tag>
+                        <hr>
                     </div>
                     <!--内容-->
                     <h2>内容:</h2>
@@ -90,7 +97,8 @@ export default {
     },
     computed: {
         ...mapState({
-            'currentPost': state => state.post
+            'currentPost': state => state.post,
+            'categoryList': state => state.data.categoryList
             // newTags: state => state.post.newTags
         }),
         ...mapGetters(['defaultCategoryValue']),
@@ -122,7 +130,8 @@ export default {
         },
         showTags: function () {
             let tags = this.activeTags
-            if (tags.length === 0) return false
+            // console.log('activeTags', tags, this.currentPost.new_tag)
+            // if (tags.length === 0) return false
             if (this.currentPost.new_tag.length === tags.length) { // 长度相等
                 return _.difference(this.currentPost.new_tag, tags).length // 取交集，无交集不显示
             }
@@ -144,6 +153,10 @@ export default {
             this.$store.commit('restore', this.active)
             this.versionModel = false
             this.$emit('restore')
+        },
+        categoryName (id) {
+            let category = this.categoryList.find(i => i.id === id)
+            return category ? `${category.name}#${id}` : `${id} (未知- 可能是错误的分类)`
         }
     },
     props: {

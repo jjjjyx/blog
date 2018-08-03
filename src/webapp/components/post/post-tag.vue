@@ -92,7 +92,7 @@ const renderAction = function (h, {row}) {
                 }
             }
         }, 'Delete')
-    ]);
+    ])
 }
 
 export default {

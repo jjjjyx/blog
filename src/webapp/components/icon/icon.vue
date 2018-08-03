@@ -30,17 +30,17 @@ export default {
             }
         },
         styles () {
-            let style = {};
+            let style = {}
             if (this.size) {
-                style['font-size'] = `${this.size}px`;
+                style['font-size'] = `${this.size}px`
             }
 
-            return style;
+            return style
         }
     },
     methods: {
         handleClick (event) {
-            this.$emit('click', event);
+            this.$emit('click', event)
         }
     }
 }

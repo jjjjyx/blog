@@ -1,4 +1,4 @@
-const prefixCls = 'iconfont';
+const prefixCls = 'iconfont'
 export default {
     name: 'font-icon',
     props: {
@@ -19,24 +19,24 @@ export default {
                 `${prefixCls}`,
                 {
                     [this.type]: this.type !== '',
-                    [this.custom]: this.custom !== '',
+                    [this.custom]: this.custom !== ''
                 }
-            ];
+            ]
         },
         styles () {
-            let style = {};
+            let style = {}
             if (this.size) {
-                style['font-size'] = `${this.size}px`;
+                style['font-size'] = `${this.size}px`
             }
             if (this.color) {
-                style.color = this.color;
+                style.color = this.color
             }
-            return style;
+            return style
         }
     },
     methods: {
         handleClick (event) {
-            this.$emit('click', event);
+            this.$emit('click', event)
         }
     },
     render (h) {

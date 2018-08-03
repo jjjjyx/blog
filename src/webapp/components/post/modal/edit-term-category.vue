@@ -3,7 +3,7 @@
         <p slot="title">编辑{{prefix}} - #{{target.id}}-{{target.name}}</p>
         <Form :model="targetForm" :label-width="100" ref="form" :rules="ruleValidate" >
             <FormItem :label="prefix+ '名称'" prop="name">
-                <Input v-model="targetForm.name":placeholder="`请输入${prefix}名称`" :maxlength="10"/>
+                <Input v-model="targetForm.name" :placeholder="`请输入${prefix}名称`" :maxlength="10"/>
             </FormItem>
             <!--todo 一个选择图标的方案-->
             <!--<Poptip placement="left" width="800">-->
@@ -44,7 +44,7 @@ export default {
         return {
             ruleValidate: categoryRuleValidate,
             isModify: false,
-            targetForm: _.cloneDeep(this.target),
+            targetForm: _.cloneDeep(this.target)
         }
     },
     props: {
@@ -91,6 +91,6 @@ export default {
             },
             deep: true
         }
-    },
+    }
 }
 </script>

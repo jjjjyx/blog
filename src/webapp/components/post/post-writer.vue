@@ -315,6 +315,8 @@ export default {
             if (this.showVersionWarning) {
                 await this.showSaveWarning()
                 this.showVersionWarning = false
+                // 点击了覆盖
+
             }
             this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saving)
             // this.postContent = value
@@ -325,6 +327,9 @@ export default {
                 // console.log('save result = ', result)
                 this.pushRouter('replace')
                 this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saved)
+                this.$store.commit('updateAutoSaveContent', obj)
+                // 手动更新一下vuex 状态里的记录
+
             } catch (e) {
                 this.$Message.info('保存失败')
                 this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.edited)

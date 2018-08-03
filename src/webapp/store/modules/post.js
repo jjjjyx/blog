@@ -164,6 +164,34 @@ const mutations = {
         state.post_content = value.post_content
         state.post_title = value.post_title
         state.post_excerpt = value.post_excerpt
+        let metas = value.metas
+        if (metas.tags) {
+            state.new_tag = JSON.parse(metas.tags.meta_value)
+        } // 如果恢复的版本没有 则照旧
+
+        if (metas.category) {
+            state.category_id = JSON.parse(metas.category.meta_value)
+        } // 如果恢复的版本没有 则照旧
+
+        state.status = POST_WRITER_STATUS.edited
+
+        // state.new_tag =
+    },
+    updateAutoSaveContent (state, obj) {
+        let autoRevision = state.revision.find(item => item.autosave)
+        if (autoRevision !== null) {
+            console.log(obj, autoRevision)
+            autoRevision.post_content = obj.post_content
+            autoRevision.post_title = obj.post_title
+            autoRevision.post_excerpt = obj.post_excerpt
+            autoRevision.updatedAt = new Date()
+            let metas = autoRevision.metas
+            metas.tags = metas.tags || {meta_value: ''}
+            metas.category = metas.category || {meta_value: ''}
+
+            metas.tags.meta_value = JSON.stringify(obj.new_tag)
+            metas.category.meta_value = JSON.stringify(obj.category_id)
+        }
     },
     SET_CURRENT_POST (state, value) {
         // 先重置， 在设置

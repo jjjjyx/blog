@@ -195,10 +195,16 @@ const createTags = async function (req, res, post, dealWithCategory) {
  * @private
  */
 const _save_update = async function (post, {post_title, post_content, post_excerpt}) {
-    post.post_title = post_title
-    post.post_content = post_content
-    post.post_excerpt = post_excerpt
-    return await post.save()
+    // post.post_title = post_title
+    // post.post_content = post_content
+    // post.post_excerpt = post_excerpt
+    // console.log(post)
+    // 使用save 方式 如果仅保存了标签那么修改的时间戳不会被更新
+    return await postDao.update({post_title, post_content, post_excerpt, updatedAt: new Date()}, {
+        where:{
+            id: post.id
+        }
+    })
 }
 /**
  * 更新meta 的统一方法

@@ -120,7 +120,7 @@ const mutations = {
         state[key].push(item)
     },
     editData (state, {key, item}) {
-        let index = state[key].find((i)=> i.id === item.id)
+        let index = state[key].find((i) => i.id === item.id)
         _.merge(index, item)
         // state[key].push(item)
     },

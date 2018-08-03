@@ -8,11 +8,7 @@
 </template>
 
 <script>
-    export default {
-        name: 'default-right'
-    }
+export default {
+    name: 'default-right'
+}
 </script>
-
-<style scoped>
-
-</style>

@@ -43,7 +43,7 @@ export default {
         showRightComponent () {
             if (this.singleEditTarget) {
                 return `edit-${this.activeToLine}`
-            } else if (this.selectedNum === 0){
+            } else if (this.selectedNum === 0) {
                 return `add-${this.activeToLine}`
             } else {
                 return `select-info`
