@@ -7,13 +7,17 @@ export default {
         return {
             filterForm: {key: '', term: '', status: ''},
             tableHeight: 400,
-            columns: [],
-            tableStatus: false,
-            selectedList: [],
-            delTip: '确认删除？',
-            idKey: 'id',
-            confirmStatus: false,
-            formItem: {}
+            columns: [], // 表格列对象
+            tableStatus: false, // 表格加载状态
+            selectedList: [], // 选中的对象
+
+            idKey: 'id', // 对象标识
+            confirmStatus: false, // 确认按钮状态
+            formItem: {},
+            singleEditTarget: null, // 单选编辑对象
+
+            active: '_', // 当前 url
+            delTip: '确认删除？' // 删除提示
         }
     },
     computed: {
@@ -27,6 +31,19 @@ export default {
         // }),
         selectedNum: function () {
             return this.selectedList.length
+        },
+        activeToLine () {
+            return this.active.replace(/\/(\w)/g, '-$1')
+        },
+        // 当前显示组件
+        showRightComponent () {
+            if (this.singleEditTarget) {
+                return `edit-${this.activeToLine}`
+            } else if (this.selectedNum === 0){
+                return `add-${this.activeToLine}`
+            } else {
+                return `select-info-${this.activeToLine}`
+            }
         }
     },
     methods: {
@@ -58,30 +75,27 @@ export default {
                 }
             })
         },
-        reset: function reset (name) {
-            this.$refs[name].resetFields()
-        },
         // 增加数据
-        add: function add (name) {
+        add: async function add (name) {
             this.confirmStatus = true
-            this.$refs[name].validate(async (valid) => {
-                if (valid) {
-                    try {
-                        let result = await api.npost(`/api/${this.active}/add`, this.formItem)
-                        console.log(result)
-                        this.$store.dispatch('add_' + this.active, result)
-                    } catch (e) {
-                        this.$Message.error('参数错误, 添加失败');
-                    }
-                    this.confirmStatus = false
-                } else {
-                    this.$Message.error('Fail!');
-                    this.confirmStatus = false
-                }
-            })
+            let flag = true
+            try {
+                let result = await api.npost(`/api/${this.active}/add`, this.formItem)
+                this.$store.dispatch('add_' + this.active, result)
+            } catch (e) {
+                this.$Message.error('参数错误, 添加失败')
+                flag = false
+            }
+            this.confirmStatus = false
+            return flag
         },
         // 修改数据
-        edit: function edit () {},
+        edit: function edit (target) {
+            this.singleEditTarget = target
+        },
+        unEdit: function unEdit () {
+            this.singleEditTarget = null
+        },
         // 查询数据
         search: function search () {},
         // 选择变化
@@ -126,7 +140,6 @@ export default {
             let onResize = _.debounce((e) => {
                 let h = this.$refs['table-wrapper'].clientHeight
                 this.tableHeight = h
-                console.log(this.tableHeight)
             }, 1000)
             onResize()
             on(window, 'resize', onResize)
