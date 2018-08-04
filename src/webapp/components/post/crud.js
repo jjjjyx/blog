@@ -89,7 +89,6 @@ export default {
                     onCancel: reject
                 })
             })
-
         },
         // 增加数据
         add: async function add (name) {

@@ -44,19 +44,6 @@ let activeName = name;
                     <a href="<%= item.url%>"><%= item.label%></a>
                 </Menu-Item>
                 <% }); %>
-
-                <!--<Menu-Item name="2">-->
-                <!--标签-->
-                <!--</Menu-Item>-->
-                <!--<Menu-Item name="3">-->
-                <!--归档-->
-                <!--</Menu-Item>-->
-                <!--<Menu-Item name="4">-->
-                <!--关于我-->
-                <!--</Menu-Item>-->
-                <!--<Menu-Item name="5">-->
-                <!--作品-->
-                <!--</Menu-Item>-->
             </div>
         </i-Menu>
     </div>
@@ -98,6 +85,19 @@ window.onscroll = e_scroll
 }();
 */ %>
 <script>
-    +function(){var d=window.pageYOffset;window.onload=function(c){var b=document.querySelector(".wrapper-header");c=function(a){a=window.pageYOffset;0==a&&b.classList.add("top");0<a&&b.classList.remove("top");25<a&&(b.classList.add("gizle"),a>d?b.classList.remove("sabit"):b.classList.add("sabit"),d=a)};c();window.onscroll=c}}();
+    +function () {
+        var d = window.pageYOffset
+        window.onload = function (c) {
+            var b = document.querySelector('.wrapper-header')
+            c = function (a) {
+                a = window.pageYOffset
+                0 == a && b.classList.add('top')
+                0 < a && b.classList.remove('top')
+                25 < a && (b.classList.add('gizle'), a > d ? b.classList.remove('sabit') : b.classList.add('sabit'), d = a)
+            }
+            c()
+            window.onscroll = c
+        }
+    }()
 </script>
 

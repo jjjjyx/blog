@@ -58,7 +58,7 @@ const checkExcerpt = body('post_excerpt').exists().isString().isLength({min: 0})
 // 允许提交的文章状态
 const allowPostStatus = [
     Enum.PostStatusEnum.PENDING,
-    Enum.PostStatusEnum.PRIVATE,
+    // Enum.PostStatusEnum.PRIVATE, // 禁用私密
     Enum.PostStatusEnum.PUBLISH,
     Enum.PostStatusEnum.DRAFT
 ]
@@ -277,10 +277,11 @@ const save = [
                 break
             case Enum.PostStatusEnum.PRIVATE:
                 // 私密的文章需要验证是否是本人创建的
-                let user = req.user
-                if (user.id !== post.post_author) {
-                    return res.status(200).json(Result.info('保存失败，文章私密，您无权修改'))
-                }
+                // 禁用私密功能
+                // let user = req.user
+                // if (user.id !== post.post_author) {
+                //     return res.status(200).json(Result.info('保存失败，文章私密，您无权修改'))
+                // }
             case Enum.PostStatusEnum.PUBLISH:
             case Enum.PostStatusEnum.PENDING:
                 debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
@@ -448,10 +449,11 @@ const release = [
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
             }
             // 只能对自己的文章进行转私密, 加密码 在这里进行判断下
-            let user = req.user
-            if (post_author !== user.id && (post_status === Enum.PostStatusEnum.PRIVATE || post_password)) {
-                return res.status(200).json(Result.info('您不可以对别人的文章加密'))
-            }
+            // 禁用私密功能
+            // let user = req.user
+            // if (post_author !== user.id && (post_status === Enum.PostStatusEnum.PRIVATE || post_password)) {
+            //     return res.status(200).json(Result.info('您不可以对别人的文章加密'))
+            // }
 
             debug(`release 提交 body = ${JSON.stringify(req.body)}`)
             // return res.status(200).json('null')
@@ -529,17 +531,20 @@ const moverTrash = [
             let result = await postDao.destroy({
                 where: {
                     id: ids,
-                    [Op.or]: [
-                        {
-                            post_status: Enum.PostStatusEnum.PRIVATE,
-                            post_author: req.user.id
-                        },
-                        {
-                            post_status: [
-                                Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
-                            ]
-                        }
-                    ]
+                    post_status: [
+                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    ],
+                    // [Op.or]: [ // 禁用私密功能
+                    //     {
+                    //         post_status: Enum.PostStatusEnum.PRIVATE,
+                    //         post_author: req.user.id
+                    //     },
+                    //     {
+                    //         post_status: [
+                    //             Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    //         ]
+                    //     }
+                    // ]
                 }
             })
             debug(`mover trash ids = [${ids}], 其中${result} 个id 有效, 已成功丢弃至回收站`)
@@ -598,17 +603,20 @@ const getAllPost = [
         try {
             let posts = await postDao.findAll({
                 where: {
-                    [Op.or]: [
-                        {
-                            post_status: Enum.PostStatusEnum.PRIVATE,
-                            post_author: req.user.id
-                        },
-                        {
-                            post_status: [
-                                Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
-                            ]
-                        }
-                    ]
+                    post_status: [
+                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    ],
+                    // [Op.or]: [ // 禁用私密功能
+                    //     {
+                    //         post_status: Enum.PostStatusEnum.PRIVATE,
+                    //         post_author: req.user.id
+                    //     },
+                    //     {
+                    //         post_status: [
+                    //             Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    //         ]
+                    //     }
+                    // ]
                 },
                 include: [
                     {
@@ -646,23 +654,26 @@ const getTrash = [
             let posts = await postDao.findAll({
                 paranoid: false,
                 where: {
+                    post_status: [
+                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    ],
                     [Op.or]: [
                         {deleteAt: {[Op.not]: null}},
                         {deleteAt: {[Op.gte]: date}},
                     ],
-                    [Op.and] :{
-                        [Op.or]: [
-                            {
-                                post_status: Enum.PostStatusEnum.PRIVATE,
-                                post_author: req.user.id
-                            },
-                            {
-                                post_status: [
-                                    Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
-                                ]
-                            }
-                        ]
-                    }
+                    // [Op.and] :{ // 禁用私密功能
+                    //     [Op.or]: [
+                    //         {
+                    //             post_status: Enum.PostStatusEnum.PRIVATE,
+                    //             post_author: req.user.id
+                    //         },
+                    //         {
+                    //             post_status: [
+                    //                 Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    //             ]
+                    //         }
+                    //     ]
+                    // }
                 }
             })
             return res.status(200).json(Result.success(posts))
@@ -711,15 +722,16 @@ const postInfo = [
                 // },
                 where: {
                     id,
-                    [Op.or]: [
-                        {
-                            post_status: Enum.PostStatusEnum.PRIVATE,
-                            post_author: req.user.id
-                        },
-                        {
-                            post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT]
-                        }
-                    ]
+                    post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT],
+                    // [Op.or]: [ // 禁用私密功能
+                    //     {
+                    //         post_status: Enum.PostStatusEnum.PRIVATE,
+                    //         post_author: req.user.id
+                    //     },
+                    //     {
+                    //         post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT]
+                    //     }
+                    // ]
                 },
                 include: [
                     {model: postMetaDao, as: 'metas'},

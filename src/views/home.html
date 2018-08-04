@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<% var data = {name: 'home'} %>
+<% var data = {name: 'home', loading: true} %>
 <head>
     <%- include('head.html', data); %>
     <%-SITE.statistical%>
 </head>
 <body>
+<%- include('loading.html', data); %>
 <div id="app">
     <!--<div class="wrapper">-->
     <%- include('nav.html', data); %>

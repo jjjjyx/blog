@@ -47,7 +47,7 @@
                             </radio>
                             <i-input v-model="tmpPass" v-show="tmpStatus ==='pass'" ref="pass" class="ml-4" type="password"
                                      placeholder="密码" size="small" style="width: 150px"></i-input>
-                            <radio label="private">
+                            <radio label="private" :disabled="true">
                                 <i class="iconfont icon-simi1"></i>
                                 <span>仅自己可见</span>
                             </radio>
@@ -256,7 +256,8 @@ export default {
                 this.$store.commit('updatePostPass', this.tmpPass)
                 break
             case 'private':
-                this.$store.commit('updatePostStatus', 'private')
+                // 禁用私有功能
+                // this.$store.commit('updatePostStatus', 'private')
                 break
             }
         },
