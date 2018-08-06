@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="zh-CN">
+<% var data = {name: 'home', loading: true} %>
+<head>
+<%-include('base/head', data)%>
+<%-SITE.statistical%>
+</head>
+<body>
+<%-include('loading', data); %>
+<div id="app">
+    <!--<div class="wrapper">-->
+    <%- include('base/nav', data); %>
+    <div class="jumbotron bounceInDown animated">
+        <div class="center-bg j-vertical-center" style="background-image:url('http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/1928/format/jpg');background-position: 0 -235px">
+            <a class="avatar am-animation-scale-up " href="javascript:;" style="animation-delay: .51s;">
+                <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" >
+            </a>
+            <p class="avatar-p ">
+                <%- SITE.sign%>
+            </p>
+        </div>
+        <div class="slant slant__left"></div>
+        <div class="slant slant__right"></div>
+    </div>
+    <row class="container" style="margin-top: 70px;">
+        <i-col span="16" class="articles">
+            <tabs size="small">
+
+                <tab-pane label="最新文章" class="j-article-list">
+                    <article class="j-article-item j-top-img" >
+                        <carousel v-model="value1" autoplay arrow="never">
+                            <carousel-item>
+                                <div class="j-img-warp">
+                                    <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/780/format/jpg" alt="">
+                                </div>
+                            </carousel-item>
+                            <carousel-item>
+                                <div class="j-img-warp">2</div>
+                            </carousel-item>
+                            <carousel-item>
+                                <div class="j-img-warp">3</div>
+                            </carousel-item>
+                            <carousel-item>
+                                <div class="j-img-warp">4</div>
+                            </carousel-item>
+                        </carousel>
+                        <div class="j-article-item-content">
+                            <h3 class="j-article__title">
+                                <a href="/p/" target="_blank">
+                                    <!--<span class="j-article__sticky">[ 置顶 ]</span>-->
+                                    <!--标题过长允许换行，但是超过一定个数需要截断-->
+                                    <!--如果在左侧显示图片，最大为60个字符-->
+                                    <!--如果在右侧侧显示图片，最大为210个字符-->
+                                    <color-icon class="j-article__sticky" type="icon-zhiding" size="24"></color-icon>
+                                    文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长
+                                </a>
+                            </h3>
+                            <div class="j-article__metas float-right j-article__opt">
+                                <a class="j-article__meta read mr-2" href="/p/${item.guid}" target="_blank">
+                                    <Icon type="ios-eye-outline" size="20"></Icon><span class="num">56</span>
+                                </a>
+                                <a class="j-article__meta comment mr-2" href="/p/${item.guid}#comment" target="_blank">
+                                    <Icon type="ios-chatbubble-outline" size="20"></Icon><span class="num">88</span>
+                                </a>
+                                <a class="j-article__meta like mr-2">
+                                    <Icon type="ios-heart-outline" size="20"></Icon><span class="num">46</span>
+                                </a>
+                            </div>
+                            <div class="j-article__metas mt-2 mb-4">
+                                <a title="酱酱酱酱油鲜" class="j-article__metas--username">酱酱酱酱油鲜</a>
+                                <time class="j-article__metas--time" title="2018/6/20 22:37">2018/6/20 22:37</time>
+                            </div>
+                            <p class="j-article__intro">
+                                互联网的发展，学习是越来越重要了，人们不可能不学习，如果不学习那他将被社会，被互联网淘汰。而博客作为学习的结晶，前人的经验，在学习的路上是很重要的组成部分。博客可以有效的结合图片，文字，能够给读者留下很深刻的影响，为学习带来便利。
+                                博客具有了个人网站的自由精神，它既可以将个人日记，工作过程，学习笔记，生活见闻，闪现的灵感，记录起来，它能发挥出个人无限创造力，还能结交相识，汇聚朋友，进行深度交流。
+                                并且如果
+                            </p>
+                            <div class="j-article__metas mt-2">
+                                <Tag type="border" color="blue">分类一</Tag>
+                                <Icon type="pricetag" size="16"></Icon> <span class="j-article__meta">vue</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="j-article-item j-top-img" v-for="i in 2" :key="i">
+                        <div class="j-img-warp j-vertical-center">
+                            <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/780/format/jpg" alt="">
+                        </div>
+                        <div class="j-article-item-content">
+                            <h3 class="j-article__title">
+                                <a href="/p/" target="_blank">
+                                    <!--<span class="j-article__sticky">[ 置顶 ]</span>-->
+                                    <!--标题过长允许换行，但是超过一定个数需要截断-->
+                                    <!--如果在左侧显示图片，最大为60个字符-->
+                                    <!--如果在右侧侧显示图片，最大为210个字符-->
+                                    <color-icon class="j-article__sticky" type="icon-zhiding" size="24"></color-icon>
+                                    文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长
+                                </a>
+                            </h3>
+                            <div class="j-article__metas float-right j-article__opt">
+                                <a class="j-article__meta read mr-2" href="/p/${item.guid}" target="_blank">
+                                    <Icon type="ios-eye-outline" size="20"></Icon><span class="num">56</span>
+                                </a>
+                                <a class="j-article__meta comment mr-2" href="/p/${item.guid}#comment" target="_blank">
+                                    <Icon type="ios-chatbubble-outline" size="20"></Icon><span class="num">88</span>
+                                </a>
+                                <a class="j-article__meta like mr-2">
+                                    <Icon type="ios-heart-outline" size="20"></Icon><span class="num">46</span>
+                                </a>
+                            </div>
+                            <div class="j-article__metas mt-2 mb-4">
+                                <a title="酱酱酱酱油鲜" class="j-article__metas--username">酱酱酱酱油鲜</a>
+                                <time class="j-article__metas--time" title="2018/6/20 22:37">2018/6/20 22:37</time>
+                            </div>
+                            <p class="j-article__intro">
+                                互联网的发展，学习是越来越重要了，人们不可能不学习，如果不学习那他将被社会，被互联网淘汰。而博客作为学习的结晶，前人的经验，在学习的路上是很重要的组成部分。博客可以有效的结合图片，文字，能够给读者留下很深刻的影响，为学习带来便利。
+                                博客具有了个人网站的自由精神，它既可以将个人日记，工作过程，学习笔记，生活见闻，闪现的灵感，记录起来，它能发挥出个人无限创造力，还能结交相识，汇聚朋友，进行深度交流。
+                                并且如果
+                            </p>
+                            <div class="j-article__metas mt-2">
+                                <Tag type="border" color="blue">分类一</Tag>
+                                <Icon type="pricetag" size="16"></Icon> <span class="j-article__meta">vue</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="j-article-item j-right-img" v-for="i in 2" :key="i">
+                        <div class="j-article-item-content">
+                            <h3 class="j-article__title">
+                                <a href="/p/" target="_blank">
+                                    <!--<span class="j-article__sticky">[ 置顶 ]</span>-->
+                                    <!--标题过长允许换行，但是超过一定个数需要截断-->
+                                    <!--如果在左侧显示图片，最大为60个字符-->
+                                    <!--如果在右侧侧显示图片，最大为210个字符-->
+                                    <color-icon class="j-article__sticky" type="icon-zhiding" size="24"></color-icon>
+                                    文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长
+                                </a>
+                            </h3>
+                            <div class="j-article__metas float-right j-article__opt">
+                                <a class="j-article__meta read mr-2" href="/p/${item.guid}" target="_blank">
+                                    <Icon type="ios-eye-outline" size="20"></Icon><span class="num">56</span>
+                                </a>
+                                <a class="j-article__meta comment mr-2" href="/p/${item.guid}#comment" target="_blank">
+                                    <Icon type="ios-chatbubble-outline" size="20"></Icon><span class="num">88</span>
+                                </a>
+                                <a class="j-article__meta like mr-2">
+                                    <Icon type="ios-heart-outline" size="20"></Icon><span class="num">46</span>
+                                </a>
+                            </div>
+                            <div class="j-article__metas mt-2 mb-4">
+                                <a title="酱酱酱酱油鲜" class="j-article__metas--username">酱酱酱酱油鲜</a>
+                                <time class="j-article__metas--time" title="2018/6/20 22:37">2018/6/20 22:37</time>
+                            </div>
+                            <div class="j-img-warp">
+                                <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/h/120/format/jpg" alt="">
+                            </div>
+                            <p class="j-article__intro">
+                                互联网的发展，学习是越来越重要了，人们不可能不学习，如果不学习那他将被社会，被互联网淘汰。而博客作为学习的结晶，前人的经验，在学习的路上是很重要的组成部分。博客可以有效的结合图片，文字，能够给读者留下很深刻的影响，为学习带来便利。
+                                博客具有了个人网站的自由精神，它既可以将个人日记，工作过程，学习笔记，生活见闻，闪现的灵感，记录起来，它能发挥出个人无限创造力，还能结交相识，汇聚朋友，进行深度交流。
+                                并且如果
+                            </p>
+                            <div class="j-article__metas mt-2">
+                                <Tag type="border" color="blue">分类一</Tag>
+                                <Icon type="pricetag" size="16"></Icon> <span class="j-article__meta">vue</span>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="j-article-item j-left-img" v-for="i in 2" :key="i">
+                        <div class="j-img-warp">
+                            <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/200/format/jpg" alt="">
+                        </div>
+                        <div class="j-article-item-content">
+                            <h3 class="j-article__title">
+                                <a href="/p/" target="_blank">
+                                    <!--<span class="j-article__sticky">[ 置顶 ]</span>-->
+                                    <!--标题过长允许换行，但是超过一定个数需要截断-->
+                                    <!--如果在左侧显示图片，最大为60个字符-->
+                                     <color-icon class="j-article__sticky" type="icon-zhiding" size="24"></color-icon>
+                                    文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长文章标题很长很长
+                                </a>
+                            </h3>
+                            <div class="j-article__metas float-right j-article__opt">
+                                <a class="j-article__meta read mr-2" href="/p/${item.guid}" target="_blank">
+                                    <Icon type="ios-eye-outline" size="20"></Icon><span class="num">56</span>
+                                </a>
+                                <a class="j-article__meta comment mr-2" href="/p/${item.guid}#comment" target="_blank">
+                                    <Icon type="ios-chatbubble-outline" size="20"></Icon><span class="num">88</span>
+                                </a>
+                                <a class="j-article__meta like mr-2">
+                                    <Icon type="ios-heart-outline" size="20"></Icon><span class="num">46</span>
+                                </a>
+                            </div>
+                            <div class="j-article__metas mt-2 mb-4">
+                                <a title="酱酱酱酱油鲜" class="j-article__metas--username">酱酱酱酱油鲜</a>
+                                <time class="j-article__metas--time" title="2018/6/20 22:37">2018/6/20 22:37</time>
+                            </div>
+                            <p class="j-article__intro">
+                                互联网的发展，学习是越来越重要了，人们不可能不学习，如果不学习那他将被社会，被互联网淘汰。而博客作为学习的结晶，前人的经验，在学习的路上是很重要的组成部分。博客可以有效的结合图片，文字，能够给读者留下很深刻的影响，为学习带来便利。
+                                博客具有了个人网站的自由精神，它既可以将个人日记，工作过程，学习笔记，生活见闻，闪现的灵感，记录起来，它能发挥出个人无限创造力，还能结交相识，汇聚朋友，进行深度交流。
+                                并且如果
+                            </p>
+                            <div class="j-article__metas mt-2">
+                                <Tag type="border" color="blue">分类一</Tag>
+                                <Icon type="pricetag" size="16"></Icon> <span class="j-article__meta">vue</span>
+                            </div>
+                        </div>
+                    </article>
+                </tab-pane>
+                <!--<tab-pane label="上课大纲">标签二的内容</tab-pane>-->
+                <!--<tab-pane label="毕业论文">标签三的内容</tab-pane>-->
+            </tabs>
+        </i-col>
+        <i-col span="7" offset="1">
+            <div class="part">
+                <div class="j-title">
+                    <h3 class="">标签</h3>
+                    <a href="/category" class="r btn btn-sm " style="color:#B3B3B3">
+                        全部 &nbsp;&nbsp;<i class="am-icon-angle-right"></i>
+                    </a>
+                </div>
+                <div class="tags">
+                </div>
+            </div>
+        </i-col>
+    </row>
+    <!--</div>-->
+    <%-include('base/bottom', data); %>
+</div>
+<%-include('base/footer', data); %>
+</body>
+</html>

@@ -274,7 +274,6 @@ const save = [
                 // let values = {post_title, post_content, post_excerpt, post_status: post.post_status}
                 debug(`文章 = ${id} 更新草稿内容！`)
                 return res.status(200).json(Result.success(await _save_update(post, req.body)))
-                break
             case Enum.PostStatusEnum.PRIVATE:
                 // 私密的文章需要验证是否是本人创建的
                 // 禁用私密功能

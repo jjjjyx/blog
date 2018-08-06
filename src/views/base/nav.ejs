@@ -1,47 +1,46 @@
 <%
 let nav = [
-{
-name: 'home',
-label: '首页',
-url: '/',
-},
-{
-name: 'category',
-label: '标签',
-url: '/category',
-},
-{
-name: 'archives',
-label: '归档',
-url: '/archives',
-},
-{
-name: 'about',
-label: '关于我',
-url: '/about',
-},
-{
-name: 'works',
-label: '作品',
-url: 'javascript:;',
-}
+    {
+        name: 'home',
+        label: '首页',
+        url: '/',
+    },
+    {
+        name: 'category',
+        label: '标签',
+        url: '/category'
+    },
+    {
+        name: 'archives',
+        label: '归档',
+        url: '/archives'
+    },
+    {
+        name: 'about',
+        label: '关于我',
+        url: '/about'
+    },
+    {
+        name: 'works',
+        label: '作品',
+        url: 'javascript:;'
+    }
 ]
 let activeName = name;
-
 %>
 <i-header class="wrapper-header fixed-top top">
     <div class="container">
         <div class="wrapper-header-brand">
             <a href="/" class="wrapper-header-nav-logo">
-                <img src="<%= SITE.logo%>" alt=""/>
+                <img src="<%= SITE.logo %>" alt=""/>
             </a>
             <i-button type="ghost" icon="navicon-round" class="nav-toggle"></i-button>
         </div>
-        <i-Menu mode="horizontal" active-name="<%= activeName%>" class="wrapper-header-nav">
+        <i-Menu mode="horizontal" active-name="<%= activeName %>" class="wrapper-header-nav">
             <div class="layout-nav">
-                <% nav.forEach(function(item,index){ %>
-                <Menu-Item name="<%= item.name%>">
-                    <a href="<%= item.url%>"><%= item.label%></a>
+                <% nav.forEach(function(item, index){ %>
+                <Menu-Item name="<%= item.name %>">
+                    <a href="<%= item.url %>"><%= item.label %></a>
                 </Menu-Item>
                 <% }); %>
             </div>

@@ -165,10 +165,11 @@ $body-color:                $gray-900 !default;
 //
 // Style anchor elements.
 
-$link-color:                theme-color("primary") !default;
+$link-color:                $main-font-color !default;
 $link-decoration:           none !default;
 $link-hover-color:          darken($link-color, 15%) !default;
 $link-hover-decoration:     underline !default;
+$link-active-color:         darken($link-color, 10%) !default;
 
 // Paragraphs
 //

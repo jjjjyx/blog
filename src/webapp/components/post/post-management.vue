@@ -153,7 +153,6 @@ export default {
         }),
         async remove (selected) {
             // 删除数据
-
             if (!(selected instanceof Array)) {
                 selected = this.selectedList
             }

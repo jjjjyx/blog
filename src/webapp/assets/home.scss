@@ -5,7 +5,7 @@
 .wrapper-header .container{
     height: inherit;
 }
-.header-top {
+.jumbotron  {
     position: relative;
     overflow: hidden;
     width: 100%;
@@ -56,12 +56,10 @@
     transform: rotate(3deg);
 }
 
-.slant.right {
+.slant__right {
     left: 48%;
     transform: rotate(-3deg);
 }
-.articles {
-    padding: 0;
-}
+
 
 

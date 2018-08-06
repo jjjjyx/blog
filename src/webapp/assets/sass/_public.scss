@@ -1,18 +1,19 @@
 // 公共样式 - 针对除后台的部分
 @import "functions";
-@import "variables";
 @import "var";
+@import "variables";
 @import "mixins";
 @import "utilities";
 @import "reboot";
 @import "overload-iview";
 @import "nav";
+@import "icon";
 @import "footer";
 @import "scrollbar";
 
 .container {
-    padding-right: 15px;
-    padding-left: 15px;
+    //padding-right: 15px;
+    //padding-left: 15px;
     margin-right: auto;
     margin-left: auto
 }

@@ -18,9 +18,9 @@ const app = express()
 const IS_DEV = app.get('env') === 'development'
 global.IS_DEV = IS_DEV
 
-// app.engine('.html', ejs.__express);
-app.engine('html', require('ejs').renderFile)
-app.set('view engine', 'html')
+// app.engine('.ejs', require('ejs').__express);
+// app.engine('html', require('ejs').renderFile)
+app.set('view engine', 'ejs')
 app.set('views', path.resolve(__dirname, './src/views'))
 
 debug('Attaching plugins')
