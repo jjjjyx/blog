@@ -472,7 +472,8 @@ const release = [
 
             post.post_title = post_title
             post.post_content = post_content
-            post.post_name = post_name
+            post.post_name = post_name || post.id
+            post.guid = utils.randomChar()
             post.post_excerpt = post_excerpt
             post.post_date = post_date || new Date()
             // post.post_author = // 最初的创建者不能修改的 提交的文章作者只会存在版本记录中
@@ -492,8 +493,8 @@ const release = [
             // 检查内容是否修改了，没有修改则不创建版本
             // debug(`是否修改了文章 = ${id}, result = ${result}`)
             let isModify = _.isEqual(newValues, oldValues)
-            console.log('newValues: =', newValues)
-            console.log('oldValues: =', oldValues)
+            // console.log('newValues: =', newValues)
+            // console.log('oldValues: =', oldValues)
             debug(`是否修改了文章 isModify = ${!isModify}`)
             if (!isModify) {
                 // 创建版本

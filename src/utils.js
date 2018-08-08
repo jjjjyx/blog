@@ -6,6 +6,7 @@ const Promise = require('bluebird')
 const moment = require("moment")
 const Redis = require('ioredis');
 const JWTR =  require('jwt-redis');
+const shortid = require('shortid');
 const _ = require("lodash")
 const {validationResult} = require('express-validator/check')
 const Result = require('./common/resultUtils')
@@ -37,13 +38,13 @@ async function create(obj,expiresIn = TOKEN_EXPIRATION_SEC){
 
 }
 
-const x="0123456789qwertyuioplkjhgfdsazxcvbnm";
+// const x="0123456789qwertyuioplkjhgfdsazxcvbnm";
 module.exports.randomChar = function(l)  {
-    var tmp="";
-    for(var i=0;i<l;i++)  {
-        tmp += x.charAt(Math.ceil(Math.random()*100000000)%x.length);
-    }
-    return tmp;
+    // var tmp="";
+    // for(var i=0;i<l;i++)  {
+    //     tmp += x.charAt(Math.ceil(Math.random()*100000000)%x.length);
+    // }
+    return shortid.generate();
 }
 
 module.exports.validationResult = function(req, res, next)  {
@@ -57,8 +58,8 @@ module.exports.validationResult = function(req, res, next)  {
 
 module.exports.termReg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
 
-module.exports.formatDate = function (time) {
-    return moment(time).format("YYYY-MM-D hh:mm")
+module.exports.formatDate = function (time, pattern = 'YYYY-M-D hh:mm') {
+    return moment(time).format(pattern)
 }
 
 

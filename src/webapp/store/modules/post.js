@@ -179,7 +179,7 @@ const mutations = {
     },
     updateAutoSaveContent (state, obj) {
         let autoRevision = state.revision.find(item => item.autosave)
-        if (autoRevision !== null) {
+        if (_.isObject(autoRevision)) {
             console.log(obj, autoRevision)
             autoRevision.post_content = obj.post_content
             autoRevision.post_title = obj.post_title
