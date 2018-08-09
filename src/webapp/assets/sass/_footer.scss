@@ -5,31 +5,33 @@
     width: 100%;
     border-top: 1px solid #373a3c;
     color: rgba(236, 235, 231, 0.5);
-    .widget {
-        padding: 0px 30px;
+}
+.widget {
+    padding: 0px 3rem;
+    margin-bottom: 3.5rem;
+}
+.widget__title {
+    color: #ffffff;
+    border-bottom: 1px solid $main-title-color;
+    margin-top: 0;
+    padding-bottom: 7px;
+    margin-bottom: 21px;
+    position: relative;
+    &::after {
+        content: "";
+        width: 90px;
+        height: 1px;
+        background: $logo-color;
+        position: absolute;
+        left: 0;
+        bottom: -1px;
     }
-    .widget .title {
-        color: #ffffff;
-        border-bottom: 1px solid $main-title-color;
-    }
-    .widget .recent-post .recent-single-post {
-        border-bottom: 1px dashed $main-title-color;
-        .post-title {
-            color: $main-title-sub-color;
-            &:hover {
-                color: $logo-color;
-                text-decoration: none;
-            }
-        }
-        .date {
-            color: $main-font-color;
-            font-size: 1.2rem;
-        }
-    }
-    ul > li {
+}
+.widget__content {
+    > li {
         margin-bottom: 4px;
     }
-    ul > li > a {
+    > li > a {
         color: $main-font-color;
         border-bottom: dotted 1px $main-font-color;
         &:hover {
@@ -38,6 +40,50 @@
         }
     }
 }
+.recent-post {
+
+}
+.footer--site-desc {
+    ul {
+        display: flex;
+        align-items: center;
+    }
+    .j-logo--a {
+        width: 30px;
+        height: 30px;
+        border: 2px solid $main-font-color;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all .2s ease;
+    }
+    .j-logo--a:hover {
+        border-color: $logo-color;
+    }
+}
+
+.recent-post--item {
+    //border-bottom: 1px dashed $border-color;
+    border-bottom: 1px dashed  $main-title-color;
+    padding-bottom: 14px;
+    margin-bottom: 14px;
+    .post-title {
+        color: $main-title-sub-color;
+        transition: all 0.2s ease;
+        display: block;
+        &:hover {
+            color: $logo-color;
+            text-decoration: none;
+        }
+    }
+    .date {
+        color: $main-font-color;
+        font-size: 1rem;
+    }
+}
+
+
 
 .copyright {
     background: #111;
@@ -52,34 +98,13 @@
     span {
         margin: 0 .5em;
     }
-
 }
 
-.widget {
-    margin-bottom: 35px;
-    .title {
-        margin-top: 0;
-        padding-bottom: 7px;
-        border-bottom: 1px solid #ebebeb;
-        margin-bottom: 21px;
-        position: relative;
-        &::after {
-            content: "";
-            width: 90px;
-            height: 1px;
-            background: $logo-color;
-            position: absolute;
-            left: 0;
-            bottom: -1px;
-        }
-    }
-    .recent-post .recent-single-post {
-        border-bottom: 1px dashed #ebebeb;
-        padding-bottom: 14px;
-        margin-bottom: 14px;
-        .post-title {
-            color: $main-title-sub-color;
-            transition: all 0.2s ease;
-        }
-    }
-}
+//.recent-post--item {
+//    border-bottom: 1px dashed $main-title-color;
+//    border-bottom: 1px dashed #ebebeb;
+//    padding-bottom: 14px;
+//    margin-bottom: 14px;
+//}
+
+

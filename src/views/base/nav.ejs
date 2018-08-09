@@ -28,25 +28,30 @@ let nav = [
 ]
 let activeName = name;
 %>
-<i-header class="wrapper-header fixed-top top">
+<header class="wrapper-header fixed-top top">
     <div class="container">
         <div class="wrapper-header-brand">
             <a href="/" class="wrapper-header-nav-logo">
                 <img src="<%= SITE.logo %>" alt=""/>
             </a>
-            <i-button type="ghost" icon="navicon-round" class="nav-toggle"></i-button>
+            <!--<i-button type="ghost" icon="navicon-round" class="nav-toggle"></i-button>-->
+            <button type="button" class="nav-toggle ivu-btn ivu-btn-ghost ivu-btn-icon-only"><i class="ivu-icon ivu-icon-navicon-round"></i></button>
         </div>
-        <i-Menu mode="horizontal" active-name="<%= activeName %>" class="wrapper-header-nav">
-            <div class="layout-nav">
+        <!--ivu-menu-item-active-->
+        <!--<i-Menu mode="horizontal" active-name="<%= activeName %>" class="wrapper-header-nav">-->
+            <ul class="wrapper-header-nav ivu-menu" >
+                <!--<div class="layout-nav">-->
                 <% nav.forEach(function(item, index){ %>
-                <Menu-Item name="<%= item.name %>">
+                <li name="<%= item.name %>" class="ivu-menu-item <%= activeName === item.name ?'ivu-menu-item-active': '' %>">
                     <a href="<%= item.url %>"><%= item.label %></a>
-                </Menu-Item>
+                </li>
                 <% }); %>
-            </div>
-        </i-Menu>
+                <!--</div>-->
+            </ul>
+
+        <!--</i-Menu>-->
     </div>
-</i-header>
+</header>
 <!--<div style="margin-top: 64px;"></div>-->
 <% /*
 'use strict';

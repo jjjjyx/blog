@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>category</title>
+    <% var data = {name: 'category'} %>
+    <%-include('base/head', data)%>
 </head>
 <body>
-<pre>
-    <%- JSON.stringify(SITE)%>
-</pre>
-    分类
+<%-include('loading', data); %>
+<div id="app">
+    <!--<div class="wrapper">-->
+    asdasd
+    <%-include('base/bottom', data); %>
+</div>
+<%-include('base/footer', data); %>
 </body>
 </html>

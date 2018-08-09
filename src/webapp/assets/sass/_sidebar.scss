@@ -12,22 +12,23 @@
     .title {
         //color: $logo-color;
         color: $main-font-color;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         font-weight: normal;
         border-bottom: 1px dotted $border-color;
+        padding-bottom: .5rem;
         &::after{
-            //content: "";
-            //width: 100px;
-            //height: 1px;
-            //background: $main-font-color;
-            //position: absolute;
-            //left: 0;
-            //bottom: -1px;
+            content: "";
+            width: 100px;
+            height: 2px;
+            background: $logo-color;
+            position: absolute;
+            left: 0;
+            bottom: 0;
         }
     }
     .btn-area {
         float: right;
-        color: $main-title-sub-color
+        //color: $main-title-sub-color
     }
 }
 .j-sidebar__body {

@@ -1,9 +1,13 @@
 'use strict'
 
-// import Vue from 'vue'
 import 'normalize.css'
-// import './main.scss'
-/* eslint-disable no-undef */
+import 'iview/dist/styles/iview.css'
+import './assets/home.scss'
+import 'animate.css'
+import Icon from './components/icon'
+
+/* eslint-disable no-unused-vars,no-undef  */
+Vue.use(Icon)
 Vue.config.productionTip = false
 
 function appInit () {
@@ -12,8 +16,8 @@ function appInit () {
     //     el: '#app',
     //
     // })
-    // window.fulfilLoading()
-    console.log(2222)
+    window.fulfilLoading && window.fulfilLoading()
+    // console.log(2222)
 }
 
 appInit()

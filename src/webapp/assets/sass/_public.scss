@@ -18,6 +18,15 @@
     font-weight: 300;
     //line-height: 1.5em;
 }
+.j-logo--a {
+    color: $main-font-color;
+    transition: color 0.2s ease;
+    &:hover {
+        color: $logo-color;
+        //text-decoration: none;
+        //border-bottom: solid 1px $main-font-color;
+    }
+}
 
 
 .container {
