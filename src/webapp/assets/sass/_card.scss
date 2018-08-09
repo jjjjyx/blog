@@ -1,0 +1,54 @@
+
+.j-card__block {
+    margin: 2rem 0;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background-color: white;
+    text-align: center;
+
+    .card__header {
+        max-width: 80px;
+        max-height: 80px;
+        margin: -40px auto 0;
+        overflow: hidden;
+        border-radius: $border-radius;
+        border: 1px solid $border-color;
+        background-color: white;
+        box-shadow: 0 10px 30px -12px rgba(0,0,0,.42), 0 4px 25px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.2);
+    }
+    .card__header img {
+        width: 100%;
+        height: auto;
+    }
+    .card__content {
+
+        margin-top: 1.5rem;
+        line-height: 22px;
+    }
+    .card__footer {
+        position: relative;
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        &::before {
+            content: "";
+            width: 80%;
+            height: 1px;
+            background: $border-color;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+        }
+    }
+
+    h6, h4{
+        text-align: center;
+        font-weight: 300;
+    }
+    .description{
+        font-size: 1rem;
+        margin: 0 0 10px;
+        color: $main-title-sub-color;
+        padding: 0 1rem;
+    }
+}

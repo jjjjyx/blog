@@ -120,45 +120,16 @@
 .j-sidebar--about {
     margin-top: 4rem;
     //padding-top: 0;
+    .card__header {
+        border-radius: 50% !important;
+        margin-top: -60px !important;
+    }
 }
 
-
-.about-avatar {
-    max-width: 100px;
-    max-height: 100px;
-    margin: -70px  auto 0;
-    border-radius: 50%;
-    overflow: hidden;
-    box-shadow: 0 10px 30px -12px rgba(0,0,0,.42), 0 4px 25px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.2);
-    img {
-        width: 100%;
-        height: auto;
-    }
-}
-.about-content {
-    margin-top: 1.5rem;
-    font-size: 1.4rem;
-    line-height: 22px;
-    h6, h4{
-        text-align: center;
-        font-weight: 300;
-    }
-    .description{
-        font-size: 1rem;
-        margin: 0 0 10px;
-    }
-    .social-ul {
-        margin-top: 1.5rem;
-        text-align: center;
-    }
-}
 .social-ul {
     list-style: none;
-
 }
-.social-ul {
 
-}
 .social-ul__a {
     display: block;
     border-radius: $border-radius;

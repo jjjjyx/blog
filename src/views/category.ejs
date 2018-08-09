@@ -8,7 +8,37 @@
 <%-include('loading', data); %>
 <div id="app">
     <!--<div class="wrapper">-->
-    asdasd
+    <%- include('base/nav', data); %>
+    <div class="jumbotron" style="background-image:url('http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/1928/format/jpg');background-position: 0 -235px">
+        <div class="container j-vertical-center" >
+            <h1>全部分类</h1>
+            <p>好好挑，好好选，这里的分类很多 </p>
+        </div>
+    </div>
+    <div class="container ivu-row-flex ivu-row-flex-middle ivu-row-flex-center-space-between" style="margin-top: 70px;">
+        <% for (let i=0; i< 20;i++){ %>
+        <div class="ivu-col ivu-col-span-6 j-category--item">
+            <div class="j-card__block">
+                <div class="card__header">
+                    <!--<color-icon type="icon-diamond-vip"></color-icon>-->
+                    <svg aria-hidden="true" class="svg-icon" style="font-size: 75px;"><use xlink:href="#icon-mac-book-pro"></use></svg>
+                    <!--<img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" alt="">-->
+                </div>
+                <div class="card__content">
+                    <h4>分类名称</h4>
+                    <p class="description">
+                        JavaScript广泛用于客户端的脚本语言，最早是在HTML（标准通用标记语言下的一个应用）网页上使用，用来给HTML网页增加动态功能。
+                    </p>
+                </div>
+                <div class="card__footer">
+                    <button type="button" class="ivu-btn ivu-btn-success ivu-btn-circle">
+                        <span>查看</span> | <span><u>0</u> 篇</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
     <%-include('base/bottom', data); %>
 </div>
 <%-include('base/footer', data); %>

@@ -1,0 +1,100 @@
+@import "./sass/public";
+
+
+.jumbotron  {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    z-index: 0;
+    height:320px;
+    background: no-repeat fixed center center;
+    background-size: cover;
+    padding-top: $header-height;
+    padding-bottom: $header-height;
+    color: $gray-200;
+    .container {
+        height: 100%;
+    }
+    h1 {
+        font-size: 3rem;
+    }
+    p {
+        font-size: 1.5rem;
+        font-weight: 100;
+    }
+}
+
+.tags__warp {
+    margin: 70px auto;
+}
+.tags__item {
+    display: inline-block;
+    padding: 4px 10px 3px 10px;
+    border: 1px solid #f2f2f2;
+    color: #808080;
+    font-size: 1.3rem;
+    border-radius: 2px;
+    margin: 0 7px 10px 0;
+    position: relative;
+    transition: border .5s ease-out;
+    background-color: #fff;
+    span {
+        transition: opacity .5s ease-out;
+    }
+    &::before,&::after{
+        box-sizing: border-box;
+        border: 1px solid transparent;
+        width: 0;
+        height: 0;
+        content: '';
+        display: block;
+        position: absolute;
+    }
+    &::before{
+        bottom: 0;
+        right: 0;
+        transition: border-color 0s ease-in 0.4s,width 0.2s ease-in 0.2s,height 0.2s ease-in;
+    }
+    &::after {
+        top: 0;
+        left: 0;
+        transition: border-color 0s ease-in 0.8s,width 0.2s ease-in 0.6s,height 0.2s ease-in 0.4s;
+    }
+
+    &:hover,&.active {
+        color: $logo-color;
+        // border-color: @logoColor;
+        // background-color: rgba(34, 187, 149, 0.05);
+        //span:not(.tags-icon){
+        //    opacity: 0;
+        //}
+        //span.tags-icon{
+        //    opacity: 1;
+        //}
+        &::before,&::after{
+            width: 100%;
+            height: 100%;
+        }
+        &::before{
+            border-bottom-color: $logo-color;
+            border-left-color: $logo-color;
+            transition: border-color 0s ease-out 0.4s,width 0.2s ease-out 0.4s,height 0.2s ease-out 0.6s;
+        }
+        &::after {
+            border-top-color: $logo-color;
+            border-right-color: $logo-color;
+            transition: width 0.2s ease-out,height 0.2s ease-out 0.2s;
+        }
+    }
+    //span.tags-icon{
+    //    position: absolute;
+    //    opacity: 0;
+    //    width: 100%;
+    //    height: 100%;
+    //    left: 0;
+    //    top: 0;
+    //    z-index: 2;
+    //    text-align: center;
+    //    vertical-align: middle;
+    //}
+}

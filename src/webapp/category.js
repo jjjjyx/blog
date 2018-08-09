@@ -2,7 +2,7 @@
 
 import 'normalize.css'
 import 'iview/dist/styles/iview.css'
-import './assets/home.scss'
+import './assets/category.scss'
 import 'animate.css'
 import Icon from './components/icon'
 

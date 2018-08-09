@@ -17,7 +17,7 @@ function appInit () {
         data: {
             visible: false,
             value1: 0,
-            value13: '', // 搜索
+            value13: '' // 搜索
         },
         methods: {
             show: function () {

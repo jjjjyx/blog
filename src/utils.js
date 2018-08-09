@@ -35,7 +35,6 @@ async function create(obj,expiresIn = TOKEN_EXPIRATION_SEC){
     debug("Token generated for user: %s, token: %s", obj.user_login, token);
 
     return token
-
 }
 
 // const x="0123456789qwertyuioplkjhgfdsazxcvbnm";
