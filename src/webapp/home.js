@@ -16,7 +16,8 @@ function appInit () {
         el: '#app',
         data: {
             visible: false,
-            value1: 0
+            value1: 0,
+            value13: '', // 搜索
         },
         methods: {
             show: function () {

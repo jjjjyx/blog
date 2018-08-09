@@ -11,6 +11,15 @@
 @import "footer";
 @import "scrollbar";
 
+
+
+.h1, .h2, .h3, .h4, .h6, .h5 {
+    //font-family: Roboto,Helvetica,Arial,sans-serif;
+    font-weight: 300;
+    //line-height: 1.5em;
+}
+
+
 .container {
     //padding-right: 15px;
     //padding-left: 15px;
@@ -36,13 +45,13 @@
     }
 }
 
-.category {
-    padding: 2px 6px;
-    color: $logo-color ;
-    border: 1px solid lighten($logo-color, 70%);
-    border-radius: 3px;
-    margin: 0;
-}
+//.category {
+//    padding: 2px 6px;
+//    color: $logo-color ;
+//    border: 1px solid lighten($logo-color, 70%);
+//    border-radius: 3px;
+//    margin: 0;
+//}
 
 .j-vertical-center {
     display: flex;
@@ -63,4 +72,29 @@
     display: inline-block;
     padding-right: 5px;
     padding-left: 5px;
+}
+
+// 框样式 块样式
+.j-block {
+    position: relative;
+    background-color: #fff;
+    padding: 3rem;
+    box-shadow: 0 0 5px 0 #e2e3e4;
+    border-bottom: 1px solid #d3d5d7;
+    &::before, &::after {
+        content: "";
+        height: 1px;
+        width: 100%;
+        background-color: #FFF;
+        border-bottom: 1px solid #d3d5d7;
+        box-shadow: 0 0 5px 0 #e2e3e4;
+        left: 0;
+        position: absolute;
+    }
+    &::before {
+        bottom: 2px;
+    }
+    &::after {
+        bottom: 5px;
+    }
 }

@@ -1,14 +1,15 @@
 'use strict'
 
 const express = require('express')
-const router = express.Router()
 const debug = require('debug')('app:routers:home')
+const _ = require('lodash')
+const router = express.Router()
 const {Enum} = require('../common/enum')
 const {termDao, userDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
 const Op = sequelize.Op
+const utils = require('../utils')
 
 const generatePostHtml = function(post) {
-
     let metas = post.metas
 
     // todo 置顶
@@ -31,31 +32,31 @@ const generatePostHtml = function(post) {
     let likeNum = 0
 
     // 评论关闭不显示
-    let comment = post.comment_status ? `<a class="j-article__meta comment mr-2" href="/p/#comment" target="_blank"> <Icon type="ios-chatbubble-outline" size="20"></Icon><span class="num">${commentNum}</span> </a>`: ''
+    let comment = post.comment_status ? `<a class="j-article__a comment mr-2" href="${url}#comment" target="_blank"> <Icon type="ios-chatbubble-outline" size="20"></Icon><span class="num">${commentNum}</span> </a>`: ''
 
-    let {category = {name: ''}, post_tag: postTag = []} = _.groupBy(post.terms, 'taxonomy')
-    let categoryName = category.name
-    let postTagNames = postTag.map(tag => `<span class="j-article__meta">${tag.name}</span>`)
+    let {category = [{name: ''}], post_tag: postTag = []} = _.groupBy(post.terms, 'taxonomy')
+    let categoryName = category[0].name
+    let postTagNames = postTag.map(tag => `<span class="tag">${tag.name}</span>`)
 
-    return `<article class="j-article-item">
+    return `<article class="j-article-item j-block">
     <div class="j-article-item-content">
         <h3 class="j-article__title">
-            <a href="/p/${url}" target="_blank">
+            <a href="${url}" target="_blank">
                 ${title}
             </a>
         </h3>
         <div class="j-article__metas float-right j-article__opt">
-            <a class="j-article__meta read mr-2" href="/p/" target="_blank">
+            <a class="j-article__a read mr-2" href="${url}" target="_blank">
                 <Icon type="ios-eye-outline" size="20"></Icon><span class="num">${readNum}</span>
             </a>
             ${comment}
-            <a class="j-article__meta like mr-2">
+            <a class="j-article__a like mr-2">
                 <Icon type="ios-heart-outline" size="20"></Icon><span class="num">${likeNum}</span>
             </a>
         </div>
-        <div class="j-article__metas mt-2 mb-4">
-            <a title="酱酱酱酱油鲜" class="j-article__metas--username">${userName}</a>
-            <time class="j-article__metas--time" datetime="${postDate}">${postDate}</time>
+        <div class="j-article__a mt-2 mb-4">
+            <a title="酱酱酱酱油鲜" class="username">${userName}</a>
+            <time class="time" datetime="${postDate}">${postDate}</time>
         </div>
         <p class="j-article__intro">
             互联网的发展，学习是越来越重要了，人们不可能不学习，如果不学习那他将被社会，被互联网淘汰。而博客作为学习的结晶，前人的经验，在学习的路上是很重要的组成部分。博客可以有效的结合图片，文字，能够给读者留下很深刻的影响，为学习带来便利。
@@ -73,26 +74,27 @@ const generatePostHtml = function(post) {
 
 const index = [
     async function(req, res, next) {
-        let posts = await postDao.findAll({
-            where: {
-                post_status: Enum.PostStatusEnum.PUBLISH
-            },
-            include: [
-                {model: postMetaDao, as: 'metas'},
-                {model: userDao, attributes: {exclude: ['user_pass']}},
-                {model: termDao, attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id']}
-            ]
-        })
-        // try {
-        // todo 貌似在同步块中产生的异常 无法被错误拦截器捕获啊
-        console.log(posts)
-        let articleList = posts.map(generatePostHtml).join('')
-        console.log(articleList)
-        // } catch (e) {
-        //     console.log(e)
-        // }
+        try {
+            let posts = await postDao.findAll({
+                where: {
+                    post_status: Enum.PostStatusEnum.PUBLISH
+                },
+                include: [
+                    {model: postMetaDao, as: 'metas'},
+                    {model: userDao, attributes: {exclude: ['user_pass']}},
+                    {model: termDao, attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id']}
+                ]
+            })
+            // try {
+            // 同步块中产生的异常 无法被错误拦截器捕获啊
+            let articleList = posts.map(generatePostHtml).join('')
+            res.render('home', {articleList});
+        } catch (e) {
+            console.log(e)
+            next(e)
+        }
         // 文章列表的展示
-        res.render('home', {articleList});
+
     }
 ]
 

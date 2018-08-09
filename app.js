@@ -97,7 +97,6 @@ app.use(function (err, req, res, next) {
         return res.send('invalid token...')
     }
     // 如果是 /api/* 的路由的错误
-    console.log('==========')
     res.render('error', {
         message: err.message,
         error: IS_DEV ? err : {}
