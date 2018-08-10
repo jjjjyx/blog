@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 'use strict'
 
 const express = require('express')
@@ -9,12 +10,18 @@ const {check, validationResult} = require('express-validator/check')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
 const {userDao} = require('../models')
-//密码必须为6-18位 必须包含特殊字符和英文
-const passReg = new RegExp('^(?![a-zA-z]+$)(?!\\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\\d!@#$%^&*]+$)[a-zA-Z\\d!@#$%^&*]+$')
+// 密码必须为6-18位 必须包含特殊字符和英文
+const passReg = new RegExp(
+    '^(?![a-zA-z]+$)(?!\\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\\d!@#$%^&*]+$)[a-zA-Z\\d!@#$%^&*]+$')
 
 const login = [
-    check('username', '账号不可为空且3-6位').isString().withMessage('必须是字符串').isLength({min: 3, max: 6}),
-    check('password', '密码为6-18位').isString().withMessage('必须是字符串')
+    check('username', '账号不可为空且3-6位')
+        .isString()
+        .withMessage('必须是字符串')
+        .isLength({min: 3, max: 6}),
+    check('password', '密码为6-18位')
+        .isString()
+        .withMessage('必须是字符串')
         .isLength({min: 6, max: 18}),
     utils.validationResult,
     async function (req, res, next) {
@@ -56,7 +63,7 @@ const update_info = [
     }
 ]
 // console.log(check('c_pass','2次密码不一致'))
-//"密码强度不够"
+// "密码强度不够"
 const update_pass = [
     check('old_pass', '原始密码不可为空').isString().isLength({min: 6, max: 18}),
     check('new_pass', '新密码不可为空').isString().isLength({
@@ -93,17 +100,12 @@ const update_pass = [
     }
 ]
 
-router.route('/login')
-    .get((req, res, next) => res.send('这是一个Api'))
-    .post(login)
+router.route('/login').get((req, res, next) => res.send('这是一个Api')).post(login)
 
-router.route('/auth')
-    .get(auth)
+router.route('/auth').get(auth)
 
-router.route('/update/info')
-    .post(update_info)
+router.route('/update/info').post(update_info)
 
-router.route('/update/pass')
-    .post(update_pass)
+router.route('/update/pass').post(update_pass)
 
 module.exports = router

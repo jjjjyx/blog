@@ -4,18 +4,17 @@
  * Module dependencies.
  */
 // const dataSource = require("../src/models");
-const app = require('../app');
-const debug = require('debug')('app:server');
-const http = require('http');
-
+const app = require('../app')
+const debug = require('debug')('app:server')
+const http = require('http')
+const {sequelize} = require('../src/models')
 
 /**
  * Get port from environment and store in Express.
  */
 
-let {appPort: port} = config;
-app.set('port', port);
-
+let {appPort: port} = config
+app.set('port', port)
 
 // models.sequelize.sync().then(async ()=>{
 //     debug("Loading Mysql Database");
@@ -34,38 +33,43 @@ app.set('port', port);
 //     listen()
 // });
 // 初始化加载options 数据
+const before = require('../src/before-listen.js')
+// base(app).then(listen)
+sequelize.authenticate().then(() => {
+    return before(app)
+}).then(listen).catch((e) => {
+    console.log(e)
+    debug('获取初始化信息失败， 请检查数据库链接')
+    process.exit(1)
+})
 
-const base = require('../src/base.js')
-
-base(app).then(listen)
-
-function listen() {
+function listen () {
 
     /**
      * Event listener for HTTP server "error" event.
      */
 
-    function onError(error) {
+    function onError (error) {
         if (error.syscall !== 'listen') {
-            throw error;
+            throw error
         }
 
         let bind = typeof port === 'string'
             ? 'Pipe ' + port
-            : 'Port ' + port;
+            : 'Port ' + port
 
         // handle specific listen errors with friendly messages
         switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
-            process.exit(1);
-            break;
+            console.error(bind + ' requires elevated privileges')
+            process.exit(1)
+            break
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
-            process.exit(1);
-            break;
+            console.error(bind + ' is already in use')
+            process.exit(1)
+            break
         default:
-            throw error;
+            throw error
         }
     }
 
@@ -73,26 +77,27 @@ function listen() {
      * Event listener for HTTP server "listening" event.
      */
 
-    function onListening() {
-        let addr = server.address();
-        let host = addr.address;
-        let port = addr.port;
+    function onListening () {
+        let addr = server.address()
+        let host = addr.address
+        let port = addr.port
         var bind = typeof addr === 'string'
             ? 'pipe ' + addr
-            : 'port ' + addr.port;
-        debug('Listening on ' + bind);
-        console.log(`app (${IS_DEV?'dev':'production'}) listening at  http://localhost:${port}`);
+            : 'port ' + addr.port
+        debug('Listening on ' + bind)
+        console.log(`app (${IS_DEV ? 'dev' : 'production'}) listening at  http://localhost:${port}`)
     }
+
     /**
      * Create HTTP server.
      */
-    let server = http.createServer(app);
+    let server = http.createServer(app)
 
-    server.listen(port);
+    server.listen(port)
 
     /**
      * Listen on provided port, on all network interfaces.
      */
-    server.on('error', onError);
-    server.on('listening', onListening);
+    server.on('error', onError)
+    server.on('listening', onListening)
 }

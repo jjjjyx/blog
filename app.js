@@ -63,7 +63,7 @@ if (IS_DEV) {
     }))
     app.use('/', webpackHotMiddleware(compiler))
 
-}else {
+} else {
     let static_dir = express.static(path.join(__dirname, './'))
     static_dir.unless = unless
     app.use(static_dir.unless({method: 'OPTIONS'}))

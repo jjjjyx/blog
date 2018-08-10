@@ -1,3 +1,4 @@
+/* eslint-disable camelcase,no-undef */
 'use strict'
 
 const express = require('express')
@@ -10,8 +11,8 @@ const utils = require('../utils')
 const Result = require('../common/resultUtils')
 const {Enum} = require('../common/enum')
 
-const {termDao,userDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
-const {term_relationships: termRelationshipsDao } = sequelize.models
+const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../models')
+const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
 
 const trashSaveDay = 30
@@ -20,7 +21,10 @@ const sanitizeId = sanitizeBody('id').toInt()
 const checkId = body('id').exists().isInt().withMessage('请提交正确的文章ID')
 
 const sanitizeCategoryId = sanitizeBody('category_id').toInt()
-const checkCategoryId = body('category_id').exists().isInt().withMessage('请提交正确的分类ID')
+// const checkCategoryId = body('category_id')
+//     .exists()
+//     .isInt()
+//     .withMessage('请提交正确的分类ID')
 // todo 数组暂时无法使用express-validator 做检查， 单独提交一个值的时候会错误
 // const sanitizeTagsId = sanitizeBody('tags_id').toArray()
 // const checkTagsId = body('tags_id').exists().isArray().withMessage('请提交正确的标签ID')
@@ -37,23 +41,30 @@ const checkTitle = body('post_title').exists().isString().isLength({
 }).withMessage('请输入一个有效的标题，有效的标题长度在1~255')
 
 // const sanitizeContent = sanitizeBody('sanitizeContent')
-const checkContent = body('post_content').exists().isString().isLength({min: 0}).withMessage('请提交文章内容')
+const checkContent = body('post_content')
+    .exists()
+    .isString()
+    .isLength({min: 0})
+    .withMessage('请提交文章内容')
 // 文章别名 必须提交 但是不满足格式不会报错而是启用id
-const postNameReg = /^[_a-zA-Z0-9\-]{1,60}$/
-const sanitizePostName = sanitizeBody('post_name')
-    .customSanitizer((value)=>{
-        debug(`sanitizePostName v = ${value}`)
-        return postNameReg.test(value) ? value : undefined
-    })
+const postNameReg = /^[_a-zA-Z0-9-]{1,60}$/
+const sanitizePostName = sanitizeBody('post_name').customSanitizer((value) => {
+    debug(`sanitizePostName v = ${value}`)
+    return postNameReg.test(value) ? value : undefined
+})
 // const checkPostName = body('post_name').exists().isString().isLength({min: 0}).withMessage('请提交文章')
 // 长度在3 - 30
 const checkPostPass = body('post_password').custom((value) => {
     // 如果有提交 则验证
     debug(`checkPostPass v = ${value}`)
-    return value ? value.length >=3 && value.length < 30 : true
+    return value ? value.length >= 3 && value.length < 30 : true
 })
 // 摘录
-const checkExcerpt = body('post_excerpt').exists().isString().isLength({min: 0}).withMessage('请提交文章摘录')
+const checkExcerpt = body('post_excerpt')
+    .exists()
+    .isString()
+    .isLength({min: 0})
+    .withMessage('请提交文章摘录')
 
 // 允许提交的文章状态
 const allowPostStatus = [
@@ -63,27 +74,32 @@ const allowPostStatus = [
     Enum.PostStatusEnum.DRAFT
 ]
 // 发布的文章状态
-const sanitizeReleasePostStatus = sanitizeBody('post_status').customSanitizer((value) => {
-    debug(`sanitizeReleasePostStatus v = ${value}`)
-    if (allowPostStatus.indexOf(value) === -1) {
-        return Enum.PostStatusEnum.PUBLISH
-    } else {
-        return value
-    }
-})
-const sanitizeAuthor= sanitizeBody('post_author').toInt()
+const sanitizeReleasePostStatus = sanitizeBody('post_status')
+    .customSanitizer((value) => {
+        debug(`sanitizeReleasePostStatus v = ${value}`)
+        if (allowPostStatus.indexOf(value) === -1) {
+            return Enum.PostStatusEnum.PUBLISH
+        } else {
+            return value
+        }
+    })
+const sanitizeAuthor = sanitizeBody('post_author').toInt()
 const checkAuthor = body('post_author')
-    .exists().withMessage('请提交作者')
-    .isInt().withMessage("文章作者不合法")
-    .custom((value, { req })=>{
+    .exists()
+    .withMessage('请提交作者')
+    .isInt()
+    .withMessage('文章作者不合法')
+    .custom((value, {req}) => {
         let {id} = req.user
         if (id === value) {
             return true
         } else {
-            return userDao.findById(value, {attributes: {exclude: ['user_pass']}}).then((u)=>{
-                if (u === null) return Promise.reject('用户不存在')
-                req._post_author = u
-            })
+            return userDao.findById(value, {attributes: {exclude: ['user_pass']}})
+                .then((u) => {
+                    // eslint-disable-next-line prefer-promise-reject-errors
+                    if (u === null) return Promise.reject('用户不存在')
+                    req.postAuthor = u
+                })
         }
     })
 // const sanitizeSticky
@@ -94,18 +110,19 @@ const allowStatus = [
     Enum.StatusEnum.OPEN,
     Enum.StatusEnum.CLOSE
 ]
-const sanitizeCommentStatus = sanitizeBody('comment_status').customSanitizer((value) => {
-    debug(`sanitizeCommentStatus v = ${value}`)
-    if (allowStatus.indexOf(value) === -1) {
-        return Enum.PostStatusEnum.OPEN
-    } else {
-        return value
-    }
-})
+const sanitizeCommentStatus = sanitizeBody('comment_status')
+    .customSanitizer((value) => {
+        debug(`sanitizeCommentStatus v = ${value}`)
+        if (allowStatus.indexOf(value) === -1) {
+            return Enum.PostStatusEnum.OPEN
+        } else {
+            return value
+        }
+    })
 
 const TagsLength = 16
-const tagToString = t =>`${t.name}#${t.id}`
-const createTags = async function (req, res, post, dealWithCategory) {
+const tagToString = t => `${t.name}#${t.id}`
+const createTags = async function (req, res, post) {
     req.sanitizeBody('new_tag').toArray()
     req.sanitizeBody('tags_id').toArray()
     // req.sanitizeBody('category_id').toInt()
@@ -115,18 +132,19 @@ const createTags = async function (req, res, post, dealWithCategory) {
         tags_id = tags_id || []
 
         // 验证分类是否存在
-        let category = await termDao.findById(category_id || SITE.defaultCategoryId, {attributes: ['id','name']})
+        let category = await termDao.findById(
+            category_id || SITE.defaultCategoryId, {attributes: ['id', 'name']})
         if (category === null) {
-            debug(`createTags 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
+            debug(
+                `createTags 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
             category_id = SITE.defaultCategoryId * 1
             category = SITE.defaultTerm
         }
 
-
         // 验证new_tag 的名字
         // /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
         // 包含有错误的tag 驳回请求 因为这个名字会在前端验证，能提交错误的不是什么好请求
-        let testReg = new_tag.every((tag)=>utils.termReg.test(tag))
+        let testReg = new_tag.every((tag) => utils.termReg.test(tag))
         if (!testReg) {
             return Result.info('错误的标签名称')
         }
@@ -134,12 +152,13 @@ const createTags = async function (req, res, post, dealWithCategory) {
         // 验证tags_id
         // 如果tags_id 不存在则忽略
         let tags = await termDao.findAll({
-            where:{
+            where: {
                 taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                id:{[Op.in]: tags_id}
+                id: {[Op.in]: tags_id}
             }
         })
-        debug(`createTags 提交了标签ID个数 = ${tags_id.length} 个，其中 [${tags.map(tagToString)}] 有效`)
+        debug(`createTags 提交了标签ID个数 = ${tags_id.length} 个，其中 [${tags.map(
+            tagToString)}] 有效`)
         // 判断tags 的个数 个数的判断在创建标签之前
         if (TagsLength <= tags.length + new_tag.length) {
             return Result.info('标签太多啦！')
@@ -149,18 +168,25 @@ const createTags = async function (req, res, post, dealWithCategory) {
         // 防止同名是个问题，虽然会在页面中做同名过滤，但是保不齐非法提交
         // 做法查询这些new_tag 是否存在, 存在的删除掉
         let newTags = await termDao.findAll({
-            where:{
+            where: {
                 taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                name:{[Op.in]: new_tag}
+                name: {[Op.in]: new_tag}
             }
         })
 
         tags = tags.concat(newTags)
 
-        let _newTags =  newTags.map((item)=>item.name)
-        debug(`createTags 提交了标签名称：[${new_tag}]，其中[${newTags.map(tagToString)}]是已存在的`)
+        let _newTags = newTags.map((item) => item.name)
+        debug(`createTags 提交了标签名称：[${new_tag}]，其中[${newTags.map(
+            tagToString)}]是已存在的`)
 
-        let new_tagsValue = _.difference(new_tag, _newTags).map((name)=>({name,  taxonomy: Enum.TaxonomyEnum.POST_TAG, description: '', count: 0, slug: utils.randomChar(6)}))
+        let new_tagsValue = _.difference(new_tag, _newTags).map((name) => ({
+            name,
+            taxonomy: Enum.TaxonomyEnum.POST_TAG,
+            description: '',
+            count: 0,
+            slug: utils.randomChar(6)
+        }))
         // 创建
         // bulkCreate
         if (new_tagsValue.length) {
@@ -195,17 +221,18 @@ const createTags = async function (req, res, post, dealWithCategory) {
  * @returns {Promise<*>}
  * @private
  */
-const _save_update = async function (post, {post_title, post_content, post_excerpt}) {
+const _save_update = function (post, {post_title, post_content, post_excerpt}) {
     // post.post_title = post_title
     // post.post_content = post_content
     // post.post_excerpt = post_excerpt
     // console.log(post)
     // 使用save 方式 如果仅保存了标签那么修改的时间戳不会被更新
-    return await postDao.update({post_title, post_content, post_excerpt, updatedAt: new Date()}, {
-        where:{
-            id: post.id
-        }
-    })
+    return postDao.update(
+        {post_title, post_content, post_excerpt, updatedAt: new Date()}, {
+            where: {
+                id: post.id
+            }
+        })
 }
 /**
  * 更新meta 的统一方法
@@ -215,17 +242,17 @@ const _save_update = async function (post, {post_title, post_content, post_excer
  * @private
  */
 let _save_postMeta = function (id, key, value) {
-     return postMetaDao.findOrCreate({
+    return postMetaDao.findOrCreate({
         where: {
             post_id: id,
-            meta_key: key,
+            meta_key: key
         },
         defaults: {
             meta_value: value
         }
     }).spread((meta, created) => {
         if (!created) {
-            meta.meta_value = value;
+            meta.meta_value = value
             return meta.save()
         }
         return true
@@ -262,18 +289,22 @@ const save = [
                 debug(`修改文章 = ${id} 状态为：${Enum.PostStatusEnum.DRAFT}`)
                 post.post_status = Enum.PostStatusEnum.DRAFT
                 post.post_name = id
-                debug(`修改文章 = ${id} 分类为默认分类：${SITE.defaultTerm.name}#${SITE.defaultTerm.id}`)
+                debug(
+                    `修改文章 = ${id} 分类为默认分类：${SITE.defaultTerm.name}#${SITE.defaultTerm.id}`)
                 await post.setTerms([SITE.defaultTerm])
+            // eslint-disable-next-line no-fallthrough
             case Enum.PostStatusEnum.DRAFT:
                 debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
                 // 保存文章的标签信息
-                let createTagsResult = await createTags(req, res, post, false)
+                let createTagsResult = await createTags(req, res, post,
+                    false)
                 if (createTagsResult instanceof Result) {
                     return res.status(200).json(createTagsResult)
                 }
                 // let values = {post_title, post_content, post_excerpt, post_status: post.post_status}
                 debug(`文章 = ${id} 更新草稿内容！`)
-                return res.status(200).json(Result.success(await _save_update(post, req.body)))
+                return res.status(200)
+                    .json(Result.success(await _save_update(post, req.body)))
             case Enum.PostStatusEnum.PRIVATE:
                 // 私密的文章需要验证是否是本人创建的
                 // 禁用私密功能
@@ -281,6 +312,7 @@ const save = [
                 // if (user.id !== post.post_author) {
                 //     return res.status(200).json(Result.info('保存失败，文章私密，您无权修改'))
                 // }
+            // eslint-disable-next-line no-fallthrough
             case Enum.PostStatusEnum.PUBLISH:
             case Enum.PostStatusEnum.PENDING:
                 debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
@@ -320,7 +352,8 @@ const save = [
                 new_tag = new_tag || []
                 tags_id = tags_id || []
 
-                let testReg = new_tag.every((tag) => utils.termReg.test(tag))
+                let testReg = new_tag.every(
+                    (tag) => utils.termReg.test(tag))
                 if (!testReg) {
                     return res.status(200).json(Result.info('错误的标签名称'))
                 }
@@ -342,18 +375,21 @@ const save = [
 
                 let category = await termDao.findById(category_id)
                 if (category === null) {
-                    debug(`save 自动存档保存了一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
+                    debug(
+                        `save 自动存档保存了一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
                     category = SITE.defaultTerm
                 }
 
                 Promise.all([
-                    _save_postMeta(autoSavePost.id, 'tags', JSON.stringify(new_tag)),
-                    _save_postMeta(autoSavePost.id, 'category', JSON.stringify(category.id))
-                ]).then(()=>{
-                    debug(`save 文章存档 = [${autoSavePost.id}#${autoSavePost.post_name}]，保存分类标签记录!`)
+                    _save_postMeta(autoSavePost.id, 'tags',
+                        JSON.stringify(new_tag)),
+                    _save_postMeta(autoSavePost.id, 'category',
+                        JSON.stringify(category.id))
+                ]).then(() => {
+                    debug(
+                        `save 文章存档 = [${autoSavePost.id}#${autoSavePost.post_name}]，保存分类标签记录!`)
                 })
                 return res.status(200).json(Result.success(autoSavePost))
-                break
             default:
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
             }
@@ -374,9 +410,13 @@ const newPost = [
         let {post_title} = req.body
         try {
             let result = await postDao.create({
-                post_author: req.user.id, post_content: '',
-                post_title, post_excerpt: '', post_status: Enum.PostStatusEnum.AUTO_DRAFT,
-                post_name: '', guid: ''
+                post_author: req.user.id,
+                post_content: '',
+                post_title,
+                post_excerpt: '',
+                post_status: Enum.PostStatusEnum.AUTO_DRAFT,
+                post_name: '',
+                guid: ''
             })
             debug(`创建新的自动草稿，草稿ID = ${result.id}`)
             return res.status(200).json(Result.success(result.toJSON()))
@@ -384,7 +424,6 @@ const newPost = [
             debug('newPost error by:', e.message)
             return res.status(200).json(Result.error())
         }
-
     }
 ]
 // 必须参数 文章id
@@ -433,13 +472,13 @@ const release = [
             post_name,
             post_excerpt,
             post_date,
-            post_author,
+            // post_author,
             render_value,
             sticky,
             post_status,
             post_password,
             comment_status,
-            _post_author
+            postAuthor
         } = req.body
 
         try {
@@ -505,8 +544,8 @@ const release = [
                 values.post_date = post.post_date
                 values.id = undefined
                 values.createdAt = undefined
-                postDao.create(values).then((rp)=>{
-                    _save_postMeta(rp.id, 'author', _post_author || req.user)
+                postDao.create(values).then((rp) => {
+                    _save_postMeta(rp.id, 'author', postAuthor || req.user)
                     // _save_postMeta(rp.id, 'author_user_name', post_author)
                 })
             }
@@ -533,7 +572,7 @@ const moverTrash = [
                     id: ids,
                     post_status: [
                         Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
-                    ],
+                    ]
                     // [Op.or]: [ // 禁用私密功能
                     //     {
                     //         post_status: Enum.PostStatusEnum.PRIVATE,
@@ -589,7 +628,8 @@ const del = [
                     ]
                 }
             })
-            debug(`彻底删除文章 ids = [${ids}],并且清除时间{${utils.formatDate(date)}} 之前删除的文章, 共计删除文章: ${result} 篇`)
+            debug(`彻底删除文章 ids = [${ids}],并且清除时间{${utils.formatDate(
+                date)}} 之前删除的文章, 共计删除文章: ${result} 篇`)
             return res.status(200).json(Result.success(result))
         } catch (e) {
             debug('del post error by:', e.message)
@@ -600,12 +640,13 @@ const del = [
 
 const getAllPost = [
     async function (req, res) {
+        console.log(req.user)
         try {
             let posts = await postDao.findAll({
                 where: {
                     post_status: [
                         Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
-                    ],
+                    ]
                     // [Op.or]: [ // 禁用私密功能
                     //     {
                     //         post_status: Enum.PostStatusEnum.PRIVATE,
@@ -628,7 +669,13 @@ const getAllPost = [
                     },
                     {
                         model: termDao,
-                        attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id']
+                        attributes: [
+                            'icon',
+                            'description',
+                            'name',
+                            'slug',
+                            'taxonomy',
+                            'id']
                     }
                 ]
 
@@ -659,8 +706,8 @@ const getTrash = [
                     ],
                     [Op.or]: [
                         {deleteAt: {[Op.not]: null}},
-                        {deleteAt: {[Op.gte]: date}},
-                    ],
+                        {deleteAt: {[Op.gte]: date}}
+                    ]
                     // [Op.and] :{ // 禁用私密功能
                     //     [Op.or]: [
                     //         {
@@ -691,7 +738,7 @@ const revert = [
         try {
             let result = await postDao.update({
                 deleteAt: null
-            },{
+            }, {
                 paranoid: false,
                 where: {
                     id: ids,
@@ -722,7 +769,10 @@ const postInfo = [
                 // },
                 where: {
                     id,
-                    post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT],
+                    post_status: [
+                        Enum.PostStatusEnum.PUBLISH,
+                        Enum.PostStatusEnum.DRAFT,
+                        Enum.PostStatusEnum.AUTO_DRAFT]
                     // [Op.or]: [ // 禁用私密功能
                     //     {
                     //         post_status: Enum.PostStatusEnum.PRIVATE,
@@ -745,11 +795,18 @@ const postInfo = [
                 // 草稿类型调取不检查
                 // if (result.post_status !== Enum.PostStatusEnum.DRAFT) {
                 let revision = await postDao.findAll({
-                    attributes: ['id', 'createdAt', ['post_name', 'type'], 'updatedAt', 'post_content', 'post_title', 'post_excerpt'],
+                    attributes: [
+                        'id',
+                        'createdAt',
+                        ['post_name', 'type'],
+                        'updatedAt',
+                        'post_content',
+                        'post_title',
+                        'post_excerpt'],
                     where: {
                         post_type: 'revision',
                         post_status: Enum.PostStatusEnum.INHERIT,
-                        post_name: [`${id}-autosave-v1`, `${id}-revision-v1`,]
+                        post_name: [`${id}-autosave-v1`, `${id}-revision-v1`]
                     },
                     include: [
                         {model: postMetaDao, as: 'metas'},

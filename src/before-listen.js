@@ -14,7 +14,6 @@ function randomHex () {
 
 module.exports = async function (app) {
     debug('Loading system options')
-
     let siteList = await siteDao.findAll({
         where: {
             autoLoad: Enum.SiteEnum.YES

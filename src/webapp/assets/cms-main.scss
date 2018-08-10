@@ -19,6 +19,8 @@ $sider-bg-deep-color : #1f2224;
 .wrapper {
     background: #eee;
     height: 100%;
+    min-width: 1103px;
+    overflow: hidden;
 }
 
 .wrapper-content {

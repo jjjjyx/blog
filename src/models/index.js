@@ -1,18 +1,15 @@
-'use strict';
+'use strict'
 
-const fs = require('fs');
-const path = require('path');
-const common = require('../common/common')
-const Sequelize = require('sequelize');
-const basename = path.basename(__filename);
-const env = process.env.NODE_ENV || 'development';
-const db_config = require(__dirname + '/../db_config.js')[env];
-const db = {};
-const prefix = "j_"
+const path = require('path')
+const Sequelize = require('sequelize')
+const env = process.env.NODE_ENV || 'development'
+// const db_config = require(__dirname + '/../db_config.js')[env];
+const db_config = config.db[env]
+const db = {}
 // const {db_config: db} = config
 // db_config.logging = false
-const sequelize = new Sequelize(db_config.database, db_config.username, db_config.password, db_config);
-
+const sequelize = new Sequelize(db_config.database, db_config.username,
+    db_config.password, db_config)
 // model 是有关联关系的 不能这样加载
 // 需要手动了
 let models = [
@@ -30,9 +27,9 @@ let models = [
 ]
 models.forEach(file => {
     // console.log(file)
-    let model = sequelize['import'](path.join(__dirname, file));
+    let model = sequelize['import'](path.join(__dirname, file))
     // let name = common.transformStr3(file.substring(0, file.length - 8)) + 'Dao'
-    db[model.name + 'Dao'] = model;
+    db[model.name + 'Dao'] = model
 })
 
 // fs.readdirSync(__dirname)
@@ -63,7 +60,7 @@ models.forEach(file => {
 // (async function (){
 
 // })
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
+db.sequelize = sequelize
+db.Sequelize = Sequelize
 
-module.exports = db;
+module.exports = db
