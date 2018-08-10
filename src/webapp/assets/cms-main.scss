@@ -8,6 +8,8 @@
 
 $sider-bg-color : #282d2f;
 $sider-bg-deep-color : #1f2224;
+$sider-width: 240px;
+$sider-collapsed-width: 78px;
 @import "cm-sass/overload-iview";
 @import "cm-sass/cm";
 @import "cm-sass/cm-nav";
@@ -20,12 +22,34 @@ $sider-bg-deep-color : #1f2224;
     background: #eee;
     height: 100%;
     min-width: 1103px;
-    overflow: hidden;
+    overflow: auto;
 }
 
-.wrapper-content {
-    //padding: 0 24px 24px;
-    //overflow-y: hidden;
+.wrapper__sidebar {
+    position: fixed;
+    width: $sider-width;
+    flex: 0 0 $sider-width;
+    height: 100vh;
+    left: 0px;
+    overflow: hidden;
+    transition: width .2s ease-in-out;
+    background-color: $sider-bg-color;
+    z-index: 1001;
+}
+.wrapper__sidebar--collapsed {
+    width: $sider-collapsed-width;
+    &:hover {
+        width: $sider-width;
+    }
+}
+.wrapper__sidebar--collapsed + .wrapper__content {
+    margin-left: $sider-collapsed-width;
+}
+
+.wrapper__content {
+    margin-left: $sider-width;
+    min-width: 1100px;
+    transition: margin-left .2s ease-in-out;
     > .ivu-breadcrumb {
         flex-shrink:0;
         padding: 24px 24px;
