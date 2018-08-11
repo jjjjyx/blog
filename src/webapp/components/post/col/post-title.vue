@@ -42,7 +42,7 @@ export default {
 
 <style scoped>
     .post-table-title {
-        font-size: 16px;
+        font-size: 14px;
     }
     .post-table-content {
         margin-bottom: .5em;

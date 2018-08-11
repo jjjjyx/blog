@@ -10,6 +10,7 @@ $sider-bg-color : #282d2f;
 $sider-bg-deep-color : #1f2224;
 $sider-width: 240px;
 $sider-collapsed-width: 78px;
+
 @import "cm-sass/overload-iview";
 @import "cm-sass/cm";
 @import "cm-sass/cm-nav";
@@ -25,26 +26,6 @@ $sider-collapsed-width: 78px;
     overflow: auto;
 }
 
-.wrapper__sidebar {
-    position: fixed;
-    width: $sider-width;
-    flex: 0 0 $sider-width;
-    height: 100vh;
-    left: 0px;
-    overflow: hidden;
-    transition: width .2s ease-in-out;
-    background-color: $sider-bg-color;
-    z-index: 1001;
-}
-.wrapper__sidebar--collapsed {
-    width: $sider-collapsed-width;
-    &:hover {
-        width: $sider-width;
-    }
-}
-.wrapper__sidebar--collapsed + .wrapper__content {
-    margin-left: $sider-collapsed-width;
-}
 
 .wrapper__content {
     margin-left: $sider-width;
@@ -56,17 +37,6 @@ $sider-collapsed-width: 78px;
     }
     > .ivu-layout-content {
         margin: 0 24px;
-        background: rgb(255, 255, 255);
-        border-radius: 6px;
-        padding: 24px 24px 0;
-        min-height: 700px;
         //box-shadow: 0 0 2px #ccc;
     }
-}
-
-
-.layout-footer-center {
-    margin: 24px 24px;
-    text-align: center;
-    flex-shrink: 0;
 }

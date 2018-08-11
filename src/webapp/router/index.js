@@ -9,6 +9,9 @@ import postWriter from '@/components/post/post-writer'
 import postCategory from '@/components/post/post-category.vue'
 import postTag from '@/components/post/post-tag.vue'
 import postTrash from '@/components/post/post-trash.vue'
+
+import SystemSite from '@/components/system/site.vue'
+
 // import postTest from '@/components/post/post-test'
 import NotFound from '../404'
 import store from '../store'
@@ -65,6 +68,11 @@ const routes = [
         path: '/post/trash',
         name: 'post_trash',
         component: postTrash
+    },
+    {
+        path: '/system/site',
+        name: 'system_site',
+        component: SystemSite
     },
     // {
     //     path: '/post/test',

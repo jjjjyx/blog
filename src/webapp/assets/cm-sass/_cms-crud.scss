@@ -1,6 +1,6 @@
 
 .cms-table-title-wrap {
-    padding: 12px 0;
+    padding: .25rem 0;
 }
 .cms-table-options {
     opacity: 0;
@@ -9,6 +9,9 @@
 .ivu-table-row-hover .cms-table-options {
     opacity: 1;
     pointer-events: all;
+}
+.cms-table-options2 .ivu-btn, .cms-table-options .ivu-btn {
+    font-size: 1rem;
 }
 .cms-table-options2 .ivu-btn-text{
     padding-left: 0;

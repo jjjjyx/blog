@@ -17,23 +17,6 @@ $nav-height: 56px;
     }
 }
 
-.header-brands {
-    width: 240px;
-    height: $nav-height;
-    text-align: center;
-    font-size: 18px;
-    cursor: pointer;
-    line-height: $nav-height;
-    //float: left;
-    a {
-        color: #fff;
-    }
-    img {
-        height: 40px;
-        vertical-align: middle;
-    }
-}
-
 .wrapper-header-nav-list-right {
     height: inherit;
     float: right;

@@ -45,7 +45,7 @@
                 <i-table :columns="columns" :data="data" stripe
                          class="cm-wrapper--table" ref="table"
                          @on-selection-change="handleSelectChange"
-                         :height="tableHeight" :loading="tableStatus"></i-table>
+                         :loading="tableStatus"></i-table>
                 <!--</div>-->
             </div>
         </div>
@@ -91,8 +91,8 @@ export default {
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 // {title: 'ID', key: 'id', width: 100, sortable: true},
-                {title: '分类名称', key: 'name', width: 380, sortable: true, render: renderName.bind(this)},
-                {title: '文章数', key: 'count', width: 100, sortable: true},
+                {title: '分类名称', key: 'name', width: 280, sortable: true, render: renderName.bind(this)},
+                {title: '文章数', key: 'count', width: 90, sortable: true},
                 {title: '说明', key: 'description'},
                 {title: '创建时间', key: '', width: 220, render: renderDate.bind(this)}
                 // {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},

@@ -1,7 +1,67 @@
 <template>
     <layout class="wrapper">
-        <div class="wrapper__sidebar wrapper__sidebar--collapsed">
-            22
+        <div class="wrapper__sidebar" :class="{'wrapper__sidebar--collapsed': collapsed}">
+            <!--<router-link to="/" active-class='active' exact  class="header-brands" tag="header">-->
+                <!--&lt;!&ndash;http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png&ndash;&gt;-->
+                <!--<div class="header-brands__logo" title="返回首页">-->
+                    <!--<img src="http://oht47c0d0.bkt.clouddn.com/12f2aa30-3174-11e7-a772-3734af15197f.png" alt="首页">-->
+                <!--</div>-->
+                <!--<div class="header-brands__title" title="返回首页">-->
+                    <!--mbdoge<span>.cn</span>-->
+                <!--</div>-->
+                <!--<div class="header-brands__minimize">-->
+                    <!--&lt;!&ndash;<Button shape="circle" icon="ios-arrow-back" type=""></Button>&ndash;&gt;-->
+                    <!--<Icon type="ios-arrow-left" :size="16"></Icon>-->
+                <!--</div>-->
+            <!--</router-link>-->
+            <!--<div class="header-user">-->
+                <!--aaa-->
+            <!--</div>-->
+
+            <div class="header-brands">
+                <router-link to="/" active-class='active' exact>
+                    <!--http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png-->
+                    <img src="http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png" alt="首页" title="返回首页">
+                </router-link>
+            </div>
+            <div class="sidebar-user-panel">
+                <div class="user-panel-profile-picture">
+                    <img src="http://oht47c0d0.bkt.clouddn.com/140d5330-376d-11e7-81cc-c5fb8304dee6">
+                </div>
+                <div>
+                    <span class="user-panel-logged-in-text"><Icon type="ios-circle-outline" color="#19be6b" size="12"></Icon> 酱酱酱酱油鲜</span>
+                    <a href="javascript:void(0)" class="user-panel-action-link">
+                        <Icon type="edit" size="12"></Icon>
+                        <span> 账号设置</span></a>
+                </div>
+            </div>
+            <!--@on-select="handleSelectRouter"-->
+            <i-Menu  width="auto" accordion :active-name="activeName" class="menu-item"  ref="sidebar" :open-names="openedNames" theme="dark">
+                <menu-group v-for="(group, index) in sidebarGroups" v-bind:key="index" :title="group.title">
+                    <template v-for="(item, item_index) in group.items">
+                        <template v-if="item.subMenus">
+                            <submenu :name="item.name" v-bind:key="item_index">
+                                <template slot="title">
+                                    <font-icon :type="item.icon"></font-icon>
+                                    <span>{{item.title}}</span>
+                                </template>
+                                <Menu-Item :name="menu.name || `${index}_${item_index}_${menu_index}`"
+                                           v-for="(menu, menu_index) in item.subMenus" v-bind:key="menu_index"
+                                           @click.native="handleSelectRouter(menu, item)">
+                                    <font-icon :type="menu.icon"></font-icon>
+                                    <span>{{menu.title}}</span>
+                                </Menu-Item>
+                            </submenu>
+                        </template>
+                        <Menu-Item v-else :name="item.name || `${index}_${item_index}`"  v-bind:key="item_index" @click.native="handleSelectRouter(item)">
+                            <i v-if="item.className" :class="menu.className"></i>
+                            <Icon v-else :type="item.icon" ></Icon>
+                            <span>{{item.title}}</span>
+                        </Menu-Item>
+                    </template>
+                </menu-group>
+            </i-Menu>
+
         </div>
         <div class="wrapper__content">
             <header class="wrapper-header">
@@ -85,6 +145,7 @@ export default {
     data: () => {
         return {
             value4: '',
+            collapsed: false,
             data4: [
                 {
                     title: '话题',
@@ -122,7 +183,7 @@ export default {
                     items: [
                         {title: '访客管理', name: '', icon: 'coffee'},
                         {title: '用户管理', name: '', icon: 'ios-people-outline'},
-                        {title: '网站设置', name: '', icon: 'levels'}
+                        {title: '网站设置', name: 'system_site', icon: 'levels'}
                     ]
                 }
             ]
@@ -161,6 +222,9 @@ export default {
             } else {
                 this.$router.push({name})
             }
+        },
+        toggleCollapse () {
+            this.collapsed = !this.collapsed
         }
     },
     watch: {

@@ -44,7 +44,7 @@
                 <i-table :columns="columns" :data="data" stripe
                          class="cm-wrapper--table" ref="table"
                          @on-selection-change="handleSelectChange"
-                         :height="tableHeight" :loading="tableStatus"></i-table>
+                         :loading="tableStatus"></i-table>
             </div>
         </div>
         <div class="cm-container--flex__modal">
@@ -103,12 +103,12 @@ export default {
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 // {title: 'ID', key: 'id', width: 100, sortable: true},
-                {title: '标签名称', key: 'name', width: 250, sortable: true},
-                {title: '使用计数', key: 'count', width: 120, sortable: true},
+                {title: '标签名称', key: 'name', width: 150, sortable: true},
+                {title: '计数', key: 'count', width: 90, sortable: true},
                 {title: '标识', key: 'slug', width: 100},
                 {title: '说明', key: 'description'},
-                {title: '创建时间', key: '', width: 220, render: renderDate.bind(this)},
-                {title: 'action', key: '', width: 220, render: renderAction.bind(this)}
+                {title: '创建时间', key: '', width: 130, render: renderDate.bind(this)},
+                {title: 'action', key: '', width: 130, render: renderAction.bind(this)}
                 // {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
                 // {title: '类别', key: '', width: 100, render: renderCategory.bind(this)},
                 // {title: '标签', key: '', width: 210, render: renderTags.bind(this)},

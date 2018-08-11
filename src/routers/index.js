@@ -52,6 +52,7 @@ module.exports = function (app) {
     app.use('/', jwtCheck.unless(unless_method), require('./home.js'))
     app.use('/category', require('./category.js'))
     app.use('/tags', require('./tags.js'))
+    app.use('/about', require('./about.js'));
     app.use('/jyx-admin', require('./admin.js'))
     // 指定权限验证路径
     // /api 下全是需要登录才可以访问
