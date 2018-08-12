@@ -97,17 +97,8 @@ const index = [
 
     }
 ]
-let rr = function () {
-    return new Promise((resolve, reject) => {
-        setTimeout(()=>{
-            console.log(11111)
-            resolve('异步  阿斯大赛大');
-        }, 3000)
-    })
-}
 router.route('/').get(index);
 router.get('/test', function(req, res, next) {
-    console.log(req)
     res.render('test', {req});
     // console.log("========== next ==========")
     // next()

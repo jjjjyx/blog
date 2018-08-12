@@ -3,6 +3,7 @@
 const path = require('path')
 const Sequelize = require('sequelize')
 const env = process.env.NODE_ENV || 'development'
+const config = require('../../config')
 // const db_config = require(__dirname + '/../db_config.js')[env];
 const db_config = config.db[env]
 const db = {}
@@ -23,7 +24,8 @@ let models = [
     'readsModel.js',
     // 'termRelationshipsModel.js', // 这个是many to many
     'visitorsModel.js',
-    'siteModel.js'
+    'siteModel.js',
+    'resourceModel.js'
 ]
 models.forEach(file => {
     // console.log(file)

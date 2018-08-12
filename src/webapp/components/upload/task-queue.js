@@ -8,6 +8,7 @@ class Queue {
     }
 
     start () {
+        console.log('start============', this.currTaskList, this.maxThreadNum)
         if (this.currTaskList.length < this.maxThreadNum) {
             this.startNext()
         } else {
@@ -50,6 +51,7 @@ class Queue {
             // task.onEnd(this.taskCallBack.bind(this));
             this.waitQueue.push(task)
         }
+
         this.start()
     }
 

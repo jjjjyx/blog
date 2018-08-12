@@ -5,6 +5,7 @@ const express = require('express')
 const router = express.Router()
 const debug = require('debug')('app:routers:api.qiniu-file')
 const {check, validationResult} = require('express-validator/check')
+const {resourceDao} = require('../models')
 const {sanitizeBody} = require('express-validator/filter')
 const Result = require('../common/resultUtils')
 const _ = require('lodash')
@@ -17,17 +18,28 @@ const returnBody = `
 {
     "key":$(key),
     "hash":$(etag),
-    "fsize":$(fsize),
+    "size":$(fsize),
     "bucket":"$(bucket)",
     "name":"$(x:name)",
-    "info":$(imageInfo)
+    "info":$(imageInfo),
+    "imageAve":$(imageAve),
+    "exif": $(exif),
+    "mimeType": $(mimeType),
+    "ext": $(ext),
+    "uuid": $(uuid)
 }
 `
 const qiniuOption = {
     scope: config.qiUpload.Bucket_Name,
     expires: 600, // 10 分钟
     returnBody: returnBody,
-    saveKey: 'aaaa_$(fsize)'
+    detectMime: 1,
+    callbackHost: 'www.mbdoge.cn',
+    callbackUrl: 'http://119.29.91.78:3878/api/img/callback',
+    // callbackBody: 'key=$(key)&hash=$(etag)&w=$(imageInfo.width)&h=$(imageInfo.height)',
+    callbackBody: returnBody,
+    callbackBodyType: 'application/json'
+    // saveKey: '$(et)'
 }
 const mac = new qiniu.auth.digest.Mac(config.qiUpload.ACCESS_KEY, config.qiUpload.SECRET_KEY)
 const putPolicy = new qiniu.rs.PutPolicy(qiniuOption)
@@ -37,19 +49,12 @@ let qiniu_config = new qiniu.conf.Config()
 qiniu_config.zone = qiniu.zone.Zone_z0
 
 const bucketManager = new qiniu.rs.BucketManager(mac, qiniu_config)
-
 const token = [
     // check('ext').isAlpha,
-    check('md5', '账号不可为空且3-6位').isHash('md5').withMessage('请提交文件md5'),
+    // check('md5', '账号不可为空且3-6位').isHash('md5').withMessage('请提交文件md5'),
     check('prefix').isInt(),
+    utils.validationResult,
     async function (req, res) {
-
-        const errors = validationResult(req)
-        if (!errors.isEmpty()) {
-            debug('企图上传文件，但是尚未提交md5！')
-            return res.status(200).json(Result.info('参数错误', errors.mapped()))
-        }
-
         res.header('Cache-Control', 'max-age=0, private, must-revalidate')
         res.header('Pragma', 'no-cache')
         res.header('Expires', 0)
@@ -60,13 +65,13 @@ const token = [
             prefix = 0
         }
 
-        let key = Enum.ImgEnum[imgPrefixs[prefix]] + md5
-        key = qiniu.util.urlsafeBase64Encode(key)
+        // let key = Enum.ImgEnum[imgPrefixs[prefix]] + md5
+        // key = qiniu.util.urlsafeBase64Encode(key)
+
         // ext = _.last(ext.split('/')) || path.extname(name)
 
         if (token) {
-            let r = {token, domain, key}
-            return res.status(200).json(Result.success(r))
+            return res.status(200).json(Result.success(token))
         } else {
             return res.status(200).json(Result.info('获取token失败'))
         }
@@ -170,6 +175,45 @@ const del = [
     }
 ]
 
+const callback = [
+    async function (req, res) {
+        // {
+        //     "key":"FhLm2F4r8Njh7Al50LSEYfD8Z49r",
+        //     "hash":"FhLm2F4r8Njh7Al50LSEYfD8Z49r",
+        //     "size":2286,
+        //     "bucket":"jyximg",
+        //     "name":"null",
+        //     "info":{"colorModel":"nrgba","format":"png","height":252,"size":2286,"width":316},
+        //     "imageAve":{"RGB":"0x6c6f70"},
+        //     "exif": null,
+        //     "mimeType": "image/png"
+        //     "ext": null,
+        //     "uuid": "c1cba196-4533-46ff-98fb-bb1f15849b8d"
+        // }
+
+        let {key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid} = req.body
+        let color = imageAve.RGB.replace('0x', '#')
+        let {height, width} = info
+        let url = domain + key
+        let values = {
+            key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url
+        }
+        try {
+            values = await resourceDao.create(values)
+            return res.status(200).json(Result.success(values))
+        } catch (e) {
+            console.log(e.name, e.name === 'SequelizeUniqueConstraintError')
+            if (e.name === 'SequelizeUniqueConstraintError') { // 重复了，返回实例
+                let result = await resourceDao.findOne({where: {hash}})
+                return res.status(200).json(Result.success(result))
+            }
+            debug('callback error by :', e.message)
+            return res.status(200).json(Result.error())
+        }
+
+    }
+]
+
 router.route('/token')
     .get(token)
 
@@ -178,5 +222,8 @@ router.route('/list')
 
 router.route('/del')
     .post(del)
+
+router.route('/callback')
+    .post(callback)
 
 module.exports = router

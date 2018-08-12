@@ -9,7 +9,7 @@ const unless = require('express-unless')
 const expressValidator = require('express-validator')
 const Result = require('./src/common/resultUtils')
 const middlewareOptions = require('./src/common/middlewareOptions')
-global.config = require('./src/config')
+global.config = require('./config')
 
 // global.NODE_ENV = process.env.NODE_ENV || 'production';
 
@@ -64,7 +64,7 @@ if (IS_DEV) {
     app.use('/', webpackHotMiddleware(compiler))
 
 } else {
-    let static_dir = express.static(path.join(__dirname, './'))
+    let static_dir = express.static(path.join(__dirname, './dist'))
     static_dir.unless = unless
     app.use(static_dir.unless({method: 'OPTIONS'}))
 }

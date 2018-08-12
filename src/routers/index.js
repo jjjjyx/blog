@@ -14,7 +14,7 @@ const unless = require('express-unless')
 //     '/bg/admin'
 // ]
 const unless_path = {
-    path: ['/api/user/login'],
+    path: ['/api/user/login', '/api/img/callback'],
     method: 'OPTIONS'
 }
 const unless_method = {
@@ -49,7 +49,7 @@ module.exports = function (app) {
     //     })
     // })
 
-    app.use('/', jwtCheck.unless(unless_method), require('./home.js'))
+    app.use('/', require('./home.js'))
     app.use('/category', require('./category.js'))
     app.use('/tags', require('./tags.js'))
     app.use('/about', require('./about.js'));

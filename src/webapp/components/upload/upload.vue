@@ -12,6 +12,15 @@
                         {{title}}
                     </div>
                 </div>
+                <collapse-transition>
+                <div class="ivu-alert ivu-alert-success" v-if="alertVisible"><!---->
+                    <span class="ivu-alert-message">上传成功！</span>
+                    <span class="ivu-alert-desc"></span>
+                    <a class="ivu-alert-close" @click="alertVisible = false">
+                        <i class="ivu-icon ivu-icon-ios-close"></i>
+                    </a>
+                </div>
+                </collapse-transition>
                 <!-- 做一个最大最小化-->
                 <collapse-transition>
                     <div class="ivu-modal-body" v-show="contentVisible">
@@ -188,14 +197,19 @@ export default {
         return {
             visible: false,
             contentVisible: false,
+            alertVisible: false,
             fileList: [],
             tempIndex: 1,
             maxSize: 1073741824, // 1G  单位b
             format: [], // 支持的文件类型，与 accept 不同的是，format 是识别文件的后缀名，accept 为 input 标签原生的 accept 属性，会在选择文件时过滤，可以两者结合使用
-            headers: {},
-            action: 'api/files/upload',
-            name: 'file',
-            data: {}, // 上传时附带的额外参数
+            options: {
+                headers: {},
+                action: 'http://up-z2.qiniu.com/putb64/-1',
+                token: '', // api or token
+                inputName: 'file',
+                data: {}, // 上传时附带的额外参数,
+                onSuccess: () => {},
+            },
             columns4: [
                 {title: '文件(夹)名', key: 'name', render: renderFileName.bind(this)},
                 {title: '大小', key: 'size', width: 90, render: renderFileSize.bind(this)},
@@ -226,6 +240,7 @@ export default {
         title: function () {
             let str
             let statusAudit = this.currFileListStatusAudit
+            let length = this.fileList.length
             switch (this.currStatus) {
             case UploadComponentsStatus.READY:
                 str = '准备上传'
@@ -312,20 +327,21 @@ export default {
                     this.$emit('upload-fulfil')
                     this.contentVisible = false
                     let length = this.fileList.length
-                    this.$Notice.close('upload-notice')
-                    this.$Notice.success({
-                        title: `上传完成`,
-                        name: 'upload-notice',
-                        duration: 5,
-                        render: (h) => {
-                            return h('ul', {domProps: {className: 'upload-notice-list'}}, [
-                                h('li', `共计上传：${length}`),
-                                h('li', `成功上传：${statusAudit[FileStatus.SUCCESS] || '无'}`),
-                                h('li', `失败文件：${statusAudit[FileStatus.FAIL] || '无'}`),
-                                h('li', `拒绝上传：0`)
-                            ])
-                        }
-                    })
+                    this.alertVisible = true
+                    // this.$Notice.close('upload-notice')
+                    // this.$Notice.success({
+                    //     title: `上传完成`,
+                    //     name: 'upload-notice',
+                    //     duration: 5,
+                    //     render: (h) => {
+                    //         return h('ul', {domProps: {className: 'upload-notice-list'}}, [
+                    //             h('li', `共计上传：${length}`),
+                    //             h('li', `成功上传：${statusAudit[FileStatus.SUCCESS] || '无'}`),
+                    //             h('li', `失败文件：${statusAudit[FileStatus.FAIL] || '无'}`),
+                    //             h('li', `拒绝上传：0`)
+                    //         ])
+                    //     }
+                    // })
                 }
             }
         }
@@ -362,7 +378,7 @@ export default {
             this.fileList.push(_file)
         },
 
-        uploadFiles: function (files) {
+        uploadFiles: function (files, opts) {
             // 队列的最大值不限制， 但是限制同上上传的格式
             if (_.isArray(files)) {
                 // let postFiles = Array.prototype.slice.call(files)
@@ -383,13 +399,13 @@ export default {
                     rawFile.serial_id = key
                     this.handleStart(rawFile)
                     if (this.autoUpload) {
-                        this.upload(rawFile)
+                        this.upload(rawFile, opts)
                     }
                 })
             } else {
                 this.handleStart(files)
                 if (this.autoUpload) {
-                    this.upload(files)
+                    this.upload(files, opts)
                 }
             }
         },
@@ -418,8 +434,10 @@ export default {
             return true
         },
 
-        upload (rawFile) {
-            this.post(rawFile)
+        upload (rawFile, opts = {}) {
+            opts = Object.assign({}, _.cloneDeep(this.options), opts)
+            opts.rawFile = rawFile
+            this.post(opts)
             // const before = this.beforeUpload(rawFile)
             // if (before && before.then) {
             //     before.then(processedFile => {
@@ -439,17 +457,18 @@ export default {
             //     this.handleRemove(null, rawFile)
             // }
         },
-        post: function (rawFile) {
+        post: function (opts) {
             // 添加到队列中，
             // 检查是否是队列模式
             if (this.queueMode) {
                 // let queueList = this.queueList
                 // let queueMaxLength = this.queueLength
+                let {rawFile} = opts
                 let file = this.getFile(rawFile)
                 file.status = FileStatus.QUEUE
                 const cb = (resolve) => {
                     // setTimeout(resolve, 1500)
-                    this._post(rawFile, resolve)
+                    this._post(opts, resolve)
                 }
                 const task = new Task()
 
@@ -459,10 +478,11 @@ export default {
                 this.$queue.addTask(task)
                 // this.$queue.
             } else {
-                this._post(rawFile)
+                this._post(opts)
             }
         },
-        _post: function (rawFile, resolve) {
+        _post: function (opts, resolve) {
+            let {rawFile, data, headers, inputName, action, onSuccess, onError} = opts
             const { uid } = rawFile
             // const req = this.httpRequest(options);
             if (this.format.length) {
@@ -481,17 +501,19 @@ export default {
                     return false
                 }
             }
-            let data = Object.assign({}, this.data, {
+            Object.assign(data, {
                 fullPath: rawFile.fullPath || rawFile.webkitRelativePath,
                 serial_id: rawFile.serial_id
             })
+            let isBase64 = _.isString(rawFile.miniurl)
+
             let options = {
                 data,
-                headers: this.headers,
-                // withCredentials: this.withCredentials,
-                file: rawFile,
-                filename: this.name,
-                action: this.action,
+                headers,
+                isBase64,
+                file: isBase64 ? rawFile.miniurl : rawFile,
+                filename: inputName,
+                action: action,
                 onProgress: e => {
                     this.handleProgress(e, rawFile)
                 },
@@ -500,10 +522,16 @@ export default {
                         resolve()
                     }
                     this.handleSuccess(res, rawFile)
+                    if (_.isFunction(onSuccess)) {
+                        onSuccess(res)
+                    }
                     delete this.reqs[uid]
                 },
                 onError: err => {
                     this.handleError(err, rawFile)
+                    if (_.isFunction(onError)) {
+                        onError(res)
+                    }
                 }
             }
             this.reqs[uid] = ajax(options)

@@ -233,38 +233,53 @@ export default {
         qiniuUpload: function (file) {
             return new Promise(async (resolve, reject) => {
                 try {
-                    let md5 = await fileMd5(file)
+                    // let md5 = await fileMd5(file)
                     // 3 = post/img/
-                    let tokenParam = {md5, prefix: 3}
-                    let result = await api.nget('/api/img/token', tokenParam)
-                    let {token, domain} = result
-                    // key = Base64.encode(key)
-                    let url = `http://up-z2.qiniu.com/putb64/-1`
-
-                    ajax({
+                    let tokenParam = {prefix: 3}
+                    let token = await api.nget('/api/img/token', tokenParam)
+                    this.$uploadFiles(file, {
                         headers: {
                             'Authorization': `UpToken ${token}`,
                             'Content-Type': 'application/octet-stream'
                         },
-                        isBase64: true,
-                        file: file.miniurl,
-                        action: url,
-                        onProgress: e => {
-                            // 文章图片都是小图片 ，不允许上传太大的 超过2M 的
-                            console.log('onProgress', e)
-                            // this.handleProgress(e, file)
+                        onSuccess: ({data, code}) => {
+                            if (code === 0) {
+                                let {url} = data
+                                resolve(url)
+                            }
                         },
-                        onSuccess: res => {
-                            // this.handleSuccess(res, file)
-                            let hash = res.key
-                            resolve(domain + hash)
-                        },
-                        onError: (err, response) => {
-                            // this.handleError(err, response, file)
-                            // console.log('onError', err, response)
-                            reject(err)
-                        }
+                        onError: reject
                     })
+                    // let {token, domain} = result
+                    // key = Base64.encode(key)
+                    // let url = `http://up-z2.qiniu.com/putb64/-1`
+                    //
+                    // ajax({
+                    //     headers: {
+                    //         'Authorization': `UpToken ${token}`,
+                    //         'Content-Type': 'application/octet-stream'
+                    //     },
+                    //     isBase64: true,
+                    //     file: file.miniurl,
+                    //     action: url,
+                    //     onProgress: e => {
+                    //         // 文章图片都是小图片 ，不允许上传太大的 超过2M 的
+                    //         console.log('onProgress', e)
+                    //         // this.handleProgress(e, file)
+                    //     },
+                    //     onSuccess: ({data, code}) => {
+                    //         // this.handleSuccess(res, file)
+                    //         if (code === 0) {
+                    //             let {url} = data
+                    //             resolve(url)
+                    //         }
+                    //     },
+                    //     onError: (err, response) => {
+                    //         // this.handleError(err, response, file)
+                    //         // console.log('onError', err, response)
+                    //         reject(err)
+                    //     }
+                    // })
                 } catch (e) {
                     reject(new Error('获取上传凭证失败！'))
                 }

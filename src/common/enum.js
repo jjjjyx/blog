@@ -35,10 +35,10 @@ const SiteEnum = {
 
 
 const ImgEnum = {
-    'ALL': '',
-    'PUBLIC': 'public/',
-    'COVER': 'cover/img/',
-    'POST': 'post/img/'
+    'ALL': 'all',
+    'PUBLIC': 'public',
+    'COVER': 'cover',
+    'POST': 'post'
 }
 
 module.exports.labels = {
@@ -63,10 +63,10 @@ module.exports.labels = {
         [SiteEnum.NO]: 'no'
     },
     img: {
-        0: '所有',
-        1: '公共区域',
-        2: '封面',
-        3: '文章插图'
+        'all': '所有',
+        'public': '公共区域',
+        'cover': '封面',
+        'post': '文章插图'
     }
 }
 

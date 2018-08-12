@@ -6,7 +6,7 @@
     right: 35px;
     display: block;
     visibility: visible;
-    z-index: 1001;
+    z-index: 1500;
     position: absolute;
     overflow: hidden;
     box-shadow: 0 0 10px #ccc;
@@ -31,6 +31,10 @@
             position: relative;
             top: 6px;
         }
+    }
+    .ivu-alert {
+        border-radius: 0;
+        margin-bottom: 0;
     }
     .upload-list {
         border: none;

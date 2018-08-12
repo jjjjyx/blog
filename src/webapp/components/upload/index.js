@@ -118,6 +118,7 @@ function install (Vue, opts = {}) {
     init(opts)
     // 增加实例方法
     Vue.prototype.$uploadFiles = instance.uploadFiles
+    // Vue.prototype.$uploadFile = instance.upload
 }
 // export {
 //     install

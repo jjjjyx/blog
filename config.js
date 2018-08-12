@@ -41,7 +41,12 @@ const CONFIG = {
             database: process.env.DB_NAME,
             host: process.env.DB_HOSTNAME,
             dialect: 'mysql',
-            timestamps: false
+            //timestamps: false,
+            define: {
+                charset: 'utf8',
+                collate: 'utf8_general_ci',
+                timestamps: true
+            }
             // dialectOptions: {
             //     ssl: {
             //         ca: fs.readFileSync(__dirname + '/mysql-ca-master.crt')
@@ -52,7 +57,7 @@ const CONFIG = {
 }
 
 try {
-    let pri = require('../private.js')
+    let pri = require('./private.js')
 
     _.merge(CONFIG, pri)
     debug('Loading private configuration', pri)

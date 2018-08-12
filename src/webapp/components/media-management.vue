@@ -53,7 +53,7 @@ export default {
     data () {
         return {
             formInline: {
-                space: '0',
+                space: 'all',
                 hash: ''
             },
             ruleInline: {}

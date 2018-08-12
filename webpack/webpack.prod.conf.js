@@ -34,7 +34,8 @@ const webpackConfig = merge(baseWebpackConfig, {
                 'vendors': {
                     test: /[\\/]node_modules[\\/]/,
                     chunks: 'initial',
-                    name: 'vendors'
+                    name: 'vendors',
+                    minChunks: 3
                 },
                 'async-vendors': {
                     test: /[\\/]node_modules[\\/]/,
