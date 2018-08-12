@@ -24,6 +24,8 @@
             </form-item>
             <FormItem>
                 <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
+            </FormItem>
+            <FormItem class="float-right">
                 <Button type="primary" @click="handleUpload">上传新图片</Button>
             </FormItem>
         </Form>
@@ -47,6 +49,7 @@
 <script>
 
 import {mapGetters} from 'vuex'
+import api from '@/utils/api'
 // <!--mapState mapActions-->
 export default {
     name: 'media-management',
@@ -82,15 +85,24 @@ export default {
             // }
             this.$refs.h5Input0.click()
         },
-        handleUploadChange: function (e) {
+        handleUploadChange: async function (e) {
             const files = e.target.files
             if (!files) {
                 return
             }
             let postFiles = Array.prototype.slice.call(files)
             // this.uploadFiles(files);
-            console.log(postFiles)
-            this.$uploadFiles(postFiles)
+            let data = {'x:space': this.formInline.space}
+            let token = await api.nget('/api/img/token')
+
+            this.$uploadFiles(postFiles, {
+                space: this.formInline.space,
+                token,
+                data,
+                onSuccess: (res) => {
+                    console.log(res)
+                }
+            })
             this.$refs.h5Input0.value = null
             // console.log(files)
         },

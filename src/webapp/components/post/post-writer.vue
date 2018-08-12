@@ -91,14 +91,14 @@
 <script>
 
 import _ from 'lodash'
-import SparkMD5 from 'spark-md5'
+
 import draggable from 'vuedraggable'
 import {mapActions, mapGetters, mapState} from 'vuex'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
 import api from '@/utils/api'
-import ajax from '@/utils/ajax'
+// import ajax from '@/utils/ajax'
 import {on, off} from '@/utils/dom'
 import {verification, getMetaKeyCode, POST_WRITER_STATUS} from '@/utils/common'
 import CollapseTransition from '@/utils/collapse-transition'
@@ -108,28 +108,6 @@ import VersionModal from './modal/version'
 import sidebarPanel from './sidebar/sidebar.vue'
 import {dateFormat} from '../../utils/common'
 const sidebarsOrder = Object.keys(sidebars)
-
-function fileMd5 (file) {
-    return new Promise((resolve, reject) => {
-        // let file = file_blob.file;
-        let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlicelet
-        // 截取部分数据
-        let chunkSize = 1024 * 128 // Read in chunks of 1M
-        let spark = new SparkMD5.ArrayBuffer()
-        let fileReader = new FileReader()
-        fileReader.onload = function (e) {
-            spark.append(e.target.result) // Append array buffer\
-            let md5 = spark.end()
-            console.log('md5', md5)
-            resolve(md5)
-        }
-        fileReader.onerror = function () {
-            console.warn('oops, something went wrong.')
-            reject(new Error('oops, something went wrong.'))
-        }
-        fileReader.readAsArrayBuffer(blobSlice.call(file, 0, chunkSize))
-    })
-}
 
 export default {
     name: 'post-writer',
@@ -235,9 +213,12 @@ export default {
                 try {
                     // let md5 = await fileMd5(file)
                     // 3 = post/img/
-                    let tokenParam = {prefix: 3}
-                    let token = await api.nget('/api/img/token', tokenParam)
+                    // let tokenParam = {'x:space': 'post'} // 固定上传到文件空间
+
+                    let token = await api.nget('/api/img/token')
                     this.$uploadFiles(file, {
+                        space: 'post',
+                        action: 'http://up-z2.qiniu.com/putb64/-1/x:space/cG9zdA==', // post = 'cG9zdA=='  固定上传到文件空间
                         headers: {
                             'Authorization': `UpToken ${token}`,
                             'Content-Type': 'application/octet-stream'
@@ -521,7 +502,7 @@ export default {
         onResize()
         on(window, 'resize', onResize)
 
-        // console.log(this.$refs.md)
+        console.log(this.$refs.md)
         // 当前页面中按ctrl + s
 
         // 直接进入 创建新文章

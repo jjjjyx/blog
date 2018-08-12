@@ -101,7 +101,7 @@ function init (options) {
 
     document.body.appendChild(instance.$el)
 
-    instance.visible = true
+    // instance.visible = true
     // 创建拖拽上传dom
     initDropDom()
     // initDownDom()

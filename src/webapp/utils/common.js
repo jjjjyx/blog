@@ -1,6 +1,6 @@
 
 import _ from 'lodash'
-
+import SparkMD5 from 'spark-md5'
 /**
  * 时间格式化
  * @param format
@@ -129,4 +129,26 @@ export const POST_WRITER_STATUS = {
     saved: '保存于',
     saving: '保存中',
     posted: '发布于'
+}
+
+export function fileMd5 (file) {
+    return new Promise((resolve, reject) => {
+        // let file = file_blob.file;
+        let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlicelet
+        // 截取部分数据
+        let chunkSize = 1024 * 128 // Read in chunks of 1M
+        let spark = new SparkMD5.ArrayBuffer()
+        let fileReader = new FileReader()
+        fileReader.onload = function (e) {
+            spark.append(e.target.result) // Append array buffer\
+            let md5 = spark.end()
+            console.log('md5', md5)
+            resolve(md5)
+        }
+        fileReader.onerror = function () {
+            console.warn('oops, something went wrong.')
+            reject(new Error('oops, something went wrong.'))
+        }
+        fileReader.readAsArrayBuffer(blobSlice.call(file, 0, chunkSize))
+    })
 }

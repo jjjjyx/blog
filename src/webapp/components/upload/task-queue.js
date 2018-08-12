@@ -8,7 +8,6 @@ class Queue {
     }
 
     start () {
-        console.log('start============', this.currTaskList, this.maxThreadNum)
         if (this.currTaskList.length < this.maxThreadNum) {
             this.startNext()
         } else {

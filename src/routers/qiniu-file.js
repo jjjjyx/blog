@@ -10,7 +10,7 @@ const {sanitizeBody} = require('express-validator/filter')
 const Result = require('../common/resultUtils')
 const _ = require('lodash')
 const qiniu = require('qiniu')
-const {Enum} = require('../common/enum')
+const {Enum, labels} = require('../common/enum')
 const utils = require('../utils')
 const imgPrefixs = Object.keys(Enum.ImgEnum)
 const domain = config.qiUpload.Domain
@@ -26,7 +26,8 @@ const returnBody = `
     "exif": $(exif),
     "mimeType": $(mimeType),
     "ext": $(ext),
-    "uuid": $(uuid)
+    "uuid": $(uuid),
+    "space": $(x:space)
 }
 `
 const qiniuOption = {
@@ -52,8 +53,8 @@ const bucketManager = new qiniu.rs.BucketManager(mac, qiniu_config)
 const token = [
     // check('ext').isAlpha,
     // check('md5', '账号不可为空且3-6位').isHash('md5').withMessage('请提交文件md5'),
-    check('prefix').isInt(),
-    utils.validationResult,
+    // check('prefix').isInt(),
+    // utils.validationResult,
     async function (req, res) {
         res.header('Cache-Control', 'max-age=0, private, must-revalidate')
         res.header('Pragma', 'no-cache')
@@ -132,7 +133,7 @@ const syncListPrefix = function (options) {
 }
 
 const list = [
-    check('prefix').isInt(),
+    // check('prefix').isInt(),
     utils.validationResult,
     async function (req, res) {
         let {prefix} = req.query
@@ -191,18 +192,22 @@ const callback = [
         //     "uuid": "c1cba196-4533-46ff-98fb-bb1f15849b8d"
         // }
 
-        let {key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid} = req.body
+        let {key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid, space} = req.body
         let color = imageAve.RGB.replace('0x', '#')
         let {height, width} = info
         let url = domain + key
+
+        // space = space || Enum.ImgEnum.ALL
+        if (!_.hasIn(labels.img, space)) {
+             space = Enum.ImgEnum.ALL
+        }
         let values = {
-            key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url
+            key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url, space
         }
         try {
             values = await resourceDao.create(values)
             return res.status(200).json(Result.success(values))
         } catch (e) {
-            console.log(e.name, e.name === 'SequelizeUniqueConstraintError')
             if (e.name === 'SequelizeUniqueConstraintError') { // 重复了，返回实例
                 let result = await resourceDao.findOne({where: {hash}})
                 return res.status(200).json(Result.success(result))
