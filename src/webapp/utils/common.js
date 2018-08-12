@@ -88,6 +88,35 @@ export function transformMetas (metas = []) {
     return obj
 }
 
+const x = '0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM'
+
+export function randomChar (l = 6) {
+    let tmp = ''
+    for (let i = 0; i < l; i++) {
+        tmp += x.charAt(Math.ceil(Math.random() * 100000000) % x.length)
+    }
+    return tmp
+}
+
+export function formatFileSize (fileSize) {
+    let temp
+    if (fileSize < 1024) {
+        return fileSize + 'B'
+    } else if (fileSize < (1024 * 1024)) {
+        temp = fileSize / 1024
+        temp = temp.toFixed(0)
+        return temp + 'KB'
+    } else if (fileSize < (1024 * 1024 * 1024)) {
+        temp = fileSize / (1024 * 1024)
+        temp = temp.toFixed(1)
+        return temp + 'MB'
+    } else {
+        temp = fileSize / (1024 * 1024 * 1024)
+        temp = temp.toFixed(2)
+        return temp + 'GB'
+    }
+}
+
 export const POST_WRITER_STATUS = {
     // normal: '',
     // save: '已保存',

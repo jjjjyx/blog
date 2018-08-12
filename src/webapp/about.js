@@ -15,7 +15,7 @@ function appInit () {
     const app = new Vue({
         el: '#app',
         data: {
-            value1: 0,
+            value1: 0
         },
         methods: {
         }

@@ -1,0 +1,32 @@
+
+.medium__warp {
+    padding: 0;
+}
+
+.cm-container--flex__left {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+}
+.medium__img-warp {
+    height: 100%;
+    border-top: 1px solid $border-color;
+}
+.medium__img-opt {
+    padding: 1rem;
+    flex-shrink: 0;
+    .ivu-form-item {
+        margin-bottom: 0;
+    }
+}
+
+.medium__right {
+    padding: 0;
+    width: 300px;
+    border-left: 1px solid $border-color;
+
+    .ivu-card-head {
+        padding: 1rem;
+        line-height: 32px;
+    }
+}

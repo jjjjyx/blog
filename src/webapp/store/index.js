@@ -17,6 +17,7 @@ const state = {
 }
 const getters = {
     postStatusDict: state => state.dict.postStatus,
+    imgSpaces: state => state.dict.img,
     defaultCategoryValue: state => _.toNumber(state.siteMap['defaultCategoryId'].value)
 }
 const debug = process.env.NODE_ENV !== 'production'

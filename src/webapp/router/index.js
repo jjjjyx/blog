@@ -4,6 +4,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import iView from 'iview'
 import Index from '@/components/index.vue'
+import MediaManagement from '@/components/media-management.vue'
 import postManagement from '@/components/post/post-management'
 import postWriter from '@/components/post/post-writer'
 import postCategory from '@/components/post/post-category.vue'
@@ -43,6 +44,11 @@ const routes = [
         path: '/',
         name: 'index',
         component: Index
+    },
+    {
+        path: '/media',
+        name: 'media',
+        component: MediaManagement
     },
     {
         path: '/post/management',

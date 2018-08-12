@@ -174,7 +174,7 @@ export default {
                                 {title: '回收站', name: 'post_trash', icon: 'ios-trash'}
                             ]
                         },
-                        {title: '媒体管理', name: '', icon: 'camera'},
+                        {title: '媒体管理', name: 'media', icon: 'camera'},
                         {title: '留言管理', name: '', icon: 'ios-chatbubble-outline'}
                     ]
                 },

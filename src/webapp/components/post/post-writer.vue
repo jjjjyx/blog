@@ -1,5 +1,5 @@
 <template>
-    <div class="post-writer-content">
+    <div class="post-writer-content cm-container">
         <div class="post-body-content" ref="postBody">
             <!--<Alert banner type="warning">Notice: notification contents...</Alert>-->
             <div class="post-title-wrap">
@@ -237,9 +237,9 @@ export default {
                     // 3 = post/img/
                     let tokenParam = {md5, prefix: 3}
                     let result = await api.nget('/api/img/token', tokenParam)
-                    let {token, domain, key} = result
+                    let {token, domain} = result
                     // key = Base64.encode(key)
-                    let url = `http://up-z2.qiniu.com/putb64/${file.size}/key/${key}`
+                    let url = `http://up-z2.qiniu.com/putb64/-1`
 
                     ajax({
                         headers: {

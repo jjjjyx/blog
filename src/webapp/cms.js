@@ -10,9 +10,11 @@ import 'iview/dist/styles/iview.css'
 import './assets/cms-main.scss'
 import api from '@/utils/api'
 import store from './store'
+import upload from './components/upload'
 
 Vue.use(iView)
 Vue.use(Icon)
+Vue.use(upload)
 Vue.config.productionTip = false
 
 function appInit () {
