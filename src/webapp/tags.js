@@ -1,9 +1,6 @@
 'use strict'
 
-import 'normalize.css'
-import 'iview/dist/styles/iview.css'
 import './assets/tags.scss'
-import 'animate.css'
 import Icon from './components/icon'
 import {addClass, removeClass} from './utils/dom'
 /* eslint-disable no-unused-vars,no-undef  */
