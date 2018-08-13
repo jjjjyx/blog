@@ -2,7 +2,7 @@ import _ from 'lodash'
 import {on, off} from '@/utils/dom'
 import {getMetaKeyCode} from '@/utils/common'
 import api from '@/utils/api'
-import selectInfo from './modal/default-right'
+import selectInfo from './post/modal/default-right'
 export default {
     data () {
         return {

@@ -2,12 +2,12 @@
 <div class="cm-container cm-container--flex medium__warp">
     <div class="cm-container--flex__left">
         <!--<div class="medium__img-opt">-->
-        <Form ref="formInline" :model="formInline" :rules="ruleInline" inline class="medium__img-opt">
+        <Form ref="formItem" :model="formItem" :rules="ruleInline" inline class="medium__img-opt">
             <div class="ivu-form-item">
                 <label class="ivu-form-item-label">目录：</label>
             </div>
             <form-item prop="space">
-                <Select v-model="formInline.space" style="width:200px" placeholder="选择图片空间">
+                <Select v-model="formItem.space" style="width:200px" placeholder="选择图片空间">
                     <Option v-for="(v, k) in imgSpaces" :value="k" :key="k">{{ v }}</Option>
                 </Select>
             </form-item>
@@ -20,10 +20,10 @@
                 <label class="ivu-form-item-label">hash：</label>
             </div>
             <form-item prop="hash">
-                <Input v-model="formInline.hash" placeholder="hash"/>
+                <Input v-model="formItem.hash" placeholder="hash"/>
             </form-item>
             <FormItem>
-                <Button type="primary" @click="handleSubmit('formInline')">搜索</Button>
+                <Button type="primary" @click="handleSubmit('formItem')">搜索</Button>
             </FormItem>
             <FormItem class="float-right">
                 <Button type="primary" @click="handleUpload">上传新图片</Button>
@@ -31,7 +31,9 @@
         </Form>
         <!--</div>-->
         <div class="medium__img-warp">
-            {{imgSpaces}}
+            <pre>
+                {{data}}
+            </pre>
         </div>
     </div>
     <div class="cm-container--flex__modal medium__right">
@@ -47,27 +49,39 @@
 </template>
 
 <script>
-
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions, mapState} from 'vuex'
+import crud from './crud'
 import api from '@/utils/api'
 // <!--mapState mapActions-->
 export default {
+    mixins: [crud],
     name: 'media-management',
     data () {
         return {
-            formInline: {
+            formItem: {
                 space: 'all',
                 hash: ''
             },
-            ruleInline: {}
+            ruleInline: {},
+            idKey: 'hash',
+            active: 'img',
+            page: 1
         }
     },
     computed: {
         ...mapGetters({
             imgSpaces: 'imgSpaces'
+        }),
+        ...mapState({
+            data: state => state.data.imgList
         })
     },
     methods: {
+        ...mapActions({'_fetch': 'fetchMedia'}),
+        async fetch () {
+            await this._fetch(this.page)
+            this.page++
+        },
         handleSubmit () {},
         handleUpload: function (name = 'file') {
             // upload.openSelectFile(name)
@@ -92,11 +106,11 @@ export default {
             }
             let postFiles = Array.prototype.slice.call(files)
             // this.uploadFiles(files);
-            let data = {'x:space': this.formInline.space}
+            let data = {'x:space': this.formItem.space}
             let token = await api.nget('/api/img/token')
 
             this.$uploadFiles(postFiles, {
-                space: this.formInline.space,
+                space: this.formItem.space,
                 token,
                 data,
                 onSuccess: (res) => {

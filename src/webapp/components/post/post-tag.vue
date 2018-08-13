@@ -58,7 +58,7 @@ import Vue from 'vue'
 import CategoryName from './col/category-name'
 import {mapState, mapActions, mapGetters} from 'vuex'
 import {dateFormat} from '../../utils/common'
-import crud from './crud'
+import crud from '../crud'
 import addTermTag from './modal/add-term-category'
 import editTermTag from './modal/edit-term-category'
 Vue.component('category-name', CategoryName)

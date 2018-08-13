@@ -40,7 +40,7 @@ import {mavonEditor} from 'mavon-editor'
 import {mapState, mapActions, mapGetters} from 'vuex'
 
 import api from '@/utils/api'
-import crud from './crud'
+import crud from '../crud'
 
 export default {
     name: 'post-trash',

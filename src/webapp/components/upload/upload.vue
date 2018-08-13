@@ -83,7 +83,7 @@ const renderFileName = function (h, param) {
                     this.$emit('on-click-' + fileType, row, e)
                 }
             }
-        }, row.name && row.name !=='null' ? row.name :  '剪切板') // 没有name 是剪切板
+        }, row.name && row.name !== 'null' ? row.name : '剪切板') // 没有name 是剪切板
     }
     return h('div', [
         icon, name
@@ -207,7 +207,7 @@ const FileStatusText = {
     [FileStatus.ERROR]: '错误',
     [FileStatus.FAIL]: '上传失败',
     [FileStatus.QUEUE]: '等待中',
-    [FileStatus.SUCCESS]: '完成',
+    [FileStatus.SUCCESS]: '完成'
 }
 
 export default {

@@ -59,7 +59,7 @@
 import Vue from 'vue'
 import {mapState, mapActions, mapGetters} from 'vuex'
 import {dateFormat} from '../../utils/common'
-import crud from './crud'
+import crud from '../crud'
 
 import CategoryName from './col/category-name'
 import addTermCategory from './modal/add-term-category'

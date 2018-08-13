@@ -70,7 +70,7 @@ import {mapState, mapActions, mapGetters} from 'vuex'
 import {dateFormat} from '@/utils/common'
 import api from '@/utils/api'
 import PostTitle from './col/post-title'
-import crud from './crud'
+import crud from '../crud'
 Vue.component('post-title', PostTitle)
 const renderTitle = function (h, {row}) {
     return h('post-title', {

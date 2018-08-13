@@ -132,30 +132,53 @@ const syncListPrefix = function (options) {
     })
 }
 
+// const list = [
+//     // check('prefix').isInt(),
+//     utils.validationResult,
+//     async function (req, res) {
+//         let {prefix} = req.query
+//         if (prefix > imgPrefixs.length) {
+//             prefix = 0
+//         }
+//
+//         let prefixStr = Enum.ImgEnum[imgPrefixs[prefix]]
+//         let marker = req.query.marker || ''
+//
+//         var options = {
+//             limit: 10,
+//             prefix: prefixStr,
+//             marker
+//         }
+//         try {
+//             let result = await syncListPrefix(options)
+//             return res.status(200).json(Result.success(result))
+//         } catch (e) {
+//             return res.status(200).json(Result.info('获取空间列表失败'))
+//         }
+//
+//     }
+// ]
+
+const size = 15
+
 const list = [
-    // check('prefix').isInt(),
-    utils.validationResult,
+    check('page').isInt(),
     async function (req, res) {
-        let {prefix} = req.query
-        if (prefix > imgPrefixs.length) {
-            prefix = 0
-        }
-
-        let prefixStr = Enum.ImgEnum[imgPrefixs[prefix]]
-        let marker = req.query.marker || ''
-
-        var options = {
-            limit: 10,
-            prefix: prefixStr,
-            marker
-        }
+        let {page} = req.query
+        console.log(req.query)
+        page = page || 1
         try {
-            let result = await syncListPrefix(options)
+            let result = await resourceDao.findAll({
+                limit: size,
+                offset: (page - 1) * size,
+                order: ['hash']
+            })
             return res.status(200).json(Result.success(result))
         } catch (e) {
-            return res.status(200).json(Result.info('获取空间列表失败'))
+            console.log(e)
+            debug('getMediaAll error by :', e.message)
+            return res.status(200).json(Result.error())
         }
-
     }
 ]
 
