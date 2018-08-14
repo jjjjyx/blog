@@ -1,6 +1,7 @@
 'use strict'
 
 const debug = require('debug')('app:routers')
+const log = require('log4js').getLogger('routers')
 const expressJwt = require('express-jwt')
 const unless = require('express-unless')
 // const _ = require("lodash");
@@ -17,18 +18,14 @@ const unless_path = {
     path: ['/api/user/login', '/api/img/callback'],
     method: 'OPTIONS'
 }
-const unless_method = {
-    method: 'GET'
-}
+// debug('创建身份验证中间件，并设置 req.user')
+log.debug('创建身份验证中间件，并设置 req.user')
 const jwtCheck = expressJwt({
     secret: config.secret,
     getToken: function fromHeaderOrQuerystring (req) {
         if (req.headers.authorization &&
             req.headers.authorization.split(' ')[0] === 'Bearer') {
             return req.headers.authorization.split(' ')[1]
-            // } else if (req.query && req.query.token) {
-            //     return req.query.token;
-
         }
         return null
     }
@@ -36,19 +33,6 @@ const jwtCheck = expressJwt({
 jwtCheck.unless = unless
 
 module.exports = function (app) {
-    // app.get("*", (req, res, next) =>{
-    //     const filename = path.join(DIST_DIR, 'index.html');
-    //
-    //     complier.outputFileSystem.readFile(filename, (err, result) =>{
-    //         if(err){
-    //             return(next(err))
-    //         }
-    //         res.set('content-type', 'text/html')
-    //         res.send(result)
-    //         res.end()
-    //     })
-    // })
-
     app.use('/', require('./home.js'))
     app.use('/category', require('./category.js'))
     app.use('/tags', require('./tags.js'))

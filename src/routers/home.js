@@ -2,6 +2,7 @@
 
 const express = require('express')
 const debug = require('debug')('app:routers:home')
+const log = require('log4js').getLogger('routers:home')
 const _ = require('lodash')
 const router = express.Router()
 const {Enum} = require('../common/enum')
@@ -85,16 +86,16 @@ const index = [
                     {model: termDao, attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id']}
                 ]
             })
+            debug('获取首页文章，共计 %d 篇', posts.length)
+            log.debug('获取首页文章，共计 %d 篇, %s', posts.length, posts.map(post => '#'+post.id))
             // try {
             // 同步块中产生的异常 无法被错误拦截器捕获啊
             let articleList = posts.map(generatePostHtml).join('')
             res.render('home', {articleList});
         } catch (e) {
-            console.log(e)
             next(e)
         }
         // 文章列表的展示
-
     }
 ]
 router.route('/').get(index);

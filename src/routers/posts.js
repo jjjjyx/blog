@@ -5,6 +5,7 @@ const express = require('express')
 const _ = require('lodash')
 const router = express.Router()
 const debug = require('debug')('app:routers:api.posts')
+const log = require('log4js').getLogger('api.posts')
 const {body, param} = require('express-validator/check')
 const {sanitizeBody, sanitizeParam} = require('express-validator/filter')
 const utils = require('../utils')
@@ -16,6 +17,25 @@ const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
 
 const trashSaveDay = 30
+// 文章别名 必须提交 但是不满足格式不会报错而是启用id
+const postNameReg = /^[_a-zA-Z0-9-]{1,60}$/
+// 允许提交的文章状态
+const allowPostStatus = [
+    Enum.PostStatusEnum.PENDING,
+    // Enum.PostStatusEnum.PRIVATE, // 禁用私密
+    Enum.PostStatusEnum.PUBLISH,
+    Enum.PostStatusEnum.DRAFT
+]
+// 允许提交的评论状态
+const allowStatus = [
+    Enum.StatusEnum.OPEN,
+    Enum.StatusEnum.CLOSE
+]
+const TagsLength = 16
+log.debug('文章最大标签数', TagsLength)
+log.debug('allowPostStatus = %s', JSON.stringify(allowPostStatus))
+log.debug('postNameReg = %s', postNameReg)
+log.debug('回收站保存文章 %s天', trashSaveDay)
 // id
 const sanitizeId = sanitizeBody('id').toInt()
 const checkId = body('id').exists().isInt().withMessage('请提交正确的文章ID')
@@ -46,8 +66,7 @@ const checkContent = body('post_content')
     .isString()
     .isLength({min: 0})
     .withMessage('请提交文章内容')
-// 文章别名 必须提交 但是不满足格式不会报错而是启用id
-const postNameReg = /^[_a-zA-Z0-9-]{1,60}$/
+
 const sanitizePostName = sanitizeBody('post_name').customSanitizer((value) => {
     debug(`sanitizePostName v = ${value}`)
     return postNameReg.test(value) ? value : undefined
@@ -66,13 +85,7 @@ const checkExcerpt = body('post_excerpt')
     .isLength({min: 0})
     .withMessage('请提交文章摘录')
 
-// 允许提交的文章状态
-const allowPostStatus = [
-    Enum.PostStatusEnum.PENDING,
-    // Enum.PostStatusEnum.PRIVATE, // 禁用私密
-    Enum.PostStatusEnum.PUBLISH,
-    Enum.PostStatusEnum.DRAFT
-]
+
 // 发布的文章状态
 const sanitizeReleasePostStatus = sanitizeBody('post_status')
     .customSanitizer((value) => {
@@ -97,7 +110,9 @@ const checkAuthor = body('post_author')
             return userDao.findById(value, {attributes: {exclude: ['user_pass']}})
                 .then((u) => {
                     // eslint-disable-next-line prefer-promise-reject-errors
-                    if (u === null) return Promise.reject('用户不存在')
+                    if (u === null) {
+                        return Promise.reject('用户不存在')
+                    }
                     req.postAuthor = u
                 })
         }
@@ -105,11 +120,7 @@ const checkAuthor = body('post_author')
 // const sanitizeSticky
 const sanitizePostDate = sanitizeBody('post_date').toDate()
 const sanitizeSticky = sanitizeBody('sticky').toBoolean()
-// 允许提交的文章状态
-const allowStatus = [
-    Enum.StatusEnum.OPEN,
-    Enum.StatusEnum.CLOSE
-]
+
 const sanitizeCommentStatus = sanitizeBody('comment_status')
     .customSanitizer((value) => {
         debug(`sanitizeCommentStatus v = ${value}`)
@@ -120,24 +131,25 @@ const sanitizeCommentStatus = sanitizeBody('comment_status')
         }
     })
 
-const TagsLength = 16
+
 const tagToString = t => `${t.name}#${t.id}`
+
 const createTags = async function (req, res, post) {
+
     req.sanitizeBody('new_tag').toArray()
     req.sanitizeBody('tags_id').toArray()
     // req.sanitizeBody('category_id').toInt()
     try {
         let {new_tag, tags_id, category_id} = req.body
+        log.debug('createTags before post = %d new_tag = %s, tags_id = %s, category_id = %s', post.id, new_tag, tags_id, category_id)
+
         new_tag = new_tag || []
         tags_id = tags_id || []
 
         // 验证分类是否存在
-        let category = await termDao.findById(
-            category_id || SITE.defaultCategoryId, {attributes: ['id', 'name']})
+        let category = await termDao.findById(category_id || SITE.defaultCategoryId, {attributes: ['id', 'name']})
         if (category === null) {
-            debug(
-                `createTags 提交了未定义的分类id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
-            category_id = SITE.defaultCategoryId * 1
+            debug(`createTags 提交了未定义的分类id = ${category_id}， 自动修正为默认分类 ${SITE.defaultCategoryId}`)
             category = SITE.defaultTerm
         }
 
@@ -145,7 +157,9 @@ const createTags = async function (req, res, post) {
         // /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
         // 包含有错误的tag 驳回请求 因为这个名字会在前端验证，能提交错误的不是什么好请求
         let testReg = new_tag.every((tag) => utils.termReg.test(tag))
+        debug('createTags testReg = %s', testReg)
         if (!testReg) {
+            log.debug('createTags fail: 错误的标签名称')
             return Result.info('错误的标签名称')
         }
 
@@ -157,10 +171,11 @@ const createTags = async function (req, res, post) {
                 id: {[Op.in]: tags_id}
             }
         })
-        debug(`createTags 提交了标签ID个数 = ${tags_id.length} 个，其中 [${tags.map(
-            tagToString)}] 有效`)
+        debug('createTags 提交了标签ID个数 = %d 个，其中 [%s] 有效', tags_id.length, tags.map(tagToString))
+        debug('createTags 文章标签总数 = %d', tags.length + new_tag.length)
         // 判断tags 的个数 个数的判断在创建标签之前
         if (TagsLength <= tags.length + new_tag.length) {
+            log.debug('createTags fail: 标签太多啦！, maxTags = %d , currTags = %s', TagsLength, tags.length + new_tag.length)
             return Result.info('标签太多啦！')
         }
 
@@ -177,8 +192,7 @@ const createTags = async function (req, res, post) {
         tags = tags.concat(newTags)
 
         let _newTags = newTags.map((item) => item.name)
-        debug(`createTags 提交了标签名称：[${new_tag}]，其中[${newTags.map(
-            tagToString)}]是已存在的`)
+        debug(`createTags 提交了标签名称：[%s]，其中[%s]是已存在的`, new_tag, newTags.map(tagToString))
 
         let new_tagsValue = _.difference(new_tag, _newTags).map((name) => ({
             name,
@@ -190,24 +204,14 @@ const createTags = async function (req, res, post) {
         // 创建
         // bulkCreate
         if (new_tagsValue.length) {
-            debug(`createTags 创建其余未定义的标签：[${new_tagsValue}]`)
+            debug('createTags 创建其余未定义的标签：[%s]', new_tagsValue)
             tags = tags.concat(await termDao.bulkCreate(new_tagsValue))
         }
         tags.push(category)
-        debug(`createTags 文章${post.id} 更新关系为[${tags.map(tagToString)}]`)
-
-        // post.getTerms().then((termRelationships)=>{
-        //     let thatIds = termRelationships.map(tagToString)
-        //     debug(`createTags 文章${post.id} 原先对应了 ${termRelationships.length} 个关系 [${thatIds}]`)
-        //     tags = _.unionBy(termRelationships, tags, 'id')
-        //
-        //     return post.setTerms(tags)
-        // }).catch((e)=>{
-        //     console.log(e)
-        // })
+        log.debug('createTags 文章#%d 更新标签,与分类为[%s]', post.id, tags.map(tagToString))
         return await post.setTerms(tags)
     } catch (e) {
-        debug('createTags error by:', e.message)
+        log.error('createTags error by:', e)
         return Result.error()
     }
 }
@@ -227,6 +231,7 @@ const _save_update = function (post, {post_title, post_content, post_excerpt}) {
     // post.post_excerpt = post_excerpt
     // console.log(post)
     // 使用save 方式 如果仅保存了标签那么修改的时间戳不会被更新
+    log.info('更新文章，id = %d', post.id)
     return postDao.update(
         {post_title, post_content, post_excerpt, updatedAt: new Date()}, {
             where: {
@@ -242,6 +247,7 @@ const _save_update = function (post, {post_title, post_content, post_excerpt}) {
  * @private
  */
 let _save_postMeta = function (id, key, value) {
+    log.info('创建文章Meta，id = %d, key = %s, value = %s', id, key, value)
     return postMetaDao.findOrCreate({
         where: {
             post_id: id,
@@ -252,6 +258,7 @@ let _save_postMeta = function (id, key, value) {
         }
     }).spread((meta, created) => {
         if (!created) {
+            log.info('创建文章Meta，id = %d, meta key = %s 已存在, 更新', id, key)
             meta.meta_value = value
             return meta.save()
         }
@@ -275,36 +282,34 @@ const save = [
     utils.validationResult,
     async function (req, res) {
         let {post_title, id, post_content, post_excerpt} = req.body
+        log.debug('before 保存文章，post_title = %s, id = %s', post_title, id)
         try {
             // 保存的时候 如果文章当前状态是 auto_draft 则更新状态为草稿
             let post = await postDao.findById(id)
             if (post === null) {
+                log.debug('保存文章 失败 未提交正确的文章id')
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
             }
 
             // 提交id 只会有3种状态 auto-draft publish draft
-
+            debug('保存文章，当前文章#%d post_status = %s', post.id, post.post_status)
             switch (post.post_status) {
             case Enum.PostStatusEnum.AUTO_DRAFT:
                 debug(`修改文章 = ${id} 状态为：${Enum.PostStatusEnum.DRAFT}`)
                 post.post_status = Enum.PostStatusEnum.DRAFT
                 post.post_name = id
-                debug(
-                    `修改文章 = ${id} 分类为默认分类：${SITE.defaultTerm.name}#${SITE.defaultTerm.id}`)
+                debug(`修改文章 = ${id} 分类为默认分类：${SITE.defaultTerm.name}#${SITE.defaultTerm.id}`)
                 await post.setTerms([SITE.defaultTerm])
             // eslint-disable-next-line no-fallthrough
             case Enum.PostStatusEnum.DRAFT:
-                debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
                 // 保存文章的标签信息
-                let createTagsResult = await createTags(req, res, post,
-                    false)
+                let createTagsResult = await createTags(req, res, post, false)
                 if (createTagsResult instanceof Result) {
                     return res.status(200).json(createTagsResult)
                 }
                 // let values = {post_title, post_content, post_excerpt, post_status: post.post_status}
-                debug(`文章 = ${id} 更新草稿内容！`)
-                return res.status(200)
-                    .json(Result.success(await _save_update(post, req.body)))
+                debug('文章 = %d 更新草稿内容！', post.id)
+                return res.status(200).json(Result.success(await _save_update(post, req.body)))
             case Enum.PostStatusEnum.PRIVATE:
                 // 私密的文章需要验证是否是本人创建的
                 // 禁用私密功能
@@ -315,7 +320,6 @@ const save = [
             // eslint-disable-next-line no-fallthrough
             case Enum.PostStatusEnum.PUBLISH:
             case Enum.PostStatusEnum.PENDING:
-                debug(`保存的文章 = ${id} 当前状态为：${post.post_status}`)
                 // 如果是发布状态
                 // 则去获取发布状态文章的自动草稿
                 // 如果获取为空，则创建一个: ${id}--autosave-v1
@@ -346,16 +350,20 @@ const save = [
                 // 保存的是当前提交的版本，所以不是从就文章中拷贝
                 // 保存文章的标签信息到 meta 中 不创建 term
                 // 保存文章的分类信息
+
                 req.sanitizeBody('new_tag').toArray()
                 req.sanitizeBody('tags_id').toArray()
                 let {new_tag, tags_id, category_id} = req.body
+                log.debug('保存文章#%d-AutoSave#%d 标签，分类信息到meta new_tag = %s, tags_id = %s, category_id = %s', id, autoSavePost.id, new_tag, tags_id, category_id)
                 new_tag = new_tag || []
                 tags_id = tags_id || []
 
-                let testReg = new_tag.every(
-                    (tag) => utils.termReg.test(tag))
+
+                let testReg = new_tag.every((tag) => utils.termReg.test(tag))
+                debug('保存文章 testReg = %s', testReg)
                 if (!testReg) {
-                    return res.status(200).json(Result.info('错误的标签名称'))
+                    log.debug('save post fail: 保存文章成功，保存标签信息失败：错误的标签名称')
+                    return res.status(200).json(Result.info('保存文章成功，保存标签信息失败：错误的标签名称'))
                 }
 
                 // tags_id  转换成名称 meta 中不保存id
@@ -370,32 +378,29 @@ const save = [
                 // 判断tags 的个数 个数的判断在创建标签之前
                 new_tag = new_tag.concat(tags)
                 if (TagsLength <= new_tag.length) {
-                    return res.status(200).json(Result.info('标签太多啦!'))
+                    log.debug('save post fail: 标签太多啦！, maxTags = %d , currTags = %s', TagsLength, new_tag.length)
+                    return res.status(200).json(Result.info('保存文章成功，保存标签信息失败：标签太多啦!'))
                 }
 
                 let category = await termDao.findById(category_id)
                 if (category === null) {
-                    debug(
-                        `save 自动存档保存了一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
+                    log.debug(`save 自动存档保存分类时收到一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
                     category = SITE.defaultTerm
                 }
 
                 Promise.all([
-                    _save_postMeta(autoSavePost.id, 'tags',
-                        JSON.stringify(new_tag)),
-                    _save_postMeta(autoSavePost.id, 'category',
-                        JSON.stringify(category.id))
+                    _save_postMeta(autoSavePost.id, 'tags', JSON.stringify(new_tag)),
+                    _save_postMeta(autoSavePost.id, 'category', JSON.stringify(category.id))
                 ]).then(() => {
-                    debug(
-                        `save 文章存档 = [${autoSavePost.id}#${autoSavePost.post_name}]，保存分类标签记录!`)
+                    debug(`save 文章存档 = [${autoSavePost.id}#${autoSavePost.post_name}]，保存分类标签记录!`)
                 })
                 return res.status(200).json(Result.success(autoSavePost))
             default:
-                return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
+                log.info('保存失败，错误文章状态')
+                return res.status(200).json(Result.info('保存失败，错误文章状态'))
             }
         } catch (e) {
-            console.log(e)
-            debug('save error by:', e.message)
+            log.error('save post error by:', e)
             return res.status(200).json(Result.error())
         }
     }
@@ -418,10 +423,10 @@ const newPost = [
                 post_name: '',
                 guid: ''
             })
-            debug(`创建新的自动草稿，草稿ID = ${result.id}`)
+            log.info('创建新的自动草稿，草稿ID = ', result.id)
             return res.status(200).json(Result.success(result.toJSON()))
         } catch (e) {
-            debug('newPost error by:', e.message)
+            log.error('newPost error by:', e)
             return res.status(200).json(Result.error())
         }
     }
@@ -480,11 +485,12 @@ const release = [
             comment_status,
             postAuthor
         } = req.body
-
+        log.debug('release post id = %d post_title = %', id, post_title)
         try {
             let post = await postDao.findById(id)
             if (post === null) {
-                return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
+                log.info('发布失败，未提交正确的文章id')
+                return res.status(200).json(Result.info('发布失败，未提交正确的文章id'))
             }
             // 只能对自己的文章进行转私密, 加密码 在这里进行判断下
             // 禁用私密功能
@@ -532,8 +538,8 @@ const release = [
             // 检查内容是否修改了，没有修改则不创建版本
             // debug(`是否修改了文章 = ${id}, result = ${result}`)
             let isModify = _.isEqual(newValues, oldValues)
-            // console.log('newValues: =', newValues)
-            // console.log('oldValues: =', oldValues)
+            debug('newValues: =', newValues)
+            debug('oldValues: =', oldValues)
             debug(`是否修改了文章 isModify = ${!isModify}`)
             if (!isModify) {
                 // 创建版本
@@ -549,10 +555,10 @@ const release = [
                     // _save_postMeta(rp.id, 'author_user_name', post_author)
                 })
             }
+            log.info("发布文章成功，post = ", post.id)
             return res.status(200).json(Result.success())
         } catch (e) {
-            console.log(e)
-            debug('release post error by:', e.message)
+            log.error('release post error by:', e)
             return res.status(200).json(Result.error())
         }
     }
@@ -586,11 +592,11 @@ const moverTrash = [
                     // ]
                 }
             })
-            debug(`mover trash ids = [${ids}], 其中${result} 个id 有效, 已成功丢弃至回收站`)
+            log.debug(`mover trash ids = [${ids}], 其中${result} 个id 有效, 已成功丢弃至回收站`)
             // 删除文章
             return res.status(200).json(Result.success(result))
         } catch (e) {
-            debug('mover trash error by:', e.message)
+            log.error('mover trash error by:', e)
             return res.status(200).json(Result.error())
         }
     }
@@ -628,11 +634,10 @@ const del = [
                     ]
                 }
             })
-            debug(`彻底删除文章 ids = [${ids}],并且清除时间{${utils.formatDate(
-                date)}} 之前删除的文章, 共计删除文章: ${result} 篇`)
+            log.info(`彻底删除文章 ids = [${ids}], 并且清除时间{${utils.formatDate(date)}} 之前删除的文章, 共计删除文章: ${result} 篇`)
             return res.status(200).json(Result.success(result))
         } catch (e) {
-            debug('del post error by:', e.message)
+            log.error('del post error by:', e)
             return res.status(200).json(Result.error())
         }
     }
@@ -640,7 +645,6 @@ const del = [
 
 const getAllPost = [
     async function (req, res) {
-        console.log(req.user)
         try {
             let posts = await postDao.findAll({
                 where: {
@@ -680,10 +684,10 @@ const getAllPost = [
                 ]
 
             })
-            debug(`获取全部文章，包含有[发布,草稿],共计：${posts.length} 篇`)
+            log.info(`获取全部文章，包含有[发布,草稿],共计：${posts.length} 篇`)
             return res.status(200).json(Result.success(posts))
         } catch (e) {
-            debug('getTrash error by:', e.message)
+            log.error('getAllPost error by:', e)
             return res.status(200).json(Result.error())
         }
     }
@@ -697,7 +701,7 @@ const getTrash = [
             let date = new Date()
             date.setDate(date.getDate() - trashSaveDay)
             //
-            debug(`获取回收站中内容`)
+            log.info(`获取回收站中内容`)
             let posts = await postDao.findAll({
                 paranoid: false,
                 where: {
@@ -725,7 +729,7 @@ const getTrash = [
             })
             return res.status(200).json(Result.success(posts))
         } catch (e) {
-            debug('getTrash error by:', e.message)
+            log.error('getTrash error by:', e)
             return res.status(200).json(Result.error())
         }
     }
@@ -747,10 +751,10 @@ const revert = [
                     ]
                 }
             })
-            debug(`还原文章 ids = [${ids}], 共计还原文章: ${result} 篇`)
+            log.info(`还原文章 ids = [${ids}], 共计还原文章: ${result} 篇`)
             return res.status(200).json(Result.success(result))
         } catch (e) {
-            debug('del post error by:', e.message)
+            log.error('del post error by:', e)
             return res.status(200).json(Result.error())
         }
     }
@@ -760,9 +764,9 @@ const postInfo = [
     param('id').isInt().exists().withMessage('错误的id'),
     utils.validationResult,
     async function (req, res) {
-        console.log(req.user)
         let {id} = req.params
         try {
+            log.info('获取文章详细， post = %d', id)
             let result = await postDao.findOne({
                 // attributes: {
                 //     exclude: ['']
@@ -794,6 +798,7 @@ const postInfo = [
                 // 调取文章的历史版本
                 // 草稿类型调取不检查
                 // if (result.post_status !== Enum.PostStatusEnum.DRAFT) {
+                log.info('获取文章历史版本， post = %d', id)
                 let revision = await postDao.findAll({
                     attributes: [
                         'id',
@@ -814,12 +819,14 @@ const postInfo = [
                     ],
                     order: [['updatedAt', 'DESC']]
                 })
+                debug('获取文章历史版本， post = %d, 供 %d 个版本', id, revision.length)
                 result.dataValues.revision = revision
                 return res.status(200).json(Result.success(result))
             }
+            log.info('获取文章详细失败: 错误的id')
             return res.status(200).json(Result.info('错误的id'))
         } catch (e) {
-            debug('post getContent error by:', e.message)
+            log.error('post getContent error by:', e)
             return res.status(200).json(Result.error())
         }
     }

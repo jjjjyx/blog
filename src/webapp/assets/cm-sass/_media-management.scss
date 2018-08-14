@@ -3,6 +3,7 @@
     padding: 0;
 }
 
+
 .cm-container--flex__left {
     padding-left: 0;
     padding-right: 0;
@@ -17,6 +18,16 @@
     flex-shrink: 0;
     .ivu-form-item {
         margin-bottom: 0;
+        margin-right: 0;
+    }
+    .ivu-form-item-label {
+        padding-right: 0;
+    }
+    .ivu-poptip-body {
+        padding: 0;
+    }
+    .ivu-color-picker-picker-colors {
+        padding:0 1rem .5rem;
     }
 }
 
@@ -27,6 +38,6 @@
 
     .ivu-card-head {
         padding: 1rem;
-        line-height: 32px;
+        line-height: 34px;
     }
 }

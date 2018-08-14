@@ -1,5 +1,7 @@
 'use strict'
 
+const debug = require('debug')('models:' + process.pid)
+const log = require('log4js').getLogger('models')
 const path = require('path')
 const Sequelize = require('sequelize')
 const env = process.env.NODE_ENV || 'development'
@@ -22,46 +24,17 @@ let models = [
     'postMetaModel.js',
     'termsModel.js',
     'readsModel.js',
-    // 'termRelationshipsModel.js', // 这个是many to many
     'visitorsModel.js',
     'siteModel.js',
     'resourceModel.js'
 ]
 models.forEach(file => {
-    // console.log(file)
     let model = sequelize['import'](path.join(__dirname, file))
     // let name = common.transformStr3(file.substring(0, file.length - 8)) + 'Dao'
-    db[model.name + 'Dao'] = model
+    let daoName = model.name + 'Dao'
+    db[daoName] = model
+    log.debug('import model %s = [%s]', daoName, file)
 })
-
-// fs.readdirSync(__dirname)
-//     .filter(file => {
-//         return (file.indexOf('.') !== 0) && (file !== basename) && (file.slice(-3) === '.js');
-//     })
-//     .forEach();
-
-// Object.keys(db).forEach(modelName => {
-//     if (db[modelName].associate) {
-//         db[modelName].associate(db);
-//     }
-// });
-// const {
-//     commentsDao,
-//     commentMetaDao,
-//     postsDao,
-//     postMetaDao,
-//     readsDao,
-//     siteDao,
-//     termsDao,
-//     termRelationshipsDao,
-//     usersDao,
-//     userMetaDao,
-// } = db
-//
-// postsDao.belongsTo(usersDao)
-// (async function (){
-
-// })
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 

@@ -1,4 +1,5 @@
 const debug = require('debug')('app:main:' + process.pid)
+const log4js = require('log4js')
 const express = require('express')
 const path = require('path')
 const favicon = require('serve-favicon')
@@ -9,6 +10,8 @@ const unless = require('express-unless')
 const expressValidator = require('express-validator')
 const Result = require('./src/common/resultUtils')
 const middlewareOptions = require('./src/common/middlewareOptions')
+const log = log4js.getLogger("app")
+
 global.config = require('./config')
 
 // global.NODE_ENV = process.env.NODE_ENV || 'production';
@@ -24,6 +27,7 @@ app.set('view engine', 'ejs')
 app.set('views', path.resolve(__dirname, './src/views'))
 
 debug('Attaching plugins')
+app.use(log4js.connectLogger(log4js.getLogger("http"), { level: 'auto' }));
 app.use(bodyParser.json({limit: '50mb'})) // for parsing application/json
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true})) // for parsing application/x-www-form-urlencoded
 // 没有使用文件上传的操作
@@ -85,18 +89,22 @@ app.use('/api/', function (err, req, res, next) {
     res.status(err.status || 500)
 
     if (err.name === 'UnauthorizedError') {
+        log.info("用户身份验证失败");
         return res.json(Result.error('invalid token...'))
     } else {
-        return res.json(Result.error())
+        log.error("api 错误:", err);
+        return res.json(Result.error(IS_DEV ? err : {}))
     }
 })
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500)
     if (err.name === 'UnauthorizedError') {
+        log.info("用户身份验证失败");
         return res.send('invalid token...')
     }
     // 如果是 /api/* 的路由的错误
+    log.error("服务器内部错误:", err);
     res.render('error', {
         message: err.message,
         error: IS_DEV ? err : {}

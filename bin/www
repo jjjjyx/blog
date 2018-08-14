@@ -4,42 +4,25 @@
  * Module dependencies.
  */
 // const dataSource = require("../src/models");
-const app = require('../app')
-const debug = require('debug')('app:server')
+const log4js = require('log4js');
+log4js.configure('./log4js.json');
+const log = log4js.getLogger("startup");
 const http = require('http')
 const {sequelize} = require('../src/models')
 
 /**
  * Get port from environment and store in Express.
  */
-
+// 初始化加载options 数据
+const app = require('../app')
 let {appPort: port} = config
 app.set('port', port)
 
-// models.sequelize.sync().then(async ()=>{
-//     debug("Loading Mysql Database");
-//
-//     const siteDao = require('../src/models').site
-//
-//     let siteList = await siteDao.findAll()
-//     let site = {}
-//     siteList.forEach((item)=>{
-//         site[item.key] = item.value
-//     })
-//     // 将全部 全局设置更新到全局变量
-//     global.SITE = site;
-//
-
-//     listen()
-// });
-// 初始化加载options 数据
-const before = require('../src/before-listen.js')
-// base(app).then(listen)
 sequelize.authenticate().then(() => {
-    return before(app)
+    log.info('连接数据库成功！')
+    return require('../src/before-listen.js')(app)
 }).then(listen).catch((e) => {
-    console.log(e)
-    debug('获取初始化信息失败， 请检查数据库链接')
+    log.error('获取初始化信息失败， 请检查数据库链接', e)
     process.exit(1)
 })
 
@@ -61,11 +44,11 @@ function listen () {
         // handle specific listen errors with friendly messages
         switch (error.code) {
         case 'EACCES':
-            console.error(bind + ' requires elevated privileges')
+            log.error(bind + ' requires elevated privileges', error)
             process.exit(1)
             break
         case 'EADDRINUSE':
-            console.error(bind + ' is already in use')
+            log.error(bind + ' is already in use', error)
             process.exit(1)
             break
         default:
@@ -79,13 +62,11 @@ function listen () {
 
     function onListening () {
         let addr = server.address()
-        let host = addr.address
+        // let host = addr.address
         let port = addr.port
-        var bind = typeof addr === 'string'
-            ? 'pipe ' + addr
-            : 'port ' + addr.port
-        debug('Listening on ' + bind)
-        console.log(`app (${IS_DEV ? 'dev' : 'production'}) listening at  http://localhost:${port}`)
+        // let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port
+        // debug('Listening on ' + bind)
+        log.info(`app (${IS_DEV ? 'dev' : 'production'}) listening at http://localhost:${port}`)
     }
 
     /**

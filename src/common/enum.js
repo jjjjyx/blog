@@ -38,7 +38,8 @@ const ImgEnum = {
     'ALL': 'all',
     'PUBLIC': 'public',
     'COVER': 'cover',
-    'POST': 'post'
+    'POST': 'post',
+    'AVATAR': 'avatar'
 }
 
 module.exports.labels = {
@@ -66,7 +67,8 @@ module.exports.labels = {
         'all': '所有',
         'public': '公共区域',
         'cover': '封面',
-        'post': '文章插图'
+        'post': '文章插图',
+        'avatar': '头像',
     }
 }
 
