@@ -10,8 +10,22 @@ const shortid = require('shortid')
 const _ = require('lodash')
 const {validationResult} = require('express-validator/check')
 const Result = require('./common/resultUtils')
-const ExpressRedisCache = require('express-redis-cache');
+const ExpressRedisCache = require('express-redis-cache')
+const marked = require('marked')
+const renderer = new marked.Renderer()
 
+const textChar = (text) => text || ' '
+const emptyChar = () => ''
+for (let i in renderer) {
+    renderer[i] = textChar
+}
+renderer.list = emptyChar
+renderer.hr = emptyChar
+renderer.tablerow = emptyChar
+renderer.table = emptyChar
+renderer.code = (code, lang, escaped) => '[code] '
+renderer.image = (href, title, text) => '[图片] '
+renderer.link = (href, title, text) => '[link] '
 
 const TOKEN_EXPIRATION = 60 // 单位秒
 // 5天
@@ -63,3 +77,4 @@ module.exports.formatDate = function (time, pattern = 'YYYY-M-D hh:mm') {
 
 module.exports.create = create
 module.exports.cache = cache
+module.exports.renderer = renderer

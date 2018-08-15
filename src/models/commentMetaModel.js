@@ -34,6 +34,5 @@ module.exports = function (sequelize, DataTypes) {
     // const pk = {foreignKey: 'id', targetKey: 'id'}
     commentModel.hasMany(commentMetaModel, {as: 'metas', foreignKey: 'id', sourceKey: 'id'})
     // commentMetaModel.belongsTo(commentModel, pk)
-
     return commentMetaModel
 };

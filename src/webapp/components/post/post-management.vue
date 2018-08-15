@@ -2,31 +2,31 @@
     <div class="cm-container">
         <row>
             <i-col span="18">
-                <i-Form :model="filterForm" :label-width="50" inline class="filter-form"
+                <Form :model="filterForm" :label-width="50" inline class="filter-form"
                         @submit.native.prevent="search">
-                    <Form-Item label="关键字">
+                    <FormItem label="关键字">
                         <Input v-model="filterForm.key" placeholder="标题/分类/标签/id" clearable/>
-                    </Form-Item>
-                    <Form-Item label="类别">
-                        <i-Select v-model="filterForm.term">
-                            <i-Option value="any">不限</i-Option>
+                    </FormItem>
+                    <FormItem label="类别">
+                        <Select v-model="filterForm.term">
+                            <Option value="any">不限</Option>
                             <!--<i-Option value="male">男</i-Option>-->
                             <!--<i-Option value="girl">女</i-Option>-->
-                        </i-Select>
-                    </Form-Item>
-                    <Form-Item label="状态">
-                        <i-Select v-model="filterForm.status">
+                        </Select>
+                    </FormItem>
+                    <FormItem label="状态">
+                        <Select v-model="filterForm.status">
                             <i-Option value="all">所有</i-Option>
                             <!--<i-Option value="online">在职</i-Option>-->
                             <!--<i-Option value="offline">离职</i-Option>-->
-                        </i-Select>
-                    </Form-Item>
-                    <FormItem>
-                        <i-Button type="primary" shape="circle" icon="ios-search" @click="search"></i-Button>
+                        </Select>
                     </FormItem>
-                </i-Form>
-                <i-Button type="ghost" icon="document" @click="$router.push({name: 'post_writer', query: {active: 'new'}})">新建文章</i-Button>
-                <i-Button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">移至回收站</i-Button>
+                    <FormItem>
+                        <Button type="primary" shape="circle" icon="ios-search" @click="search"></Button>
+                    </FormItem>
+                </Form>
+                <Button type="ghost" icon="document" @click="$router.push({name: 'post_writer', query: {active: 'new'}})">新建文章</Button>
+                <Button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">移至回收站</Button>
 
             </i-col>
             <i-col span="6">
@@ -36,10 +36,10 @@
                     <!--<i-Button type="text" icon="edit" :disabled="userMultipleSelection.length!=1"-->
                     <!--@click="active='edit',currentUser = userMultipleSelection[0],openEditUserInfo()"></i-Button>-->
                     <Tooltip content="刷新">
-                        <i-Button type="text" icon="loop" @click="fetchData(true)"></i-Button>
+                        <Button type="text" icon="loop" @click="fetchData(true)"></Button>
                     </Tooltip>
                     <Dropdown>
-                        <i-Button type="text" icon="arrow-swap" class="sort-order-btn"></i-Button>
+                        <Button type="text" icon="arrow-swap" class="sort-order-btn"></Button>
                         <DropdownMenu slot="list">
                             <DropdownItem>时间</DropdownItem>
                             <DropdownItem>文件大小</DropdownItem>
@@ -57,7 +57,7 @@
             <i-table :columns="columns" :data="data" stripe
                      class="cm-wrapper--table" ref="table"
                      @on-selection-change="handleSelectChange"
-                     :loading="tableStatus"></i-table>
+                     :height="tableHeight" :loading="tableStatus"></i-table>
         </div>
     </div>
 </template>

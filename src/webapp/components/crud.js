@@ -167,11 +167,11 @@ export default {
     },
     mounted () {
         if (this.$refs['table-wrapper']) {
-            let h = this.$refs['table-wrapper'].clientHeight
-            this.tableHeight = h
+            // let h = this.$refs['table-wrapper'].clientHeight
+            // this.tableHeight = h
             let onResize = _.debounce((e) => {
-                let h = this.$refs['table-wrapper'].clientHeight
-                this.tableHeight = h
+                // let h = this.$refs['table-wrapper'].clientHeight
+                this.tableHeight = this.$refs['table-wrapper'].clientHeight
             }, 1000)
             onResize()
             on(window, 'resize', onResize)

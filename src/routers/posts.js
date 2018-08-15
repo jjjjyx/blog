@@ -11,6 +11,7 @@ const {sanitizeBody, sanitizeParam} = require('express-validator/filter')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
 const {Enum} = require('../common/enum')
+const marked = require("marked")
 
 const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../models')
 const {term_relationships: termRelationshipsDao} = sequelize.models
@@ -523,8 +524,15 @@ const release = [
             post.post_date = post_date || new Date()
             // post.post_author = // 最初的创建者不能修改的 提交的文章作者只会存在版本记录中
             // sticky
-            _save_postMeta(id, 'sticky', sticky)
-            _save_postMeta(id, 'render', render_value)
+            let mdContent = marked(post_content, {renderer: utils.renderer})
+            // Promise.all([
+            _save_postMeta(id, 'sticky', sticky),
+            _save_postMeta(id, 'render', render_value),
+            _save_postMeta(id, 'displayContent', mdContent.substr(0, 400)),
+            // ]).then(() => {
+            //     log.debug('成功保存文章 #%d的meta 信息', post.id)
+            // }).catch(e => log.error('保存文章#%d meta 失败:', post.id, e))
+
             post.post_status = post_status
             post.post_password = post_password
             post.comment_status = comment_status
@@ -550,12 +558,10 @@ const release = [
                 values.post_date = post.post_date
                 values.id = undefined
                 values.createdAt = undefined
-                postDao.create(values).then((rp) => {
-                    _save_postMeta(rp.id, 'author', JSON.stringify(postAuthor || req.user))
-                    // _save_postMeta(rp.id, 'author_user_name', post_author)
-                }).catch(e => {
-                    log.error('保存文章meta 失败:', e)
-                })
+                postDao.create(values)
+                    .then((rp) => {
+                        _save_postMeta(rp.id, 'author', JSON.stringify(postAuthor || req.user))
+                    })
             }
             log.info("发布文章成功，post = ", post.id)
             return res.status(200).json(Result.success())

@@ -431,6 +431,7 @@ export default {
                     }
                 }
             }
+            this.showVersionWarning = false
             this.createNewPost()
         }
     },
@@ -453,6 +454,7 @@ export default {
         poi = _.toNumber(poi)
         // 如果有尚未保存的文章 给出提示
         next(async (vm) => {
+            console.log(12312)
             let thisId = vm.currentPost.id
             if (active === 'new') { // 创建
                 vm.newPost(from)
@@ -484,6 +486,7 @@ export default {
             }
         }
         off(document.body, 'keydown', this._handleKeyUp)
+        this.showVersionWarning = false
         next()
     },
     mounted () {

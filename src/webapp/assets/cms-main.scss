@@ -25,7 +25,8 @@ $sider-collapsed-width: 78px;
     background: #eee;
     height: 100%;
     min-width: 1103px;
-    overflow: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 
@@ -33,6 +34,9 @@ $sider-collapsed-width: 78px;
     margin-left: $sider-width;
     min-width: 1100px;
     transition: margin-left .2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     > .ivu-breadcrumb {
         flex-shrink:0;
         padding: 24px 24px;

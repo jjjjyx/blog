@@ -43,10 +43,6 @@
                         当前版本: {{categoryName(this.currentPost.category_id)}}
                         <br>
                         此版本: {{categoryName(this.activeCategory)}}
-                        <!--<span class="d2h-file-name-wrapper">-->
-                            <!--<span class="d2h-file-name">{{this.currentPost.category_id}}-> {{this.activeCategory}}</span>-->
-                            <!--&lt;!&ndash;<span class="d2h-tag d2h-changed d2h-changed-tag">CHANGED</span>&ndash;&gt;-->
-                        <!--</span>-->
                         <hr>
                     </div>
 

@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-
+const common = require('../common/common')
 module.exports = function (sequelize, DataTypes) {
     const postMetaModel = sequelize.define('postMeta', {
         id: {
@@ -33,6 +33,6 @@ module.exports = function (sequelize, DataTypes) {
     // postModel.hasMany(postMetaModel, {foreignKey: 'post_id', sourceKey: 'post_id'})
     postModel.hasMany(postMetaModel, {as: 'metas', foreignKey: 'post_id', sourceKey: 'id'})
     // postMetaModel.belongsTo(postModel, {foreignKey: 'post_id', targetKey: 'post_id'})
-
+    common.addMetaPrototype(postModel)
     return postMetaModel
 };

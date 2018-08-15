@@ -2,19 +2,19 @@
 
 const express = require('express')
 
-const router = express.Router()
+const _ = require('lodash')
 const debug = require('debug')('app:routers:api.term')
+const router = express.Router()
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const utils = require('../utils')
 const Result = require('../common/resultUtils')
+const {Enum} = require('../common/enum')
 const {termDao, postDao, sequelize} = require('../models')
+
 const {term_relationships: termRelationshipsDao } = sequelize.models
 const Op = sequelize.Op
 
-const {Enum} = require('../common/enum')
-
-const _ = require('lodash')
 const sanitizeId = sanitizeBody('id').toInt()
 const sanitizeName = sanitizeBody('name').escape().trim()
 const sanitizeIcon = sanitizeBody('icon').escape().trim().customSanitizer((value)=>{
@@ -38,10 +38,10 @@ const checkName = body('name').isString().withMessage('请提交正确的名称'
     return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(value)
 }).withMessage('请提交正确的名称，名称只能包含中文英文，下划线，数字,且在长度不超过10！')
 
-const slugMsg = '且名称只能包含小写英文，连字符（-），数字,且在长度不超过30！'
+const slugMsg = '且名称只能包含英文，连字符（-），数字,且在长度不超过30！'
 const slugV = (value) => {
     debug('checkSlug slug = ', value)
-    return /^[a-z0-9\-]{1,30}$/.test(value)
+    return /^[a-zA-Z0-9\-]{1,30}$/.test(value)
 }
 const checkSlug = body('slug').exists().withMessage('必须').custom(slugV).withMessage(slugMsg)
 const checkSlug2 = body('slug').isLength({min: 0, max: 30}).custom(slugV).withMessage(slugMsg)

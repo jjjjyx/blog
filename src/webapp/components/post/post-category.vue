@@ -45,7 +45,7 @@
                 <i-table :columns="columns" :data="data" stripe
                          class="cm-wrapper--table" ref="table"
                          @on-selection-change="handleSelectChange"
-                         :loading="tableStatus"></i-table>
+                         :height="tableHeight" :loading="tableStatus"></i-table>
                 <!--</div>-->
             </div>
         </div>

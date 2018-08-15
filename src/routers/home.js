@@ -9,12 +9,14 @@ const {Enum} = require('../common/enum')
 const {termDao, userDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
 const Op = sequelize.Op
 const utils = require('../utils')
+const xss = require('xss')
+const marked = require("marked")
+
 
 const generatePostHtml = function(post) {
-    let metas = post.metas
-
+    let {sticky, displayContent} = post.getMetasObj()
     // todo 置顶
-    let sticky = '<color-icon class="j-article__sticky" type="icon-sticky" size="24"></color-icon>'
+    // let sticky = '<color-icon class="j-article__sticky" type="icon-sticky" size="24"></color-icon>'
     let title = post.post_title
     let url = '/p/' + post.guid
 
@@ -39,11 +41,21 @@ const generatePostHtml = function(post) {
     let categoryName = category[0].name
     let postTagNames = postTag.map(tag => `<span class="tag">${tag.name}</span>`)
 
+
+    let postContent // = marked(post.post_content, {renderer: utils.renderer})
+    if (displayContent) {
+        postContent = displayContent.meta_value
+    } else {
+        postContent = marked(post.post_content, {renderer: utils.renderer})
+    }
+    // 获取图片位置进行截取
+    // 没有图 显示200 个长度
+    postContent = postContent.substr(0, 200)
     return `<article class="j-article-item j-block">
     <div class="j-article-item-content">
         <h3 class="j-article__title">
             <a href="${url}" target="_blank">
-                ${title}
+                ${xss(title)}
             </a>
         </h3>
         <div class="j-article__metas float-right j-article__opt">
@@ -60,9 +72,7 @@ const generatePostHtml = function(post) {
             <time class="time" datetime="${postDate}">${postDate}</time>
         </div>
         <p class="j-article__intro">
-            互联网的发展，学习是越来越重要了，人们不可能不学习，如果不学习那他将被社会，被互联网淘汰。而博客作为学习的结晶，前人的经验，在学习的路上是很重要的组成部分。博客可以有效的结合图片，文字，能够给读者留下很深刻的影响，为学习带来便利。
-            博客具有了个人网站的自由精神，它既可以将个人日记，工作过程，学习笔记，生活见闻，闪现的灵感，记录起来，它能发挥出个人无限创造力，还能结交相识，汇聚朋友，进行深度交流。
-            并且如果
+            ${xss(postContent)}...
         </p>
         <div class="j-article__metas mt-2">
             <Tag type="border" color="blue">${categoryName}</Tag>
@@ -74,7 +84,7 @@ const generatePostHtml = function(post) {
 }
 
 const index = [
-    utils.cache.route('index'),
+    // utils.cache.route('index'),
     async function(req, res, next) {
         try {
             let posts = await postDao.findAll({
