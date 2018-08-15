@@ -39,5 +39,6 @@
       "default": { "appenders": [ "out", "appFile", "errors" ], "level": "DEBUG" },
       "http": { "appenders": [ "access"], "level": "DEBUG" }
     },
+    "pm2": true,
     "replaceConsole": true
   }

@@ -33,6 +33,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true})) // for parsing a
 // 没有使用文件上传的操作
 // app.use(multer()); // for parsing multipart/form-data
 app.use(cookieParser())
+// gzip 压缩
 app.use(compression())
 app.use(expressValidator(middlewareOptions.validator))
 
@@ -68,7 +69,9 @@ if (IS_DEV) {
     app.use('/', webpackHotMiddleware(compiler))
 
 } else {
-    let static_dir = express.static(path.join(__dirname, './dist'))
+    let static_dir = express.static(path.join(__dirname, './dist'), {
+        maxAge: '30d'
+    })
     static_dir.unless = unless
     app.use(static_dir.unless({method: 'OPTIONS'}))
 }

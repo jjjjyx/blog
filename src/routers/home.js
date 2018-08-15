@@ -74,6 +74,7 @@ const generatePostHtml = function(post) {
 }
 
 const index = [
+    utils.cache.route('index'),
     async function(req, res, next) {
         try {
             let posts = await postDao.findAll({

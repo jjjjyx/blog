@@ -60,6 +60,9 @@ const login = [
 ]
 
 const auth = function (req, res, next) {
+    res.setHeader('Cache-Control', 'max-age=0, private, must-revalidate')
+    res.header('Pragma', 'no-cache')
+    res.header('Expires', 0)
     log.debug('auth = ', JSON.stringify(req.user))
     return res.status(200).json(Result.success(req.user))
 }

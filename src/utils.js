@@ -10,6 +10,8 @@ const shortid = require('shortid')
 const _ = require('lodash')
 const {validationResult} = require('express-validator/check')
 const Result = require('./common/resultUtils')
+const ExpressRedisCache = require('express-redis-cache');
+
 
 const TOKEN_EXPIRATION = 60 // 单位秒
 // 5天
@@ -19,6 +21,10 @@ log.trace('TOKEN_EXPIRATION_SEC = %s', TOKEN_EXPIRATION_SEC)
 
 const {secret} = config
 let redis = new Redis()
+let cache = ExpressRedisCache({
+    client: redis
+})
+
 let jwtr = new JWTR(redis)
 Promise.promisifyAll(jwtr)
 
@@ -56,3 +62,4 @@ module.exports.formatDate = function (time, pattern = 'YYYY-M-D hh:mm') {
 }
 
 module.exports.create = create
+module.exports.cache = cache

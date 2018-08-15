@@ -393,7 +393,7 @@ const save = [
                     _save_postMeta(autoSavePost.id, 'category', JSON.stringify(category.id))
                 ]).then(() => {
                     debug(`save 文章存档 = [${autoSavePost.id}#${autoSavePost.post_name}]，保存分类标签记录!`)
-                })
+                }).catch(e => log.error('保存文章#%d meta 失败:', autoSavePost.id, e))
                 return res.status(200).json(Result.success(autoSavePost))
             default:
                 log.info('保存失败，错误文章状态')
@@ -551,8 +551,10 @@ const release = [
                 values.id = undefined
                 values.createdAt = undefined
                 postDao.create(values).then((rp) => {
-                    _save_postMeta(rp.id, 'author', postAuthor || req.user)
+                    _save_postMeta(rp.id, 'author', JSON.stringify(postAuthor || req.user))
                     // _save_postMeta(rp.id, 'author_user_name', post_author)
+                }).catch(e => {
+                    log.error('保存文章meta 失败:', e)
                 })
             }
             log.info("发布文章成功，post = ", post.id)
