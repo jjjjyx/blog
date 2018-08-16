@@ -1,0 +1,24 @@
+
+.site__warp {
+    //justify-content:
+    //justify-content: space-between;
+}
+.site__warp .ivu-form-item-label {
+    h3, small {
+        font-weight: 300;
+        display: inline-block;
+    }
+    small {
+        color: $gray-500;
+    }
+    h3 {
+        margin-right: .25rem;
+    }
+    h3::after {
+        content: ' / ';
+        color: $gray-500;
+    }
+}
+.site__opts {
+    padding: 1rem;
+}
