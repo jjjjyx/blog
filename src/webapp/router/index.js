@@ -3,16 +3,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import iView from 'iview'
-import Index from '@/components/index.vue'
-import MediaManagement from '@/components/media-management.vue'
-import postManagement from '@/components/post/post-management'
-import postWriter from '@/components/post/post-writer'
-import postCategory from '@/components/post/post-category.vue'
-import postTag from '@/components/post/post-tag.vue'
-import postTrash from '@/components/post/post-trash.vue'
-
-import SystemSite from '@/components/system/site.vue'
-
+import routes from './router'
 // import postTest from '@/components/post/post-test'
 import NotFound from '../404'
 import store from '../store'
@@ -21,6 +12,7 @@ import api from '../utils/api'
 // import scan from '@/components/scan.vue'
 Vue.use(Router)
 
+routes.push({path: '*', component: NotFound, name: '*'})
 async function isLogIn () {
     let loginStatus = false
     // 判段用户实例是否存在或者过期
@@ -38,55 +30,6 @@ async function isLogIn () {
     }
     return loginStatus
 }
-
-const routes = [
-    {
-        path: '/',
-        name: 'index',
-        component: Index
-    },
-    {
-        path: '/media',
-        name: 'media',
-        component: MediaManagement
-    },
-    {
-        path: '/post/management',
-        name: 'post_management',
-        component: postManagement
-    },
-    {
-        path: '/post/writer',
-        name: 'post_writer',
-        component: postWriter
-    },
-    {
-        path: '/post/category',
-        name: 'post_category',
-        component: postCategory
-    },
-    {
-        path: '/post/tag',
-        name: 'post_tag',
-        component: postTag
-    },
-    {
-        path: '/post/trash',
-        name: 'post_trash',
-        component: postTrash
-    },
-    {
-        path: '/system/site',
-        name: 'system_site',
-        component: SystemSite
-    },
-    // {
-    //     path: '/post/test',
-    //     name: 'post_test',
-    //     component: postTest
-    // },
-    {path: '*', component: NotFound, name: '*'}
-]
 
 const router = new Router({
     // mode: 'history',

@@ -39,6 +39,9 @@ Promise.all([api.nget('/api/user/auth'), api.nget('/api/site/dict')]).then((resu
     // let a = await e
     new Vue().$Modal.error({
         title: '错误',
-        content: e
+        content: e,
+        onOk: () => {
+            window.location.href = '/'
+        }
     })
 })

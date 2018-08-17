@@ -20,7 +20,7 @@
             >
                 <!--drag-allow-from=".vue-draggable-handle"-->
                 <!--drag-ignore-from=".no-drag"-->
-                <grid-item v-for="item in layout"
+                <grid-item v-for="item in layout" :key="item.i"
                            :x="item.x"
                            :y="item.y"
                            :w="item.w"
@@ -35,7 +35,6 @@
                                 <small slot="label">{{siteMap[key].textSmall}}</small>
                                 <Input v-model="siteMap[key].value"/>
                             </FormItem>
-
                         </Form>
                     </Card>
                     <!--<div class="text">-->
@@ -59,8 +58,8 @@ import {difference} from '../../utils/common'
 import api from '@/utils/api'
 import {GridItem, GridLayout} from 'vue-grid-layout'
 // ResponsiveGridLayout
-//mapState, mapActions,
-const siteLayout ={
+// mapState, mapActions,
+const siteLayout = {
     index: {
         name: '首页设置',
         key: 'index',
@@ -69,7 +68,7 @@ const siteLayout ={
     siteKey: {
         name: '站点设置',
         key: 'siteKey',
-        items: ['title', 'description', 'copyright' ]
+        items: ['title', 'description', 'copyright']
     },
     searchKey: {
         name: '搜索设置',
@@ -79,12 +78,12 @@ const siteLayout ={
     other: {
         name: '其他设置',
         key: 'other',
-        items: ['CDN','iconUrl','colorIconUrl','name','sign','background']
+        items: ['CDN', 'iconUrl', 'colorIconUrl', 'name', 'sign', 'background']
     },
     sidebar: {
         name: '侧边栏设置',
         key: 'sidebar',
-        items: ['homeSideModel', 'categorySideModel', 'hotPostNum', 'lastPostNum', 'superiorPostNum' ]
+        items: ['homeSideModel', 'categorySideModel', 'hotPostNum', 'lastPostNum', 'superiorPostNum']
     }
 }
 
@@ -110,7 +109,11 @@ export default {
             siteLayout,
             // layout: layout
             layout: [
-                { "x": 0, "y": 0, "w": 3, "h": 3, "i": "index", "moved": false }, { "x": 3, "y": 0, "w": 3, "h": 9, "i": "siteKey", "moved": false }, { "x": 6, "y": 0, "w": 3, "h": 13, "i": "searchKey", "moved": false }, { "x": 9, "y": 0, "w": 3, "h": 15, "i": "other", "moved": false }, { "x": 0, "y": 3, "w": 3, "h": 13, "i": "sidebar", "moved": false }
+                {'x': 0, 'y': 0, 'w': 3, 'h': 3, 'i': 'index', 'moved': false},
+                {'x': 3, 'y': 0, 'w': 3, 'h': 9, 'i': 'siteKey', 'moved': false},
+                {'x': 6, 'y': 0, 'w': 3, 'h': 13, 'i': 'searchKey', 'moved': false},
+                {'x': 9, 'y': 0, 'w': 3, 'h': 15, 'i': 'other', 'moved': false},
+                {'x': 0, 'y': 3, 'w': 3, 'h': 13, 'i': 'sidebar', 'moved': false}
             ]
         }
     },

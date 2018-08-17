@@ -78,7 +78,7 @@ const getSite = [
 const getDict = async function (req, res) {
     let siteList = await siteDao.findAll()
     // let enums = labels
-    return res.status(200).json(Result.success({site: siteList, labels}))
+    return res.status(200).json(Result.success({site: siteList, labels, sidebars: Enum.sidebarListEnum}))
 }
 
 router.route("/update").post(update)

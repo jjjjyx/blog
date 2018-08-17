@@ -10,13 +10,6 @@ const PostStatusEnum = {
     'INHERIT': 'inherit'
 }
 
-// const PostTypeEnum = {
-//     'revision': 'draft',
-//     'post': 'auto-draft',
-//     'PUBLISH': 'publish',
-//     'INHERIT': 'inherit'
-// }
-
 const StatusEnum = {
     'OPEN': 'open',
     'CLOSE': 'close'
@@ -33,7 +26,6 @@ const SiteEnum = {
     'NO': 'no',
 }
 
-
 const ImgEnum = {
     'ALL': 'all',
     'PUBLIC': 'public',
@@ -41,6 +33,41 @@ const ImgEnum = {
     'POST': 'post',
     'AVATAR': 'avatar'
 }
+
+const sidebarListEnum = [
+    {
+        name: '关于博主',
+        key: 'index'
+    },
+    {
+        name: '热门文章',
+        key: 'hot'
+    },
+    {
+        name: '精选文章',
+        key: 'superior'
+    },
+    {
+        name: '分类',
+        key: 'category'
+    },
+    {
+        name: '标签',
+        key: 'tags'
+    },
+    {
+        name: '最新文章',
+        key: 'new'
+    },
+    {
+        name: '归档',
+        key: 'archive'
+    },
+    {
+        name: '搜索',
+        key: 'search'
+    }
+]
 
 module.exports.labels = {
     postStatus: {
@@ -77,5 +104,6 @@ module.exports.Enum =  {
     StatusEnum,
     TaxonomyEnum,
     SiteEnum,
-    ImgEnum
+    ImgEnum,
+    sidebarListEnum
 }
