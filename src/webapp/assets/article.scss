@@ -1,0 +1,36 @@
+@import "./sass/public";
+
+ //覆盖
+.article-a {
+    .wrapper-header.top {
+        box-shadow: 0 0 0 1px rgba(0,0,0,.1);
+    }
+    .wrapper-header.top .ivu-menu-item:not(.ivu-menu-item-active) a{
+        color: inherit;
+    }
+    .ivu-breadcrumb>span {
+        font-weight: 100;
+        font-size: 1rem;
+    }
+    .ivu-breadcrumb>span:last-child {
+        font-weight: 100;
+        color: $main-title-sub-color;
+        cursor: default;
+    }
+}
+
+.article-a-header {
+    text-align: center;
+}
+.article-a-header--info {
+    margin: 1.5rem 0 ;
+    .item {
+        color: $main-title-sub-color;
+        display: inline-block;
+    }
+    .item:not(:last-child):after {
+        content: '•';
+        display: inline-block;
+    }
+}
+

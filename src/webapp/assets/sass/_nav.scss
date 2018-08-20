@@ -10,6 +10,8 @@ $header-height: 64px;
     box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     height: $header-height;
     line-height: $header-height;
+    right: -7px; // 针对导航边上的滚动
+
     &.top {
         background-color: transparent;
         box-shadow: none;

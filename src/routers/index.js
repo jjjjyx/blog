@@ -34,6 +34,7 @@ jwtCheck.unless = unless
 
 module.exports = function (app) {
     app.use('/', require('./home.js'))
+    app.use('/article', require('./article.js'))
     app.use('/category', require('./category.js'))
     app.use('/tags', require('./tags.js'))
     app.use('/about', require('./about.js'));

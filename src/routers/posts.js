@@ -55,7 +55,7 @@ const sanitizeCategoryId = sanitizeBody('category_id').toInt()
 // const checkNewTagsName = body('new_tag').exists().withMessage('请提交新建的标签')
 
 // 标题
-const sanitizeTitle = sanitizeBody('post_title').escape().trim()
+const sanitizeTitle = sanitizeBody('post_title').trim()
 const checkTitle = body('post_title').exists().isString().isLength({
     min: 0,
     max: 255

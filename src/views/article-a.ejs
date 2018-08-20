@@ -1,0 +1,56 @@
+<%
+/*
+    布局一
+ */
+ %>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <% var data = {name: 'article'} %>
+    <%-include('base/head', data)%>
+</head>
+<body>
+<%-include('loading', data); %>
+<div id="app" class="article-a">
+    <!--<div class="wrapper">-->
+    <%- include('base/nav', data); %>
+    <div class="ivu-breadcrumb container mb-5" style="margin-top: 100px;">
+        <span>
+            <a class="ivu-breadcrumb-item-link">首页</a>
+            <span class="ivu-breadcrumb-item-separator">&gt;</span>
+        </span>
+        <span>
+            <!--分类 默认分类显示归档日期-->
+            <a class="ivu-breadcrumb-item-link">分类</a>
+            <span class="ivu-breadcrumb-item-separator">&gt;</span>
+        </span>
+        <span>
+            <span class="ivu-breadcrumb-item-link">正文</span>
+        </span>
+    </div>
+
+    <div class="container" >
+        <header class="article-a-header">
+            <h1>一个大大的标题</h1>
+            <div class="article-a-header--info">
+                <!--<span class="category">作者</span>-->
+                <a class="name item">
+                    酱酱酱酱油鲜
+                </a>
+                <!--<p class="meta" >-->
+                    <span class="publish-time item">2018-8-20 </span>
+                    <span class="wordage item">字数: 5681 </span>
+                    <span class="views-count item">阅读: 500+ </span>
+
+                <!--</p>-->
+            </div>
+        </header>
+        <section class="inner" ref="inner" >
+        </section>
+
+    </div>
+    <%- include('base/bottom', data); %>
+</div>
+<%-include('base/footer', data); %>
+</body>
+</html>

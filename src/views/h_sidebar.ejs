@@ -1,0 +1,222 @@
+<div class="j-sidebar j-block j-sidebar--about j-card__block">
+    <div class="card__header">
+        <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" alt="avatar">
+    </div>
+    <div class="card__content">
+        <h6>前端 / 懂点架构的前端</h6>
+        <h4>酱酱酱酱油鲜</h4>
+        <div class="description">
+            说点什么呢。。
+            <!--目前从事前端工作，同时也-->
+        </div>
+
+        <ul class="social-ul list-inline mt-4">
+            <li>
+                <a class="social-ul__a" href="http://wpa.qq.com/msgrd?v=3&uin=871839012&site=qq&menu=yes" target="_blank">
+                    <color-icon type="icon-QQ1" :size="22"></color-icon>
+                </a>
+            </li>
+            <li>
+                <a class="social-ul__a" href="https://github.com/jjjjyx" target="_blank">
+                    <color-icon type="icon-GitHub" :size="22"></color-icon>
+                </a>
+            </li>
+            <li>
+                <a class="social-ul__a" href="http://weibo.com/5403878645" target="_blank">
+                    <color-icon type="icon-weibo" :size="22"></color-icon>
+                </a>
+            </li>
+            <li>
+                <Poptip placement="bottom" trigger="hover" >
+                    <a class="social-ul__a" href="javascript:;">
+                        <color-icon type="icon-weixin" :size="22"></color-icon>
+                    </a>
+                    <div slot="content">
+                        <img src="http://oht47c0d0.bkt.clouddn.com/64807460-27ea-11e7-a8e7-a53b0973c884.png?imageView2/2/w/150/format/jpg" alt="">
+                    </div>
+                </Poptip>
+            </li>
+            <li>
+                <a class="social-ul__a" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net"
+                   target="_blank"><color-icon type="icon-youxiang" :size="22"></color-icon></a>
+            </li>
+        </ul>
+        <!--你们有没有发现这个模块出现的很多次，嘿嘿，恭喜你发现这个彩蛋-->
+    </div>
+</div>
+<div class="j-sidebar j-block">
+    <div class="j-sidebar__header">
+                    <span class="btn-area">
+                    Top 5
+                    </span>
+        <h3 class="title">热门文章</h3>
+    </div>
+    <div class="j-sidebar__body">
+        <div class="j-article--sidebar" v-for="i in 5" :key="i">
+            <div class="j-article__metas">
+                <a href="javascript:;" class="category">未分类</a>
+                <time datetime="2018/7/29 07:39" class="time">2018/7/29 07:39</time>
+            </div>
+            <!-- 标题长度最大支持21-->
+            <h3 class="j-article__title">
+                <a href="/p/Xxh4_A99d" target="_blank">
+                    css 伪类选择器实现等分网格布局
+                </a>
+            </h3>
+            <div class="j-article__metas">
+                <a class="j-article__a read mr-2" href="/p/${item.guid}" target="_blank">
+                    <Icon type="ios-eye-outline" size="16"></Icon><span class="num">56</span>
+                </a>
+                <a class="j-article__a comment mr-2" href="/p/${item.guid}#comment" target="_blank">
+                    <Icon type="ios-chatbubble-outline" size="16"></Icon><span class="num">88</span>
+                </a>
+                <a class="j-article__a like mr-2">
+                    <Icon type="ios-heart-outline" size="16"></Icon><span class="num">46</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="j-sidebar j-block">
+    <div class="j-sidebar__header">
+        <h3 class="title">精选文章</h3>
+    </div>
+    <div class="j-sidebar__body">
+        <div class="j-article--sidebar j-left-img" v-for="i in 5" :key="i">
+            <div class="j-img-warp">
+                <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/200/format/jpg" alt="">
+            </div>
+            <div class="j-article-item-content">
+                <h3 class="j-article__title">
+                    <!-- 标题长度最大支持 27 -->
+                    <a href="/p/Xxh4_A99d" target="_blank">
+                        css 伪类选择器实现等分网格布局
+                    </a>
+                </h3>
+                <div class="j-article__metas">
+                    <a href="javascript:;" class="category">未分类</a>
+                    <time datetime="2018/7/29 07:39" class="time">2018/7/29 07:39</time>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="j-sidebar j-block j-sidebar--category">
+    <div class="j-sidebar__header">
+        <a href="/category" class="btn-area j-logo--a">
+            更多 &nbsp;&nbsp;<Icon type="ios-arrow-forward" />
+        </a>
+        <h3 class="title">分类</h3>
+    </div>
+    <ul class="j-sidebar__body">
+        <li>
+            <font-icon type="icon-ziyuan1"></font-icon> <a href="javascript:;">分类一</a>
+        </li>
+        <li>
+            <font-icon type="icon-ziyuan1"></font-icon> <a href="javascript:;">分类一</a>
+        </li>
+        <li>
+            <font-icon type="icon-ziyuan1"></font-icon> <a href="javascript:;">分类一</a>
+        </li>
+        <li>
+            <font-icon type="icon-ziyuan1"></font-icon> <a href="javascript:;">分类一</a>
+        </li>
+    </ul>
+</div>
+<div class="j-sidebar j-block j-sidebar--tags">
+    <div class="j-sidebar__header">
+        <a href="/tags" class="btn-area j-logo--a">
+            查看全部 &nbsp;&nbsp;<Icon type="ios-arrow-forward" />
+        </a>
+        <h3 class="title">标签</h3>
+    </div>
+    <div class="j-sidebar__body">
+        <!--<a class="j-sidebar&#45;&#45;tags__tag"  target="_blank" v-for="i in 20">-->
+        <!--<span>标签一</span>-->
+        <!--</a>-->
+        <Tag type="border" v-for="i in 20">
+            <a href="">标签</a>
+        </Tag>
+    </div>
+</div>
+
+<div class="j-sidebar j-block">
+    <div class="j-sidebar__header">
+        <span class="btn-area">Top 5</span>
+        <h3 class="title">最新文章</h3>
+    </div>
+    <div class="j-sidebar__body">
+        <div class="j-article--sidebar" v-for="i in 5" :key="i">
+            <!-- 标题长度最大支持21-->
+            <h3 class="j-article__title">
+                <a href="/p/Xxh4_A99d" target="_blank">
+                    css 伪类选择器实现等分网格布局
+                </a>
+            </h3>
+            <div class="j-article__metas">
+                <a href="javascript:;" class="category">未分类</a>
+                <time datetime="2018/7/29 07:39" class="time">2018/7/29 07:39</time>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="j-sidebar j-block j-sidebar--archives">
+    <div class="j-sidebar__header">
+        <h3 class="title">归档</h3>
+    </div>
+    <ul class="j-sidebar__body">
+        <li>
+            <a href="javascript:;">2018年8月 (<u>0</u>)</a>
+        </li>
+        <li>
+            <a href="javascript:;">2018年7月 (<u>0</u>)</a>
+        </li>
+        <li>
+            <a href="javascript:;">2018年6月 (<u>0</u>)</a>
+        </li>
+        <li>
+            <a href="javascript:;">2018年5月 (<u>0</u>)</a>
+        </li>
+    </ul>
+</div>
+<div class="j-sidebar j-block j-sidebar--search">
+    <div class="j-sidebar__header">
+        <h3 class="title">搜索</h3>
+    </div>
+    <div class="j-sidebar__body pt-4 pb-4">
+        <i-input v-model="value13" placeholder="站内搜索" class="j-sidebar--search__input">
+            <i-button slot="append" icon="ios-search"></i-button>
+        </i-Input>
+        <h6 class="text-center h6">
+            可能感兴趣的
+        </h6>
+        <div class="tags-cloud text-center pl-5 pr-5">
+            <Tag type="border" v-for="i in 8">
+                <a href="">标签</a>
+            </Tag>
+        </div>
+    </div>
+</div>
+<!--<div class="j-sidebar j-block">-->
+<!--<div class="j-sidebar__header">-->
+<!--<a href="/category" class="btn-area" style="color:#B3B3B3">-->
+<!--更多 &nbsp;&nbsp;<Icon type="ios-arrow-forward" />-->
+<!--</a>-->
+<!--<h3 class="title">一个标题</h3>-->
+<!--</div>-->
+<!--<div class="j-sidebar__body">-->
+<!--基础-->
+<!--</div>-->
+<!--</div>-->
+
+
+<!--<div class="part">-->
+<!--<div class="j-title">-->
+<!--<h3 class="">标签</h3>-->
+<!--<a href="/category" class="r btn btn-sm " style="color:#B3B3B3">-->
+<!--全部 &nbsp;&nbsp;<i class="am-icon-angle-right"></i>-->
+<!--</a>-->
+<!--</div>-->
+<!--<div class="tags">-->
+<!--</div>-->
+<!--</div>-->

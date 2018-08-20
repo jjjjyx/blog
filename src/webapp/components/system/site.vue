@@ -129,7 +129,17 @@ export default {
         },
         async save () {
             let diff = difference(this.siteMap, this.$store.state.siteMap)
-            await api.npost('/api/')
+            for (let key in diff) {
+                diff[key] = diff[key].value
+            }
+            try {
+                await api.npost('/api/site/update', diff)
+                this.$Message.info('保存成功')
+                this.$store.commit('updateSite', diff)
+                this.siteMap = _.cloneDeep(this.$store.state.siteMap)
+            } catch (e) {
+                this.$Message.error('保存失败')
+            }
         }
     },
     watch: {

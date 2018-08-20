@@ -7,6 +7,11 @@ export const mutations = {
         obj.site.forEach((item) => {
             state.siteMap[item.key] = item
         })
+    },
+    updateSite (state, diff) {
+        for (let key in diff) {
+            state.siteMap[key].value = diff[key]
+        }
     }
     // toggleSidebar(state,v){
     //     state.isSidebarShow = !!v;

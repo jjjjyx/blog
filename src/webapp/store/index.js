@@ -6,6 +6,7 @@ import Vuex from 'vuex'
 import createLogger from 'vuex/dist/logger'
 import modules from './modules'
 import {mutations} from './mutations.js'
+import actions from './actions'
 
 Vue.use(Vuex)
 
@@ -13,7 +14,8 @@ const state = {
     // 全局
     dict: {},
     site: [],
-    siteMap: {}
+    siteMap: {},
+    breadCrumbList: []
 }
 const getters = {
     postStatusDict: state => state.dict.postStatus,
@@ -24,7 +26,7 @@ const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
     strict: debug,
-    // actions,
+    actions,
     getters,
     state,
     mutations,
