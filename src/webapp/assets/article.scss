@@ -24,13 +24,14 @@
 }
 .article-a-header--info {
     margin: 1.5rem 0 ;
+    color: $main-title-sub-color;
     .item {
-        color: $main-title-sub-color;
         display: inline-block;
     }
     .item:not(:last-child):after {
         content: '•';
         display: inline-block;
+        margin: 0 .5rem;
     }
 }
 

@@ -16,8 +16,8 @@ const xss = require('xss')
 const marked = require("marked")
 
 
-const loadPostPageSize = 2
-log.debug('loadPostPageSize = %d', 2)
+const loadPostPageSize = 10
+log.debug('loadPostPageSize = %d', loadPostPageSize)
 
 const generatePostHtml = function(post) {
     let {sticky, displayContent} = post.getMetasObj()
@@ -41,7 +41,7 @@ const generatePostHtml = function(post) {
     let likeNum = 0
 
     // 评论关闭不显示
-    let comment = post.comment_status ? `<a class="j-article__a comment mr-2" href="${url}#comment" target="_blank"> <Icon type="ios-chatbubble-outline" size="20"></Icon><span class="num">${commentNum}</span> </a>`: ''
+    let comment = post.comment_status ? `<a class="j-article__a comment mr-2" href="${url}#comment" target="_blank"> <i class="ivu-icon ivu-icon-ios-chatbubble-outline" style="font-size: 20px;"></i><span class="num">${commentNum}</span> </a>`: ''
 
     let {category = [{name: ''}], post_tag: postTag = []} = _.groupBy(post.terms, 'taxonomy')
     let categoryName = category[0].name
@@ -66,11 +66,12 @@ const generatePostHtml = function(post) {
         </h3>
         <div class="j-article__metas float-right j-article__opt">
             <a class="j-article__a read mr-2" href="${url}" target="_blank">
-                <Icon type="ios-eye-outline" size="20"></Icon><span class="num">${readNum}</span>
+                
+                <i class="ivu-icon ivu-icon-ios-eye-outline" style="font-size: 20px;"></i><span class="num">${readNum}</span>
             </a>
             ${comment}
             <a class="j-article__a like mr-2">
-                <Icon type="ios-heart-outline" size="20"></Icon><span class="num">${likeNum}</span>
+                <i class="ivu-icon ivu-icon-ios-heart-outline" style="font-size: 20px;"></i><span class="num">${likeNum}</span>
             </a>
         </div>
         <div class="j-article__a mt-2 mb-4">

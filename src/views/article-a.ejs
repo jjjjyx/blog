@@ -14,6 +14,19 @@
 <div id="app" class="article-a">
     <!--<div class="wrapper">-->
     <%- include('base/nav', data); %>
+<%
+    var metas = post.getMetasObj();
+    var {category, post_tag} = _.groupBy(post.terms, (item) => item.taxonomy)
+    var post_date = dateFormat(post.post_date, 'YYYY-M-D')
+    category = category[0]
+    if (SITE.defaultCategoryId == category.id) {
+        category = dateFormat(post.post_date, 'YYYY年M月')
+    } else {
+        category = category.name
+    }
+    var post_content = md.render(post.post_content)
+    // var
+%>
     <div class="ivu-breadcrumb container mb-5" style="margin-top: 100px;">
         <span>
             <a class="ivu-breadcrumb-item-link">首页</a>
@@ -21,7 +34,7 @@
         </span>
         <span>
             <!--分类 默认分类显示归档日期-->
-            <a class="ivu-breadcrumb-item-link">分类</a>
+            <a class="ivu-breadcrumb-item-link"><%=category%></a>
             <span class="ivu-breadcrumb-item-separator">&gt;</span>
         </span>
         <span>
@@ -29,25 +42,27 @@
         </span>
     </div>
 
-    <div class="container" >
+    <div class="container" style="    margin-top: 4rem;">
         <header class="article-a-header">
-            <h1>一个大大的标题</h1>
+            <h1><%=post.post_title%></h1>
             <div class="article-a-header--info">
                 <!--<span class="category">作者</span>-->
-                <a class="name item">
-                    酱酱酱酱油鲜
+                <a class="name item j-logo--a">
+                    <%=post.user.user_nickname%>
                 </a>
                 <!--<p class="meta" >-->
-                    <span class="publish-time item">2018-8-20 </span>
-                    <span class="wordage item">字数: 5681 </span>
-                    <span class="views-count item">阅读: 500+ </span>
-
+                <time class="publish-time item" datetime="<%=post_date%>"><%=post_date%> </time>
+                <span class="wordage item">字数: <%=post.post_content.length%> </span>
+                <span class="views-count item">阅读: 0 </span>
                 <!--</p>-->
             </div>
         </header>
         <section class="inner" ref="inner" >
+            <%-post_content%>
         </section>
-
+        <pre>
+                <%=JSON.stringify(post, null, 4)%>
+            </pre>
     </div>
     <%- include('base/bottom', data); %>
 </div>

@@ -38,6 +38,7 @@
         "jwt-redis": "^3.1.0",
         "lodash": "^4.17.5",
         "log4js": "^2.5.2",
+        "markdown-it": "^8.4.2",
         "marked": "^0.4.0",
         "mavon-editor": "^2.6.9",
         "moment": "^2.22.2",

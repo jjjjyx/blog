@@ -109,6 +109,10 @@ import sidebarPanel from './sidebar/sidebar.vue'
 import {dateFormat} from '../../utils/common'
 const sidebarsOrder = Object.keys(sidebars)
 
+const md = mavonEditor.getMarkdownIt()
+md.set({
+    html: false
+})
 export default {
     name: 'post-writer',
     data () {
