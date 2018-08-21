@@ -8,7 +8,6 @@
 
 
 $nav-height: 56px;
-
 $sider-bg-color : #282d2f;
 $sider-bg-deep-color : #1f2224;
 $sider-width: 240px;
@@ -23,6 +22,7 @@ $sider-collapsed-width: 78px;
 @import "cm-sass/media-management";
 @import "cm-sass/upload";
 @import "cm-sass/site";
+@import "cm-sass/plugin";
 @import "sass/scrollbar";
 
 .wrapper {

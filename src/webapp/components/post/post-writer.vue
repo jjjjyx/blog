@@ -45,6 +45,7 @@
             </collapse-transition>
             <div class="post-markdown-wrap">
                 <mavon-editor style="height: 100%" :value="currentPost.post_content" ref="md"
+                              :code-style="'atom-one-dark'"
                               @change="handleMdChange"
                               @save="handleMdSave"
                               @imgAdd="uploadImg" @imgDel="imgDel"></mavon-editor>
