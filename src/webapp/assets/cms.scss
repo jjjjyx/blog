@@ -6,13 +6,16 @@
 @import "./sass/icon";
 @import "./cm-sass/reboot";
 
+
+$nav-height: 56px;
+
 $sider-bg-color : #282d2f;
 $sider-bg-deep-color : #1f2224;
 $sider-width: 240px;
 $sider-collapsed-width: 78px;
 
 @import "cm-sass/overload-iview";
-@import "cm-sass/cm";
+@import "cm-sass/cm-layout";
 @import "cm-sass/cm-nav";
 @import "cm-sass/cm-sidebar";
 @import "cm-sass/post-writer";
@@ -30,20 +33,3 @@ $sider-collapsed-width: 78px;
     overflow-y: hidden;
 }
 
-
-.wrapper__content {
-    margin-left: $sider-width;
-    min-width: 1100px;
-    transition: margin-left .2s ease-in-out;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    > .ivu-breadcrumb {
-        flex-shrink:0;
-        padding: 24px 24px;
-    }
-    > .ivu-layout-content {
-        margin: 0 24px;
-        //box-shadow: 0 0 2px #ccc;
-    }
-}

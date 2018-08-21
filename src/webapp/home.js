@@ -9,7 +9,7 @@ Vue.config.productionTip = false
 
 let div = document.createElement('div')
 // function appInit () {
-    /* eslint-disable no-unused-vars  */
+/* eslint-disable no-unused-vars  */
 const app = new Vue({
     el: '#app',
     data: {

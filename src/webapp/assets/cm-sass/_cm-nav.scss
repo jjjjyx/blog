@@ -1,11 +1,17 @@
-$nav-height: 56px;
-.wrapper-header {
+// 顶部模块
+.wrapper__header {
+
+}
+
+.main__header {
     //position: fixed;
     width: 100%;
     //top: 0;
     //right: 0;
     //left: 0;
     z-index: 1000;
+    height: $nav-height;
+    background-color: #ababab; // tmp
     //overflow: hidden;
     .ivu-menu-horizontal {
         height: $nav-height;

@@ -1,5 +1,13 @@
 
 
+//@media (min-width: 991px) {
+//    .wrapper--mini-sidebar, .wrapper__sidebar{
+//        width: $sider-collapsed-width;
+//    }
+//}
+
+
+
 .wrapper__sidebar {
     position: fixed;
     width: $sider-width;
@@ -7,7 +15,9 @@
     height: 100vh;
     left: 0px;
     overflow: hidden;
-    transition: width .2s ease-in-out;
+    transition-property: top,bottom,width,background-image;
+    transition-duration: .2s,.2s,.35s,.3s;
+    transition-timing-function: linear,linear,ease,linear;
     background-color: $sider-bg-color;
     z-index: 1001;
 }
@@ -18,7 +28,7 @@
     }
 }
 
-.wrapper__sidebar--collapsed + .wrapper__content {
+.wrapper__sidebar--collapsed + .wrapper__main {
     margin-left: $sider-collapsed-width;
 }
 
