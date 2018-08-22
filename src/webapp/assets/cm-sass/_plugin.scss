@@ -64,16 +64,7 @@
         padding: 8px;
         transition: all .34s;
     }
-    $badge-colors: (
-        "purple": #9c27b0,
-        "blue": #00bcd4,
-        "green": #4caf50,
-        "orange": #ff9800,
-        "rose": #e91e63,
-        "red": $logo-color,
-        "black": black,
-        "white": hsla(0,0%,78%,.2)
-    );
+
     @each $color, $value in $badge-colors {
         .badge-#{$color} {
             background-color: $value;

@@ -101,13 +101,12 @@ import 'mavon-editor/dist/css/index.css'
 import api from '@/utils/api'
 // import ajax from '@/utils/ajax'
 import {on, off} from '@/utils/dom'
-import {verification, getMetaKeyCode, POST_WRITER_STATUS} from '@/utils/common'
+import {verification, getMetaKeyCode, POST_WRITER_STATUS, dateFormat} from '@/utils/common'
 import CollapseTransition from '@/utils/collapse-transition'
 
-import sidebars from './sidebar'
+import sidebars from './sidebar/index'
 import VersionModal from './modal/version'
 import sidebarPanel from './sidebar/sidebar.vue'
-import {dateFormat} from '../../utils/common'
 const sidebarsOrder = Object.keys(sidebars)
 
 const md = mavonEditor.getMarkdownIt()

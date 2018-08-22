@@ -99,7 +99,7 @@
 
 <script>
 import {mapGetters, mapActions, mapState} from 'vuex'
-import crud from './crud'
+import crud from '../components/crud'
 import api from '@/utils/api'
 // <!--mapState mapActions-->
 

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-	export default {
-		name: 'main-header'
-	}
+export default {
+    name: 'main-header'
+}
 </script>

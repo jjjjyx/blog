@@ -1,7 +1,7 @@
 'use strict'
 
 import Vue from 'vue'
-import App from './components/cms-app2.vue'
+import App from './cms-app.vue'
 import Icon from './components/icon'
 import router from './router'
 import iView from 'iview'

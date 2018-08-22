@@ -4,15 +4,11 @@
 }
 
 .main__header {
-    //position: fixed;
     width: 100%;
-    //top: 0;
-    //right: 0;
-    //left: 0;
     z-index: 1000;
     height: $nav-height;
     background-color: #ababab; // tmp
-    //overflow: hidden;
+    flex-shrink: 0;
     .ivu-menu-horizontal {
         height: $nav-height;
         line-height: $nav-height;

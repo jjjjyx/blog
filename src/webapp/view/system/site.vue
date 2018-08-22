@@ -54,8 +54,8 @@
 <script>
 // import {mapState} from 'vuex'
 import _ from 'lodash'
-import {difference} from '../../utils/common'
 import api from '@/utils/api'
+import {difference} from '@/utils/common'
 import {GridItem, GridLayout} from 'vue-grid-layout'
 // ResponsiveGridLayout
 // mapState, mapActions,

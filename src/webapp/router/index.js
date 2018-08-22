@@ -3,14 +3,40 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import iView from 'iview'
-import routes from './router'
+import menus from './router'
 // import postTest from '@/components/post/post-test'
 import NotFound from '../404'
 import store from '../store'
 import api from '../utils/api'
-// import filter from '@/components/filter.vue'
-// import scan from '@/components/scan.vue'
+
 Vue.use(Router)
+
+
+let routes = []
+
+function buitem (item, parent) {
+    let path = '/'
+    if (parent) {
+        path += (parent.name + '/')
+    }
+    path+= item.key
+    return {
+        path,
+        name: item.name,
+        component: () => import('@/view' + path)
+    }
+}
+
+menus.forEach(item => {
+    if (item.subMenus) {
+        if (item.isChildren) {
+        }
+        routes.push(...item.subMenus.map((i) => buitem(i, item)))
+    }
+    routes.push(buitem(item))
+})
+
+
 
 routes.push({path: '*', component: NotFound, name: '*'})
 async function isLogIn () {

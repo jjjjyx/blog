@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import CodeDiff from '../code-diff/code-diff'
+import CodeDiff from '@/components/code-diff/code-diff'
 export default {
     name: 'post-test',
     components: {CodeDiff},

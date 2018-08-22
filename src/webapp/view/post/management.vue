@@ -68,9 +68,9 @@ import Vue from 'vue'
 import {mapState, mapActions, mapGetters} from 'vuex'
 // import {on} from '@/utils/dom'
 import {dateFormat} from '@/utils/common'
+import crud from '@/components/crud'
 import api from '@/utils/api'
 import PostTitle from './col/post-title'
-import crud from '../crud'
 Vue.component('post-title', PostTitle)
 const renderTitle = function (h, {row}) {
     return h('post-title', {

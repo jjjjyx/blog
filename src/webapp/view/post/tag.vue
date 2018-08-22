@@ -8,13 +8,13 @@
                         <Form-Item label="关键字">
                             <Input v-model="filterForm.key" placeholder="名称" clearable/>
                         </Form-Item>
-
                         <FormItem>
                             <i-Button type="primary" shape="circle" icon="ios-search" @click="search"></i-Button>
                         </FormItem>
                     </i-Form>
-                    <i-button type="ghost" icon="document" @click="createCategory">新建分类</i-button>
+                    <i-button type="ghost" icon="document" @click="createCategory">新建标签</i-button>
                     <i-button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">删除</i-button>
+
                 </i-col>
                 <i-col span="6">
                     <div class="table-buttons" style="float: right">
@@ -41,16 +41,14 @@
                 <span>全部文章</span>
             </div>
             <div class="cm-wrapper" ref="table-wrapper">
-                <!--<div class="">-->
                 <i-table :columns="columns" :data="data" stripe
                          class="cm-wrapper--table" ref="table"
                          @on-selection-change="handleSelectChange"
                          :height="tableHeight" :loading="tableStatus"></i-table>
-                <!--</div>-->
             </div>
         </div>
         <div class="cm-container--flex__modal">
-            <component :is="showRightComponent" :form-item="formItem" :target="singleEditTarget"></component>
+            <component :is="showRightComponent" prefix="标签" :form-item="formItem" :target="singleEditTarget"></component>
         </div>
     </div>
 </template>
@@ -58,29 +56,44 @@
 <script>
 import Vue from 'vue'
 import {mapState, mapActions, mapGetters} from 'vuex'
-import {dateFormat} from '../../utils/common'
-import crud from '../crud'
-
+import crud from '@/components/crud'
+import {dateFormat} from '@/utils/common'
 import CategoryName from './col/category-name'
-import addTermCategory from './modal/add-term-category'
-import editTermCategory from './modal/edit-term-category'
+import addTermTag from './modal/add-term-category'
+import editTermTag from './modal/edit-term-category'
 
 Vue.component('category-name', CategoryName)
 const renderDate = function (h, {row}) {
     return h('div', dateFormat(row.createdAt))
 }
-const renderName = function (h, {row}) {
-    return h('category-name', {
-        props: {category: row},
-        on: {
-            del: () => {
-                this.remove([row])
+const renderAction = function (h, {row}) {
+    return h('div', [
+        h('Button', {
+            props: {
+                type: 'primary',
+                size: 'small'
             },
-            edit: (e) => {
-                this.edit(row)
+            style: {
+                marginRight: '5px'
+            },
+            on: {
+                click: () => {
+                    this.edit(row)
+                }
             }
-        }
-    })
+        }, 'Edit'),
+        h('Button', {
+            props: {
+                type: 'error',
+                size: 'small'
+            },
+            on: {
+                click: () => {
+                    this.remove([row])
+                }
+            }
+        }, 'Delete')
+    ])
 }
 
 export default {
@@ -91,17 +104,19 @@ export default {
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 // {title: 'ID', key: 'id', width: 100, sortable: true},
-                {title: '分类名称', key: 'name', width: 280, sortable: true, render: renderName.bind(this)},
-                {title: '文章数', key: 'count', width: 90, sortable: true},
+                {title: '标签名称', key: 'name', width: 150, sortable: true},
+                {title: '计数', key: 'count', width: 90, sortable: true},
+                {title: '标识', key: 'slug', width: 100},
                 {title: '说明', key: 'description'},
-                {title: '创建时间', key: '', width: 220, render: renderDate.bind(this)}
+                {title: '创建时间', key: '', width: 130, render: renderDate.bind(this)},
+                {title: 'action', key: '', width: 130, render: renderAction.bind(this)}
                 // {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
                 // {title: '类别', key: '', width: 100, render: renderCategory.bind(this)},
                 // {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
                 // {title: '评论', key: '', width: 80, sortable: true},
             ],
-            active: 'term/category',
-            delTip: '<p>确认删除分类?</p><p>删除分类不会删除分类下的文章</p>',
+            active: 'term/tag',
+            delTip: '<p>确认删除标签?</p><p>删除标签导致引用失效</p>',
             formItem: {
                 name: '',
                 slug: '',
@@ -110,16 +125,16 @@ export default {
             }
         }
     },
-    components: {
-        addTermCategory,
-        editTermCategory
-    },
     computed: {
         ...mapState({
-            data: state => state.data.categoryList
+            data: state => state.data.tagList
         }),
         ...mapGetters({
         })
+    },
+    components: {
+        addTermTag,
+        editTermTag
     },
     methods: {
         ...mapActions({'fetch': 'fetchTerms'}),

@@ -12,6 +12,25 @@ $sider-bg-color : #282d2f;
 $sider-bg-deep-color : #1f2224;
 $sider-width: 240px;
 $sider-collapsed-width: 78px;
+$sider-logo-bg-color: $sider-bg-color;
+
+
+//$badge-colors: (
+//    "purple": #9c27b0,
+//    "blue": #00bcd4,
+//    "green": #4caf50,
+//    "orange": #ff9800,
+//    "rose": #e91e63,
+//    "red": $logo-color,
+//    "black": $black,
+//    "white": hsla(0,0%,78%,.2)
+//);
+
+$badge-colors: map_merge($colors, (
+    "rose": #e91e63,
+    "white": hsla(0,0%,78%,.2),
+    'black': $black
+));
 
 @import "cm-sass/overload-iview";
 @import "cm-sass/cm-layout";
