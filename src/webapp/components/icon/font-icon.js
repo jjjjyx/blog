@@ -54,6 +54,9 @@ export default {
             i = h('Icon', {
                 props: {
                     type, size, color, custom
+                },
+                on: {
+                    click: this.handleClick
                 }
             })
         }
