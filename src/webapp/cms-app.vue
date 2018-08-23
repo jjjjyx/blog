@@ -133,18 +133,19 @@ export default {
             for (let matchedKey in this.$route.matched) {
                 let cn = this.$route.matched[matchedKey].name
                 let pn = this.$route.matched[matchedKey].meta.parent
-                if (name !== cn)
+                if (name !== cn) {
                     names.push(this.$route.matched[matchedKey].name)
+                }
                 if (pn && name !== pn) {
                     names.push(pn)
                 }
             }
             return names
         },
-        updateOpenName (name) {
-            if (name === 'home') this.openedNames = []
-            else this.openedNames = this.getOpenedNamesByActiveName(name)
-        },
+        // updateOpenName (name) {
+        //     if (name === 'home') this.openedNames = []
+        //     else this.openedNames = this.getOpenedNamesByActiveName(name)
+        // },
         handleSelectRouter: function (menu, parent) {
             let name = menu.name
             if (name === 'post_writer') { // 撰写文章单独处理

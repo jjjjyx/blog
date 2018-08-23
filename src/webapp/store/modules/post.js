@@ -77,6 +77,11 @@ const getters = {
 const actions = {
     async createNewPost ({commit, state}) {
         try {
+            // 创建前 如果有 id 并且状态是自动草稿 就不新建了
+            if (state.id && state.post_status === 'auto-draft') {
+                return 0
+            }
+
             let result = await api.npost('/api/post/new_post', {post_title: ''})
             commit('SET_CURRENT_POST', result)
             commit('updateEditorStatus', POST_WRITER_STATUS.created)

@@ -230,8 +230,8 @@ const createTags = async function (req, res, post) {
         // 更新update
         postDao.update({
             updatedAt: new Date()
-        }, {where: {id: post.id}}).cache((e)=>{
-            log.warn('createTags update post#%d 修改时间出错', e)
+        }, {where: {id: post.id}}).then(()=>{
+            log.info('更新标签，修改文章时间')
         })
         // log.debug('更新标签，修改文章编辑时间')
         await post.setTerms(tags)
@@ -330,6 +330,7 @@ const save = [
                 try {
                     await createTags(req, res, post, false)
                 } catch (e) {
+                    log.error('save post err by', e)
                     return res.status(200).json(Result.info(e.message))
                 }
                 // let values = {post_title, post_content, post_excerpt, post_status: post.post_status}

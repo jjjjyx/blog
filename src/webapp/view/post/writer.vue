@@ -183,10 +183,7 @@ export default {
             'createNewPost': 'createNewPost'
         }),
         checkTagLength () {
-            if (this.currTagLength >= this.maxTagLength) {
-                return false
-            }
-            return true
+            return this.currTagLength < this.maxTagLength;
         },
         // async fetchData() {
         //     // 加载数据
@@ -458,7 +455,6 @@ export default {
         poi = _.toNumber(poi)
         // 如果有尚未保存的文章 给出提示
         next(async (vm) => {
-            console.log(12312)
             let thisId = vm.currentPost.id
             if (active === 'new') { // 创建
                 vm.newPost(from)
@@ -509,7 +505,7 @@ export default {
         onResize()
         on(window, 'resize', onResize)
 
-        console.log(this.$refs.md)
+        // console.log(this.$refs.md)
         // 当前页面中按ctrl + s
 
         // 直接进入 创建新文章
