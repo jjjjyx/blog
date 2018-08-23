@@ -8,12 +8,12 @@ const debug = require('debug')('app:routers:api.posts')
 const log = require('log4js').getLogger('api.posts')
 const {body, param} = require('express-validator/check')
 const {sanitizeBody, sanitizeParam} = require('express-validator/filter')
-const utils = require('../utils')
-const Result = require('../common/resultUtils')
-const {Enum} = require('../common/enum')
+const utils = require('../../utils')
+const Result = require('../../common/resultUtils')
+const {Enum} = require('../../common/enum')
 const marked = require("marked")
 
-const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../models')
+const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../../models/index')
 const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
 

@@ -82,11 +82,11 @@ import MainPlugin from './components/main/main-plugin'
 import MainHeader from './components/main/main-header'
 import MainFooter from './components/main/main-footer'
 import MainBreadcrumb from './components/main/main-breadcrumb'
-import {mapState, mapActions} from 'vuex'
+import {mapState, mapActions, mapMutations} from 'vuex'
 import SideMenu from './components/sidebar/side-menu'
 import menus from './router/router'
 export default {
-    name: 'cms-app2',
+    name: 'cms-app',
     store,
     data () {
         return {
@@ -128,16 +128,17 @@ export default {
     },
     methods: {
         ...mapActions(['toggleSidebarMini']),
+        ...mapMutations(['setBreadCrumb']),
         getOpenedNamesByActiveName (name) {
             let names = []
             for (let matchedKey in this.$route.matched) {
                 let cn = this.$route.matched[matchedKey].name
-                let pn = this.$route.matched[matchedKey].meta.parent
+                let parent = this.$route.matched[matchedKey].meta.parent
                 if (name !== cn) {
-                    names.push(this.$route.matched[matchedKey].name)
+                    names.push(cn)
                 }
-                if (pn && name !== pn) {
-                    names.push(pn)
+                if (parent && name !== parent.name) {
+                    names.push(parent.name)
                 }
             }
             return names
@@ -165,13 +166,15 @@ export default {
         }
     },
     watch: {
-        '$route.name': function (val) {
-            this.activeName = val
+        '$route': function (val) {
+            let {name, matched} = val
+            this.activeName = name
             if (this.accordion) {
-                this.openedNames = this.getOpenedNamesByActiveName(val)
+                this.openedNames = this.getOpenedNamesByActiveName(name)
             } else {
 
             }
+            this.setBreadCrumb(matched)
         },
         'openedNames': function (val) {
             this.$nextTick(() => {

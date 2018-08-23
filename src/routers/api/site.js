@@ -6,12 +6,12 @@ const express = require('express')
 const router = express.Router()
 const debug = require('debug')('app:routers:api.site')
 const log = require('log4js').getLogger('api.site')
-const utils = require('../utils')
-const Result = require('../common/resultUtils')
-const {siteDao, termDao} = require('../models');
+const utils = require('../../utils')
+const Result = require('../../common/resultUtils')
+const {siteDao, termDao} = require('../../models/index');
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
-const {Enum, labels} = require('../common/enum')
+const {Enum, labels} = require('../../common/enum')
 
 const updateSite = function (key, value) {
     // return function () {

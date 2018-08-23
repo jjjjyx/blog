@@ -1,5 +1,5 @@
 const menus = [
-    {title: 'home', key: '', name: 'home', icon: 'camera', hideInMenu: true},
+    {title: '主页', key: '', name: 'home', icon: 'speedometer', hideInMenu: true},
     {
         title: '文章管理',
         name: 'post',
@@ -22,3 +22,7 @@ const menus = [
 ]
 
 export default menus
+const homeRouter = menus[0]
+export {
+    homeRouter
+}

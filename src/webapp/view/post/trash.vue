@@ -12,7 +12,7 @@
                     <span class="trash--list__countdown">{{formatTime(item.deleteAt)}}天后</span>
                     <span class="trash--list__date">{{formatDate(item.deleteAt)}}</span><span>清除</span>
                 </span>
-                <color-icon type="icon-wenzhang" size="18" style="vertical-align: middle;"></color-icon>
+                <color-icon type="icon-color-wenzhang" size="18" style="vertical-align: middle;"></color-icon>
                 <span class="trash--list__post_name">
                     #{{item.id}} - {{item.post_title}}
                 </span>

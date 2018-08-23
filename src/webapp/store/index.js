@@ -8,6 +8,7 @@ import modules from './modules'
 import {mutations} from './mutations.js'
 import actions from './actions'
 import createPersistedState from 'vuex-persistedstate'
+import {homeRouter} from '../router/router'
 Vue.use(Vuex)
 
 const state = {
@@ -15,7 +16,8 @@ const state = {
     dict: {},
     site: [],
     siteMap: {},
-    breadCrumbList: []
+    breadCrumbList: [],
+    homeRouter,
 }
 const getters = {
     postStatusDict: state => state.dict.postStatus,

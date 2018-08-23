@@ -3,11 +3,16 @@
     position: fixed;
     right: 0;
     width: 64px;
-    background: rgb(0, 0, 0);
+    background: rgba(0, 0, 0, .2);
     z-index: 1031;
     border-radius: 8px 0 0 8px;
     text-align: center;
     top: 85px;
+    transition: background-color .2s ease-in-out;
+    //opacity: .2;
+    &:hover {
+        background: rgba(0, 0, 0, .9);
+    }
     .plugin__btn {
         color: #eaeaea;
         font-size: 2rem;

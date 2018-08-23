@@ -15,7 +15,7 @@ function buitem (item, parent) {
     let path = '/'
     if (parent) {
         path += (parent.name + '/')
-        item.parent = parent.name
+        item.parent = {icon: parent.icon, name: parent.name, key: parent.key, title: parent.title, isChildren: parent.isChildren}
     }
     path += item.key
     return {

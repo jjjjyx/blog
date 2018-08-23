@@ -105,14 +105,12 @@ import {verification, getMetaKeyCode, POST_WRITER_STATUS, dateFormat} from '@/ut
 import CollapseTransition from '@/utils/collapse-transition'
 
 import sidebars from './sidebar/index'
-import VersionModal from './modal/version'
+import VersionModal from '../../components/curd-right-components/version'
 import sidebarPanel from './sidebar/sidebar.vue'
 const sidebarsOrder = Object.keys(sidebars)
 
 const md = mavonEditor.getMarkdownIt()
-md.set({
-    html: false
-})
+md.set({html: false})
 export default {
     name: 'post-writer',
     data () {
@@ -319,10 +317,11 @@ export default {
             // this.renderValue = render
             let obj = this.$store.getters.ajaxPostClone
             try {
-                await api.npost('/api/post/save', obj)
+                let serverObj = await api.npost('/api/post/save', obj)
                 // console.log('save result = ', result)
                 this.pushRouter('replace')
                 this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saved)
+                this.$store.commit('updatePostStatus', serverObj.post_status)
                 this.$store.commit('updateAutoSaveContent', obj)
                 // 手动更新一下vuex 状态里的记录
             } catch (e) {

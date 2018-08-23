@@ -1,6 +1,6 @@
 <template>
     <div  class="demo-tabs-style2">
-        <Tabs size="small" type="card">
+        <Tabs size="small" type="card" class="cm-tabs-style">
             <TabPane label="所有分类">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
                     <Radio v-for="(item, index) in categoryList" :label="item.id" :key="index">
@@ -105,32 +105,3 @@ export default {
     }
 }
 </script>
-<style>
-.demo-tabs-style2 > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab{
-    border-radius: 0;
-    background: #fff;
-    font-size: 12px;
-}
-.demo-tabs-style2 > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar {
-    margin-bottom: 0;
-}
-.demo-tabs-style2 > .ivu-tabs.ivu-tabs-card .ivu-tabs-tabpane {
-    border: 1px solid #dddee1;
-    border-top-width: 0;
-    padding: 10px;
-    margin-bottom: 15px;
-}
-.demo-tabs-style2 > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active{
-    border-top: 1px solid #3399ff;
-}
-.demo-tabs-style2 > .ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active:before{
-    content: '';
-    display: block;
-    width: 100%;
-    height: 1px;
-    background: #3399ff;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-</style>

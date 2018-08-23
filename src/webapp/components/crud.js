@@ -2,7 +2,7 @@ import _ from 'lodash'
 import {on, off} from '@/utils/dom'
 import {getMetaKeyCode} from '@/utils/common'
 import api from '@/utils/api'
-import selectInfo from '../view/post/modal/default-right'
+import selectInfo from './curd-right-components/default-right'
 export default {
     data () {
         return {
@@ -18,7 +18,9 @@ export default {
             singleEditTarget: null, // 单选编辑对象
 
             active: '_', // 当前 url
-            delTip: '确认删除？' // 删除提示
+            delTip: '确认删除？', // 删除提示
+
+            rightComponent: 'select-info'
         }
     },
     components: {
@@ -40,15 +42,15 @@ export default {
             return this.active.replace(/\/(\w)/g, '-$1')
         },
         // 当前显示组件
-        showRightComponent () {
-            if (this.singleEditTarget) {
-                return `edit-${this.activeToLine}`
-            } else if (this.selectedNum === 0) {
-                return `add-${this.activeToLine}`
-            } else {
-                return `select-info`
-            }
-        }
+        // showRightComponent () {
+        //     if (this.singleEditTarget) {
+        //         return `edit-${this.activeToLine}`
+        //     } else if (this.selectedNum === 0) {
+        //         return `add-${this.activeToLine}`
+        //     } else {
+        //         return `select-info`
+        //     }
+        // }
     },
     methods: {
         // ...mapActions({'fetchTerms': 'fetchTerms',}),
@@ -80,6 +82,7 @@ export default {
                             await api.npost(`/api/${this.active}/del`, {ids})
                             this.$store.dispatch('del_' + this.active, selected)
                             this.$Message.success('删除成功')
+                            this.selectedList =  _.differenceBy(this.selectedList, selected, this.idKey)
                             resolve()
                         } catch (e) {
                             this.$Message.info('删除失败')
@@ -108,6 +111,7 @@ export default {
         // 修改数据
         edit: function edit (target) {
             this.singleEditTarget = target
+            this.switchRightComponent('edit')
         },
         saveEdit: async function saveEdit (target) {
             this.confirmStatus = true
@@ -128,10 +132,31 @@ export default {
         unEdit: function unEdit () {
             this.singleEditTarget = null
         },
+        switchRightComponent (type) {
+            switch (type) {
+                case 'edit':
+                    this.rightComponent = `edit-${this.activeToLine}`
+                    break
+                case 'add':
+                    this.rightComponent = `add-${this.activeToLine}`
+                    break
+                default:
+                    this.rightComponent = 'select-info'
+            }
+        },
         // 查询数据
         search: function search () {},
+        switchAdd: function () {
+            this.switchRightComponent('add')
+        },
         // 选择变化
         handleSelectChange (value) {
+            if (value.length === 0) {
+                this.switchRightComponent('add')
+            } else {
+                this.switchRightComponent()
+            }
+            // console.log(value, this.rightComponent)
             this.selectedList = value
         },
         handleKeyDown: function (e) {

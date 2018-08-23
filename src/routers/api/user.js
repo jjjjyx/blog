@@ -7,9 +7,9 @@ const router = express.Router()
 const debug = require('debug')('app:routers:api.user')
 const log = require('log4js').getLogger('api.user')
 const {check} = require('express-validator/check')
-const utils = require('../utils')
-const Result = require('../common/resultUtils')
-const {userDao} = require('../models')
+const utils = require('../../utils')
+const Result = require('../../common/resultUtils')
+const {userDao} = require('../../models/index')
 // 密码必须为6-18位 必须包含特殊字符和英文
 const passReg = new RegExp(
     '^(?![a-zA-z]+$)(?!\\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\\d!@#$%^&*]+$)[a-zA-Z\\d!@#$%^&*]+$')

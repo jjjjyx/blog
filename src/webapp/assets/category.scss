@@ -28,8 +28,17 @@
     box-shadow: 0 0 5px rgba(0,0,0,.1);
     //margin-left: .5rem;
     margin-bottom: 6rem;
+    min-height: 235px; // 至少有标题 有三行说明的情况
     &:hover {
         box-shadow: 0 5px 20px rgba(0,0,0,.1);
+    }
+    .card__header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .card__content {
+        min-height: 85px;
     }
 }
 .j-category--item {

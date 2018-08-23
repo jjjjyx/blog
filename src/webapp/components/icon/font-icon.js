@@ -1,4 +1,5 @@
 const prefixCls = 'iconfont'
+import ColorIcon from './icon'
 export default {
     name: 'font-icon',
     props: {
@@ -12,6 +13,9 @@ export default {
             type: String,
             default: ''
         }
+    },
+    components: {
+        ColorIcon
     },
     computed: {
         classes () {
@@ -42,7 +46,16 @@ export default {
     render (h) {
         let {type, size, color, custom} = this
         let i
-        if (type.startsWith('icon-')) {
+        if (type.startsWith('icon-color-')) {
+            i = h('color-icon', {
+                props: {
+                    type, size, color, custom
+                },
+                on: {
+                    click: this.handleClick
+                }
+            })
+        } else if (type.startsWith('icon-')) {
             i = h('i', {
                 class: this.classes,
                 style: this.styles,

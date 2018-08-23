@@ -7,10 +7,10 @@ const debug = require('debug')('app:routers:api.term')
 const router = express.Router()
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
-const utils = require('../utils')
-const Result = require('../common/resultUtils')
-const {Enum} = require('../common/enum')
-const {termDao, postDao, sequelize} = require('../models')
+const utils = require('../../utils')
+const Result = require('../../common/resultUtils')
+const {Enum} = require('../../common/enum')
+const {termDao, postDao, sequelize} = require('../../models/index')
 
 const {term_relationships: termRelationshipsDao } = sequelize.models
 const Op = sequelize.Op
@@ -41,7 +41,7 @@ const checkName = body('name').isString().withMessage('请提交正确的名称'
 const slugMsg = '且名称只能包含英文，连字符（-），数字,且在长度不超过30！'
 const slugV = (value) => {
     debug('checkSlug slug = ', value)
-    return /^[a-zA-Z0-9\-]{1,30}$/.test(value)
+    return /^[a-zA-Z0-9\-_]{1,30}$/.test(value)
 }
 const checkSlug = body('slug').exists().withMessage('必须').custom(slugV).withMessage(slugMsg)
 const checkSlug2 = body('slug').isLength({min: 0, max: 30}).custom(slugV).withMessage(slugMsg)
@@ -175,7 +175,7 @@ const del = [
                     let _destroy = {paranoid: false, force: true, where: {term_id: post_tag_ids}}
                     termRelationshipsDao.destroy(_destroy).then(() =>{
                         // 删除标签
-                        termDao.destroy(_destroy)
+                        termDao.destroy({paranoid: false, force: true, where: {id: post_tag_ids}})
                     })
                 }
             }

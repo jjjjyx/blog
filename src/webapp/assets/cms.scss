@@ -36,12 +36,14 @@ $badge-colors: map_merge($colors, (
 @import "cm-sass/cm-layout";
 @import "cm-sass/cm-nav";
 @import "cm-sass/cm-sidebar";
+@import "cm-sass/cm-tabs";
 @import "cm-sass/post-writer";
 @import "cm-sass/cms-crud";
 @import "cm-sass/media-management";
 @import "cm-sass/upload";
 @import "cm-sass/site";
 @import "cm-sass/plugin";
+@import "cm-sass/icon-select";
 @import "sass/scrollbar";
 
 .wrapper {
@@ -52,3 +54,8 @@ $badge-colors: map_merge($colors, (
     overflow-y: hidden;
 }
 
+.h1, .h2, .h3, .h4, .h6, .h5 {
+    //font-family: Roboto,Helvetica,Arial,sans-serif;
+    font-weight: 300;
+    //line-height: 1.5em;
+}

@@ -1,0 +1,28 @@
+.cm-tabs-style.ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab{
+    border-radius: 0;
+    background: #fff;
+    font-size: 12px;
+}
+.cm-tabs-style.ivu-tabs.ivu-tabs-card > .ivu-tabs-bar {
+    margin-bottom: 0;
+}
+.cm-tabs-style.ivu-tabs.ivu-tabs-card .ivu-tabs-tabpane {
+    border: 1px solid #dddee1;
+    border-top-width: 0;
+    padding: 10px;
+    margin-bottom: 15px;
+}
+.cm-tabs-style.ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active{
+    border-top: 1px solid #3399ff;
+}
+.cm-tabs-style.ivu-tabs.ivu-tabs-card > .ivu-tabs-bar .ivu-tabs-tab-active:before{
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: #3399ff;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+

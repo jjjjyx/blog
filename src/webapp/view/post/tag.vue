@@ -3,17 +3,17 @@
         <div class="cm-container--flex__left">
             <row>
                 <i-col span="18">
-                    <i-Form :model="filterForm" :label-width="50" inline class="filter-form"
+                    <Form :model="filterForm" :label-width="50" inline class="filter-form"
                             @submit.native.prevent="search">
-                        <Form-Item label="关键字">
+                        <FormItem label="关键字">
                             <Input v-model="filterForm.key" placeholder="名称" clearable/>
-                        </Form-Item>
-                        <FormItem>
-                            <i-Button type="primary" shape="circle" icon="ios-search" @click="search"></i-Button>
                         </FormItem>
-                    </i-Form>
-                    <i-button type="ghost" icon="document" @click="createCategory">新建标签</i-button>
-                    <i-button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">删除</i-button>
+                        <FormItem>
+                            <Button type="primary" shape="circle" icon="ios-search" @click="search"></Button>
+                        </FormItem>
+                    </Form>
+                    <Button type="ghost" icon="document" @click="switchAdd">新建标签</Button>
+                    <Button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">删除</Button>
 
                 </i-col>
                 <i-col span="6">
@@ -23,10 +23,10 @@
                         <!--<i-Button type="text" icon="edit" :disabled="userMultipleSelection.length!=1"-->
                         <!--@click="active='edit',currentUser = userMultipleSelection[0],openEditUserInfo()"></i-Button>-->
                         <Tooltip content="刷新">
-                            <i-Button type="text" icon="loop" @click="fetchData(true)"></i-Button>
+                            <Button type="text" icon="loop" @click="fetchData(true)"></Button>
                         </Tooltip>
                         <Dropdown>
-                            <i-Button type="text" icon="arrow-swap" class="sort-order-btn"></i-Button>
+                            <Button type="text" icon="arrow-swap" class="sort-order-btn"></Button>
                             <DropdownMenu slot="list">
                                 <DropdownItem>时间</DropdownItem>
                                 <DropdownItem>文件大小</DropdownItem>
@@ -48,7 +48,9 @@
             </div>
         </div>
         <div class="cm-container--flex__modal">
-            <component :is="showRightComponent" prefix="标签" :form-item="formItem" :target="singleEditTarget"></component>
+            <keep-alive>
+                <component :is="rightComponent" prefix="标签" :form-item="formItem" :target="singleEditTarget"></component>
+            </keep-alive>
         </div>
     </div>
 </template>
@@ -59,8 +61,8 @@ import {mapState, mapActions, mapGetters} from 'vuex'
 import crud from '@/components/crud'
 import {dateFormat} from '@/utils/common'
 import CategoryName from './col/category-name'
-import addTermTag from './modal/add-term-category'
-import editTermTag from './modal/edit-term-category'
+import addTermTag from '../../components/curd-right-components/add-term-category'
+import editTermTag from '../../components/curd-right-components/edit-term-category'
 
 Vue.component('category-name', CategoryName)
 const renderDate = function (h, {row}) {
@@ -129,8 +131,7 @@ export default {
         ...mapState({
             data: state => state.data.tagList
         }),
-        ...mapGetters({
-        })
+        ...mapGetters({})
     },
     components: {
         addTermTag,
@@ -140,7 +141,9 @@ export default {
         ...mapActions({'fetch': 'fetchTerms'}),
         search: function search () {},
         // 创建新分类
-        createCategory: function createCategory () {}
+        createTag: function createCategory () {
+            // this.rightComponent = ''
+        }
     },
     mounted () {
     }

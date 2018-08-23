@@ -68,3 +68,11 @@
 .ivu-table-tbody .ivu-table-row.ivu-table-row-hover td:first-child {
     border-left-color: $logo-color;
 }
+
+.ivu-breadcrumb {
+    color: $main-font-color;
+    >span:last-child {
+        font-weight: 100;
+        color: $main-title-sub-color;
+    }
+}

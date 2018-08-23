@@ -93,14 +93,14 @@
         <section class="article-a-footer">
             <% if (post_tag) {%>
             <div class="article-a-footer__tag">
-                <color-icon type="icon-tag" size="24" class="mr-2 align-middle"></color-icon>
+                <color-icon type="icon-color-tag" size="24" class="mr-2 align-middle"></color-icon>
                 <% post_tag.forEach((tag) => {%><span class="ivu-tag ivu-tag-default ivu-tag-checked"><%=tag.name%></span><%})%>
             </div>
             <%}%>
             <!--<div class="article-a-footer__thumbs"></div>-->
             <div class="article-a-footer__share social-share">
                 <button class="thumbs__btn ivu-btn ivu-btn-circle ivu-btn-large ivu-btn-success">
-                    <color-icon class="mr-1 align-middle" size="18" type="icon-icon-"></color-icon>
+                    <color-icon class="mr-1 align-middle" size="18" type="icon-color-icon-"></color-icon>
                     <span style="font-size: 1rem">赞一个&nbsp;&nbsp;|&nbsp;&nbsp;0</span>
                 </button>
             </div>

@@ -5,18 +5,8 @@
             <FormItem :label="prefix+ '名称'" prop="name">
                 <Input v-model="targetForm.name" :placeholder="`请输入${prefix}名称`" :maxlength="10"/>
             </FormItem>
-            <!--todo 一个选择图标的方案-->
-            <!--<Poptip placement="left" width="800">-->
-            <!--<FormItem label="分类图标">-->
-            <!--<a href="javascript:;">选择图标</a>-->
-            <!--&lt;!&ndash;<Input v-model="targetForm.icon" placeholder="Enter something..." />&ndash;&gt;-->
-            <!--</FormItem>-->
-            <!--<div class="icon-select-panel" slot="content">-->
-
-            <!--</div>-->
-            <!--</Poptip>-->
             <FormItem :label="prefix+'图标'" prop="icon" v-if="prefix==='分类'">
-                <!--<a href="javascript:;">选择图标</a>-->
+                <!--<a>选择icon</a>-->
                 <Input v-model="targetForm.icon" placeholder="输入icon" />
             </FormItem>
             <FormItem :label="prefix+'说明'" prop="description">
