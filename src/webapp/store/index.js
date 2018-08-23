@@ -7,7 +7,7 @@ import createLogger from 'vuex/dist/logger'
 import modules from './modules'
 import {mutations} from './mutations.js'
 import actions from './actions'
-
+import createPersistedState from 'vuex-persistedstate'
 Vue.use(Vuex)
 
 const state = {
@@ -23,7 +23,11 @@ const getters = {
     defaultCategoryValue: state => _.toNumber(state.siteMap['defaultCategoryId'].value)
 }
 const debug = process.env.NODE_ENV !== 'production'
+const plugins = [createPersistedState()]
 
+if (debug) {
+    plugins.push(createLogger())
+}
 export default new Vuex.Store({
     strict: debug,
     actions,
@@ -31,5 +35,5 @@ export default new Vuex.Store({
     state,
     mutations,
     modules,
-    plugins: debug ? [createLogger()] : []
+    plugins
 })
