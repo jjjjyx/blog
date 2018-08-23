@@ -8,22 +8,21 @@ import menus from './router'
 import NotFound from '../404'
 import store from '../store'
 import api from '../utils/api'
-
 Vue.use(Router)
 
-
 let routes = []
-
 function buitem (item, parent) {
     let path = '/'
     if (parent) {
         path += (parent.name + '/')
+        item.parent = parent.name
     }
-    path+= item.key
+    path += item.key
     return {
         path,
         name: item.name,
-        component: () => import('@/view' + path)
+        component: () => import('@/view' + path),
+        meta: item
     }
 }
 
@@ -35,8 +34,6 @@ menus.forEach(item => {
     }
     routes.push(buitem(item))
 })
-
-
 
 routes.push({path: '*', component: NotFound, name: '*'})
 async function isLogIn () {

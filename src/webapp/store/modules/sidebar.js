@@ -22,7 +22,7 @@ const actions = {
     //     commit("USER_SET_INFO",user);
     // },
     toggleSidebarMini ({commit}) {
-        commit("TOGGLE_SIDEBAR_MINI");
+        commit('TOGGLE_SIDEBAR_MINI')
     }
 }
 const mutations = {

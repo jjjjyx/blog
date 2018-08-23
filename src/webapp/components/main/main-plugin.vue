@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import {mapState,mapMutations} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
 export default {
     name: 'main-plugin',
     data () {
@@ -52,7 +52,7 @@ export default {
                 'black',
                 'white',
                 'blue',
-                'red',
+                'red'
             ],
             sidebarBackgroundImages: [
                 'http://oht47c0d0.bkt.clouddn.com/sidebar-1.jpg',

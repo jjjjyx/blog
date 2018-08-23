@@ -32,7 +32,7 @@
             <!--</div>-->
         <!--</form>-->
         <!--<div class="sidebar-wrap">-->
-        <Menu width="auto" accordion :active-name="activeName" class="menu-item sidebar-wrap"  ref="sidebar" :open-names="openedNames">
+        <Menu width="auto" :accordion="accordion" :active-name="activeName" class="menu-item sidebar-wrap"  ref="sidebar" :open-names="openedNames">
             <!--<menu-group v-for="(group, index) in sidebarGroups" v-bind:key="index" >-->
                 <template v-for="(item, item_index) in sidebarMenus">
                     <template v-if="item.subMenus">
@@ -41,7 +41,7 @@
                                 <font-icon :type="item.icon"></font-icon>
                                 <span>{{item.title}}</span>
                             </template>
-                            <MenuItem :name="menu.name || `${index}_${item_index}_${menu_index}`"
+                            <MenuItem :name="menu.name || `${item_index}_${menu_index}`"
                                        v-for="(menu, menu_index) in item.subMenus" v-bind:key="menu_index"
                                        @click.native="handleSelectRouter(menu, item)" v-if="!menu.hideInMenu">
                                 <font-icon :type="menu.icon"></font-icon>
@@ -49,8 +49,8 @@
                             </MenuItem>
                         </submenu>
                     </template>
-                    <MenuItem v-else-if="!item.hideInMenu" :name="item.name || `${item_index}`" class="sidebar-menu__item"
-                              v-bind:key="item_index" @click.native="handleSelectRouter(item)">
+                    <MenuItem v-else-if="!item.hideInMenu" class="sidebar-menu__item"
+                              :name="item.name || `${item_index}`" :key="item_index" @click.native="handleSelectRouter(item)">
                         <font-icon :type="item.icon"></font-icon>
                         <span class>{{item.title}}</span>
                     </MenuItem>
@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 import store from './store/index'
 import MainPlugin from './components/main/main-plugin'
 import MainHeader from './components/main/main-header'
@@ -91,7 +92,8 @@ export default {
         return {
             activeName: null,
             openedNames: [],
-            sidebarMenus: menus
+            sidebarMenus: menus,
+            accordion: true
         }
     },
     components: {
@@ -121,12 +123,28 @@ export default {
             if (this.image) {
                 style['background-image'] = `url(${this.backgroundImage})`
             }
-            console.log(style)
             return style
         }
     },
     methods: {
         ...mapActions(['toggleSidebarMini']),
+        getOpenedNamesByActiveName (name) {
+            let names = []
+            for (let matchedKey in this.$route.matched) {
+                let cn = this.$route.matched[matchedKey].name
+                let pn = this.$route.matched[matchedKey].meta.parent
+                if (name !== cn)
+                    names.push(this.$route.matched[matchedKey].name)
+                if (pn && name !== pn) {
+                    names.push(pn)
+                }
+            }
+            return names
+        },
+        updateOpenName (name) {
+            if (name === 'home') this.openedNames = []
+            else this.openedNames = this.getOpenedNamesByActiveName(name)
+        },
         handleSelectRouter: function (menu, parent) {
             let name = menu.name
             if (name === 'post_writer') { // 撰写文章单独处理
@@ -144,6 +162,26 @@ export default {
                 this.$router.push({name})
             }
         }
+    },
+    watch: {
+        '$route.name': function (val) {
+            this.activeName = val
+            if (this.accordion) {
+                this.openedNames = this.getOpenedNamesByActiveName(val)
+            } else {
+
+            }
+        },
+        'openedNames': function (val) {
+            this.$nextTick(() => {
+                this.$refs.sidebar.updateActiveName()
+                this.$refs.sidebar.updateOpened()
+            })
+        }
+    },
+    mounted () {
+        // console.log(111, this.getOpenedNamesByActiveName(name), this.$route)
+        // this.openedNames = getUnion(this.openedNames, this.getOpenedNamesByActiveName(name))
     }
 }
 </script>
