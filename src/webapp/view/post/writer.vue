@@ -105,7 +105,7 @@ import {verification, getMetaKeyCode, POST_WRITER_STATUS, dateFormat} from '@/ut
 import CollapseTransition from '@/utils/collapse-transition'
 
 import sidebars from './sidebar/index'
-import VersionModal from '../../components/curd-right-components/version'
+import VersionModal from '../version/version'
 import sidebarPanel from './sidebar/sidebar.vue'
 const sidebarsOrder = Object.keys(sidebars)
 

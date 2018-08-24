@@ -11,7 +11,7 @@ const state = {
     categoryList: [],
     tagList: [],
 
-    imgList: []
+    // imgList: []
 }
 
 const getters = {
@@ -66,19 +66,6 @@ const actions = {
             this._vm.$Message.error('获取回收站数据失败')
         }
     },
-    async fetchMedia ({commit, state}, page = 1) {
-        try {
-            let result = await api.nget('/api/img/list', {page})
-            if (result.length === 0) {
-                this._vm.$Message.info('没有更多了呢')
-            } else {
-                result.forEach(i => (i._checked = false))
-                commit('APPEND_MEDIA', result)
-            }
-        } catch (e) {
-            this._vm.$Message.error('获取资源数据失败')
-        }
-    },
     del_post ({commit, state, getters, dispatch}, item) {
         // state.posts = _.differenceBy(state.posts, arr, 'id')
         commit({type: 'removeData', key: 'posts', arr: item})
@@ -131,9 +118,9 @@ const mutations = {
     SET_POST_TRASH (state, data) {
         state.trashPosts = data
     },
-    APPEND_MEDIA (state, data) {
-        state.imgList.push(...data)
-    },
+    // APPEND_MEDIA (state, data) {
+    //     state.imgList.push(...data)
+    // },
     removeData (state, {key, arr}) {
         state[key] = _.differenceBy(state[key], arr, 'id')
     },

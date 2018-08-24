@@ -2,7 +2,7 @@
 <div class="cm-container cm-container--flex medium__warp">
     <div class="cm-container--flex__left">
         <!--<div class="medium__img-opt">-->
-        <Form ref="formItem" :model="formItem" :rules="ruleInline" inline class="medium__img-opt">
+        <Form ref="formItem" :model="formItem" :rules="ruleInline" inline class="medium__opt">
             <div class="ivu-form-item">
                 <label class="ivu-form-item-label">目录：</label>
             </div>
@@ -79,16 +79,31 @@
             </FormItem>
         </Form>
         <!--</div>-->
-        <div class="medium__img-warp">
-            <pre>
-                {{data}}
-            </pre>
+        <div class="medium__img" ref="imgs">
+            <waterfall :line-gap="216" :watch="data" @reflowed="isBusy = false" ref="waterfall">
+                <!-- each component is wrapped by a waterfall slot -->
+                <waterfall-slot v-for="(item, index) in data" :width="item.width" :height="item.height" :order="index" :key="index">
+                    <div class="img__item">
+                        <img :src="item.url" alt="">
+                    </div>
+                </waterfall-slot>
+            </waterfall>
+            <div class="medium__img--not-more" v-if="!isNext">
+                没有更多了
+            </div>
         </div>
     </div>
     <div class="cm-container--flex__modal medium__right">
-        <h2 class="ivu-card-head">
+        <h2 class="ivu-card-head" >
             图片信息
         </h2>
+
+        <div style="height: 100%;overflow: auto">
+            <pre>
+            {{data}}
+        </pre>
+        </div>
+
     </div>
     <form class="h5-uploader-form" action="javascript:void(0);" @change="handleUploadChange" style="position: absolute; opacity: 0; top: -999px; left: 0; width: 0%; height: 0; cursor: pointer; opacity: 0;">
         <input title="点击选择文件" id="h5Input0" ref="h5Input0" multiple accept="image/*" type="file" name="html5uploader"
@@ -98,11 +113,29 @@
 </template>
 
 <script>
+import Waterfall from 'vue-waterfall/lib/waterfall'
+import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import {mapGetters, mapActions, mapState} from 'vuex'
-import crud from '../components/crud'
-import api from '@/utils/api'
+import {on} from '../utils/dom'
+// import crud from '@/components/curd'
 // <!--mapState mapActions-->
-
+import api from '@/utils/api'
+// {
+//     "hash": "Fg2ZZ0VmdYVnj8CsFy1-BGgmcsml",
+//     "key": "Fg2ZZ0VmdYVnj8CsFy1-BGgmcsml",
+//     "name": "1_120403103421_5.jpg",
+//     "size": 61624,
+//     "color": "#525b64",
+//     "uuid": "a60bcf7d-973e-4282-9123-913f052268f2",
+//     "mimeType": "image/jpeg",
+//     "bucket": "jyximg",
+//     "url": "http://oht47c0d0.bkt.clouddn.com/Fg2ZZ0VmdYVnj8CsFy1-BGgmcsml",
+//     "width": 740,
+//     "height": 462,
+//     "space": "public",
+//     "createdAt": "2018-08-12T17:18:49.000Z",
+//     "_checked": false
+// },
 const sizeLabels = {
     '9': '特大尺寸',
     '8': '大尺寸',
@@ -110,7 +143,7 @@ const sizeLabels = {
     '6': '小尺寸'
 }
 export default {
-    mixins: [crud],
+    // mixins: [crud],
     name: 'media-management',
     data () {
         return {
@@ -122,17 +155,8 @@ export default {
             ruleInline: {},
             idKey: 'hash',
             active: 'img',
-            page: 1,
             sizeLabels,
-            presetSize: [
-                '1920x1080',
-                '1680x1050',
-                '1440x900',
-                '1366x768',
-                '1280x1024',
-                '1280x800',
-                '1024x768'
-            ],
+            presetSize: ['1920x1080', '1680x1050', '1440x900', '1366x768', '1280x1024', '1280x800', '1024x768'],
             activeColor: null,
             presetColors: [
                 {color: '#DE2020', text: '红色'},
@@ -151,15 +175,20 @@ export default {
                     text: '黑白'
                 }
             ],
-            colorPanelVisible: false
+            colorPanelVisible: false,
+            isBusy: false,
+            isNext: true,
+            data: [],
+            currPage: 1,
         }
+    },
+    components: {
+        Waterfall,
+        WaterfallSlot
     },
     computed: {
         ...mapGetters({
             imgSpaces: 'imgSpaces'
-        }),
-        ...mapState({
-            data: state => state.data.imgList
         }),
         sizeText () {
             if (this.formItem.size) {
@@ -170,12 +199,32 @@ export default {
         }
     },
     methods: {
-        ...mapActions({'_fetch': 'fetchMedia'}),
-        async fetch () {
-            await this._fetch(this.page)
-            this.page++
+        // ...mapActions({'fetchMedia': 'fetchMedia'}),
+        async fetchMedia () {
+            try {
+                let result = await api.nget('/api/img/list', {page: this.currPage})
+                if (result.length === 0) {
+                    this.isNext = false
+                    this._vm.$Message.info('没有更多了呢')
+                } else {
+                    this.currPage++
+                    this.data.push(...result)
+                }
+            } catch (e) {
+                this._vm.$Message.error('获取资源数据失败')
+            }
         },
-        handleSubmit () {},
+        async fetch () {
+            if (!this.isBusy) {
+                this.isBusy = true
+                this.fetchMedia()
+                // this.items.push.apply(this.items, ItemFactory.get(50))
+            }
+            // await this._fetch(this.page)
+            // this.page++
+        },
+        handleSubmit () {
+        },
         handleUpload: function (name = 'file') {
             // upload.openSelectFile(name)
             // if (name === 'folder') { // 选择文件夹
@@ -213,7 +262,18 @@ export default {
             this.$refs.h5Input0.value = null
             // console.log(files)
         },
-        cancel () {}
+        cancel () {},
+    },
+    created () {
+        this.fetch()
+    },
+    mounted () {
+        on(this.$refs.imgs, 'scroll', () => {
+            let scrollTop = this.$refs.imgs.scrollTop
+            if (scrollTop + this.$refs.imgs.clientHeight >= this.$refs.waterfall.$el.clientHeight) {
+                this.fetch()
+            }
+        })
     }
 }
 </script>

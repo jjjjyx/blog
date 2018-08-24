@@ -4,6 +4,7 @@ const express = require('express')
 
 const router = express.Router()
 const debug = require('debug')('app:routers:api.qiniu-file')
+const log = require('log4js').getLogger('api.qiniu-file')
 const {check, validationResult} = require('express-validator/check')
 const {resourceDao} = require('../../models/index')
 const {sanitizeBody} = require('express-validator/filter')
@@ -159,13 +160,13 @@ const syncListPrefix = function (options) {
 //     }
 // ]
 
-const size = 15
+const size = 30
 
 const list = [
     check('page').isInt(),
     async function (req, res) {
         let {page} = req.query
-        console.log(req.query)
+        log.info('查询获取图片列表： query = ', JSON.stringify(req.query))
         page = page || 1
         try {
             let result = await resourceDao.findAll({
@@ -175,8 +176,7 @@ const list = [
             })
             return res.status(200).json(Result.success(result))
         } catch (e) {
-            console.log(e)
-            debug('getMediaAll error by :', e.message)
+            log.error('getMediaAll error by :', e)
             return res.status(200).json(Result.error())
         }
     }

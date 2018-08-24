@@ -9,11 +9,33 @@
     padding-right: 0;
     padding-top: 0;
 }
-.medium__img-warp {
+.medium__img {
     height: 100%;
     border-top: 1px solid $border-color;
+    overflow-y: scroll;
+
+    .img__item img{
+        width: 100%;
+    }
+    .img__item {
+        margin: .5rem;
+        border: 1px solid $border-color;
+        overflow: hidden;
+        font-size: 0;
+        transition: transform .3s ease-in;
+        box-shadow:2px 2px 8px 0px rgba(0, 0, 0, 0.2);
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+
 }
-.medium__img-opt {
+.medium__img--not-more {
+    padding: 4rem;
+    text-align: center;
+    border-top: 1px solid $border-color;
+}
+.medium__opt {
     padding: 1rem;
     flex-shrink: 0;
     .ivu-form-item {
@@ -35,7 +57,9 @@
     padding: 0;
     width: 300px;
     border-left: 1px solid $border-color;
-
+    &:before {
+        content: none;
+    }
     .ivu-card-head {
         padding: 1rem;
         line-height: 32px;

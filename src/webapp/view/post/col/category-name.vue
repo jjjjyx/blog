@@ -1,7 +1,12 @@
 <template>
     <div class="cms-table-title-wrap">
         <div class="category-name-icon">
-            <font-icon  :type="category.icon" ></font-icon>
+            <Poptip placement="bottom" trigger="hover">
+                <font-icon  :type="category.icon" ></font-icon>
+                <div slot="content" style="text-align: center">
+                    <font-icon  :type="category.icon"  size="100"></font-icon>
+                </div>
+            </Poptip>
         </div>
         <div class="category-name-wrap">
             <div class="category-name">
@@ -9,9 +14,9 @@
                 <!--<span> &#45;&#45; 文章个数 ( <a href="javascript:;" class="u">{{category.count||0}}</a> )</span>-->
             </div>
             <button-group size="small" class="cms-table-options2">
-                <i-button type="text" :disabled="isDefaultCategory" @click="$emit('edit', $event, category)">编辑</i-button>
+                <i-button type="text" :disabled="isDefaultCategory" @click="$emit('edit', category)">编辑</i-button>
 
-                <i-button type="text" :disabled="isDefaultCategory" @click="$emit('del', $event, category)" style="color: rgb(237, 63, 20);">
+                <i-button type="text" :disabled="isDefaultCategory" @click="$emit('del', category)" style="color: rgb(237, 63, 20);">
                     <!--<Tooltip content="默认分类不可删除">-->
                     删除
                 </i-button>

@@ -77,7 +77,7 @@
 
 <script>
 import _ from 'lodash'
-import CodeDiff from '../code-diff/code-diff'
+import CodeDiff from '@/components/code-diff/code-diff'
 import {mapState, mapGetters} from 'vuex'
 import {dateFormat} from '@/utils/common'
 export default {

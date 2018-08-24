@@ -711,7 +711,6 @@ const getTrash = [
             // 获取当前时间 - 30 天、
             let date = new Date()
             date.setDate(date.getDate() - trashSaveDay)
-            //
             log.info(`获取回收站中内容`)
             let posts = await postDao.findAll({
                 paranoid: false,
@@ -719,10 +718,10 @@ const getTrash = [
                     post_status: [
                         Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
                     ],
-                    [Op.or]: [
-                        {deleteAt: {[Op.not]: null}},
-                        {deleteAt: {[Op.gte]: date}}
-                    ]
+                    deleteAt: {
+                        [Op.ne]: null,
+                        [Op.gte]: date
+                    }
                     // [Op.and] :{ // 禁用私密功能
                     //     [Op.or]: [
                     //         {

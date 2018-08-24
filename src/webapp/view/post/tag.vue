@@ -1,129 +1,67 @@
 <template>
     <div class="cm-container cm-container--flex">
-        <div class="cm-container--flex__left">
-            <row>
-                <i-col span="18">
-                    <Form :model="filterForm" :label-width="50" inline class="filter-form"
-                            @submit.native.prevent="search">
-                        <FormItem label="关键字">
-                            <Input v-model="filterForm.key" placeholder="名称" clearable/>
-                        </FormItem>
-                        <FormItem>
-                            <Button type="primary" shape="circle" icon="ios-search" @click="search"></Button>
-                        </FormItem>
-                    </Form>
-                    <Button type="ghost" icon="document" @click="switchAdd">新建标签</Button>
-                    <Button type="ghost" icon="trash-a" @click="remove()" :disabled="selectedNum === 0">删除</Button>
-
-                </i-col>
-                <i-col span="6">
-                    <div class="table-buttons" style="float: right">
-                        <!--<i-Button type="text" icon="plus-circled"></i-Button>-->
-                        <!--<i-Button  icon="plus-circled" @click="">上传文件</i-Button>-->
-                        <!--<i-Button type="text" icon="edit" :disabled="userMultipleSelection.length!=1"-->
-                        <!--@click="active='edit',currentUser = userMultipleSelection[0],openEditUserInfo()"></i-Button>-->
-                        <Tooltip content="刷新">
-                            <Button type="text" icon="loop" @click="fetchData(true)"></Button>
-                        </Tooltip>
-                        <Dropdown>
-                            <Button type="text" icon="arrow-swap" class="sort-order-btn"></Button>
-                            <DropdownMenu slot="list">
-                                <DropdownItem>时间</DropdownItem>
-                                <DropdownItem>文件大小</DropdownItem>
-                                <DropdownItem>日期</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
-                    </div>
-                </i-col>
-            </row>
-            <div class="cm-header">
-                <span style="float: right">已全部加载，共{{data.length}}个分类</span>
-                <span>全部文章</span>
-            </div>
-            <div class="cm-wrapper" ref="table-wrapper">
-                <i-table :columns="columns" :data="data" stripe
-                         class="cm-wrapper--table" ref="table"
-                         @on-selection-change="handleSelectChange"
-                         :height="tableHeight" :loading="tableStatus"></i-table>
-            </div>
-        </div>
+        <curd class="cm-container--flex__left"
+              :name="name"
+              :columns="columns"
+              :data="data"
+              :url="url"
+              :delTip="delTip"
+              :fetch="fetchTerms"
+              :formItem="formItem"
+              :page-size="18"
+              ref="curd"
+        >
+            <template slot="form-buttons" slot-scope="scope">
+                <i-button type="ghost" icon="document" @click="insert">新建标签</i-button>
+                <i-button type="ghost" icon="trash-a" :disabled="scope.selectedNum === 0">删除</i-button>
+            </template>
+        </curd>
         <div class="cm-container--flex__modal">
-            <keep-alive>
-                <component :is="rightComponent" prefix="标签" :form-item="formItem" :target="singleEditTarget"></component>
-            </keep-alive>
+            <right-modal :url="url" :action="action" :target="modalFormItem"></right-modal>
         </div>
     </div>
 </template>
 
 <script>
 import Vue from 'vue'
-import {mapState, mapActions, mapGetters} from 'vuex'
-import crud from '@/components/crud'
-import {dateFormat} from '@/utils/common'
-import CategoryName from './col/category-name'
-import addTermTag from '../../components/curd-right-components/add-term-category'
-import editTermTag from '../../components/curd-right-components/edit-term-category'
+import {mapState} from 'vuex'
+import curd from '@/components/curd/curd'
 
+import {dateFormat} from '@/utils/common'
+import term from './term-curd-mixin'
+import CategoryName from './col/category-name'
+import RightModal from './modal/tag-right-modal'
 Vue.component('category-name', CategoryName)
 const renderDate = function (h, {row}) {
     return h('div', dateFormat(row.createdAt))
 }
 const renderAction = function (h, {row}) {
-    return h('div', [
-        h('Button', {
-            props: {
-                type: 'primary',
-                size: 'small'
-            },
-            style: {
-                marginRight: '5px'
-            },
-            on: {
-                click: () => {
-                    this.edit(row)
-                }
-            }
-        }, 'Edit'),
-        h('Button', {
-            props: {
-                type: 'error',
-                size: 'small'
-            },
-            on: {
-                click: () => {
-                    this.remove([row])
-                }
-            }
-        }, 'Delete')
-    ])
+    let edit = <i-button type="primary" size="small" class="mr-2" onClick={ e =>this.edit(row)}>修改</i-button>
+    let del = <i-button type="error" size="small" on-click={ e=> this.$refs['curd'].del([row])}>删除</i-button>
+    return [edit, del]
 }
 
 export default {
     name: 'post-category',
-    mixins: [crud],
+    mixins: [term],
     data () {
+        let modalForm =  {name: '', slug: '', description: '', icon: ''};
         return {
+            name:'标签',
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
-                // {title: 'ID', key: 'id', width: 100, sortable: true},
+                {title: 'ID', key: 'id', width: 90, sortable: true},
                 {title: '标签名称', key: 'name', width: 150, sortable: true},
                 {title: '计数', key: 'count', width: 90, sortable: true},
                 {title: '标识', key: 'slug', width: 100},
                 {title: '说明', key: 'description'},
-                {title: '创建时间', key: '', width: 130, render: renderDate.bind(this)},
+                {title: '创建时间', key: '', width: 150, render: renderDate.bind(this)},
                 {title: 'action', key: '', width: 130, render: renderAction.bind(this)}
-                // {title: '作者', key: 'auth', sortable: true, width: 220, render: renderAuthor.bind(this)},
-                // {title: '类别', key: '', width: 100, render: renderCategory.bind(this)},
-                // {title: '标签', key: '', width: 210, render: renderTags.bind(this)},
-                // {title: '评论', key: '', width: 80, sortable: true},
             ],
-            active: 'term/tag',
+            url: 'term/tag',
             delTip: '<p>确认删除标签?</p><p>删除标签导致引用失效</p>',
             formItem: {
-                name: '',
-                slug: '',
-                description: '',
-                icon: ''
+                key: ''
             }
         }
     },
@@ -131,21 +69,10 @@ export default {
         ...mapState({
             data: state => state.data.tagList
         }),
-        ...mapGetters({})
     },
     components: {
-        addTermTag,
-        editTermTag
-    },
-    methods: {
-        ...mapActions({'fetch': 'fetchTerms'}),
-        search: function search () {},
-        // 创建新分类
-        createTag: function createCategory () {
-            // this.rightComponent = ''
-        }
-    },
-    mounted () {
+        RightModal,
+        curd
     }
 }
 </script>

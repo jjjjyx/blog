@@ -25,7 +25,11 @@ const getters = {
     defaultCategoryValue: state => _.toNumber(state.siteMap['defaultCategoryId'].value)
 }
 const debug = process.env.NODE_ENV !== 'production'
-const plugins = [createPersistedState()]
+const plugins = [createPersistedState({
+    filter: ({type}) => {
+        return type !== 'APPEND_MEDIA';
+    }
+})]
 
 if (debug) {
     plugins.push(createLogger())

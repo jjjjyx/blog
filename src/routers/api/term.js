@@ -35,8 +35,8 @@ const sanitizeSlug = sanitizeBody('slug').trim().customSanitizer((value) => {
 const checkId = body('id').isInt().withMessage("请提交正确的ID")
 const checkName = body('name').isString().withMessage('请提交正确的名称').custom((value) => {
     debug('checkName name = ', value)
-    return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/.test(value)
-}).withMessage('请提交正确的名称，名称只能包含中文英文，下划线，数字,且在长度不超过10！')
+    return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,30}$/.test(value)
+}).withMessage('请提交正确的名称，名称只能包含中文英文，下划线，数字,且在长度不超过30！')
 
 const slugMsg = '且名称只能包含英文，连字符（-），数字,且在长度不超过30！'
 const slugV = (value) => {

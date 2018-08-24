@@ -2,7 +2,27 @@ import _ from 'lodash'
 import {on, off} from '@/utils/dom'
 import {getMetaKeyCode} from '@/utils/common'
 import api from '@/utils/api'
-import selectInfo from './curd-right-components/default-right'
+import selectInfo from '../../view/post/modal/default-right'
+import curdTable from './curd-table'
+
+/**
+ * 公共的增删改
+ *
+ * 使用方法
+ * import curd from '@/components/curd/'
+ *
+ * mixins: [crud],
+ *
+ * 必须参数：
+ *  data: []
+ *  name: '',
+ *  columns: [],
+ *  active: '',
+ *  formItem: ''
+ * 必须方法
+ *  fetch ()
+ */
+
 export default {
     data () {
         return {
@@ -12,19 +32,18 @@ export default {
             tableStatus: false, // 表格加载状态
             selectedList: [], // 选中的对象
 
+            name: '',
             idKey: 'id', // 对象标识
             confirmStatus: false, // 确认按钮状态
             formItem: {},
-            singleEditTarget: null, // 单选编辑对象
 
             active: '_', // 当前 url
             delTip: '确认删除？', // 删除提示
-
-            rightComponent: 'select-info'
         }
     },
     components: {
-        selectInfo
+        selectInfo,
+        curdTable
     },
     computed: {
         // ...mapState({
@@ -40,17 +59,7 @@ export default {
         },
         activeToLine () {
             return this.active.replace(/\/(\w)/g, '-$1')
-        },
-        // 当前显示组件
-        // showRightComponent () {
-        //     if (this.singleEditTarget) {
-        //         return `edit-${this.activeToLine}`
-        //     } else if (this.selectedNum === 0) {
-        //         return `add-${this.activeToLine}`
-        //     } else {
-        //         return `select-info`
-        //     }
-        // }
+        }
     },
     methods: {
         // ...mapActions({'fetchTerms': 'fetchTerms',}),
@@ -108,56 +117,14 @@ export default {
             this.confirmStatus = false
             return flag
         },
-        // 修改数据
-        edit: function edit (target) {
-            this.singleEditTarget = target
-            this.switchRightComponent('edit')
-        },
-        saveEdit: async function saveEdit (target) {
-            this.confirmStatus = true
-            let flag = true
-            try {
-                await api.npost(`/api/${this.active}/edit`, target)
-                this.$store.dispatch('edit_' + this.active, target)
-                // 此时的target对象是表格copy 的对象 与vuex管理的不是同一个对象 需要手动更新target对象的值
-                _.merge(this.singleEditTarget, target)
-                this.$Message.success('修改成功')
-            } catch (e) {
-                this.$Message.error('参数错误, 添加失败')
-                flag = false
-            }
-            this.confirmStatus = false
-            return flag
-        },
-        unEdit: function unEdit () {
-            this.singleEditTarget = null
-        },
-        switchRightComponent (type) {
-            switch (type) {
-                case 'edit':
-                    this.rightComponent = `edit-${this.activeToLine}`
-                    break
-                case 'add':
-                    this.rightComponent = `add-${this.activeToLine}`
-                    break
-                default:
-                    this.rightComponent = 'select-info'
-            }
-        },
+
         // 查询数据
         search: function search () {},
-        switchAdd: function () {
-            this.switchRightComponent('add')
-        },
+
         // 选择变化
         handleSelectChange (value) {
-            if (value.length === 0) {
-                this.switchRightComponent('add')
-            } else {
-                this.switchRightComponent()
-            }
-            // console.log(value, this.rightComponent)
             this.selectedList = value
+            this.$emit('on-select-change', value)
         },
         handleKeyDown: function (e) {
             let keyCode = getMetaKeyCode(e)
@@ -189,17 +156,5 @@ export default {
     },
     created: function () {
         this.fetchData(false)
-    },
-    mounted () {
-        if (this.$refs['table-wrapper']) {
-            // let h = this.$refs['table-wrapper'].clientHeight
-            // this.tableHeight = h
-            let onResize = _.debounce((e) => {
-                // let h = this.$refs['table-wrapper'].clientHeight
-                this.tableHeight = this.$refs['table-wrapper'].clientHeight
-            }, 1000)
-            onResize()
-            on(window, 'resize', onResize)
-        }
     }
 }

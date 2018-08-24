@@ -1,10 +1,15 @@
 <template>
 <div class="cm-container trash-container">
     <div class="trash-list-warp">
+        <!--<Tooltip content="刷新">-->
+
+        <!--</Tooltip>-->
         <h2 class="trash-list-warp__header">
+            <Button type="text" icon="loop" @click="fetch(true)" style="float: right"></Button>
             <Tooltip content="删除的文章将在删除后的60天清除">
-            回收站（1）
+            回收站（{{data.length}}）
             </Tooltip>
+
         </h2>
         <ul class="trash-list-warp__list">
             <li class="trash--list__item" v-for="item in data" :key="item.id" @click="target = item" :class="{active: target === item}">
@@ -39,7 +44,7 @@ import _ from 'lodash'
 import {mavonEditor} from 'mavon-editor'
 import {mapState, mapActions, mapGetters} from 'vuex'
 
-import crud from '@/components/crud'
+// import crud from '@/components/crud'
 import api from '@/utils/api'
 
 export default {
@@ -51,7 +56,6 @@ export default {
             delTip: '彻底删除？' // 删除提示
         }
     },
-    mixins: [crud],
     computed: {
         ...mapState({
             data: state => state.data.trashPosts
@@ -61,10 +65,10 @@ export default {
     },
     methods: {
         ...mapActions({
-            '_fetch': 'fetchTrash'
+            'fetchTrash': 'fetchTrash'
         }),
-        async fetch () {
-            await this._fetch(false)
+        async fetch (force = false) {
+            await this.fetchTrash(force)
             if (_.isEmpty(this.target)) {
                 this.target = this.data[0]
             }
@@ -106,6 +110,9 @@ export default {
         // 离开前刷新下文章
         this.$store.dispatch('fetchPosts', true)
         next()
+    },
+    created () {
+        this.fetch(false)
     },
     mounted () {
         this.it = mavonEditor.getMarkdownIt()

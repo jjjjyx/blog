@@ -34,6 +34,7 @@ $badge-colors: map_merge($colors, (
 
 @import "cm-sass/overload-iview";
 @import "cm-sass/cm-layout";
+@import "cm-sass/cm";
 @import "cm-sass/cm-nav";
 @import "cm-sass/cm-sidebar";
 @import "cm-sass/cm-tabs";

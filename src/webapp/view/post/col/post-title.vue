@@ -13,7 +13,7 @@
         </div>
         <button-group size="small" class="cms-table-options">
             <i-button type="ghost">编辑</i-button>
-            <i-button type="ghost" style="color: rgb(237, 63, 20);" @click="$emit('trash')">移至回收站</i-button>
+            <i-button type="ghost" style="color: rgb(237, 63, 20);" @click="$emit('trash', [post])">移至回收站</i-button>
             <i-button type="ghost">预览</i-button>
         </button-group>
     </div>
