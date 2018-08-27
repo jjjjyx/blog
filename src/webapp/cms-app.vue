@@ -64,9 +64,9 @@
         <main-header></main-header>
         <main-plugin></main-plugin>
         <main-breadcrumb></main-breadcrumb>
-        <keep-alive>
+        <!--<keep-alive>-->
             <router-view class="main__content"></router-view>
-        </keep-alive>
+        <!--</keep-alive>-->
         <!--<div class="main__content">-->
             <!--<button @click="toggleSidebarMini">collapsed sidebar</button>-->
         <!--</div>-->

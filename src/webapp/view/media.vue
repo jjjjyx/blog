@@ -79,11 +79,11 @@
             </FormItem>
         </Form>
         <!--</div>-->
-        <div class="medium__img" ref="imgs">
+        <div class="medium__img" ref="imgs" v-context-menu="contentItems">
             <waterfall :line-gap="216" :watch="data" @reflowed="isBusy = false" ref="waterfall">
                 <!-- each component is wrapped by a waterfall slot -->
                 <waterfall-slot v-for="(item, index) in data" :width="item.width" :height="item.height" :order="index" :key="index">
-                    <div class="img__item">
+                    <div class="img__item" :class="{active: item._checked}" @click="item._checked = !item._checked">
                         <img :src="item.url" alt="">
                     </div>
                 </waterfall-slot>
@@ -97,11 +97,8 @@
         <h2 class="ivu-card-head" >
             图片信息
         </h2>
-
         <div style="height: 100%;overflow: auto">
-            <pre>
-            {{data}}
-        </pre>
+           {{selectedList}}
         </div>
 
     </div>
@@ -180,6 +177,44 @@ export default {
             isNext: true,
             data: [],
             currPage: 1,
+            contentItems: [
+                {
+                    label: '查看',
+                    get disabled () {
+                        return this.selectedNum
+                    },
+                    callback: (e) =>{
+                        console.log(12312, e)
+                    }
+                },
+                {
+                    label: '复制链接'
+                },
+                {
+                    label: '复制 markdown 链接'
+                },
+                {
+                    label: '移动到其他目录',
+                    child: [
+                        {
+                            label: '目录二',
+                            callback: (e) =>{
+                                console.log(12312, e)
+                            }
+                        },
+                        {
+                            label: '目录三'
+                        },
+                        {
+                            label: '目录四'
+                        }
+                    ]
+                },
+                {
+                    divided: true,
+                    label: '删除'
+                }
+            ]
         }
     },
     components: {
@@ -196,22 +231,29 @@ export default {
             } else {
                 return '选择尺寸'
             }
-        }
+        },
+        selectedList: function () {
+            return this.data.filter(item => item._checked)
+        },
+        selectedNum: function () {
+            return this.selectedList.length
+        },
     },
     methods: {
         // ...mapActions({'fetchMedia': 'fetchMedia'}),
         async fetchMedia () {
             try {
                 let result = await api.nget('/api/img/list', {page: this.currPage})
+                result.forEach(i => (i._checked = false))
                 if (result.length === 0) {
                     this.isNext = false
-                    this._vm.$Message.info('没有更多了呢')
+                    this.$Message.info('没有更多了呢')
                 } else {
                     this.currPage++
                     this.data.push(...result)
                 }
             } catch (e) {
-                this._vm.$Message.error('获取资源数据失败')
+                this.$Message.error('获取资源数据失败')
             }
         },
         async fetch () {

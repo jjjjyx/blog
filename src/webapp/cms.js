@@ -11,10 +11,12 @@ import './assets/cms.scss'
 import api from '@/utils/api'
 import store from './store'
 import upload from './components/upload'
+import directives from './directives'
 
 Vue.use(iView)
 Vue.use(Icon)
 Vue.use(upload)
+Vue.use(directives)
 Vue.config.productionTip = false
 
 function appInit () {
