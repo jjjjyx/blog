@@ -1,5 +1,6 @@
-const prefixCls = 'iconfont'
 import ColorIcon from './icon'
+
+const prefixCls = 'iconfont'
 export default {
     name: 'font-icon',
     props: {

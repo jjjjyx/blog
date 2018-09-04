@@ -112,7 +112,7 @@
 <script>
 import Waterfall from 'vue-waterfall/lib/waterfall'
 import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
-import {mapGetters, mapActions, mapState} from 'vuex'
+import {mapGetters} from 'vuex'
 import {on} from '../utils/dom'
 // import crud from '@/components/curd'
 // <!--mapState mapActions-->
@@ -183,7 +183,7 @@ export default {
                     get disabled () {
                         return this.selectedNum
                     },
-                    callback: (e) =>{
+                    callback: (e) => {
                         console.log(12312, e)
                     }
                 },
@@ -198,7 +198,7 @@ export default {
                     child: [
                         {
                             label: '目录二',
-                            callback: (e) =>{
+                            callback: (e) => {
                                 console.log(12312, e)
                             }
                         },
@@ -237,7 +237,7 @@ export default {
         },
         selectedNum: function () {
             return this.selectedList.length
-        },
+        }
     },
     methods: {
         // ...mapActions({'fetchMedia': 'fetchMedia'}),
@@ -304,7 +304,7 @@ export default {
             this.$refs.h5Input0.value = null
             // console.log(files)
         },
-        cancel () {},
+        cancel () {}
     },
     created () {
         this.fetch()

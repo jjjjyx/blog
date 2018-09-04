@@ -30,7 +30,6 @@ import term from './term-curd-mixin'
 import RightModal from './modal/category-right-modal'
 import CategoryName from './col/category-name'
 
-
 Vue.component('category-name', CategoryName)
 const renderDate = function (h, {row}) {
     return h('div', dateFormat(row.createdAt))
@@ -53,7 +52,7 @@ export default {
     mixins: [term],
     data () {
         return {
-            name:'分类',
+            name: '分类',
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 // {title: 'ID', key: 'id', width: 100, sortable: true},
@@ -66,7 +65,7 @@ export default {
             delTip: '<p>确认删除分类?</p><p>删除分类不会删除分类下的文章</p>',
             formItem: {
                 key: ''
-            },
+            }
         }
     },
     components: {

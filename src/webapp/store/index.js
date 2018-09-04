@@ -17,7 +17,7 @@ const state = {
     site: [],
     siteMap: {},
     breadCrumbList: [],
-    homeRouter,
+    homeRouter
 }
 const getters = {
     postStatusDict: state => state.dict.postStatus,
@@ -27,7 +27,7 @@ const getters = {
 const debug = process.env.NODE_ENV !== 'production'
 const plugins = [createPersistedState({
     filter: ({type}) => {
-        return type !== 'APPEND_MEDIA';
+        return type !== 'APPEND_MEDIA'
     }
 })]
 

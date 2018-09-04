@@ -9,7 +9,7 @@ const state = {
     trashPosts: [],
 
     categoryList: [],
-    tagList: [],
+    tagList: []
 
     // imgList: []
 }

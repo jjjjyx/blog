@@ -27,14 +27,14 @@ export default {
         menuStyles () {
             return {
                 'transform-origin': 'center top 0px',
-                top: this.y  + 'px',
+                top: this.y + 'px',
                 left: this.x + 'px'
             }
         }
     },
     methods: {
         showMenu (e, target) {
-            let {clientX, clientY} = e;
+            let {clientX, clientY} = e
             this.x = clientX
             this.y = clientY
             this.originEvent = e
@@ -43,12 +43,12 @@ export default {
         },
         hideMenu (x, y) {
             this.visible = false
-        },
+        }
     },
     mounted () {
         let handleClick = () => {
             // this.$nextTick(() => {
-            this.visible = false;
+            this.visible = false
             // })
         }
         this.$on('on-click', handleClick)
@@ -67,7 +67,6 @@ export default {
     /*.context-menu__warp .ivu-select-dropdown {*/
         /*animation-duration: 0s;*/
     /*}*/
-
 
     .transition-drop-appear,.transition-drop-enter-active,.transition-drop-leave-active {
         animation-duration: .3s;
@@ -103,6 +102,5 @@ export default {
             transform: scaleY(.8)
         }
     }
-
 
 </style>

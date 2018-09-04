@@ -85,12 +85,12 @@ export default {
             selectedList: [],
             tableStatus: false, // 表格加载状态
             tableHeight: 400, // 表格高度
-            currPage: 1,
+            currPage: 1
         }
     },
     props: {
         name: {
-            type: String,
+            type: String
         },
         idKey: {
             type: String,
@@ -123,7 +123,7 @@ export default {
         pageSize: {
             type: Number,
             default: 10
-        },
+        }
     },
     computed: {
         selectedNum: function () {
@@ -142,18 +142,18 @@ export default {
         _handleKeyDown: function (e) {
             let keyCode = getMetaKeyCode(e)
             switch (keyCode) {
-                case 4113: // 按下了 ctrl
-                case 16400: // 按下了 shift
-                case 20497: // 同时按下了 shift ctrl
-                case 20496: // 同时按下了 ctrl shift
-                    this.keydownCode = keyCode
-                    break
-                case 116: // 按下了F5
-                    this._fetchData()
-                    e.preventDefault()
-                    break
-                default:
-                    this.keydownCode = null
+            case 4113: // 按下了 ctrl
+            case 16400: // 按下了 shift
+            case 20497: // 同时按下了 shift ctrl
+            case 20496: // 同时按下了 ctrl shift
+                this.keydownCode = keyCode
+                break
+            case 116: // 按下了F5
+                this._fetchData()
+                e.preventDefault()
+                break
+            default:
+                this.keydownCode = null
             }
         },
         // 获取数据
@@ -189,7 +189,7 @@ export default {
                             await api.npost(`/api/${this.url}/del`, {ids})
                             this.$store.dispatch('del_' + this.url, selected)
                             this.$Message.success('删除成功')
-                            this.selectedList =  _.differenceBy(this.selectedList, selected, this.idKey)
+                            this.selectedList = _.differenceBy(this.selectedList, selected, this.idKey)
                             resolve()
                         } catch (e) {
                             this.$Message.info('删除失败')
@@ -201,7 +201,7 @@ export default {
             })
         },
 
-        search () {},
+        search () {}
     },
     created: function () {
         this._fetchData(false)

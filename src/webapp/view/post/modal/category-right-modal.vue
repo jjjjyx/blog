@@ -45,7 +45,7 @@ export default {
     },
     data () {
         return {
-            prefix: '分类',
+            prefix: '分类'
         }
     },
     methods: {

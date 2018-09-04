@@ -1,6 +1,6 @@
 'use strict'
 
-import { homeRouter } from '../router/router'
+// import { homeRouter } from '../router/router'
 
 export const mutations = {
     SET_DICT (state, obj) {
@@ -16,7 +16,7 @@ export const mutations = {
         }
     },
     setBreadCrumb (state, matched) {
-        state.breadCrumbList = [state.homeRouter] //getBreadCrumbList(routeMetched, state.homeRoute)
+        state.breadCrumbList = [state.homeRouter] // getBreadCrumbList(routeMetched, state.homeRoute)
         for (let matchedKey in matched) {
             let item = matched[matchedKey]
             if (item.meta.hideInMenu) continue

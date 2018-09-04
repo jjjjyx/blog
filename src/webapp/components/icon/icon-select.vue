@@ -59,11 +59,11 @@ to
 }
 */
 
-function changeFontIcon (prefix, {font_class, name, unicode}) {
+function changeFontIcon (prefix, {font_class: fontClass, name, unicode}) {
     let item = {}
     item.name = name
-    item.tag = [font_class, name, unicode]
-    item.type = prefix + font_class
+    item.tag = [fontClass, name, unicode]
+    item.type = prefix + fontClass
     return item
 }
 
@@ -73,7 +73,7 @@ let groups = [one, font]
 // icons['one'].icons
 // icons['font'].icons
 
-groups.forEach(({prefix, icons})=>{
+groups.forEach(({prefix, icons}) => {
     for (let iconKey in icons) {
         icons[iconKey] = changeFontIcon(prefix, icons[iconKey])
     }
@@ -83,7 +83,7 @@ for (let key in iViewIconGroups) {
     iViewIconGroups[key].forEach((icon) => {
         icon.type = icon.name
         icon.tag = icon.tag.split(', ')
-        delete  icon.name
+        delete icon.name
     })
     groups.push({
         label: key,
@@ -104,7 +104,7 @@ export default {
         filterByTag (icons) {
             if (this.iconKey) {
                 return icons.filter((icon) => {
-                    return _.find(icon.tag, (tag) => tag.indexOf(this.iconKey) >= 0) //icon.tag.indexOf(this.iconKey) >= 0
+                    return _.find(icon.tag, (tag) => tag.indexOf(this.iconKey) >= 0) // icon.tag.indexOf(this.iconKey) >= 0
                 })
             } else {
                 return icons

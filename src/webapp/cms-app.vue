@@ -41,9 +41,7 @@
                                 <font-icon :type="item.icon"></font-icon>
                                 <span>{{item.title}}</span>
                             </template>
-                            <MenuItem :name="menu.name || `${item_index}_${menu_index}`"
-                                       v-for="(menu, menu_index) in item.subMenus" v-bind:key="menu_index"
-                                       @click.native="handleSelectRouter(menu, item)" v-if="!menu.hideInMenu">
+                            <MenuItem :name="menu.name || `${item_index}_${menu_index}`" v-for="(menu, menu_index) in item.subMenus" v-bind:key="menu_index" @click.native="handleSelectRouter(menu, item)" v-if="!menu.hideInMenu">
                                 <font-icon :type="menu.icon"></font-icon>
                                 <span>{{menu.title}}</span>
                             </MenuItem>

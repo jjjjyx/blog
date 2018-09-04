@@ -36,8 +36,8 @@ const renderDate = function (h, {row}) {
     return h('div', dateFormat(row.createdAt))
 }
 const renderAction = function (h, {row}) {
-    let edit = <i-button type="primary" size="small" class="mr-2" onClick={ e =>this.edit(row)}>修改</i-button>
-    let del = <i-button type="error" size="small" on-click={ e=> this.$refs['curd'].del([row])}>删除</i-button>
+    let edit = <i-button type="primary" size="small" class="mr-2" onClick={e => this.edit(row)}>修改</i-button>
+    let del = <i-button type="error" size="small" on-click={e => this.$refs['curd'].del([row])}>删除</i-button>
     return [edit, del]
 }
 
@@ -45,9 +45,8 @@ export default {
     name: 'post-category',
     mixins: [term],
     data () {
-        let modalForm =  {name: '', slug: '', description: '', icon: ''};
         return {
-            name:'标签',
+            name: '标签',
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 {title: 'ID', key: 'id', width: 90, sortable: true},
@@ -68,7 +67,7 @@ export default {
     computed: {
         ...mapState({
             data: state => state.data.tagList
-        }),
+        })
     },
     components: {
         RightModal,

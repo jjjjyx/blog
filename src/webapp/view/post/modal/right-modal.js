@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import api from '@/utils/api'
-export default  {
+export default {
     data () {
         return {
             ruleValidate: {
@@ -49,9 +49,9 @@ export default  {
         },
         confirmText () {
             if (this.action === 'insert') {
-                return "增加"
+                return '增加'
             } else {
-                return "修改"
+                return '修改'
             }
         }
     },

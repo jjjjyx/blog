@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import Vue from 'vue'
-import {mapState, mapActions, mapGetters} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 import {dateFormat} from '@/utils/common'
 import curd from '@/components/curd/curd.vue'
 import api from '@/utils/api'
@@ -57,7 +57,7 @@ export default {
     name: 'post-management',
     data () {
         return {
-            name:'文章',
+            name: '文章',
             columns: [
                 {type: 'selection', width: 40, align: 'center'},
                 {title: '#', key: 'id', sortable: true, width: 70},
@@ -80,9 +80,7 @@ export default {
     computed: {
         ...mapState({
             data: state => state.data.posts
-        }),
-        ...mapGetters({
-        }),
+        })
         // selectedNum: function () {
         //     return this.selectedList.length
         // },
@@ -107,7 +105,7 @@ export default {
         },
         newPost () {
             this.$router.push({name: 'post_writer', query: {active: 'new'}})
-        },
+        }
         // handleSelectChange (value) {
         //     this.selectedList = value
         // },
@@ -121,27 +119,26 @@ export default {
             fetch: this.fetchPosts,
             formItem: this.formItem,
             pageSize: 11
-        };
+        }
         let formItem = this.formItem
-        return <curd class="cm-container" ref="curd"
-                     {...{
-                         props,
-                         scopedSlots: {
-                             'form-buttons': scope => {
-                                 let newpb = <i-button slot="form-buttons" type="ghost" icon="document" class="mr-2"  onClick={this.newPost}>新建文章</i-button>
-                                 let tb = <i-Button slot="form-buttons" type="ghost" icon="trash-a"  disabled={scope.selectedNum === 0} >移至回收站</i-Button>
-                                 return [newpb, tb]
-                             }
-                         }
-                     }
-            }>
+        return <curd class="cm-container" ref="curd" {...{
+            props,
+            scopedSlots: {
+                'form-buttons': scope => {
+                    let newpb = <i-button slot="form-buttons" type="ghost" icon="document" class="mr-2" onClick={this.newPost}>新建文章</i-button>
+                    let tb = <i-button slot="form-buttons" type="ghost" icon="trash-a" disabled={scope.selectedNum === 0}>移至回收站</i-button>
+                    return [newpb, tb]
+                }
+            }
+        }
+        }>
             <form-item label="类别" slot="form-items">
-                <i-select on-input={e => formItem.term = e} {...{props:{value:formItem.term}}}>
+                <i-select on-input={e => (formItem.term = e)} {...{props: {value: formItem.term}}}>
                     <i-option value="any">不限</i-option>
                 </i-select>
             </form-item>
             <form-item label="状态" slot="form-items">
-                <i-select on-input={e => formItem.status = e} {...{props:{value:formItem.status}}}>
+                <i-select on-input={e => (formItem.status = e)} {...{props: {value: formItem.status}}}>
                     <i-option value="all">所有</i-option>
                 </i-select>
             </form-item>
@@ -150,4 +147,3 @@ export default {
     mounted () {
     }
 }
-

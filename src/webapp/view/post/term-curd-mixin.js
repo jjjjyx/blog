@@ -6,7 +6,7 @@ export default {
         return {
             action: 'insert',
             modalFormItem: modalForm,
-            cloneModalFormItem: _.cloneDeep(modalForm),
+            cloneModalFormItem: _.cloneDeep(modalForm)
         }
     },
     methods: {
@@ -19,5 +19,5 @@ export default {
             this.action = 'update'
             this.modalFormItem = target
         }
-    },
+    }
 }

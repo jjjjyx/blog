@@ -3,7 +3,7 @@ import contextMenuVue from './context-menu'
 import {off, on} from '../../utils/dom'
 const ContextMenuConstructor = Vue.extend(contextMenuVue)
 
-export default  {
+export default {
     bind (el, binding, vnode) {
         console.log('binding', binding)
         let value = binding.value
@@ -12,16 +12,15 @@ export default  {
             data: {menus}
         })
         $contextMenu.$mount()
-        let $c_el = $contextMenu.$el
+        let $contextEl = $contextMenu.$el
         let _preventContextMenuEvent = function (e) {
             $contextMenu.hideMenu()
             e.stopPropagation()
             e.preventDefault()
             $contextMenu.$nextTick(() => {
-                let target = e.path.find((t)=> t.matches(targetEl))
+                let target = e.path.find((t) => t.matches(targetEl))
                 $contextMenu.showMenu(e, target)
             })
-
         }
         let _handlClick = () => {
             $contextMenu.hideMenu()
@@ -29,7 +28,7 @@ export default  {
         // 绑定事件
         on(el, 'contextmenu', _preventContextMenuEvent)
         on(el, 'click', _handlClick)
-        document.body.appendChild($c_el)
+        document.body.appendChild($contextEl)
         el.__data__ = {
             $contextMenu,
             offEvent: () => {
@@ -37,11 +36,10 @@ export default  {
                 off(el, 'click', _handlClick)
             }
         }
-
     },
     componentUpdated  (el, binding, vnode) { },
     unbind  (el, binding, vnode) {
-        let {$contextMenu, offEvent} = el.__data__;
+        let {$contextMenu, offEvent} = el.__data__
         offEvent()
         $contextMenu.$destroy()
         document.body.removeChild($contextMenu.$el)

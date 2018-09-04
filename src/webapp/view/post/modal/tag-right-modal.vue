@@ -29,7 +29,7 @@ export default {
     name: 'right-modal',
     data () {
         return {
-            prefix: '标签',
+            prefix: '标签'
         }
     },
     methods: {

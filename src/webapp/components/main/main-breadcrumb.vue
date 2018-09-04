@@ -21,7 +21,7 @@ export default {
         }
     },
     methods: {
-        handleSelectRouter (item,index) {
+        handleSelectRouter (item, index) {
             if (_.isBoolean(item.isChildren) && !item.isChildren) return
             if (index === this.breadCrumbList.length - 1) return
             this.$router.push({name: item.name})

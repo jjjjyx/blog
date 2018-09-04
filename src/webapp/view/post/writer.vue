@@ -181,7 +181,7 @@ export default {
             'createNewPost': 'createNewPost'
         }),
         checkTagLength () {
-            return this.currTagLength < this.maxTagLength;
+            return this.currTagLength < this.maxTagLength
         },
         // async fetchData() {
         //     // 加载数据
