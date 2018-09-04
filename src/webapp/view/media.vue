@@ -79,7 +79,7 @@
             </FormItem>
         </Form>
         <!--</div>-->
-        <div class="medium__img" ref="imgs" v-context-menu="contentItems">
+        <div class="medium__img" ref="imgs" v-context-menu="{menus: contentItems, targetEl: '.img__item'}">
             <waterfall :line-gap="216" :watch="data" @reflowed="isBusy = false" ref="waterfall">
                 <!-- each component is wrapped by a waterfall slot -->
                 <waterfall-slot v-for="(item, index) in data" :width="item.width" :height="item.height" :order="index" :key="index">

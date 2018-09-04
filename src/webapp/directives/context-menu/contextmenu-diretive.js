@@ -5,8 +5,11 @@ const ContextMenuConstructor = Vue.extend(contextMenuVue)
 
 export default  {
     bind (el, binding, vnode) {
+        console.log('binding', binding)
+        let value = binding.value
+        let {menus, targetEl} = value
         let $contextMenu = new ContextMenuConstructor({
-            data: {menus: binding.value}
+            data: {menus}
         })
         $contextMenu.$mount()
         let $c_el = $contextMenu.$el
@@ -15,7 +18,8 @@ export default  {
             e.stopPropagation()
             e.preventDefault()
             $contextMenu.$nextTick(() => {
-                $contextMenu.showMenu(e)
+                let target = e.path.find((t)=> t.matches(targetEl))
+                $contextMenu.showMenu(e, target)
             })
 
         }

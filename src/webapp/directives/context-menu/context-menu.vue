@@ -17,7 +17,9 @@ export default {
             visible: false,
             x: 0,
             y: 0,
-            menus: []
+            menus: [],
+            originEvent: null,
+            target: null
         }
     },
     components: {ContextMenu},
@@ -31,11 +33,12 @@ export default {
         }
     },
     methods: {
-        showMenu (e) {
+        showMenu (e, target) {
             let {clientX, clientY} = e;
             this.x = clientX
             this.y = clientY
             this.originEvent = e
+            this.target = target
             this.visible = true
         },
         hideMenu (x, y) {

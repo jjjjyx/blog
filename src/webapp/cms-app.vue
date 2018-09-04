@@ -49,10 +49,9 @@
                             </MenuItem>
                         </submenu>
                     </template>
-                    <MenuItem v-else-if="!item.hideInMenu" class="sidebar-menu__item"
-                              :name="item.name || `${item_index}`" :key="item_index" @click.native="handleSelectRouter(item)">
+                    <MenuItem :key="item_index"  v-else-if="!item.hideInMenu" class="sidebar-menu__item" :name="item.name || `${item_index}`"  @click.native="handleSelectRouter(item)">
                         <font-icon :type="item.icon"></font-icon>
-                        <span class>{{item.title}}</span>
+                        <span>{{item.title}}</span>
                     </MenuItem>
                 </template>
             <!--</menu-group>-->

@@ -1,13 +1,13 @@
 <template>
     <dropdown-menu>
-        <template v-for="menu in menus">
-            <Dropdown placement="right-start" v-if="menu.child">
-                <dropdown-item  :divided="menu.divided" :disabled="menu.disabled" @click.native="menu.callback && menu.callback($parent)">
+        <template v-for="(menu, index) in menus">
+            <Dropdown placement="right-start" v-if="menu.child" :key="index">
+                <dropdown-item  :divided="menu.divided" :disabled="menu.disabled" @click.native="menu.callback && menu.callback(clickTargetOriginEvent, clickTarget)">
                     {{menu.label}}
                     <Icon type="ios-arrow-right"></Icon></dropdown-item>
                 <context-menu-item slot="list" :menus="menu.child"></context-menu-item>
             </Dropdown>
-            <dropdown-item v-else :divided="menu.divided" :disabled="menu.disabled" @click.native="menu.callback && menu.callback($parent)">{{menu.label}}</dropdown-item>
+            <dropdown-item :key="index" v-else :divided="menu.divided" :disabled="menu.disabled" @click.native="menu.callback && menu.callback(clickTargetOriginEvent, clickTarget)">{{menu.label}}</dropdown-item>
         </template>
     </dropdown-menu>
 </template>
@@ -15,13 +15,21 @@
 <script>
 export default {
     name: 'context-menu-item',
-    data() {
+    data () {
         return {}
     },
     props: {
         menus: {
             type: Array,
             required: true
+        }
+    },
+    computed: {
+        clickTargetOriginEvent () {
+            return this.$root.originEvent
+        },
+        clickTarget () {
+            return this.$root.target
         }
     },
     mounted () {
