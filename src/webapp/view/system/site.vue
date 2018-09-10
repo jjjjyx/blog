@@ -138,7 +138,7 @@ export default {
                 this.$store.commit('updateSite', diff)
                 this.siteMap = _.cloneDeep(this.$store.state.siteMap)
             } catch (e) {
-                this.$Message.error('保存失败')
+                this.$Message.error(e.message)
             }
         }
     },

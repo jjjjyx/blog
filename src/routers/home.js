@@ -45,7 +45,9 @@ const generatePostHtml = function(post) {
 
     let {category = [{name: ''}], post_tag: postTag = []} = _.groupBy(post.terms, 'taxonomy')
     let categoryName = category[0].name
-    let postTagNames = postTag.map(tag => `<span class="tag">${tag.name}</span>`)
+    let postTagNames = ''
+    if (postTag.length)
+        postTagNames = '<i class="ivu-icon ivu-icon-pricetag" style="font-size: 16px;"></i>' + postTag.map(tag => `<span class="tag">${tag.name}</span>`)
 
 
     let postContent // = marked(post.post_content, {renderer: utils.renderer})
@@ -82,8 +84,9 @@ const generatePostHtml = function(post) {
             ${xss(postContent)}...
         </p>
         <div class="j-article__metas mt-2">
-            <Tag type="border" color="blue">${categoryName}</Tag>
-            <Icon type="pricetag" size="16"></Icon>
+            <div class="ivu-tag ivu-tag-blue ivu-tag-border ivu-tag-checked">
+                <span class="ivu-tag-text ivu-tag-color-blue">${categoryName}</span>
+            </div>
             ${postTagNames}
         </div>
     </div>

@@ -15,9 +15,7 @@
             </div>
             <button-group size="small" class="cms-table-options2">
                 <i-button type="text" :disabled="isDefaultCategory" @click="$emit('edit', category)">编辑</i-button>
-
                 <i-button type="text" :disabled="isDefaultCategory" @click="$emit('del', category)" style="color: rgb(237, 63, 20);">
-                    <!--<Tooltip content="默认分类不可删除">-->
                     删除
                 </i-button>
                 <i-button type="text">查看</i-button>

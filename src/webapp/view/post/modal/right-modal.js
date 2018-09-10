@@ -64,7 +64,7 @@ export default {
                 this.$store.dispatch('add_' + this.url, result)
                 this.$Message.success('添加成功')
             } catch (e) {
-                this.$Message.error('参数错误, 添加失败')
+                this.$Message.error(e.message)
                 flag = false
             }
             this.confirmStatus = false
@@ -80,7 +80,7 @@ export default {
                 _.merge(this.target, this.formItem)
                 this.$Message.success('修改成功')
             } catch (e) {
-                this.$Message.error('参数错误, 添加失败')
+                this.$Message.error(e.message)
                 flag = false
             }
             this.confirmStatus = false

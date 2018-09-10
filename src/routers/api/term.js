@@ -211,7 +211,7 @@ const addTag = [
             }
             result = await termDao.create({
                 name, slug, taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                description, count: 0
+                description
             })
 
             return res.status(200).json(Result.success(result.toJSON()))
