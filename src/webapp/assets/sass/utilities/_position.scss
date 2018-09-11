@@ -6,9 +6,9 @@
 // stylelint-disable-next-line scss/dollar-variable-default
 $positions: static, relative, absolute, fixed, sticky;
 
-@each $position in $positions {
-  .position-#{$position} { position: $position !important; }
-}
+//@each $position in $positions {
+//  .position-#{$position} { position: $position !important; }
+//}
 
 // Shorthand
 

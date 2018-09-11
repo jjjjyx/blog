@@ -13,7 +13,7 @@ const Result = require('./common/resultUtils')
 const ExpressRedisCache = require('express-redis-cache')
 const marked = require('marked')
 const renderer = new marked.Renderer()
-
+const config = require('../config')
 const textChar = (text) => text || ' '
 const emptyChar = () => ''
 for (let i in renderer) {
