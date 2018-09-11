@@ -12,6 +12,7 @@ Vue.config.productionTip = false
 function appInit () {
     /* eslint-disable no-unused-vars  */
     const app = new Vue({
+        delimiters: ['${{', '}}'],
         el: '#app',
         data: {
             value1: 0
