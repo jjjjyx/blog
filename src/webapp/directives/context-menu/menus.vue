@@ -22,7 +22,7 @@ export default {
         menus: {
             type: Array,
             required: true
-        }g
+        }
     },
     computed: {
         clickTargetOriginEvent () {
