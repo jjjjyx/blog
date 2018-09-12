@@ -13,39 +13,52 @@ const {termDao, userDao, postDao, postMetaDao, sequelize, Sequelize} = require('
 
 const Op = sequelize.Op
 const utils = require('../utils')
-const common = require('../common/common')
+const common = require('./common')
 const loadPostPageSize = 10
 log.debug('loadPostPageSize = %d', loadPostPageSize)
 
-
-const loadPost = async function (page = 1, term) {
-    let where = {
-        post_status: Enum.PostStatusEnum.PUBLISH,
-    }
-    let posts = await postDao.findAll({
-        where,
-        include: [
-            {model: postMetaDao, as: 'metas'},
-            {model: userDao, attributes: {exclude: ['user_pass']}},
-            {model: termDao, attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id']}
-        ],
-        offset: (page - 1) * loadPostPageSize,
-        limit: loadPostPageSize
-    })
-    debug('获取首页文章，共计 %d 篇', posts.length)
-    log.debug('获取首页文章，共计 %d 篇, %s', posts.length, posts.map(post => '#'+post.id))
-    // try {
-    // 同步块中产生的异常 无法被错误拦截器捕获啊
-    // let articleList =
-    return posts.map(common.generatePostHtml).join('')
-}
+const queryStickyPost = `
+SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`postMeta\` 
+	LEFT JOIN \`j_term_relationships\` AS jtr ON jtr.\`object_id\` = postMeta.\`post_id\`
+	LEFT JOIN \`j_terms\` AS jt ON jt.\`id\` = jtr.\`term_id\`
+	WHERE \`postMeta\`.\`meta_key\` = 'sticky' AND \`postMeta\`.\`meta_value\` = '1')
+	ORDER BY post_date DESC
+	LIMIT 0, ?;`
 
 const index = [
     // utils.cache.route('index'),
     async function(req, res, next) {
         try {
-            let articleList = await loadPost(1)
-            res.render('home', {articleList});
+            // 获取置顶文章
+            let stickyPostNum = SITE.stickyPostNum
+            let result = await sequelize.query(queryStickyPost, {
+                type: sequelize.QueryTypes.SELECT,
+                replacements: [parseInt(stickyPostNum)]
+            })
+            let stickyPostIds = result.map((item) => item.id)
+
+            debug('加载置顶文章 stickyPostNum = %d 个' , stickyPostNum)
+            let stickyPost = await postDao.findAll({
+                where:{id: stickyPostIds},
+                include: common.postInclude
+            })
+
+            log.isDebugEnabled() && log.debug('获取置顶文章，共计 %d 篇, %s', result.length, result.map(post => '#' + post.id))
+
+            let articleList = stickyPost.map(common.generatePostHtml).join('')
+            articleList += await common.loadPost({page:1, pageSize: 10}, null, stickyPostIds)
+
+            let sidebarModule = ['about', 'hot', 'chosen', 'category', 'tags', 'newest', 'archives', 'search']
+            let sidebar = ''
+            try {
+                sidebar = await Promise.all(sidebarModule.filter((key) => _.isFunction(common.sidebarModule[key])).map((key) => common.sidebarModule[key]()))
+                sidebar = sidebar.join('')
+            } catch (e) {
+                sidebar = '侧边栏加载失败'
+                log.error('侧边栏加载失败 by :', e)
+            }
+
+            res.render('home', {articleList, sidebar});
         } catch (e) {
             next(e)
         }
@@ -61,7 +74,7 @@ const more = [
         let {page} = req.query
 
         try {
-            let result = await loadPost(page)
+            let result =  await common.loadPost({page, pageSize: 10})
             res.send(result)
         } catch (e) {
             log.error('loadPost  error by:', e)

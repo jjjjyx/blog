@@ -19,7 +19,7 @@ function appInit () {
             value1: 0,
             isNext: true,
             loading: false,
-            page: 1,
+            page: 2,
             slug: '',
             value13: '' // 搜索
         },
@@ -27,7 +27,7 @@ function appInit () {
             loadMore: async function () {
                 try {
                     this.loading = true
-                    let resp = await api.get(`./${this.slug}/more`, {page: ++this.page})
+                    let resp = await api.get(`./${this.slug}/more`, {page: this.page})
                     let content = await resp.text()
                     if (!content) this.isNext = false
                     let el = this.$refs['insertEl']
@@ -36,6 +36,7 @@ function appInit () {
                     for (let i in childNodes) {
                         el.parentNode.insertBefore(childNodes[i], el)
                     }
+                    this.page++
                     // console.log(fragment, fragment.firstElementChild)
                 } catch (e) {
                     console.log('加载失败', e)

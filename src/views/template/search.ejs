@@ -1,0 +1,18 @@
+<div class="j-sidebar j-block j-sidebar--search">
+    <div class="j-sidebar__header">
+        <h3 class="title">搜索</h3>
+    </div>
+    <div class="j-sidebar__body pt-4 pb-4">
+        <i-input v-model="value13" placeholder="站内搜索" class="j-sidebar--search__input">
+            <i-button slot="append" icon="ios-search"></i-button>
+        </i-Input>
+        <h6 class="text-center h6">
+            可能感兴趣的
+        </h6>
+        <div class="tags-cloud text-center pl-5 pr-5">
+            <Tag type="border" v-for="i in 8">
+                <a href="">标签</a>
+            </Tag>
+        </div>
+    </div>
+</div>

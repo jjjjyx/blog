@@ -1,0 +1,21 @@
+<div class="j-sidebar j-block j-sidebar--tags">
+    <div class="j-sidebar__header">
+        <a href="/tags" class="btn-area j-logo--a">
+            查看全部 &nbsp;&nbsp;<Icon type="ios-arrow-forward" />
+        </a>
+        <h3 class="title">标签</h3>
+    </div>
+    <div class="j-sidebar__body">
+        <!--<a class="j-sidebar&#45;&#45;tags__tag"  target="_blank" v-for="i in 20">-->
+        <!--<span>标签一</span>-->
+        <!--</a>-->
+        <% for (var i=0; i< tags.length;i++){
+            if (!tags[i].count) continue
+        %>
+
+        <Tag type="border">
+            <a href="/category/<%=tags[i].slug%>"><%=tags[i].name%></a>
+        </Tag>
+        <%}%>
+    </div>
+</div>

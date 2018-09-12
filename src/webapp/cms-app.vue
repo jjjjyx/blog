@@ -35,21 +35,19 @@
         <Menu width="auto" :accordion="accordion" :active-name="activeName" class="menu-item sidebar-wrap"  ref="sidebar" :open-names="openedNames">
             <!--<menu-group v-for="(group, index) in sidebarGroups" v-bind:key="index" >-->
                 <template v-for="(item, item_index) in sidebarMenus">
-                    <template v-if="item.subMenus">
-                        <submenu :name="item.name" v-bind:key="item_index" class="sidebar-menu__item">
-                            <template slot="title">
-                                <font-icon :type="item.icon"></font-icon>
-                                <span>{{item.title}}</span>
-                            </template>
-                            <MenuItem :name="menu.name || `${item_index}_${menu_index}`" v-for="(menu, menu_index) in item.subMenus" v-bind:key="menu_index" @click.native="handleSelectRouter(menu, item)" v-if="!menu.hideInMenu">
-                                <font-icon :type="menu.icon"></font-icon>
-                                <span>{{menu.title}}</span>
-                            </MenuItem>
-                        </submenu>
-                    </template>
-                    <MenuItem :key="item_index"  v-else-if="!item.hideInMenu" class="sidebar-menu__item" :name="item.name || `${item_index}`"  @click.native="handleSelectRouter(item)">
-                        <font-icon :type="item.icon"></font-icon>
-                        <span>{{item.title}}</span>
+                    <submenu v-if="item.subMenus" :name="item.name" v-bind:key="'s'+item_index" class="sidebar-menu__item">
+                        <template slot="title">
+                            <font-icon :type="item.icon"></font-icon>
+                            <span>{{item.title}}</span>
+                        </template>
+                        <MenuItem :name="menu.name || `${item_index}_${menu_index}`" v-for="(menu, menu_index) in item.subMenus" v-bind:key="menu_index" @click.native="handleSelectRouter(menu, item)" v-if="!menu.hideInMenu">
+                            <font-icon :type="menu.icon"></font-icon>
+                            <span>{{menu.title}}</span>
+                        </MenuItem>
+                    </submenu>
+                    <MenuItem v-bind:key="'m'+item_index" v-else-if="!item.hideInMenu" class="sidebar-menu__item" :name="item.name || `${item_index}`"  @click.native="handleSelectRouter(item)">
+                        <font-icon v-bind:key="item.icon" :type="item.icon"></font-icon>
+                        <span v-bind:key="item.title">{{item.title}}</span>
                     </MenuItem>
                 </template>
             <!--</menu-group>-->

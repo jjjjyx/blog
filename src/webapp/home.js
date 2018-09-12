@@ -7,7 +7,7 @@ import api from './utils/api'
 Vue.use(Icon)
 Vue.config.productionTip = false
 
-let div = document.createElement('div')
+// let div = document.createElement('div')
 // function appInit () {
 /* eslint-disable no-unused-vars  */
 const app = new Vue({
@@ -17,7 +17,7 @@ const app = new Vue({
         value1: 0,
         isNext: true,
         loading: false,
-        page: 1,
+        page: 2,
         value13: '' // 搜索
     },
     methods: {
@@ -27,15 +27,17 @@ const app = new Vue({
         loadMore: async function () {
             try {
                 this.loading = true
-                let resp = await api.get('/more', {page: ++this.page, slug: ''})
+                let resp = await api.get('/more', {page: this.page, slug: ''})
                 let content = await resp.text()
                 if (!content) this.isNext = false
                 let el = this.$refs['insertEl']
-                div.innerHTML = content
-                let childNodes = Array.prototype.slice.call(div.childNodes)
-                for (let i in childNodes) {
-                    el.parentNode.insertBefore(childNodes[i], el)
-                }
+                el.insertAdjacentHTML('beforebegin', content)
+                // div.innerHTML = content
+                // let childNodes = Array.prototype.slice.call(div.childNodes)
+                // for (let i in childNodes) {
+                //     el.parentNode.insertBefore(childNodes[i], el)
+                // }
+                this.page++
                 // console.log(fragment, fragment.firstElementChild)
             } catch (e) {
                 console.log('加载失败')

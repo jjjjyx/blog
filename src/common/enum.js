@@ -34,40 +34,6 @@ const ImgEnum = {
     'AVATAR': 'avatar'
 }
 
-const sidebarListEnum = [
-    {
-        name: '关于博主',
-        key: 'index'
-    },
-    {
-        name: '热门文章',
-        key: 'hot'
-    },
-    {
-        name: '精选文章',
-        key: 'superior'
-    },
-    {
-        name: '分类',
-        key: 'category'
-    },
-    {
-        name: '标签',
-        key: 'tags'
-    },
-    {
-        name: '最新文章',
-        key: 'new'
-    },
-    {
-        name: '归档',
-        key: 'archive'
-    },
-    {
-        name: '搜索',
-        key: 'search'
-    }
-]
 
 module.exports.labels = {
     postStatus: {
@@ -104,6 +70,5 @@ module.exports.Enum =  {
     StatusEnum,
     TaxonomyEnum,
     SiteEnum,
-    ImgEnum,
-    sidebarListEnum
+    ImgEnum
 }

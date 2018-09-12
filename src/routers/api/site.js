@@ -12,6 +12,7 @@ const {siteDao, termDao} = require('../../models/index');
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const {Enum, labels} = require('../../common/enum')
+const common = require('../common')
 
 const updateSite = function (key, value) {
     // return function () {
@@ -77,7 +78,7 @@ const getSite = [
 const getDict = async function (req, res) {
     let siteList = await siteDao.findAll()
     // let enums = labels
-    return res.status(200).json(Result.success({site: siteList, labels, sidebars: Enum.sidebarListEnum}))
+    return res.status(200).json(Result.success({site: siteList, labels, sidebars: common.sidebarModuleKey}))
 }
 
 router.route("/update").post(update)
