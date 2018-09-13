@@ -230,36 +230,6 @@ export default {
                         },
                         onError: reject
                     })
-                    // let {token, domain} = result
-                    // key = Base64.encode(key)
-                    // let url = `http://up-z2.qiniu.com/putb64/-1`
-                    //
-                    // ajax({
-                    //     headers: {
-                    //         'Authorization': `UpToken ${token}`,
-                    //         'Content-Type': 'application/octet-stream'
-                    //     },
-                    //     isBase64: true,
-                    //     file: file.miniurl,
-                    //     action: url,
-                    //     onProgress: e => {
-                    //         // 文章图片都是小图片 ，不允许上传太大的 超过2M 的
-                    //         console.log('onProgress', e)
-                    //         // this.handleProgress(e, file)
-                    //     },
-                    //     onSuccess: ({data, code}) => {
-                    //         // this.handleSuccess(res, file)
-                    //         if (code === 0) {
-                    //             let {url} = data
-                    //             resolve(url)
-                    //         }
-                    //     },
-                    //     onError: (err, response) => {
-                    //         // this.handleError(err, response, file)
-                    //         // console.log('onError', err, response)
-                    //         reject(err)
-                    //     }
-                    // })
                 } catch (e) {
                     reject(new Error('获取上传凭证失败！'))
                 }
@@ -320,8 +290,13 @@ export default {
                 let serverObj = await api.npost('/api/post/save', obj)
                 // console.log('save result = ', result)
                 this.pushRouter('replace')
+
+                // this.$store.commit('updatePostStatus', serverObj.post_status)
+                let mergeObj = {
+                    guid: serverObj.guid
+                }
+                this.$store.commit('mergePost', mergeObj)
                 this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saved)
-                this.$store.commit('updatePostStatus', serverObj.post_status)
                 this.$store.commit('updateAutoSaveContent', obj)
                 // 手动更新一下vuex 状态里的记录
             } catch (e) {
@@ -409,7 +384,7 @@ export default {
             }
         },
         openVersionModel (ver) {
-            console.log('openVersionModel')
+            // console.log('openVersionModel')
             this.versionModel = true
             if (ver) {
                 this.$refs.versionModal.active = ver

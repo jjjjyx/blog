@@ -1,17 +1,17 @@
 <template>
     <div  class="demo-tabs-style2">
-        <Tabs size="small" type="card" class="cm-tabs-style">
-            <TabPane label="所有分类">
+        <Tabs size="small" type="card" class="cm-tabs-style" value="">
+            <TabPane label="常用" style="max-height: 300px; overflow-y: auto;">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
-                    <Radio v-for="(item, index) in categoryList" :label="item.id" :key="index">
+                    <Radio v-for="(item, index) in commonCategoryList" :label="item.id" :key="index">
                         <font-icon :type="item.icon"></font-icon>
                         <span>{{item.name}}</span>
                     </Radio>
                 </RadioGroup>
             </TabPane>
-            <TabPane label="常用">
+            <TabPane label="所有分类" style="max-height: 300px; overflow-y: auto;">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
-                    <Radio v-for="(item, index) in commonCategoryList" :label="item.id" :key="index">
+                    <Radio v-for="(item, index) in categoryList" :label="item.id" :key="index">
                         <font-icon :type="item.icon"></font-icon>
                         <span>{{item.name}}</span>
                     </Radio>

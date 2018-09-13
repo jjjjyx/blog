@@ -46,6 +46,8 @@ const state = {
     status: POST_WRITER_STATUS.normal
     // sidebarCategoryValue: 1
 }
+// 可以merge的key
+let mergeKeys = ['comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'render_value', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'post_password', 'sticky', 'updatedAt', 'createdAt']
 
 const copyPost = _.cloneDeep(state)
 let currCopy = _.cloneDeep(state)
@@ -117,9 +119,13 @@ const mutations = {
     // USER_SIGNOUT (state) {
     //     state.user = null
     // },
-    // MERGEUSER (state, obj) {
-    //     _.merge(state.user, obj)
-    // }
+    mergePost (state, value) {
+        for (let key of mergeKeys) {
+            if (value.hasOwnProperty(key)) {
+                state[key] = value[key]
+            }
+        }
+    },
     updateCategoryValue (state, value) {
         state.category_id = value
     },
@@ -135,7 +141,6 @@ const mutations = {
     updatePostContent (state, {value, render}) {
         state.post_content = value
         state.render_value = render
-        currCopy = _.cloneDeep(state)
     },
     updateTags (state, value) {
         state.new_tag = value
@@ -145,6 +150,15 @@ const mutations = {
     },
     updatePostStatus (state, value) {
         state.post_status = value
+    },
+    updatePostExcerpt (state, value) {
+        state.post_excerpt = value
+    },
+    updatePostPass (state, value) {
+        state.post_password = value
+    },
+    updateSticky (state, value) {
+        state.sticky = value
     },
     shiftPostTag (state, value) {
         state.new_tag.shift()
@@ -157,15 +171,7 @@ const mutations = {
     pushPostTag (state, value) {
         state.new_tag.push(value)
     },
-    updatePostExcerpt (state, value) {
-        state.post_excerpt = value
-    },
-    updatePostPass (state, value) {
-        state.post_password = value
-    },
-    updateSticky (state, value) {
-        state.sticky = value
-    },
+
     restore (state, value) {
         state.post_content = value.post_content
         state.post_title = value.post_title
@@ -183,10 +189,12 @@ const mutations = {
 
         // state.new_tag =
     },
+    // 保存当前文章后，同时更新记录中的信息
+    // 主要作用是保持与后端的数据同步，减少再次请求数据
     updateAutoSaveContent (state, obj) {
         let autoRevision = state.revision.find(item => item.autosave)
         if (_.isObject(autoRevision)) {
-            console.log(obj, autoRevision)
+            console.log('updateAutoSaveContent: ', obj, autoRevision)
             autoRevision.post_content = obj.post_content
             autoRevision.post_title = obj.post_title
             autoRevision.post_excerpt = obj.post_excerpt
