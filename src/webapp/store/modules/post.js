@@ -135,6 +135,7 @@ const mutations = {
     updatePostContent (state, {value, render}) {
         state.post_content = value
         state.render_value = render
+        currCopy = _.cloneDeep(state)
     },
     updateTags (state, value) {
         state.new_tag = value

@@ -207,7 +207,7 @@ export default {
         this._fetchData(false)
         on(document.body, 'keydown', this._handleKeyDown)
     },
-    destroy () {
+    destroyed () {
         off(document.body, 'keydown', this._handleKeyDown)
     },
     mounted () {

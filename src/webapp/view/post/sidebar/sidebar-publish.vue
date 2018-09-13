@@ -1,5 +1,6 @@
 <template>
     <div class="">
+        {{publishValue}}
         <div class="j-collapse ">
             <div class="j-collapse-item">
                 <div class="j-collapse-header">
@@ -134,7 +135,16 @@ export default {
             tmpPass: '',
             tmpPostStatus: '',
             sticky: '',
-            passValue: '',
+            publishValue: {
+                status: '',
+                passValue: '',
+                postStatus: '',
+                sticky: '',
+                postDate: null
+            },
+            originValue: {
+
+            },
             originDate: null,
             originPostStatus: null // 用于记录原始的文章状态
         }
@@ -170,10 +180,10 @@ export default {
             // 如果修改当前状态 为私密，则不可以预选
             if (this.tmpStatus === 'private') {
                 return []
-            } else if (this.postStatus === 'publish') {
-                return ['publish', 'pending', 'draft']
+            // } else if (this.postStatus === 'publish') {
             } else {
-                return ['pending', 'draft']
+                return ['publish', 'pending', 'draft']
+                // return ['pending', 'draft']
             }
         },
         postDate: {
@@ -183,34 +193,39 @@ export default {
     },
     // props: ['currentPost'],
     watch: {
-        'currentPost.id': function (val) {
-            // 有变化的时候 说明更换了文章， 此时读取文章的状态 进行设置
-            // 获取到文章的发布时间
-            // let post_date = this.currentPost.post_date
-            // if (post_date) {
-            //     this.postDate = post_date
-            // }
-            this.originDate = new Date()
-            this.fillTmp()
-            this.$store.dispatch('getOriginPost').then((originDate) => {
-                this.originPostStatus = originDate.post_status
-            })
-
-            // this.
-        }
+        'currentPost.id': '_changePost'
     },
     methods: {
+        /**
+         * 当前编辑的文章发生改变，重新填充当前发布的状态的值
+         * @private
+         */
+        _changePost () {
+            this.originDate = new Date()
+            this.fillTmp()
+            this.$store.dispatch('getOriginPost').then((originData) => {
+                this.originPostStatus = originData.post_status
+            })
+        },
         // 回填状态信息
         fillTmp () {
             this.tmpPass = this.currentPost.post_password
             this.tmpPostStatus = this.currentPost.post_status
             this.sticky = this.currentPost.sticky
+            this.publishValue.passValue = this.currentPost.post_password
+            this.publishValue.postStatus = this.currentPost.post_status
+            this.publishValue.sticky = this.currentPost.sticky
+            // todo 点击确定后的状态改变不立即更新到当前文章中，需要点击发布或者更新后才会更新上去
+            this.publishValue.postDate = this.currentPost.post_date || this.originDate
             if (this.currentPost.post_password) {
                 this.tmpStatus = 'pass'
+                this.publishValue.status = 'pass'
             } else if (this.currentPost.post_status === 'private') {
                 this.tmpStatus = 'private'
+                this.publishValue.status = 'private'
             } else {
                 this.tmpStatus = 'public'
+                this.publishValue.status = 'public'
             }
         },
         dateFormat,
@@ -233,12 +248,12 @@ export default {
             this.$store.commit('updatePostStatus', this.tmpPostStatus)
         },
         async resetPostStatus () {
-            let originDate = await this.$store.dispatch('getOriginPost')
-            this.$store.commit('updatePostStatus', originDate.post_status)
+            let originData = await this.$store.dispatch('getOriginPost')
+            this.$store.commit('updatePostStatus', originData.post_status)
         },
         async resetPostDate () {
-            let originDate = await this.$store.dispatch('getOriginPost')
-            this.postDate = originDate.post_date
+            let originData = await this.$store.dispatch('getOriginPost')
+            this.postDate = originData.post_date
             // this.postDate =
         },
         save () {
@@ -247,8 +262,8 @@ export default {
                 // this.
                 // 要获取到原始状态
                 // this.postStatus = 'publish'
-                this.$store.dispatch('getOriginPost').then((originDate) => {
-                    this.$store.commit('updatePostStatus', this.tmpPostStatus || originDate.post_status)
+                this.$store.dispatch('getOriginPost').then((originData) => {
+                    this.$store.commit('updatePostStatus', this.tmpPostStatus || originData.post_status)
                 })
                 this.$store.commit('updateSticky', this.sticky)
                 break
@@ -263,10 +278,10 @@ export default {
         },
         async reset () {
             // 主要重置 状态， 密码 置顶
-            let originDate = await this.$store.dispatch('getOriginPost')
-            this.$store.commit('updatePostPass', originDate.post_password)
-            this.$store.commit('updatePostStatus', this.tmpPostStatus || originDate.post_status)
-            this.$store.commit('updateSticky', originDate.sticky)
+            let originData = await this.$store.dispatch('getOriginPost')
+            this.$store.commit('updatePostPass', originData.post_password)
+            this.$store.commit('updatePostStatus', this.tmpPostStatus || originData.post_status)
+            this.$store.commit('updateSticky', originData.sticky)
 
             // this.tmpPass = this.currentPost.post_password
             // this.tmpPostStatus = this.currentPost.post_status
@@ -292,7 +307,9 @@ export default {
 
             }
         }
-
+    },
+    mounted () {
+        this._changePost()
     }
 }
 </script>

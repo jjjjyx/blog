@@ -9,7 +9,6 @@
         for (var i=0; i< posts.length;i++){
             post = posts[i]
             category = _.groupBy(post.terms, 'taxonomy').category
-            console.log(category)
             categoryName = category[0].name
             postDate = formatDate(post.post_date, 'YYYY/M/D hh:mm')
             commentNum = post.comment_count || 0

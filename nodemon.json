@@ -15,7 +15,11 @@
   },
   "watch": [
     "app.js",
-    "src/"
+    "src/common",
+    "src/models",
+    "src/routers",
+    "src/utils.js",
+    "src/before-listen.js"
   ],
   "env": {
     "NODE_ENV": "development"

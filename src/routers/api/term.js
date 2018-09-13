@@ -273,7 +273,6 @@ const getAll = [
             })
             return res.status(200).json(Result.success(result))
         } catch (e) {
-            console.log(e)
             debug('getAll error by :', e.message)
             return res.status(200).json(Result.error())
         }

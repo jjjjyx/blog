@@ -387,7 +387,7 @@ const save = [
                     category = SITE.defaultTerm
                 }
                 log.debug('保存文章#%d-AutoSave#%d 标签，分类信息到meta ', id, autoSavePost.id)
-                let new_tag = _createTerms(req.body)
+                let new_tag = await _createTerms(req.body)
 
                 await Promise.all([
                     _save_postMeta(autoSavePost.id, 'tags', JSON.stringify(new_tag.map(item => item.name))),
