@@ -16,9 +16,17 @@
         </div>
     </div>
     <div class="container tags__warp">
-        <% for (let i=0; i< 20;i++){ %>
-            <a class="tags__item" target="_blank" href="javascript:;">
-                <span>标签 <%= i%></span>
+        <%
+        var url
+        for (var i=0; i< tags.length;i++){
+            if (tags[i].dataValues.count) {
+                url = `href="/category/${tags[i].slug}"`
+            } else {
+                url = '@click="msg"'
+            }
+        %>
+            <a class="tags__item" target="_blank" <%-url%>>
+                <span><%=tags[i].name%></span>
             </a>
         <% } %>
     </div>

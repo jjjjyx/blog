@@ -54,7 +54,7 @@ const update = [
                 if (key === 'defaultCategoryId') {
                     termDao.findById(req.body[key]).then(term => {
                         global.SITE.defaultTerm = term
-                        SITE.defaultCategoryId= req.body[key]
+                        SITE.defaultCategoryId = req.body[key]
                     }).catch(() => {
                         log.info('site.update 设置默认分类失败，找不到该分类 %s:', req.body[key])
                     })

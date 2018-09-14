@@ -9,10 +9,7 @@
         <!--<a class="j-sidebar&#45;&#45;tags__tag"  target="_blank" v-for="i in 20">-->
         <!--<span>标签一</span>-->
         <!--</a>-->
-        <% for (var i=0; i< tags.length;i++){
-            if (!tags[i].count) continue
-        %>
-
+        <% for (var i=0; i< tags.length;i++){ %>
         <Tag type="border">
             <a href="/category/<%=tags[i].slug%>"><%=tags[i].name%></a>
         </Tag>

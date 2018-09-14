@@ -293,7 +293,8 @@ export default {
 
                 // this.$store.commit('updatePostStatus', serverObj.post_status)
                 let mergeObj = {
-                    guid: serverObj.guid
+                    guid: serverObj.guid,
+                    post_date: serverObj.post_date
                 }
                 this.$store.commit('mergePost', mergeObj)
                 this.$store.commit('updateEditorStatus', POST_WRITER_STATUS.saved)

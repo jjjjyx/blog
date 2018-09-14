@@ -98,6 +98,7 @@
             </div>
         </div>
         <div class="postbox-options clearfix">
+            <!--通过判断发布时间是否存在 来判定是否有发布-->
             <Button size="small" type="text" style="color: #ed3f14" v-show="originPostStatus !== 'auto-draft'">移至回收站</Button>
             <Button size="small" class="float-right" type="primary" @click="release">{{isPublish ? '更新':'发布'}}</Button>
             <Button size="small" class="float-right mr-1" type="success">
@@ -109,7 +110,7 @@
 
 <script>
 
-// import _ from 'lodash'
+import _ from 'lodash'
 import {mapGetters, mapState} from 'vuex'
 import CollapseTransition from '@/utils/collapse-transition'
 import api from '@/utils/api'
@@ -268,17 +269,21 @@ export default {
                 sticky: this.publishValue.sticky,
                 post_password: this.publishValue.passValue
             }
-            if (!this.isPublish) { // 点击发布
-                if (mergeObj.post_status === 'draft' || mergeObj.post_status === 'auto-draft') {
-                    mergeObj.post_status = this.publishValue.postStatus = 'publish'  // 修改文章状态为发布状态
-                }
-                // this.$store.commit('updatePostStatus', this.publishValue.postStatus)
-            // } else { // 点击更新
-            }
-            this.$store.commit('mergePost', mergeObj)
+
+            // this.$store.commit('mergePost', mergeObj)
             let obj = this.$store.getters.ajaxPostClone
+
+            if (!this.isPublish) { // 点击发布  // 如果当前状态没有修改过，并且点击了发布则修改文章状态为发布状态 否则发送修改的状态
+                if (mergeObj.post_status === this.this.currentPost.post_status) {
+                    mergeObj.post_status = this.publishValue.postStatus = 'publish'
+                }
+                // } else { // 点击更新
+            }
+            // 发起请求前不合并参数，这里只是临时合并，待发布成功后的回调后再更新文章信息
+            _.merge(obj, mergeObj)
+            // console.log('before obj', obj)
             try {
-                await api.npost('/api/post/release', obj)
+                let revision = await api.npost('/api/post/release', obj)
                 this.$Message.success({
                     render: h => {
                         let a = h('a', {
@@ -291,6 +296,8 @@ export default {
                         return ['更新文章成功', a]
                     }
                 })
+                // 成功发布后的回调
+                this.$store.dispatch('afterRelease', {mergeObj, revision})
             } catch (e) {
                 this.$Message.info('发布文章失败:', e.message)
             }

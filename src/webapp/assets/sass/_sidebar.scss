@@ -63,10 +63,12 @@
         position: relative;
     }
 }
-.j-sidebar--category .j-sidebar__body{
+.j-sidebar--category .j-sidebar__body,
+.j-sidebar--tags .j-sidebar__body{
     list-style: none;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    //padding-left: 1rem;
+    //padding-right: 1rem;
+    padding: 1rem;
     li {
         border-bottom: 1px solid $border-color;
     }

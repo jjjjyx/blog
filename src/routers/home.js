@@ -15,7 +15,9 @@ const Op = sequelize.Op
 const utils = require('../utils')
 const common = require('./common')
 const loadPostPageSize = 10
+const cacheTimeOut = config.cacheTimeOut
 log.debug('loadPostPageSize = %d', loadPostPageSize)
+log.debug('cacheTimeOut = %d 秒', cacheTimeOut)
 
 const queryStickyPost = `
 SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`postMeta\` 
@@ -26,7 +28,7 @@ SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`po
 	LIMIT 0, ?;`
 
 const index = [
-    // utils.cache.route('index'),
+    utils.cache.route('index', config.cacheTimeOut),
     async function(req, res, next) {
         try {
             // 获取置顶文章
@@ -46,7 +48,7 @@ const index = [
             log.isDebugEnabled() && log.debug('获取置顶文章，共计 %d 篇, %s', result.length, result.map(post => '#' + post.id))
 
             let articleList = stickyPost.map(common.generatePostHtml).join('')
-            articleList += await common.loadPost({page:1, pageSize: 10}, null, stickyPostIds)
+            articleList += await common.loadPostHtml({page:1, pageSize: 10}, null, stickyPostIds)
 
             let sidebarModule = ['about', 'hot', 'chosen', 'category', 'tags', 'newest', 'archives', 'search']
             let sidebar = ''
@@ -74,7 +76,7 @@ const more = [
         let {page} = req.query
 
         try {
-            let result =  await common.loadPost({page, pageSize: 10})
+            let result =  await common.loadPostHtml({page, pageSize: 10})
             res.send(result)
         } catch (e) {
             log.error('loadPost  error by:', e)

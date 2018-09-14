@@ -379,7 +379,7 @@ const save = [
 
                 req.sanitizeBody('new_tag').toArray()
                 req.sanitizeBody('tags_id').toArray()
-                let {tags_id, category_id} = req.body
+                let {category_id} = req.body
 
                 let category = await termDao.findById(category_id)
                 if (category === null) {
@@ -432,148 +432,7 @@ const newPost = [
         }
     }
 ]
-// 必须参数 文章id
-// 文章的分类，没提交不给过，默认得放到未分类
-// 文章的标签
-// 文章的公开度
-//    密码，置顶，
-// 文章的发布时间 允许自定义，不提交为当前时间
-// 文章状态
-//
-// 评论状态
-// 可选参数
-// 作者
-// 封面图
-//
 
-// 更新 ，发布接口
-// 更新或发布将创建一个版本记录
-
-const release = [
-    sanitizeTitle,
-    sanitizeId,
-    sanitizeCategoryId,
-    sanitizePostName,
-    sanitizeReleasePostStatus,
-    sanitizeAuthor,
-    sanitizePostDate,
-    sanitizeCommentStatus,
-    sanitizeSticky,
-    checkTitle,
-    checkId,
-    checkContent,
-    checkExcerpt,
-    checkPostPass,
-    // checkPostName,
-    // checkCategoryId,
-    checkAuthor,
-    // checkTagsId,
-    utils.validationResult,
-    async function (req, res) {
-        // todo 评论状态
-        let {
-            id,
-            post_title,
-            post_content,
-            post_name,
-            post_excerpt,
-            post_date,
-            // post_author,
-            render_value,
-            sticky,
-            post_status,
-            post_password,
-            comment_status,
-            postAuthor
-        } = req.body
-        log.debug('release post id = %d post_title = %s', id, post_title)
-        try {
-            let post = await postDao.findById(id)
-            if (post === null) {
-                log.info('发布失败，未提交正确的文章id')
-                return res.status(200).json(Result.info('发布失败，未提交正确的文章id'))
-            }
-            // 只能对自己的文章进行转私密, 加密码 在这里进行判断下
-            // 禁用私密功能
-            // let user = req.user
-            // if (post_author !== user.id && (post_status === Enum.PostStatusEnum.PRIVATE || post_password)) {
-            //     return res.status(200).json(Result.info('您不可以对别人的文章加密'))
-            // }
-
-            debug(`release 提交 body = ${JSON.stringify(req.body)}`)
-            // return res.status(200).json('null')
-
-            try {
-                await createTags(req, res, post, true)
-            } catch (e) {
-                return res.status(200).json(Result.info(e.message))
-            }
-
-            // 记录文章旧状态
-            // # 版本只对做 内容，标题，摘录信息，密码，评论状态敏感
-            let oldValues = post.toJSON()
-            delete oldValues.post_status
-            delete oldValues.post_date
-            delete oldValues.post_name
-            delete oldValues.updatedAt
-            delete oldValues.createdAt
-
-            post.post_title = post_title
-            post.post_content = post_content
-            post.post_name = post_name || post.id
-            // post.guid = post.guid || utils.randomChar(16)
-            post.post_excerpt = post_excerpt
-            post.post_date = post_date || new Date()
-            // post.post_author = // 最初的创建者不能修改的 提交的文章作者只会存在版本记录中
-            // sticky
-            let mdContent = marked(post_content, {renderer: utils.renderer})
-            // Promise.all([
-            _save_postMeta(id, 'sticky', sticky)
-            _save_postMeta(id, 'render', render_value)
-            _save_postMeta(id, 'displayContent', mdContent.substr(0, 400))
-            // ]).then(() => {
-            //     log.debug('成功保存文章 #%d的meta 信息', post.id)
-            // }).catch(e => log.error('保存文章#%d meta 失败:', post.id, e))
-
-            post.post_status = post_status
-            post.post_password = post_password
-            post.comment_status = comment_status
-
-            await post.save()
-            let newValues = post.toJSON()
-            delete newValues.post_status
-            delete newValues.post_date
-            delete newValues.post_name
-            delete newValues.updatedAt
-            delete newValues.createdAt
-            // 检查内容是否修改了，没有修改则不创建版本
-            // debug(`是否修改了文章 = ${id}, result = ${result}`)
-            let isModify = _.isEqual(newValues, oldValues)
-            debug('newValues: =', JSON.stringify(newValues))
-            debug('oldValues: =', JSON.stringify(oldValues))
-            debug(`是否修改了文章 isModify = ${!isModify}`)
-            if (!isModify) {
-                // 创建版本
-                let values = newValues
-                values.post_name = `${id}-revision-v1`
-                values.post_status = Enum.PostStatusEnum.INHERIT
-                values.post_type = 'revision'
-                values.post_date = post.post_date
-                values.id = undefined
-                values.createdAt = undefined
-                postDao.create(values)
-                    .then((rp) => {
-                        _save_postMeta(rp.id, 'author', JSON.stringify(postAuthor || req.user))
-                    })
-            }
-            log.info("发布文章成功，post = ", post.id)
-            return res.status(200).json(Result.success())
-        } catch (e) {
-            log.error('release post error by:', e)
-            return res.status(200).json(Result.error())
-        }
-    }
-]
 
 const moverTrash = [
     // body('ids').exists().isArray().withMessage('请提交正确的文章ID列表'),
@@ -769,77 +628,229 @@ const revert = [
         }
     }
 ]
+const _getPostInfo = async function (req, res) {
+    let id = req.params.id ? req.params.id : req.body.id
+    try {
+        log.info('获取文章详细， post = %d', id)
+        let result = await postDao.findOne({
+            // attributes: {
+            //     exclude: ['']
+            // },
+            where: {
+                id,
+                post_status: [
+                    Enum.PostStatusEnum.PUBLISH,
+                    Enum.PostStatusEnum.DRAFT,
+                    Enum.PostStatusEnum.AUTO_DRAFT]
+                // [Op.or]: [ // 禁用私密功能
+                //     {
+                //         post_status: Enum.PostStatusEnum.PRIVATE,
+                //         post_author: req.user.id
+                //     },
+                //     {
+                //         post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT]
+                //     }
+                // ]
+            },
+            include: [
+                {model: postMetaDao, as: 'metas'},
+                {model: termDao},
+                {model: userDao, attributes: {exclude: ['user_pass']}}
+            ]
+        })
+
+        if (result !== null) {
+            // 调取文章的历史版本
+            // 草稿类型调取不检查
+            // if (result.post_status !== Enum.PostStatusEnum.DRAFT) {
+            log.info('获取文章历史版本， post = %d', id)
+            let revision = await postDao.findAll({
+                attributes: [
+                    'id',
+                    'createdAt',
+                    ['post_name', 'type'],
+                    'updatedAt',
+                    'post_content',
+                    'post_title',
+                    'post_excerpt'],
+                where: {
+                    post_type: 'revision',
+                    post_status: Enum.PostStatusEnum.INHERIT,
+                    post_name: [`${id}-autosave-v1`, `${id}-revision-v1`]
+                },
+                include: [
+                    {model: postMetaDao, as: 'metas'},
+                    {model: userDao, attributes: {exclude: ['user_pass']}}
+                ],
+                order: [['updatedAt', 'DESC']]
+            })
+            debug('获取文章历史版本， post = %d, 共 %d 个版本', id, revision.length)
+            result.dataValues.revision = revision
+            return res.status(200).json(Result.success(result))
+        }
+        log.info('获取文章详细失败: 错误的id')
+        return res.status(200).json(Result.info('错误的id'))
+    } catch (e) {
+        log.error('post getContent error by:', e)
+        return res.status(200).json(Result.error())
+    }
+}
+
 const postInfo = [
     sanitizeParam('id').toInt(),
     param('id').isInt().exists().withMessage('错误的id'),
     utils.validationResult,
-    async function (req, res) {
-        let {id} = req.params
-        try {
-            log.info('获取文章详细， post = %d', id)
-            let result = await postDao.findOne({
-                // attributes: {
-                //     exclude: ['']
-                // },
-                where: {
-                    id,
-                    post_status: [
-                        Enum.PostStatusEnum.PUBLISH,
-                        Enum.PostStatusEnum.DRAFT,
-                        Enum.PostStatusEnum.AUTO_DRAFT]
-                    // [Op.or]: [ // 禁用私密功能
-                    //     {
-                    //         post_status: Enum.PostStatusEnum.PRIVATE,
-                    //         post_author: req.user.id
-                    //     },
-                    //     {
-                    //         post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT]
-                    //     }
-                    // ]
-                },
-                include: [
-                    {model: postMetaDao, as: 'metas'},
-                    {model: termDao},
-                    {model: userDao, attributes: {exclude: ['user_pass']}}
-                ]
-            })
+    _getPostInfo
+]
 
-            if (result !== null) {
-                // 调取文章的历史版本
-                // 草稿类型调取不检查
-                // if (result.post_status !== Enum.PostStatusEnum.DRAFT) {
-                log.info('获取文章历史版本， post = %d', id)
-                let revision = await postDao.findAll({
-                    attributes: [
-                        'id',
-                        'createdAt',
-                        ['post_name', 'type'],
-                        'updatedAt',
-                        'post_content',
-                        'post_title',
-                        'post_excerpt'],
-                    where: {
-                        post_type: 'revision',
-                        post_status: Enum.PostStatusEnum.INHERIT,
-                        post_name: [`${id}-autosave-v1`, `${id}-revision-v1`]
-                    },
-                    include: [
-                        {model: postMetaDao, as: 'metas'},
-                        {model: userDao, attributes: {exclude: ['user_pass']}}
-                    ],
-                    order: [['updatedAt', 'DESC']]
-                })
-                debug('获取文章历史版本， post = %d, 供 %d 个版本', id, revision.length)
-                result.dataValues.revision = revision
-                return res.status(200).json(Result.success(result))
+// 必须参数 文章id
+// 文章的分类，没提交不给过，默认得放到未分类
+// 文章的标签
+// 文章的公开度
+//    密码，置顶，
+// 文章的发布时间 允许自定义，不提交为当前时间
+// 文章状态
+//
+// 评论状态
+// 可选参数
+// 作者
+// 封面图
+//
+
+// 更新 ，发布接口
+// 更新或发布将创建一个版本记录
+
+const release = [
+    sanitizeTitle,
+    sanitizeId,
+    sanitizeCategoryId,
+    sanitizePostName,
+    sanitizeReleasePostStatus,
+    sanitizeAuthor,
+    sanitizePostDate,
+    sanitizeCommentStatus,
+    sanitizeSticky,
+    checkTitle,
+    checkId,
+    checkContent,
+    checkExcerpt,
+    checkPostPass,
+    // checkPostName,
+    // checkCategoryId,
+    checkAuthor,
+    // checkTagsId,
+    utils.validationResult,
+    async function (req, res, next) {
+        // todo 评论状态
+        let {
+            id,
+            post_title,
+            post_content,
+            post_name,
+            post_excerpt,
+            post_date,
+            // post_author,
+            render_value,
+            sticky,
+            post_status,
+            post_password,
+            comment_status,
+            postAuthor
+        } = req.body
+        log.debug('release post id = %d post_title = %s', id, post_title)
+        try {
+            let post = await postDao.findById(id)
+            if (post === null) {
+                log.info('发布失败，未提交正确的文章id')
+                return res.status(200).json(Result.info('发布失败，未提交正确的文章id'))
             }
-            log.info('获取文章详细失败: 错误的id')
-            return res.status(200).json(Result.info('错误的id'))
+            // 只能对自己的文章进行转私密, 加密码 在这里进行判断下
+            // 禁用私密功能
+            // let user = req.user
+            // if (post_author !== user.id && (post_status === Enum.PostStatusEnum.PRIVATE || post_password)) {
+            //     return res.status(200).json(Result.info('您不可以对别人的文章加密'))
+            // }
+
+            debug(`release 提交 body = ${JSON.stringify(req.body)}`)
+            // return res.status(200).json('null')
+
+            try {
+                await createTags(req, res, post, true)
+            } catch (e) {
+                return res.status(200).json(Result.info(e.message))
+            }
+
+            // 记录文章旧状态
+            // # 版本只对做 内容，标题，摘录信息，密码，评论状态敏感
+            let oldValues = post.toJSON()
+            delete oldValues.post_status
+            delete oldValues.post_date
+            delete oldValues.post_name
+            delete oldValues.updatedAt
+            delete oldValues.createdAt
+
+            post.post_title = post_title
+            post.post_content = post_content
+            post.post_name = post_name || post.id
+            // post.guid = post.guid || utils.randomChar(16)
+            post.post_excerpt = post_excerpt
+            post.post_date = post_date || new Date()
+            // post.post_author = // 最初的创建者不能修改的 提交的文章作者只会存在版本记录中
+            // sticky
+            let mdContent = marked(post_content, {renderer: utils.renderer})
+            // Promise.all([
+            _save_postMeta(id, 'sticky', sticky)
+            _save_postMeta(id, 'render', render_value)
+            _save_postMeta(id, 'displayContent', mdContent.substr(0, 400))
+            // ]).then(() => {
+            //     log.debug('成功保存文章 #%d的meta 信息', post.id)
+            // }).catch(e => log.error('保存文章#%d meta 失败:', post.id, e))
+
+            post.post_status = post_status
+            post.post_password = post_password
+            post.comment_status = comment_status
+
+            await post.save()
+            // 点击发布，不论是更新还是发布，都会判断内容记录版本
+            // 相当于 主分支，而自动保存的版本则相当于是分支，有且只有一个分支
+            // if (post.post_status === Enum.PostStatusEnum.PUBLISH) {
+            let newValues = post.toJSON()
+            delete newValues.post_status
+            delete newValues.post_date
+            delete newValues.post_name
+            delete newValues.updatedAt
+            delete newValues.createdAt
+            // 检查内容是否修改了，没有修改则不创建版本
+            // debug(`是否修改了文章 = ${id}, result = ${result}`)
+            let isModify = _.isEqual(newValues, oldValues)
+            debug('newValues: =', JSON.stringify(newValues))
+            debug('oldValues: =', JSON.stringify(oldValues))
+            debug(`是否修改了文章 isModify = ${!isModify}`)
+
+            if (!isModify) {
+                // 创建版本
+                let values = newValues
+                values.post_name = `${id}-revision-v1`
+                values.post_status = Enum.PostStatusEnum.INHERIT
+                values.post_type = 'revision'
+                values.post_date = post.post_date
+                values.id = undefined
+                values.createdAt = undefined
+                let revision = await postDao.create(values)
+                _save_postMeta(revision.id, 'author', JSON.stringify(postAuthor || req.user))
+
+            }
+            // }
+            log.info("发布文章成功，post = ", post.id)
+            utils.clearCache()
+            next()
+            // return res.status(200).json(Result.success(revision))
         } catch (e) {
-            log.error('post getContent error by:', e)
+            log.error('release post error by:', e)
             return res.status(200).json(Result.error())
         }
-    }
+    },
+    _getPostInfo
 ]
 
 const resetPostGuid = [

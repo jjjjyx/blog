@@ -6,17 +6,26 @@
         <h3 class="title">分类</h3>
     </div>
     <ul class="j-sidebar__body">
+        <%
+        var item;
+        var type;
+        var count;
+        var disable
+        var href
+        for (var i=0; i< category.length;i++){
+            item = category[i]
+            type = item.icon
+            count = item.dataValues.count
+            disable = count === 0
+            if (disable) {
+                href = `javascript:void(0);`
+            } else {
+                href = `/category/${item.slug}`
+            }
+        %>
         <li>
-            <font-icon type="icon-ziyuan1"></font-icon> <a href="javascript:;">分类一</a>
+            <font-icon type="<%=type%>" size="24" style="vertical-align: middle;margin-right: .5rem"></font-icon> <a href="<%=href%>"><%=item.name%></a>
         </li>
-        <li>
-            <font-icon type="icon-ziyuan1"></font-icon> <a href="javascript:;">分类一</a>
-        </li>
-        <li>
-            <font-icon type="icon-ziyuan1"></font-icon> <a href="javascript:;">分类一</a>
-        </li>
-        <li>
-            <font-icon type="icon-ziyuan1"></font-icon> <a href="javascript:;">分类一</a>
-        </li>
+        <% } %>
     </ul>
 </div>

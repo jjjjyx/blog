@@ -27,7 +27,7 @@ const renderCategoryList = [
                 },
                 attributes: {
                     include: [
-                        [sequelize.literal('(SELECT COUNT(`term_relationships`.`object_id`) FROM  `j_term_relationships` AS `term_relationships` LEFT JOIN j_posts AS jp ON `term_relationships`.`object_id`=jp.`id`  WHERE `term_relationships`.`term_id` = `term`.`id` AND jp.`post_status`= \'publish\')'), 'count']
+                        common.termCountSql
                     ]
                 }
             })
@@ -45,6 +45,7 @@ SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`po
 	WHERE \`postMeta\`.\`meta_key\` = 'sticky' AND \`postMeta\`.\`meta_value\` = '1' AND jt.\`slug\`= ?)
 	ORDER BY post_date DESC
 	LIMIT 0, ?;`
+const loadCategoryLength = 20
 const renderCategory = [
     // param('slug').isLength({min: 6}),
     async function (req, res, next) {
@@ -72,8 +73,10 @@ const renderCategory = [
                 include: common.postInclude
             })
             let articleList = stickyPost.map(common.generatePostHtml).join('')
-            articleList += await common.loadPost({page: 1, pageSize: 20}, term, stickyPostIds) // posts.map(common.generatePostHtml).join('')
-            res.render('category', {articleList, term})
+            let posts = await common.loadPost({page: 1, pageSize: loadCategoryLength}, term, stickyPostIds)
+            articleList += posts.map(common.generatePostHtml).join('')
+            //
+            res.render('category', {articleList, term, articleLength: posts.length, maxLength: loadCategoryLength})
         } catch (e) {
             log.error('renderCategory error by:', e)
             next()
@@ -97,7 +100,7 @@ const loadPostByTerm = [
             if (term === null) {
                 return res.send('')
             }
-            let result = await common.loadPost({page, pageSize: 20}, term)
+            let result = await common.loadPostHtml({page, pageSize: 20}, term)
             res.send(result)
         } catch (e) {
             log.error('loadPostByTerm error by:', e)

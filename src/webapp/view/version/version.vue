@@ -9,10 +9,10 @@
                     :class="{active: version === active}"
                     :color="version.autosave ? 'red': 'blue'"
                     v-bind:key="index" >
-                    <Icon type="clock" slot="dot" v-if="version.autosave"></Icon>
-                    <p class="post-version__list--time">
+                    <Icon type="clock" v-if="version.autosave" slot="dot"></Icon>
+                    <h5 class="post-version__list--time">
                         {{dateFormat(version.createdAt, 'yyyy/MM/dd hh:mm:ss')}}
-                    </p>
+                    </h5>
                     <p class="post-version__list--author">
                         {{version.user.user_login}}@{{version.user.user_nickname}}
                     </p>
@@ -25,10 +25,13 @@
                 <h3 class="post-version__content--title">
                     <span>文章“</span><span class="post-version__content--title--pt">{{currentPost.post_title}}</span><span>”的历史版本信息</span>
                 </h3>
-                <div class="post-version__content--desc" v-if="active">
-                    修改时间: <span class="mr-4">{{dateFormat(active.createdAt, 'yyyy/MM/dd hh:mm:ss')}}</span> 修改者: <span>{{active.user.user_login}}@{{active.user.user_nickname}}</span>
-                </div>
-                <Tag checkable color="blue" style="position: absolute;top: 11px; right: 15px;" v-show="isCurrent">当前版本</Tag>
+                <template v-if="active">
+                    <div class="post-version__content--desc" >
+                        修改时间: <span class="mr-4">{{dateFormat(active.createdAt, 'yyyy/MM/dd hh:mm:ss')}}</span> 修改者: <span>{{active.user.user_login}}@{{active.user.user_nickname}}</span>
+                    </div>
+                    <Tag checkable color="blue" style="position: absolute;top: 11px; right: 15px;" v-if="isCurrent">当前版本</Tag>
+                    <Tag checkable color="blue" style="position: absolute;top: 11px; right: 15px;" v-else-if="active.autosave">自动保存</Tag>
+                </template>
             </div>
             <div class="post-version__content--body">
                 <!--<code-diff ></code-diff>-->
@@ -80,6 +83,10 @@ import _ from 'lodash'
 import CodeDiff from '@/components/code-diff/code-diff'
 import {mapState, mapGetters} from 'vuex'
 import {dateFormat} from '@/utils/common'
+
+/**
+ *  todo 这个版本对比好鸡肋， 功能没写好，需要在重新规划下功能需求
+ */
 export default {
     name: 'version',
     data () {
@@ -99,7 +106,7 @@ export default {
         }),
         ...mapGetters(['defaultCategoryValue']),
         versions: function () {
-            return this.currentPost.revision
+            return _.orderBy(this.currentPost.revision, ['updatedAt'], ['desc'])
         },
         // 是否是当前版本
         isCurrent: function () {
@@ -109,6 +116,7 @@ export default {
                 return false
             }
         },
+        // 是否是自动保存版本
         showTitle: function () {
             return this.currentPost.post_title !== this.active.post_title
         },

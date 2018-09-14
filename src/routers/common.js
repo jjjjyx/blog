@@ -125,7 +125,11 @@ module.exports.loadPost = async function ({page = 1, pageSize = 10}, term, exclu
         ]
     })
     log.debug('获取文章，共计 %d 篇, %s', posts.length, posts.map(post => '#' + post.id))
-    return posts.map(exports.generatePostHtml).join('')
+        //
+    return posts
+}
+module.exports.loadPostHtml = async  function (...a) {
+    return (await exports.loadPost.call(this, ...a)).map(exports.generatePostHtml).join('')
 }
 /**
  * 最新
@@ -159,7 +163,7 @@ module.exports.loadHotPost = function (size) {
 module.exports.loadChosenPost = function (size) {
 
 }
-
+const termCountSql = [sequelize.literal('(SELECT COUNT(`term_relationships`.`object_id`) FROM  `j_term_relationships` AS `term_relationships` LEFT JOIN j_posts AS jp ON `term_relationships`.`object_id`=jp.`id`  WHERE `term_relationships`.`term_id` = `term`.`id` AND jp.`post_status`= \'publish\')'), 'count']
 module.exports.loadTags = function () {
     return termDao.findAll({
         where: {
@@ -167,10 +171,35 @@ module.exports.loadTags = function () {
         },
         attributes: {
             include: [
-                [sequelize.literal('(SELECT COUNT(`term_relationships`.`object_id`) FROM  `j_term_relationships` AS `term_relationships` LEFT JOIN j_posts AS jp ON `term_relationships`.`object_id`=jp.`id`  WHERE `term_relationships`.`term_id` = `term`.`id` AND jp.`post_status`= \'publish\')'), 'count']
+                termCountSql
             ]
         },
         order: [['createdAt', 'DESC']]
+    })
+}
+
+module.exports.loadCategory = function (size = 10) {
+    size = _.toNumber(size)
+    return termDao.findAll({
+        where: {
+            taxonomy: Enum.TaxonomyEnum.CATEGORY,
+            id: {
+                [Op.ne]: SITE.defaultCategoryId
+            },
+            icon: {
+                [Op.not]: null,
+                [Op.ne]: ''
+            }
+        },
+        attributes: {
+            include: [
+                termCountSql
+            ]
+        },
+        // order: [['count', 'desc']],
+        order: sequelize.literal('count DESC'),
+        offset: 0,
+        limit: size
     })
 }
 
@@ -193,13 +222,17 @@ const sidebarModule = {
         return renderFile('chosen')
     },
     // 分类
-    category: function () {
-        return renderFile('category')
+    category: async function () {
+        // 获取除未分类的分类，按照个数拍戏，取前20个
+        let category = await exports.loadCategory(SITE.categoryNum)
+        log.isDebugEnabled() && log.debug('category ： 获取分类 共计 %d 个 %s', 20, category.map((tag) => `#${tag.id}:${tag.name}`))
+        return renderFile('category', {category})
     },
     // 标签
     tags: async function () {
         let tags = await exports.loadTags()
-        tags = tags.filter(item => item.count)
+        tags = tags.filter(item => item.dataValues.count)
+        log.isDebugEnabled() && log.debug('tags ： 获取全部有文章引用的标签 共计 %d 个 %s', tags.length, tags.map((tag) => `#${tag.id}:${tag.name}`))
         if (tags.length) {
             return renderFile('tags', {tags})
         } else {
@@ -240,3 +273,4 @@ const sidebarListEnum = [
 
 module.exports.sidebarModuleKey = sidebarListEnum
 module.exports.sidebarModule = sidebarModule
+module.exports.termCountSql = termCountSql

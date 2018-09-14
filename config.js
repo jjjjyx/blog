@@ -8,6 +8,7 @@ const CONFIG = {
     appPort: 3878,
     allowOrigin: 'http://localhost:3879',
     maxAge: 365 * 5 * 60000 * 60 * 24,
+    cacheTimeOut: 60 * 60 * 24 * 2, // 单位秒  2 天
     secret: '$2a$10$5A/Wb/EnCwdS2Yxdk0ouGe4beJn7ZTpPD9ofzMdaLc45EgIZwURg6',
     db: {
         development: {

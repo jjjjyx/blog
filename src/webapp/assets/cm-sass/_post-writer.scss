@@ -184,6 +184,7 @@
         padding: 1rem;
     }
     @at-root #{&}--time {
+        cursor: pointer;
         font-weight: 600;
     }
     @at-root #{&}--author {

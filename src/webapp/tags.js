@@ -1,18 +1,22 @@
 'use strict'
 
 import './assets/tags.scss'
-import Icon from './components/icon'
+// import Icon from './components/icon'
 import {addClass, removeClass} from './utils/dom'
 /* eslint-disable no-unused-vars,no-undef  */
-Vue.use(Icon)
-Vue.config.productionTip = false
+// Vue.use(Icon)
+// Vue.config.productionTip = false
 
 function appInit () {
     /* eslint-disable no-new */
-    // new Vue({
-    //     el: '#app',
-    //
-    // })
+    let app = new Vue({
+        el: '#app',
+        methods: {
+            msg () {
+                this.$Message.info('该标签下没有文章，不建议查阅~')
+            }
+        }
+    })
     window.fulfilLoading && window.fulfilLoading()
     // console.log(2222)
     let tags = document.querySelectorAll('.tags__item')

@@ -71,7 +71,7 @@ const getters = {
         delete obj.createdAt
         return obj
     },
-    isPublish: state => state.post_status === 'publish'
+    isPublish: state => state.post_date !== null
     // user: state => state.user
 }
 
@@ -110,6 +110,14 @@ const actions = {
             }
         }
         return false
+    },
+    afterRelease ({commit, state}, {revision, mergeObj}) {
+        // console.log('revision = ', revision)
+        // console.log('mergeObj = ', mergeObj)
+        commit('mergePost', mergeObj)
+        if (revision) {
+            commit('SET_CURRENT_POST', revision)
+        }
     },
     getOriginPost () {
         return currCopy

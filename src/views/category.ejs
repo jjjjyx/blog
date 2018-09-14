@@ -35,10 +35,14 @@
         <i-col span="16" class="articles">
             <div class="j-article-list">
                 <%-articleList%>
+                <%
+                if (articleLength == maxLength) {
+                %>
                 <div class="j-load-more" ref="insertEl" v-show="!loading">
                     <span @click="loadMore" v-if="isNext">点击加载更多 <Icon type="ios-more-outline" /></span>
                     <span v-else>没有更多了</span>
                 </div>
+                <%}%>
                 <%-include('template/article-placeholder', data); %>
             </div>
                 <!--<tab-pane label="上课大纲">标签二的内容</tab-pane>-->

@@ -42,7 +42,6 @@ let cache = ExpressRedisCache({
 let jwtr = new JWTR(redis)
 Promise.promisifyAll(jwtr)
 
-
 async function create (obj, expiresIn = TOKEN_EXPIRATION_SEC) {
 
     if (_.isEmpty(obj)) throw new Error('Data cannot be empty.')
@@ -76,5 +75,20 @@ module.exports.formatDate = function (time, pattern = 'YYYY-M-D hh:mm') {
 }
 
 module.exports.create = create
-module.exports.cache = cache
 module.exports.renderer = renderer
+module.exports.cache = cache
+
+module.exports.clearCache = function () {
+    log.debug('清空路由缓存')
+    cache.get((error, entries) => {
+        if (error) {
+            log.error('清除缓存发生错误', e)
+        }
+        entries.forEach((item) => {
+            cache.del(item.name, () => {
+                log.info('清除 %s 缓存', item.name)
+            })
+        })
+    })
+}
+exports.clearCache()

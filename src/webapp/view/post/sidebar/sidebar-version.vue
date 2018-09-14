@@ -6,10 +6,12 @@
             <span>{{getTimeText(new Date(version.updatedAt).getTime())}}</span>
             <a href="javascript:;" @click="$emit('viewVersion', version)">({{dateFormat(version.updatedAt, 'M/d hh:mm:ss')}})</a>
             <Tooltip content="自动保存" v-if="version.autosave">
-            <span  style="cursor: pointer">[ <Icon type="flag" color="#2d8cf0"></Icon> ]</span>
+                <span  style="cursor: pointer;color:#ffbf00 ">[ auto ]</span>
+                <!--<Icon type="flag" color="#2d8cf0"></Icon>-->
             </Tooltip>
             <Tooltip content="当前版本" v-if="version.curr">
-            <span  style="cursor: pointer">[ <Icon type="flag" color="#ffbf00"></Icon> ]</span>
+                <span  style="cursor: pointer;color:#2d8cf0;">[ master ]</span>
+                <!--<Icon type="flag" color="#ffbf00"></Icon>-->
             </Tooltip>
         </div>
     </div>
@@ -18,7 +20,7 @@
 <script>
 // const UserList = ['U', 'Lucy', 'Tom', 'Edward'];
 import {getTimeText, dateFormat} from '../../../utils/common'
-
+import _ from 'lodash'
 const ColorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae']
 
 export default {
@@ -32,7 +34,7 @@ export default {
     },
     computed: {
         versions: function () {
-            return this.currentPost.revision
+            return _.orderBy(this.currentPost.revision, ['updatedAt'], ['desc'])
         }
     },
     methods: {
@@ -48,10 +50,10 @@ export default {
 </script>
 
 <style>
-.j-version-item {
-    margin-bottom: 12px;
-    font-size: 12px;
-}
+    .j-version-item {
+        margin-bottom: 12px;
+        font-size: 12px;
+    }
     .j-version-username {
         cursor: default;
     }
