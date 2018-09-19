@@ -37,19 +37,19 @@ const webpackConfig = merge(baseWebpackConfig, {
                     name: 'vendors',
                     minChunks: 3
                 },
-                'common': {
-                    // 实际路径
-                    test: path.resolve(__dirname, '../src/webapp/assets/common.scss'),
-                    name: "common",
-                    chunks: "all",
-                    enforce: true
+                // 'common': {
+                //     // 实际路径
+                //     test: path.resolve(__dirname, '../src/webapp/assets/common.scss'),
+                //     name: "common",
+                //     chunks: "all",
+                //     enforce: true
+                // },
+                'async-vendors': {
+                    test: /[\\/]node_modules[\\/]/,
+                    minChunks: 2,
+                    chunks: 'async',
+                    name: 'async-vendors'
                 }
-                // 'async-vendors': {
-                //     test: /[\\/]node_modules[\\/]/,
-                //     minChunks: 2,
-                //     chunks: 'async',
-                //     name: 'async-vendors'
-                // }
             }
         },
         runtimeChunk: {name: 'runtime'}

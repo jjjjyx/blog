@@ -14,7 +14,8 @@
     <link href="<%=locals.cdn('iview/2.14.0/styles/iview.css')%>" rel="stylesheet">
     <link href="<%-SITE.iconUrl%>" rel="stylesheet">
     <% if(!locals.dev) {%>
-    <link href="/static/css/<%=name%>.css?_=<%=locals.hash%>" rel="stylesheet">
+    <link href="/static/css/common.css?_=<%=locals.hash%>" rel="stylesheet">
+    <link href="/static/css/<%=data.name%>.css?_=<%=locals.hash%>" rel="stylesheet">
     <%}%>
     <style>
         html,body{
