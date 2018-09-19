@@ -215,7 +215,7 @@ SELECT
   t.*,
   COUNT(*) as count
 FROM (SELECT DATE_FORMAT(post_date, '%Y 年%m 月') AS post_date2, DATE_FORMAT(post_date, '%Y%m') as post_date FROM j_posts WHERE post_status = 'publish') AS t 
-GROUP BY t.post_date2 
+GROUP BY t.post_date2,  t.post_date
 ORDER BY post_date DESC
 `
 
