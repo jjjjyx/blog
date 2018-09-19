@@ -1,8 +1,9 @@
 'use strict'
 
+import './assets/common.scss'
 import './assets/tags.scss'
 // import Icon from './components/icon'
-import {addClass, removeClass} from './utils/dom'
+import { addClass, removeClass } from './utils/dom'
 /* eslint-disable no-unused-vars,no-undef  */
 // Vue.use(Icon)
 // Vue.config.productionTip = false
@@ -18,7 +19,6 @@ function appInit () {
         }
     })
     window.fulfilLoading && window.fulfilLoading()
-    // console.log(2222)
     let tags = document.querySelectorAll('.tags__item')
 
     let tagHover = (index) => {
@@ -29,14 +29,8 @@ function appInit () {
         tag = tags[index]
         addClass(tag, 'active')
         setTimeout(tagHover, 1000, index)
-        // let next = $(".tag.active").removeClass('active').next('.tag');
-        // if(!next.length){
-        //     next = $(".tag:eq(0)")
-        // }
-        // next.addClass("active");
     }
     tagHover(0)
-    // setInterval(tagHover,1000);
 }
 
 appInit()

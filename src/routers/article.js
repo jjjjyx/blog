@@ -28,6 +28,7 @@ const readerPost = [
     param('p').exists().isLength({min: 9, max: 16}),
     utils.validationResult,
     async function(req, res) {
+        // console.log('========', req.session)
         let guid = req.params.p;
         let post = await postDao.findOne({
             where: {

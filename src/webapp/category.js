@@ -1,5 +1,6 @@
 'use strict'
 
+import './assets/common.scss'
 import './assets/category.scss'
 import Icon from './components/icon'
 import api from './utils/api'

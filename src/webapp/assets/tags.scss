@@ -1,12 +1,11 @@
 @import "./sass/public";
 
-
-.jumbotron  {
+.jumbotron {
     position: relative;
     overflow: hidden;
     width: 100%;
     z-index: 0;
-    height:320px;
+    height: 320px;
     background: no-repeat fixed center center;
     background-size: cover;
     padding-top: $header-height;
@@ -24,10 +23,11 @@
     }
 }
 
-.tags__warp {
+.tags__warp, .j-archives-times {
     margin: 70px auto;
     min-height: 42.5vh;
 }
+
 .tags__item {
     display: inline-block;
     padding: 4px 10px 3px 10px;
@@ -42,7 +42,7 @@
     span {
         transition: opacity .5s ease-out;
     }
-    &::before,&::after{
+    &::before, &::after {
         box-sizing: border-box;
         border: 1px solid transparent;
         width: 0;
@@ -51,18 +51,18 @@
         display: block;
         position: absolute;
     }
-    &::before{
+    &::before {
         bottom: 0;
         right: 0;
-        transition: border-color 0s ease-in 0.4s,width 0.2s ease-in 0.2s,height 0.2s ease-in;
+        transition: border-color 0s ease-in 0.4s, width 0.2s ease-in 0.2s, height 0.2s ease-in;
     }
     &::after {
         top: 0;
         left: 0;
-        transition: border-color 0s ease-in 0.8s,width 0.2s ease-in 0.6s,height 0.2s ease-in 0.4s;
+        transition: border-color 0s ease-in 0.8s, width 0.2s ease-in 0.6s, height 0.2s ease-in 0.4s;
     }
 
-    &:hover,&.active {
+    &:hover, &.active {
         color: $logo-color;
         // border-color: @logoColor;
         // background-color: rgba(34, 187, 149, 0.05);
@@ -72,19 +72,19 @@
         //span.tags-icon{
         //    opacity: 1;
         //}
-        &::before,&::after{
+        &::before, &::after {
             width: 100%;
             height: 100%;
         }
-        &::before{
+        &::before {
             border-bottom-color: $logo-color;
             border-left-color: $logo-color;
-            transition: border-color 0s ease-out 0.4s,width 0.2s ease-out 0.4s,height 0.2s ease-out 0.6s;
+            transition: border-color 0s ease-out 0.4s, width 0.2s ease-out 0.4s, height 0.2s ease-out 0.6s;
         }
         &::after {
             border-top-color: $logo-color;
             border-right-color: $logo-color;
-            transition: width 0.2s ease-out,height 0.2s ease-out 0.2s;
+            transition: width 0.2s ease-out, height 0.2s ease-out 0.2s;
         }
     }
     //span.tags-icon{
@@ -98,4 +98,89 @@
     //    text-align: center;
     //    vertical-align: middle;
     //}
+}
+
+.j-archives-times {
+    // width: 700px;
+    color: #333;
+    padding: 2rem 1.5rem 5rem;
+    //background-color: @mainBgColor;
+
+    border-radius: .5rem;
+    margin-bottom: 2rem;
+}
+
+.j-archives-item {
+    .j-start-date {
+        font-size: 18px;
+    }
+    .j-activity {
+        padding: 10px 0 10px 50px;
+        position: relative;
+        font-size: 14px;
+        min-height: 32px;
+        &::before {
+            width: 1px;
+            position: absolute;
+            top: 20px;
+            left: 14px;
+            height: 100%;
+            border-left: 1px solid #CCC;
+            content: '';
+        }
+        &:last-child::before {
+            border: 0;
+        }
+    }
+    .j-timeline {
+        width: 120px;
+        float: left;
+        &::before {
+            position: absolute;
+            top: 17px;
+            left: 11px;
+            display: block;
+            width: 7px;
+            height: 7px;
+            background-color: #EEE;
+            border: 1px solid gray;
+            border-radius: 5px;
+            content: '';
+        }
+    }
+    .j-content {
+        padding-left: 120px;
+        word-break: break-all;
+    }
+    .j-article-info {
+        cursor: default;
+    }
+    .j-article-info li {
+
+        font-size: 12px;
+        letter-spacing: -.2px;
+        padding: 0;
+        margin: 0 10px 0 0;
+        color: #748594;
+        position: relative;
+        line-height: 1.5;
+        a {
+            cursor: default;
+            color: #748594;
+            vertical-align: middle;
+        }
+    }
+    .j-article-info i, .j-article-info img {
+        & + span, & + a {
+            // margin-left: 5px;
+        }
+
+    }
+    .j-article-info .article-avater {
+        padding: 1px;
+        vertical-align: middle;
+        border-radius: 50%;
+        border: 1px solid $border-color;
+        overflow: hidden;
+    }
 }

@@ -1,5 +1,6 @@
        /* jshint indent: 2 */
 const {Enum} = require('../common/enum')
+const _ = require('lodash')
 /*
 关于
 此表用户记录与维护文章，以及文章的历史版本信息
@@ -16,6 +17,18 @@ const {Enum} = require('../common/enum')
     修改publish状态的内容
     重新创建一个    -> inherit
  */
+
+
+function getCategoryOrTags () {
+   if (!this.terms) {
+       throw new Error('未获取到文章terms 信息')
+   }
+   let {category = [{name: ''}], post_tag: postTag = []} = _.groupBy(this.terms, 'taxonomy')
+   return {
+       category: category[0],
+       postTag
+   }
+}
 
 module.exports = function (sequelize, DataTypes) {
     let postModel = sequelize.define('post', {
@@ -159,5 +172,7 @@ module.exports = function (sequelize, DataTypes) {
     const {user: userModel} = sequelize.models
     userModel.hasMany(postModel, {foreignKey: 'post_author', targetKey: 'id'})
     postModel.belongsTo(userModel, {foreignKey: 'post_author', targetKey: 'id'})
+
+    postModel.prototype.getCategoryOrTags = getCategoryOrTags
     return postModel
 };

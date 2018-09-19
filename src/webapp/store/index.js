@@ -5,15 +5,59 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import createLogger from 'vuex/dist/logger'
 import modules from './modules'
-import {mutations} from './mutations.js'
+import { mutations } from './mutations.js'
 import actions from './actions'
 import createPersistedState from 'vuex-persistedstate'
-import {homeRouter} from '../router/router'
+import { homeRouter } from '../router/router'
+
 Vue.use(Vuex)
 
 const state = {
     // 全局
-    dict: {},
+    dict: {
+        postStatus: {
+            'draft': '草稿',
+            'auto-draft': '自动草稿',
+            'pending': '等待复审',
+            // INHERIT: 'inherit',
+            'publish': '发布'
+        },
+        status: {
+            'open': '打开',
+            'close': '关闭'
+        },
+        taxonomy: {
+            'category': '分类',
+            'nav_menu': '导航',
+            'post_tag': '标签'
+        },
+        site: {
+            'yes': 'yes',
+            'no': 'no'
+        },
+        img: {
+            'all': '所有',
+            'public': '公共区域',
+            'cover': '封面',
+            'post': '文章插图',
+            'avatar': '头像'
+        },
+        sidebar: {
+            'about': '关于博主',
+            'hot': '热门文章',
+            'chosen': '精选文章',
+            'category': '分类',
+            'tags': '标签',
+            'newest': '最新文章',
+            'archives': '归档',
+            'search': '搜索'
+        },
+        role: {
+            0: '游客',
+            1: '普通用户',
+            100: '超级管理员'
+        }
+    },
     site: [],
     siteMap: {},
     breadCrumbList: [],

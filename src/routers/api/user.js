@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 'use strict'
+
 const express = require('express')
 const bcrypt = require('bcryptjs')
 
@@ -10,6 +11,7 @@ const {check} = require('express-validator/check')
 const utils = require('../../utils')
 const Result = require('../../common/resultUtils')
 const {userDao} = require('../../models/index')
+const common = require('../common')
 // 密码必须为6-18位 必须包含特殊字符和英文
 const passReg = new RegExp(
     '^(?![a-zA-z]+$)(?!\\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\\d!@#$%^&*]+$)[a-zA-Z\\d!@#$%^&*]+$')
@@ -43,6 +45,7 @@ const login = [
                 user = user.toJSON()
 
                 delete user.user_pass
+                user.permissions = common.userRole[user.role]
                 let result = await utils.create(user)
                 //Token generated
                 return res.status(200).json(Result.success(result))

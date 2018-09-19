@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const compression = require('compression') // 压缩
 const unless = require('express-unless')
+// const session = require('express-session')
 const expressValidator = require('express-validator')
 const Result = require('./src/common/resultUtils')
 const middlewareOptions = require('./src/common/middlewareOptions')
@@ -25,6 +26,7 @@ global.IS_DEV = IS_DEV
 // app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'ejs')
 app.set('views', path.resolve(__dirname, './src/views'))
+// app.set('trust proxy', 1) // 信任第一代理
 
 debug('Attaching plugins')
 app.use(log4js.connectLogger(log4js.getLogger("http"), { level: 'auto' }));
@@ -36,6 +38,13 @@ app.use(cookieParser())
 // gzip 压缩
 app.use(compression())
 app.use(expressValidator(middlewareOptions.validator))
+
+// app.use(session({
+//     secret: config.secret,
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: true }
+// }))
 
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 app.use(function (req, res, next) {
@@ -92,6 +101,7 @@ app.use('/api/', function (err, req, res, next) {
     res.status(err.status || 500)
 
     if (err.name === 'UnauthorizedError') {
+        console.log(req)
         log.info("用户身份验证失败");
         return res.json(Result.error('invalid token...'))
     } else {

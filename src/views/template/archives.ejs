@@ -3,17 +3,12 @@
         <h3 class="title">归档</h3>
     </div>
     <ul class="j-sidebar__body">
+        <%
+        for (var i=0; i< data.length;i++) {
+        %>
         <li>
-            <a href="javascript:;">2018年8月 (<u>0</u>)</a>
+            <a href="/archives#<%=data[i].post_date%>"><%=data[i].post_date2%> (<u><%=data[i].count%></u>)</a>
         </li>
-        <li>
-            <a href="javascript:;">2018年7月 (<u>0</u>)</a>
-        </li>
-        <li>
-            <a href="javascript:;">2018年6月 (<u>0</u>)</a>
-        </li>
-        <li>
-            <a href="javascript:;">2018年5月 (<u>0</u>)</a>
-        </li>
+        <%}%>
     </ul>
 </div>

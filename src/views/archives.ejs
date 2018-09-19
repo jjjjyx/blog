@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% var data = {name: 'archives'} %>
+    <%- include('base/head', data) %>
+</head>
+<body>
+<%- include('loading', data); %>
+<div id="app">
+    <!--<div class="wrapper">-->
+    <%- include('base/nav', data); %>
+    <div class="jumbotron"
+         style="background-image:url('http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/1928/format/jpg');background-position: 0 -235px">
+        <div class="container j-vertical-center">
+            <h1>文章归档</h1>
+            <p>记录自己。 </p>
+        </div>
+    </div>
+    <div class="container j-archives-times">
+        <%
+            var list,item, category, dateTime, time, date, user
+            for (var key in groupData) {
+            list = groupData[key]
+        %>
+        <div class="j-archives-item">
+            <div id="<%= key.replace(' ', '') %>" class="j-start-date"
+                 title="<%= moment(key, 'MMM YY').format('YYYY年MM月') %>">
+                <%= key %>
+            </div>
+            <%
+                for (var i = 0, l = list.length; i < l; i++) {
+                    item = list[i]
+                    category = item.getCategoryOrTags().category
+                    dateTime = formatDate(item.post_date,'YYYY/MM/DD HH:mm')
+                    time = formatDate(item.post_date,'MMMM Do')
+                    date = formatDate(item.post_date,'YYYY/MM/DD')
+                    user = item.user
+            %>
+            <div class="j-activity">
+                <div class="j-timeline">
+                    <time datetime="<%=dateTime%>"><%=time%></time>
+                </div>
+                <div class="j-content">
+                    <a class="j-article-title am-text-lg">
+                        <%=item.post_title%>
+                    </a>
+                    <ul class="j-article-info list-inline">
+                        <li class="j-article-author">
+                            <img alt="<%=user.display_name%>"
+                                 src="<%=user.user_avatar%>"
+                                 class="article-avater" width="20" height="20">
+                            <a><%=user.user_nickname%></a>
+                        </li>
+                        <li class="j-article-author">
+                            <font-icon type="icon-color-ziyuan" size="14"></font-icon> <span><%=category.name%></span>
+                        </li>
+                        <li class="j-time">
+                            <font-icon type="icon-color-rili" size="14"></font-icon> <span><%=date%></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <% } %>
+        </div>
+        <% } %>
+    </div>
+    <%- include('base/bottom', data); %>
+</div>
+<%- include('base/footer', data); %>
+</body>
+</html>

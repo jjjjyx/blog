@@ -108,7 +108,7 @@ const handle = async function (resp) {
             throw new HttpBaseError(msg, code, data)
         }
     } else {
-        if (resp.status === 401) {
+        if (resp.status === 401 || resp.status === 403) {
             // reject(new AuthInvalidError())
             throw new AuthInvalidError()
         } else if (resp.status === 404) {

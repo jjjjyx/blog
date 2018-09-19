@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% var data = {name: 'tags'} %>
-    <%-include('base/about', data)%>
+    <% var data = {name: 'about'} %>
+    <%-include('base/head', data)%>
 </head>
 <body>
 <%-include('loading', data); %>
 <div id="app">
     <!--<div class="wrapper">-->
     <%- include('base/nav', data); %>
+    <div class="container">
 
+    </div>
     <%- include('base/bottom', data); %>
 </div>
 <%-include('base/footer', data); %>

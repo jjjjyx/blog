@@ -75,7 +75,9 @@
         flex-shrink: 0;
         width: 200px;
         margin-right: 1.5rem;
-        @extend .j-vertical-center
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     .j-img-warp img {
         width: 100%;

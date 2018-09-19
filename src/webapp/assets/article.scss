@@ -1,5 +1,5 @@
 @import "./sass/public";
-
+@import "./cm-sass/cm-tabs";
  //覆盖
 .article-a {
     .wrapper-header.top {
@@ -22,7 +22,7 @@
     margin-top: 3rem;
     padding-bottom: 30px;
     &::after {
-        content: '';
+        //content: '';
         width: 70%;
         height: 1px;
         background-color: #ddd;
@@ -70,7 +70,7 @@
     }
 }
 .article__container {
-    @extend .container
+
 }
 
 //.article-a-footer__thumbs {

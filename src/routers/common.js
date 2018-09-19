@@ -206,6 +206,18 @@ module.exports.loadCategory = function (size = 10) {
 const renderFile = function (name, data = {}, options = {}) {
     return ejs.renderFile(path.join(__dirname, `../views/template/${name}.ejs`), data, options)
 }
+/**
+ * 归档查询
+ * @type {string}
+ */
+const archiveSql = `
+SELECT 
+  t.*,
+  COUNT(*) as count
+FROM (SELECT DATE_FORMAT(post_date, '%Y 年%m 月') AS post_date2, DATE_FORMAT(post_date, '%Y%m') as post_date FROM j_posts WHERE post_status = 'publish') AS t 
+GROUP BY t.post_date2 
+ORDER BY post_date DESC
+`
 
 const sidebarModule = {
     // 关于博主
@@ -214,7 +226,7 @@ const sidebarModule = {
     },
     // 热门
     hot: async function () {
-
+        // 评论与阅读的综合排序
         return '' //renderFile('hot')
     },
     // 精选
@@ -250,11 +262,14 @@ const sidebarModule = {
         }
     },
     // 归档
-    archives: function () {
-        return renderFile('archives')
+    archives: async function () {
+        // 查询最近5个月
+        let result = await sequelize.query(archiveSql, {type: sequelize.QueryTypes.SELECT})
+        return renderFile('archives', {data: result})
     },
     // 搜索
     search: function () {
+        // todo 标签推荐。。
         return renderFile('search')
     }
 }
@@ -274,3 +289,11 @@ const sidebarListEnum = [
 module.exports.sidebarModuleKey = sidebarListEnum
 module.exports.sidebarModule = sidebarModule
 module.exports.termCountSql = termCountSql
+
+const userRole = {
+    0: ['comment'],
+    1: ['user','comment'],
+    100: ['admin']
+}
+
+module.exports.userRole = userRole

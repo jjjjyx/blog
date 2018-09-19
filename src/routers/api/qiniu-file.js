@@ -13,7 +13,8 @@ const _ = require('lodash')
 const qiniu = require('qiniu')
 const {Enum, labels} = require('../../common/enum')
 const utils = require('../../utils')
-const imgPrefixs = Object.keys(Enum.ImgEnum)
+const imgSpaces = Object.values(Enum.ImgEnum)
+// const img
 const domain = config.qiUpload.Domain
 const returnBody = `
 {
@@ -62,10 +63,10 @@ const token = [
         res.header('Expires', 0)
         let token = putPolicy.uploadToken(mac)
 
-        let {md5, prefix} = req.query
-        if (prefix > imgPrefixs.length) {
-            prefix = 0
-        }
+        // let {md5, prefix} = req.query
+        // if (prefix > imgPrefixs.length) {
+        //     prefix = 0
+        // }
 
         // let key = Enum.ImgEnum[imgPrefixs[prefix]] + md5
         // key = qiniu.util.urlsafeBase64Encode(key)
@@ -221,7 +222,7 @@ const callback = [
         let url = domain + key
 
         // space = space || Enum.ImgEnum.ALL
-        if (!_.hasIn(labels.img, space)) {
+        if (imgSpaces.indexOf(space) === -1) {
              space = Enum.ImgEnum.ALL
         }
         let values = {

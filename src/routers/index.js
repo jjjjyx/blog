@@ -3,6 +3,7 @@
 const debug = require('debug')('app:routers')
 const log = require('log4js').getLogger('routers')
 const expressJwt = require('express-jwt')
+const guard = require('express-jwt-permissions')()
 const unless = require('express-unless')
 // const _ = require("lodash");
 // const paths = [
@@ -37,13 +38,18 @@ module.exports = function (app) {
     app.use('/article', require('./article.js'))
     app.use('/category', require('./category.js'))
     app.use('/tags', require('./tags.js'))
+    app.use('/archives', require('./archives.js'))
     app.use('/about', require('./about.js'));
-    app.use('/jyx-admin', require('./admin.js'))
+    app.use('/jyx-admin', guard.check('admin'), require('./admin.js'))
     // 指定权限验证路径
     // /api 下全是需要登录才可以访问
     app.use('/api', jwtCheck.unless(unless_path))
+
     // app.use("/api",middleware.unless(unless_path))
     app.use('/api/user', require('./api/user.js'))
+    app.use('/api/comment', guard.check('comment'), require('./api/comment.js'))
+    // 后面的需要管理员
+    app.use('/api', guard.check('admin').unless(unless_path))
     app.use('/api/post', require('./api/posts.js'))
     app.use('/api/site', require('./api/site.js'))
     app.use('/api/term', require('./api/term.js'))
