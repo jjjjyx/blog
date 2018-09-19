@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const compression = require('compression') // 压缩
 const unless = require('express-unless')
+const utils = require('./src/utils')
 // const session = require('express-session')
 const expressValidator = require('express-validator')
 const Result = require('./src/common/resultUtils')
@@ -29,7 +30,10 @@ app.set('views', path.resolve(__dirname, './src/views'))
 // app.set('trust proxy', 1) // 信任第一代理
 
 debug('Attaching plugins')
-app.use(log4js.connectLogger(log4js.getLogger("http"), { level: 'auto' }));
+app.use(log4js.connectLogger(log4js.getLogger("http"), {
+    level: 'auto',
+    format: (req, res, format) => format(`http - ${utils.getClientIp(req)} - ":method :url HTTP/:http-version" :status :content-length ":referrer" ":user-agent"`)
+}));
 app.use(bodyParser.json({limit: '50mb'})) // for parsing application/json
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true})) // for parsing application/x-www-form-urlencoded
 // 没有使用文件上传的操作
