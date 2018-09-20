@@ -220,6 +220,9 @@ $border-color2: #e5e9ef;
             border-color: $font-color3;
         }
     }
+    //&.disable .textarea{
+    //
+    //}
 
     .opts-warp {
         margin: 5px 0;
@@ -381,5 +384,26 @@ $border-color2: #e5e9ef;
         a:hover, li.active a {
             background: #2f2f2f;
         }
+    }
+}
+
+
+.user-info-wrap {
+    display: flex;
+}
+.sidebar-user-avatar {
+    text-align: center;
+    width: 165px;
+    padding: 2px;
+    border: 1px solid #d7dde4;
+}
+.user-avatar-area img{
+    width: 100%;
+}
+
+.wrapper-base-info {
+    width: 100%;
+    .ivu-form-item {
+        margin-bottom: 4px;
     }
 }

@@ -7,7 +7,7 @@ import api from './utils/api'
 
 /* eslint-disable no-unused-vars,no-undef  */
 Vue.use(Icon)
-Vue.config.productionTip = false
+// Vue.config.productionTip = false
 
 let div = document.createElement('div')
 

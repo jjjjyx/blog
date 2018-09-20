@@ -1,21 +1,16 @@
 <template>
-    <form class="comment-input-warp" @submit.prevent>
+    <form class="comment-input-warp" @submit.prevent :class="{disable: !isLogin}">
         <div class="comment-input__user comment-user-avatar">
             <img :src="$parent.currentAvatar" alt="user-avatar">
         </div>
         <div class="comment-input__body">
-            <textarea id="comment" class="textarea"
+            <!--@input="handleInput" @focus="handleFocus" @blur="handleBlur"-->
+            <textarea id="comment" class="textarea" ref="textarea"
                       name="name" rows="8" cols="80"
-                      ref="textarea"
-                      v-model="currentValue"
-                      @input="handleInput" @focus="handleFocus" @blur="handleBlur"
-                      placeholder="请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。">
+                      v-model="currentValue" :placeholder="placeholder">
            </textarea>
             <div class="opts-warp">
-                <Dropdown trigger="click">
-                    <Button size="small"><font-icon type="icon-biaoqing"></font-icon> 表情</Button>
-                    <f-emoji slot="list"/>
-                </Dropdown>
+                <f-emoji @on-add-emoji="handleAddEmoji"/>
                 <span class="send__tip">Ctrl+Return 发表</span>
 
                 <!--v-if="parame.comment_author&&parame.comment_author_email"-->
@@ -29,13 +24,15 @@
             </div>
         </div>
         <div class="comment-input__submit">
-            <Button type="primary">发表<br>评论</Button>
+            <Button type="primary" @click="handleClickSend">发表<br>评论</Button>
         </div>
     </form>
 </template>
 
 <script>
 import FEmoji from './emoji.vue'
+import {on, off} from '../../utils/dom'
+import { getMetaKeyCode } from '../../utils/common'
 
 export default {
     name: 'comment-input',
@@ -47,9 +44,12 @@ export default {
     components: {
         FEmoji
     },
-    computed: {},
+    computed: {
+        isLogin () {
+            return this.$parent.isLogin
+        }
+    },
     props: {
-
         parame: {
             type: Object,
             default: function () {
@@ -57,7 +57,8 @@ export default {
                     comment_author: '',
                     comment_author_email: '',
                     comment_author_url: '',
-                    comment_author_avatar: ''
+                    comment_author_avatar: '',
+                    realLength: 0
                 }
             }
         },
@@ -68,30 +69,38 @@ export default {
         showCancel: {
             type: Boolean,
             default: false
+        },
+        placeholder: {
+            type: String,
+            default: '请自觉遵守互联网相关的政策法规，严禁发布色情、暴力、反动的言论。'
         }
     },
     watch: {
         'value' (val, oldValue) {
-            this.setCurrentValue(val)
+            this.currentValue = val
+            // this.$emit('input', val)
+            // this.setCurrentValue(val)
+        },
+        currentValue (val) {
+            this.$emit('input', val)
         }
     },
     methods: {
-        openEmojiDown () {
-
-            // $(this.$refs['j-emoji-down']).dropdown('open')
+        handleClickSend (e) {
+            this.$emit('on-send', this.currentValue, this.realLength)
         },
-        handleBlur (event) {
-            this.$emit('blur', event)
+        handleAddEmoji (value) {
+            this.currentValue += value
         },
-        handleFocus (event) {
-            this.$emit('focus', event)
-        },
-        handleInput (event, v) {
-            const value = v || event.target.value
-            this.$emit('input', value)
-            this.setCurrentValue(value)
-            this.$emit('change', value)
-        },
+        // handleFocus (event) {
+        //     this.$emit('focus', event)
+        // },
+        // handleInput (event, v) {
+        //     const value = v || event.target.value
+        //     this.$emit('input', value)
+        //     this.setCurrentValue(value)
+        //     this.$emit('change', value)
+        // },
         setCurrentValue (value) {
             if (value === this.currentValue) return
             this.currentValue = value
@@ -104,10 +113,20 @@ export default {
             // this.$emit('editInfo')
             // const authorForm = $('#my-prompt')
             // authorForm.modal({width: 320})
+        },
+        _handleKeyUp (e) {
+            let keyCode = getMetaKeyCode(e)
+            if (keyCode === 4109) { // ctrl + entry
+                this.handleClickSend()
+            }
         }
     },
+    destroyed () {
+        off(this.$refs.textarea, 'keyup', this._handleKeyUp)
+    },
     mounted () {
-
+        on(this.$refs.textarea, 'keyup', this._handleKeyUp)
+        console.log(this.currentValue)
     }
 }
 </script>

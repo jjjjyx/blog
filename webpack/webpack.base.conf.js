@@ -9,7 +9,6 @@ function resolve (dir) {
     return path.join(__dirname, '..', dir)
 }
 const entry = getEntries("./src/webapp/*.js")
-
 const createLintingRule = () => ({
     test: /\.(js|vue)$/,
     loader: 'eslint-loader',

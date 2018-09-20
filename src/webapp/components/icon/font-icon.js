@@ -1,4 +1,4 @@
-import ColorIcon from './icon'
+import ColorIcon from './icon.vue'
 
 const prefixCls = 'iconfont'
 export default {

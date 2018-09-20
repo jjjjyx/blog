@@ -16,7 +16,7 @@ const unless = require('express-unless')
 //     '/bg/admin'
 // ]
 const unless_path = {
-    path: ['/api/user/login', '/api/img/callback'],
+    path: ['/api/user/login', '/api/img/callback', '/api/tools/qinfo'],
     method: 'OPTIONS'
 }
 // debug('创建身份验证中间件，并设置 req.user')
@@ -43,8 +43,10 @@ module.exports = function (app) {
     app.use('/jyx-admin', guard.check('admin'), require('./admin.js'))
     // 指定权限验证路径
     // /api 下全是需要登录才可以访问
-    app.use('/api', jwtCheck.unless(unless_path))
 
+    app.use('/api/tools', require('./api/tools.js'))
+
+    app.use('/api', jwtCheck.unless(unless_path))
     // app.use("/api",middleware.unless(unless_path))
     app.use('/api/user', require('./api/user.js'))
     app.use('/api/comment', guard.check('comment'), require('./api/comment.js'))

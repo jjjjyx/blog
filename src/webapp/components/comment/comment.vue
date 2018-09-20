@@ -1,6 +1,6 @@
 <template>
     <aside class="comment-wrapper">
-        <comment-input v-model="content" />
+        <comment-input @on-send="handleSend" v-model="content"/>
         <div class="j-comment-head">
             <span v-if="commentList.length">{{commentList.length}} 条评论</span>
             <span v-else>暂无评论</span>
@@ -28,7 +28,8 @@
                     </header>
                     <div class="comment-content__body">...
                         webpack built 6d74f2a57838700ca0b5 in 1028ms
-                        i ｢wdm｣: Hash: 6d74f</div>
+                        i ｢wdm｣: Hash: 6d74f
+                    </div>
                     <footer class="comment-content__footer">
                         <font-icon type="icon-color-phone"></font-icon>
                         <span class="">来自xx设备</span><time style="" datetime="2018年9月19日10:42:04">3小时前</time>
@@ -39,7 +40,7 @@
                         <span class="float-right j-report" >举报</span>
                     </footer>
                     <ul class="reply-list-warp">
-                        <li v-for="item2 in i" class="reply-list__item" :key="item2">
+                        <li v-for="item2 in 10 - i" class="reply-list__item" :key="item2">
                             <div class="comment-user-avatar float-left">
                                 <img src="http://oht47c0d0.bkt.clouddn.com/0e4cf690-376c-11e7-81cc-c5fb8304dee6" alt="user-avatar">
                             </div>
@@ -51,21 +52,45 @@
                                 <div class="reply-content__footer">
                                     <time datetime="2018-9-19 10:31" style="">2018-9-19 10:31</time>
                                     <Button type="text" size="small" @click="reply(i, {comment_author: item2, comment_id: 1})">回复</Button>
-                                    <!--<span class="j-reply-btn j-btn-hover j-btn" @click="reply(item.comment_id,item2)">回复</span>-->
                                 </div>
                             </div>
                         </li>
                     </ul>
                     <collapse-transition>
-                        <comment-input v-if="commentDate.comment_parent === i" class="reply-input-warp" @cancelReply="parame.comment_parent = null" :posts-id="postsId"
-                                           v-model="replyContent" :show-cancel="true" >
+                        <comment-input v-if="commentDate.comment_parent === i" class="reply-input-warp"
+                                       :posts-id="postsId" :show-cancel="true" :placeholder="commentDate.placeholder"
+                                       @cancelReply="commentDate.comment_parent = null"
+                                       v-model="replyContent">
                         </comment-input>
                     </collapse-transition>
                 </div>
             </li>
         </ul>
-
         <comment-input v-model="content" v-if="commentList.length >= 10"/>
+        <Modal v-model="infoModal" title="一个必须填写的表单" @on-ok="ok" @on-cancel="cancel">
+            <div class="user-info-wrap">
+                <div class="sidebar-user-avatar">
+                    <a href="javascript:void(0)" class="user-avatar-area">
+                        <img src="http://oht47c0d0.bkt.clouddn.com/0e4cf690-376c-11e7-81cc-c5fb8304dee6" alt="">
+                    </a>
+                    <a href="javascript:void(0)" class="edit-avatar">不喜欢，点击换一个</a>
+                </div>
+                <Form :model="user" :label-width="80" :rules="ruleValidate" class="wrapper-base-info">
+                    <FormItem label="qq" prop="qq">
+                        <Input v-model="user.user_login" placeholder="输入qq 号 快速评论" @on-change="inputQQ"/>
+                    </FormItem>
+                    <FormItem label="昵称" prop="nickname">
+                        <Input v-model="user.user_nickname" placeholder="nickname" @on-change="lockNickName"/>
+                    </FormItem>
+                    <FormItem label="邮箱" prop="email">
+                        <Input v-model="user.user_email" placeholder="email"/>
+                    </FormItem>
+                    <FormItem label="网址" prop="url">
+                        <Input v-model="user.user_url" placeholder="email"/>
+                    </FormItem>
+                </Form>
+            </div>
+        </Modal>
     </aside>
 </template>
 <!--
@@ -88,15 +113,51 @@
     3 旧的实现  => 这个比较方便
 
     4 重新调整用户系统，增加权限管理 让前后端都使用同一个用户系统，用户在评论这里输入的信息即当做登录
+
+    根据 qq 号获取昵称 头像
+    http://users.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=871839012
+    根据 qq 获取头像
+    http://q.qlogo.cn/headimg_dl?dst_uin=871839012&spec=100
  -->
 <script>
-
+import _ from 'lodash'
 import CollapseTransition from '@/utils/collapse-transition'
 import CommentInput from './comment-input'
-
 import { on } from '../../utils/dom'
-import { scrollTop } from 'iview/src/utils/assist'
 import api from '../../utils/api'
+
+function scrollTop (el, from = 0, to, duration = 500) {
+    if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = (
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function (callback) {
+                return window.setTimeout(callback, 1000 / 60)
+            }
+        )
+    }
+    const difference = Math.abs(from - to)
+    const step = Math.ceil(difference / duration * 50)
+
+    function scroll (start, end, step) {
+        if (start === end) return
+
+        let d = (start + step > end) ? end : start + step
+        if (start > end) {
+            d = (start - step < end) ? end : start - step
+        }
+
+        if (el === window) {
+            window.scrollTo(d, d)
+        } else {
+            el.scrollTop = d
+        }
+        window.requestAnimationFrame(() => scroll(d, end, step))
+    }
+
+    scroll(from, to, step)
+}
 
 function scorllEl (el) {
     const sTop = document.documentElement.scrollTop || document.body.scrollTop
@@ -120,6 +181,8 @@ const commentStatus = {
     error: 'error',
     success: 'success'
 }
+
+const qqReg = /[1-9][0-9]{4,}/
 export default {
     name: 'comment',
     data () {
@@ -135,7 +198,10 @@ export default {
             comment_status: commentStatus,
             status: commentStatus.success,
             commentDate: {
-                comment_parent: null
+                comment_parent: null,
+                content: '',
+                members: [],
+                placeholder: ''
             },
             user: {
                 'id': 0,
@@ -144,9 +210,25 @@ export default {
                 'user_email': '',
                 'user_avatar': null,
                 'user_url': '',
-                'user_status': 1,
+                'user_status': 1
             },
-            defaultAvatar: 'http://oht47c0d0.bkt.clouddn.com/FuNJUwEY1vEWt5ncFeVXhVG4-R6S'
+            ruleValidate: {
+                nickname: [
+                    {type: 'string', min: 1, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~'}
+                ],
+                email: [
+                    {type: 'email', trigger: 'blur', message: '不要调皮，邮箱格式你心里没点`atob(\'Qg==\');`数吗'}
+                ],
+                url: [
+                    {type: 'url', trigger: 'blur', message: '网址格式不正确'}
+                ]
+                // qq: [ 如果仅输入了这一项，首选验证是否满足qq的验证，满足尝试抓取qq 号信息
+                //
+                // ]
+            },
+            defaultAvatar: 'http://oht47c0d0.bkt.clouddn.com/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
+            infoModal: false,
+            lockNick: false
         }
     },
     props: ['postsId', 'author', 'email', 'url', 'avatar'],
@@ -160,7 +242,7 @@ export default {
         },
         currentAvatar () {
             // if (this.isLogin) {
-                return this.user.user_avatar || this.defaultAvatar
+            return this.user.user_avatar || this.defaultAvatar
             // } else {
             //     return this.defaultAvatar
             // }
@@ -175,24 +257,59 @@ export default {
             let url = '#comment'
             window.history.pushState({}, 0, url)
         },
+        handleSend (content, realLength) {
+            if (!this.isLogIn) {
+                this.infoModal = true
+                return
+            }
+            content = content.trim()
+            // 2 - 1000
+            console.log('content', content)
+        },
         /**
          * 回复
          * @param id 回复的对象
          * @param at @ 对象
          */
-        reply (id, at) {
+        reply (id, replyTarget) {
             this.replyContent = ''
-            if (at) {
-                this.replyContent = `@${at.comment_author} `
+            let p = ''
+            if (replyTarget) {
+                p = `回复 ${replyTarget.comment_author} `
             }
-            if (this.commentDate.comment_parent === id) {
+            if (this.commentDate.comment_parent === id && p === this.commentDate.placeholder) {
                 this.commentDate.comment_parent = null
             } else {
                 this.commentDate.comment_parent = id
+                this.commentDate.placeholder = p
             }
+        },
+        /**
+         * 锁定 用户昵称
+         */
+        lockNickName: function () {
+            if (!this.user.user_nickname) {
+                this.lockNick = false
+                return
+            }
+            this.lockNick = true
         }
     },
     async created () {
+        async function inputQQ () {
+            if (this.lockNick) return
+            let qq = this.user.user_login
+            try {
+                if (qqReg.test(qq)) {
+                    let result = await api.nget(`/api/tools/qinfo`, {key: qq})
+                    console.log(result)
+                }
+            } catch (e) {
+                console.log('获取qq 用户信息失败')
+            }
+        }
+
+        this.inputQQ = _.debounce(inputQQ.bind(this), 500)
         try {
             let u = await api.nget('/api/user/auth')
             for (let key in this.user) {
@@ -201,7 +318,6 @@ export default {
         } catch (e) {
             console.log(e)
         }
-
     },
     mounted () {
 

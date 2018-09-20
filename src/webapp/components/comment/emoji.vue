@@ -1,18 +1,21 @@
 <template>
-    <div class="j-emoji-content">
-        <Tabs size="small" type="card" class="icon-select__body cm-tabs-style">
-            <TabPane :label="group.label" v-for="(group, key) in groups" :key="key" class="icon-select__tab">
-                <div class="j-emoji-box">
-                    <a v-for="icon in group.icons[group.active].list" :key="icon" class="j-emoji-list j-emoji-text"
-                       @click="handleClickIcon(group.text(icon))" v-html="group.html(icon)"></a>
-                </div>
-                <ul class="j-emoji-tab">
-                    <li @click="group.active = index" :class="{active: group.active === index}" :key="index"
-                        v-for="(item, index) in group.icons"><a>{{index}}</a></li>
-                </ul>
-            </TabPane>
-        </Tabs>
-    </div>
+    <Dropdown trigger="click" ref="drop">
+        <Button size="small"><font-icon type="icon-biaoqing"></font-icon> 表情</Button>
+        <div class="j-emoji-content" slot="list">
+            <Tabs size="small" type="card" class="icon-select__body cm-tabs-style">
+                <TabPane :label="group.label" v-for="(group, key) in groups" :key="key" class="icon-select__tab">
+                    <div class="j-emoji-box">
+                        <a v-for="icon in group.icons[group.active].list" :key="icon" class="j-emoji-list j-emoji-text"
+                           @click="handleClickIcon(group.text(icon))" v-html="group.html(icon)"></a>
+                    </div>
+                    <ul class="j-emoji-tab">
+                        <li @click="group.active = index" :class="{active: group.active === index}" :key="index"
+                            v-for="(item, index) in group.icons"><a>{{index}}</a></li>
+                    </ul>
+                </TabPane>
+            </Tabs>
+        </div>
+    </Dropdown>
 </template>
 <script>
 export default {
@@ -73,10 +76,15 @@ export default {
             return `${this.path}${icon}.png`
         },
         handleClickIcon (icon) {
-            console.log(icon)
+            this.$emit('on-add-emoji', icon)
+            this.close()
+        },
+        close () {
+            this.$refs.drop.currentVisible = false
         }
     },
     mounted: function () {
+
     }
 }
 </script>

@@ -105,7 +105,6 @@ app.use('/api/', function (err, req, res, next) {
     res.status(err.status || 500)
 
     if (err.name === 'UnauthorizedError') {
-        console.log(req)
         log.info("用户身份验证失败");
         return res.json(Result.error('invalid token...'))
     } else {
