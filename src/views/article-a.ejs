@@ -33,7 +33,7 @@
 <%-include('loading', data); %>
 <div id="app" class="article-a">
 <%
-    var metas = post.getMetasObj();
+    var metas = post.metas;
     var navData = {name: 'category'}
     var {category, post_tag} = _.groupBy(post.terms, (item) => item.taxonomy)
     var post_date = dateFormat(post.post_date, 'YYYY-M-D')

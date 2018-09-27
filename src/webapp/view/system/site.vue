@@ -55,10 +55,24 @@
 // import {mapState} from 'vuex'
 import _ from 'lodash'
 import api from '@/utils/api'
-import {difference} from '@/utils/common'
 import {GridItem, GridLayout} from 'vue-grid-layout'
 // ResponsiveGridLayout
 // mapState, mapActions,
+
+/**
+ * Deep diff between two object, using lodash
+ * @param  {Object} object Object compared
+ * @param  {Object} base   Object to compare with
+ * @return {Object}        Return a new object who represent the diff
+ */
+function difference (object, base) {
+    return _.transform(object, function (result, value, key) {
+        if (!_.isEqual(value, base[key])) {
+            result[key] = (_.isObject(value) && _.isObject(base[key])) ? difference(value, base[key]) : value
+        }
+    })
+}
+
 const siteLayout = {
     index: {
         name: '首页设置',

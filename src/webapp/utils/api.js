@@ -58,6 +58,14 @@ class AuthInvalidError extends HttpBaseError {
     }
 }
 
+const RespStatusMap = {
+    401: '尚未登录',
+    403: '尚未登录',
+    404: '(～￣▽￣)～ ，404 了呢',
+    429: '(～￣▽￣)～ ，服务器繁忙，稍后重试',
+    500: '(～￣▽￣)～ ，服务器出错了',
+}
+
 export {
     HttpBaseError
 }
@@ -113,6 +121,8 @@ const handle = async function (resp) {
             throw new AuthInvalidError()
         } else if (resp.status === 404) {
             throw new HttpBaseError('(～￣▽￣)～ ，404 了呢', resp.status)
+        } else if (resp.status === 429) {
+            throw new HttpBaseError('(～￣▽￣)～ ，服务器繁忙，稍后重试', resp.status)
         } else {
             throw new HttpBaseError('(～￣▽￣)～ ，服务器出错了', resp.status)
         }
@@ -139,29 +149,6 @@ async function npost (url, info, header) {
     }
     return await handle(resp)
 }
-//
-// function npost(url, info, header) {
-//     return new Promise(function (resolve, reject) {
-//         post(url, info, header).then(async function (resp) {
-//             if (resp.ok) {
-//                 let {code, data, msg} = await resp.json()
-//                 if (code === 0) {
-//                     data = data || msg
-//                     resolve(data)
-//                 } else {
-//                     reject(new HttpBaseError(msg, code, data));
-//                 }
-//             } else {
-//                 if (resp.status === 401) {
-//                     reject(new AuthInvalidError());
-//                 } else {
-//                     reject(new HttpBaseError('(～￣▽￣)～ ，服务器出错了', resp.status));
-//                 }
-//             }
-//         });
-//     });
-// }
-
 
 export default {
     npost,
@@ -169,7 +156,9 @@ export default {
     get,
     post,
     set token(value) {
+        console.log('更新用户token')
         token = 'Bearer ' + value;
+        localStorage.setItem('authorization', value)
     },
     get token() {
         return token

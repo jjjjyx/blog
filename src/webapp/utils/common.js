@@ -1,6 +1,3 @@
-
-import _ from 'lodash'
-// import SparkMD5 from 'spark-md5'
 /**
  * 时间格式化
  * @param format
@@ -69,24 +66,16 @@ export function getTimeText (timeInMs, pattern = 'yy/MM/dd') {
 }
 const defaultDatePattern = 'yyyy/MM/dd hh:mm'
 export function dateFormat (timeInMs, pattern = defaultDatePattern) {
-    if (_.isNumber(timeInMs)) {
+    if (!isNaN(timeInMs)) {
         return new Date(timeInMs).format(pattern)
-    } else if (_.isDate(timeInMs)) {
+    } else if (timeInMs instanceof Date) {
         return timeInMs.format(pattern) || '-'
     } else {
         return new Date(timeInMs).format(pattern) || '-'
     }
 }
 
-export function transformMetas (metas = []) {
-    let obj = {}
-    if (_.isArray(metas)) {
-        metas.forEach((item) => {
-            obj[item.meta_key] = item
-        })
-    }
-    return obj
-}
+
 
 const x = '0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM'
 
@@ -129,47 +118,4 @@ export const POST_WRITER_STATUS = {
     saved: '保存于',
     saving: '保存中',
     posted: '发布于'
-}
-
-// export function fileMd5 (file) {
-//     return new Promise((resolve, reject) => {
-//         // let file = file_blob.file;
-//         let blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlicelet
-//         // 截取部分数据
-//         let chunkSize = 1024 * 128 // Read in chunks of 1M
-//         let spark = new SparkMD5.ArrayBuffer()
-//         let fileReader = new FileReader()
-//         fileReader.onload = function (e) {
-//             spark.append(e.target.result) // Append array buffer\
-//             let md5 = spark.end()
-//             console.log('md5', md5)
-//             resolve(md5)
-//         }
-//         fileReader.onerror = function () {
-//             console.warn('oops, something went wrong.')
-//             reject(new Error('oops, something went wrong.'))
-//         }
-//         fileReader.readAsArrayBuffer(blobSlice.call(file, 0, chunkSize))
-//     })
-// }
-
-// function changes(object, base) {
-//     return _.transform(object, function(result, value, key) {
-//         if (!_.isEqual(value, base[key])) {
-//             result[key] = (_.isObject(value) && _.isObject(base[key])) ? changes(value, base[key]) : value;
-//         }
-//     });
-// }
-/**
- * Deep diff between two object, using lodash
- * @param  {Object} object Object compared
- * @param  {Object} base   Object to compare with
- * @return {Object}        Return a new object who represent the diff
- */
-export function difference (object, base) {
-    return _.transform(object, function (result, value, key) {
-        if (!_.isEqual(value, base[key])) {
-            result[key] = (_.isObject(value) && _.isObject(base[key])) ? difference(value, base[key]) : value
-        }
-    })
 }

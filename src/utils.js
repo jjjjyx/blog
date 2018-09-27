@@ -4,7 +4,9 @@ const debug = require('debug')('app:utils:' + process.pid)
 const log = require('log4js').getLogger('utils')
 const Promise = require('bluebird')
 const moment = require('moment')
-const Redis = require('ioredis')
+// const Redis = require('ioredis')
+const redis = require("redis")
+const client = redis.createClient()
 const JWTR = require('jwt-redis')
 const shortid = require('shortid')
 const _ = require('lodash')
@@ -34,13 +36,24 @@ const TOKEN_EXPIRATION_SEC = TOKEN_EXPIRATION * 60 * 24 * 5
 log.trace('TOKEN_EXPIRATION_SEC = %s', TOKEN_EXPIRATION_SEC)
 
 const {secret} = config
-let redis = new Redis()
+// let redis = new Redis()
 let cache = ExpressRedisCache({
-    client: redis
+    client: client
 })
 
-let jwtr = new JWTR(redis)
+client.on("error", function (err) {
+    log.error("redis con Error " + err);
+});
+
+
+let jwtr = new JWTR(client)
 Promise.promisifyAll(jwtr)
+Promise.promisifyAll(client)
+
+
+// moment.tz.setDefault("Asia/Shanghai")
+// log.info('设置时区 Asia/Shanghai')
+
 
 async function create (obj, expiresIn = TOKEN_EXPIRATION_SEC) {
 
@@ -77,7 +90,8 @@ module.exports.formatDate = function (time, pattern = 'YYYY-M-D hh:mm') {
 module.exports.create = create
 module.exports.renderer = renderer
 module.exports.cache = cache
-module.exports.redisClient = redis
+module.exports.redisClient = client
+module.exports.jwtr = jwtr
 
 module.exports.clearCache = function () {
     log.debug('清空路由缓存')

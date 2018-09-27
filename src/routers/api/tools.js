@@ -62,15 +62,15 @@ const qinfo = [
         try {
             let ip = utils.getClientIp(req)
             let uipKey = ip + key_suffix
-            let count = await redisClient.hget(uipKey, ipUpdateCountkey)
+            let count = await redisClient.hgetAsync(uipKey, ipUpdateCountkey)
             let info
             // 获取成功后，绑定这个ip ，并允许更改5次，并记录
             if (count >= 5) {
-                info = JSON.parse(await redisClient.hget(uipKey, qq))
+                info = JSON.parse(await redisClient.hgetAsync(uipKey, qq))
             } else {
                 info = await getQinfoByqq(qq)
-                redisClient.hset(uipKey, qq, JSON.stringify(info))
-                redisClient.hincrby(uipKey, ipUpdateCountkey, 1)
+                redisClient.hsetAsync(uipKey, qq, JSON.stringify(info))
+                redisClient.hincrbyAsync(uipKey, ipUpdateCountkey, 1)
             }
             return res.status(200).json(Result.success(info))
         } catch (e) {

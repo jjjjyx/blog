@@ -9,6 +9,7 @@ $border-color2: #e5e9ef;
 
 .comment-user-avatar {
     position: relative;
+    user-select: none;
     img {
         width: 48px;
         height: 48px;
@@ -118,6 +119,7 @@ $border-color2: #e5e9ef;
     color: $font-color2;
     line-height: 26px;
     font-size: 12px;
+    user-select: none;
     > i, > svg {
         font-size: 14px;
         vertical-align: middle;

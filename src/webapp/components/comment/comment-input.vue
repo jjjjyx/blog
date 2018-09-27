@@ -32,6 +32,7 @@
 <script>
 import FEmoji from './emoji.vue'
 import {on, off} from '../../utils/dom'
+import api from '../../utils/api'
 import { getMetaKeyCode } from '../../utils/common'
 
 export default {
@@ -86,8 +87,25 @@ export default {
         }
     },
     methods: {
-        handleClickSend (e) {
-            this.$emit('on-send', this.currentValue, this.realLength)
+        async handleClickSend (e) {
+            if (this.isLogin) {
+                // this.comment(content)
+                let content = this.currentValue.trim()
+                if (content.length < 2 || content.length > 1000) {
+                    this.$Message.warning('请提交不包含表情， 2 - 1000 字以内的评论')
+                    return null
+                }
+                try {
+                    let result = await api.npost('/api/comment', {content,...this.$parent.commentDate})
+                    this.$emit('comment-success', result, this.$parent.commentDate)
+                } catch (e) {
+                    this.$Message.info(e.message)
+                }
+            } else {
+                // this.infoModal = true
+                this.$emit('auth')
+            }
+
         },
         handleAddEmoji (value) {
             this.currentValue += value
@@ -126,7 +144,6 @@ export default {
     },
     mounted () {
         on(this.$refs.textarea, 'keyup', this._handleKeyUp)
-        console.log(this.currentValue)
     }
 }
 </script>

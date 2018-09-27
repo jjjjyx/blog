@@ -1,19 +1,24 @@
 /* jshint indent: 2 */
+// ALTER TABLE `blog`.`j_comments` CHANGE `comment_post_id` `comment_id` VARCHAR(25) CHARSET utf8 COLLATE utf8_bin NULL;
+// ALTER TABLE `blog`.`j_comments` CHANGE `comment_author` `comment_author` VARCHAR(50) CHARSET utf8 COLLATE utf8_bin NULL;
+// ALTER TABLE `blog`.`j_comments` DROP FOREIGN KEY `j_comments_ibfk_2`;
+// ALTER TABLE `blog`.`j_comments` ADD CONSTRAINT `j_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `blog`.`j_users`(`id`) ON UPDATE CASCADE ON DELETE SET NULL;
+const moment = require('moment')
 
 module.exports = function (sequelize, DataTypes) {
-    return sequelize.define('comment', {
+    let commentModel = sequelize.define('comment', {
         id: {
             type: DataTypes.BIGINT,
             allowNull: false,
             primaryKey: true,
             autoIncrement: true
         },
-        comment_post_id: {
+        comment_id: {
             type: DataTypes.STRING(25),
             allowNull: true
         },
         comment_author: {
-            type: DataTypes.TEXT,
+            type: DataTypes.STRING(50),
             allowNull: true
         },
         comment_author_email: {
@@ -63,20 +68,46 @@ module.exports = function (sequelize, DataTypes) {
                 key: 'id'
             }
         },
-        user_id: {
-            type: DataTypes.BIGINT,
-            allowNull: true,
-            defaultValue: '0',
-            references: {
-                model: 'j_users',
-                key: 'id'
-            }
-        },
+        // user_id: {
+        //     type: DataTypes.BIGINT,
+        //     allowNull: true,
+        //     defaultValue: '0',
+        //     references: {
+        //         model: 'j_users',
+        //         key: 'id'
+        //     }
+        // },
+        // createdAt: {
+        //     get() {
+        //         return moment(this.getDataValue('createdAt')).format('YYYY-MM-DD HH:mm:ss');
+        //     }
+        // },
         comment_author_avatar: {
             type: DataTypes.STRING(255),
             allowNull: true
         }
     }, {
-        tableName: 'j_comments'
-    });
+        tableName: 'j_comments',
+        getterMethods : {
+            time () {
+                // 这个时区有毒！！！！
+                //  时间超过当前时间 10分钟显示精确时间
+                let curr = moment().subtract(10, 'minutes');
+                // moment("2018-09-27T18:49:48.525") 2018-09-27T10:59:48.525Z
+                console.log(curr, new Date(), moment())
+                let t = moment(this.getDataValue('createdAt'))
+                if (t.isBefore(curr)) {
+                    return t.format('YYYY-M-D hh:mm')
+                } else
+                    return t.startOf('minute').fromNow();
+            }
+        }
+    })
+
+    const {user: userModel} = sequelize.models
+
+    userModel.hasMany(commentModel, {foreignKey: 'user_id', targetKey: 'id'})
+    commentModel.belongsTo(userModel, {foreignKey: 'user_id', targetKey: 'id'})
+
+    return commentModel
 };

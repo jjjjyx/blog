@@ -103,7 +103,7 @@ app.use(function (req, res, next) {
 // api 的错误拦截器 返回值都是json
 app.use('/api/', function (err, req, res, next) {
     res.status(err.status || 500)
-
+    console.log(req.user)
     if (err.name === 'UnauthorizedError') {
         log.info("用户身份验证失败");
         return res.json(Result.error('invalid token...'))

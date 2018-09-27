@@ -17,7 +17,8 @@ const CONFIG = {
             password: 'C9XyX5dWd9CQjHwu',
             database: 'blog',
             host: '127.0.0.1',
-            dialect: 'mysql'
+            dialect: 'mysql',
+            timezone: '+08:00'
             // timestamps: false,
         },
         test: {

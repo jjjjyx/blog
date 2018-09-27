@@ -1,9 +1,10 @@
 /* jshint indent: 2 */
 const common = require('../common/common')
 
-function getMetasObj (){
-    return common.transformMetas(this.metas)
-}
+// function getMetasObj (){
+//     console.log(this.getDataValue('metas'))
+//     return common.transformMetas(this.metas)
+// }
 module.exports = function (sequelize, DataTypes) {
     const postMetaModel = sequelize.define('postMeta', {
         id: {
@@ -23,6 +24,12 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         tableName: 'j_postmeta',
         timestamps: false,
+        getterMethods : {
+            metas () {
+                return common.transformMetas(this.getDataValue('metas'))
+                // return moment(this.getDataValue('createdAt')).format('YYYY-M-D hh:mm');
+            }
+        }
     });
     const {post: postModel} = sequelize.models
 
@@ -30,6 +37,6 @@ module.exports = function (sequelize, DataTypes) {
     postModel.hasMany(postMetaModel, {as: 'metas', foreignKey: 'post_id', sourceKey: 'id'})
     // postMetaModel.belongsTo(postModel, {foreignKey: 'post_id', targetKey: 'post_id'})
 
-    postModel.prototype.getMetasObj = getMetasObj
+    // postModel.prototype.getMetasObj = getMetasObj
     return postMetaModel
 };

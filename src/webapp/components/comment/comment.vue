@@ -1,11 +1,12 @@
 <template>
     <aside class="comment-wrapper">
-        <comment-input @on-send="handleSend" v-model="content"/>
+        <comment-input @auth="infoModal = true" @comment-success="handleCommentSuccess" v-model="content"/>
         <div class="j-comment-head">
             <span v-if="commentList.length">{{commentList.length}} 条评论</span>
             <span v-else>暂无评论</span>
             <ul class="float-right">
-                <li v-for="item in sortList" :key="item.d" :class="{'active':sort === item.d}" @click="sort=item.d"><a href="javascript:;">{{item.name}}</a></li>
+                <li v-for="item in sortList" :key="item.d" :class="{'active':sort === item.d}" @click="sort=item.d"><a
+                    href="javascript:;">{{item.name}}</a></li>
             </ul>
         </div>
         <div class="j-comment-empty" v-if="status===comment_status.loading">加载中评论中...</div>
@@ -16,77 +17,84 @@
             <div class="am-inline-block">智慧如你，不想<span @click="toComment">发表一点想法</span>咩~</div>
         </div>
         <ul class="comment-list-warp">
-            <li class="comment-list__item" v-for="i in 10" :key="i">
-                <div class="user-avatar comment-user-avatar" >
-                    <img src="http://oht47c0d0.bkt.clouddn.com/17-1-11/75763093-file_1484140871299_166f3.png" alt="user-avatar">
+            <li class="comment-list__item" v-for="(comment, index) in commentOrder" :key="i">
+                <div class="user-avatar comment-user-avatar">
+                    <img :src="comment.comment_author_avatar" alt="user-avatar">
                 </div>
                 <div class="comment-content">
                     <header class="comment-content__header">
-                        <a class="comment-user-name name">酱酱酱酱油鲜</a>
+                        <a class="comment-user-name name">{{comment.comment_author}}</a>
                         <!--<a v-if="item.user_id" class="admin" title="管理员"><i class="icon-guanliyuan iconfont "></i></a>-->
-                        <span class="float-right"># 1</span>
+                        <span class="float-right"># {{comment.comment_karma}}</span>
                     </header>
-                    <div class="comment-content__body">...
-                        webpack built 6d74f2a57838700ca0b5 in 1028ms
-                        i ｢wdm｣: Hash: 6d74f
-                    </div>
+                    <div class="comment-content__body">{{comment.comment_content}}</div>
                     <footer class="comment-content__footer">
                         <font-icon type="icon-color-phone"></font-icon>
-                        <span class="">来自xx设备</span><time style="" datetime="2018年9月19日10:42:04">3小时前</time>
-                        <font-icon type="icon-zan" class="opt j-logo--a"></font-icon> <span>0</span>
-                        <font-icon type="icon-oppose" class="opt j-logo--a"></font-icon> <span>0</span>
-                        <Button type="text" size="small" @click="reply(i)">回复</Button>
+                        <span class="">来自{{comment.comment_agent}}设备</span>
+                        <time :datetime="comment.createdAt">{{comment.time}}</time>
+                        <font-icon type="icon-zan" class="opt j-logo--a"></font-icon>
+                        <span>0</span>
+                        <font-icon type="icon-oppose" class="opt j-logo--a"></font-icon>
+                        <span>0</span>
+                        <Button type="text" size="small" @click="reply(comment.id)">回复</Button>
                         <!--v-if="!item.user_id"-->
-                        <span class="float-right j-report" >举报</span>
+                        <span class="float-right j-report">举报</span>
                     </footer>
-                    <ul class="reply-list-warp">
-                        <li v-for="item2 in 10 - i" class="reply-list__item" :key="item2">
-                            <div class="comment-user-avatar float-left">
-                                <img src="http://oht47c0d0.bkt.clouddn.com/0e4cf690-376c-11e7-81cc-c5fb8304dee6" alt="user-avatar">
-                            </div>
-                            <div class="reply-content">
-                                <div class="reply-content__body">
-                                    <a class="comment-user-name">冬枣</a>
-                                    <span class="text">72.hot-update.jso</span>
-                                </div>
-                                <div class="reply-content__footer">
-                                    <time datetime="2018-9-19 10:31" style="">2018-9-19 10:31</time>
-                                    <Button type="text" size="small" @click="reply(i, {comment_author: item2, comment_id: 1})">回复</Button>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
+                    <!--<ul class="reply-list-warp">-->
+                        <!--<li v-for="item2 in 10 - i" class="reply-list__item" :key="item2">-->
+                            <!--<div class="comment-user-avatar float-left">-->
+                                <!--<img src="http://oht47c0d0.bkt.clouddn.com/0e4cf690-376c-11e7-81cc-c5fb8304dee6"-->
+                                     <!--alt="user-avatar">-->
+                            <!--</div>-->
+                            <!--<div class="reply-content">-->
+                                <!--<div class="reply-content__body">-->
+                                    <!--<a class="comment-user-name">冬枣</a>-->
+                                    <!--<span class="text">72.hot-update.jso</span>-->
+                                <!--</div>-->
+                                <!--<div class="reply-content__footer">-->
+                                    <!--<time datetime="2018-9-19 10:31" style="">2018-9-19 10:31</time>-->
+                                    <!--<Button type="text" size="small"-->
+                                            <!--@click="reply(i, {comment_author: item2, comment_id: 1})">回复-->
+                                    <!--</Button>-->
+                                <!--</div>-->
+                            <!--</div>-->
+                        <!--</li>-->
+                    <!--</ul>-->
                     <collapse-transition>
                         <comment-input v-if="commentDate.comment_parent === i" class="reply-input-warp"
+                                       @auth="infoModal = true"
                                        :posts-id="postsId" :show-cancel="true" :placeholder="commentDate.placeholder"
                                        @cancelReply="commentDate.comment_parent = null"
-                                       v-model="replyContent" @on-send="handleSend">
+                                       @comment-success="handleCommentSuccess"
+                                       v-model="replyContent">
                         </comment-input>
                     </collapse-transition>
                 </div>
             </li>
         </ul>
-        <comment-input v-model="content" v-if="commentList.length >= 10"/>
-        <Modal v-model="infoModal" title="一个必须填写的表单">
+
+        <comment-input v-model="content" v-if="commentList.length >= 10" @auth="infoModal = true" @comment-success="handleCommentSuccess"/>
+        <Modal v-model="infoModal" title="一个必须填写的表单" scrollable="true">
             <div class="user-info-wrap">
                 <div class="sidebar-user-avatar">
                     <a href="javascript:void(0)" class="user-avatar-area">
-                        <img :src="currentAvatar" alt="">
+                        <img :src="userCopy.user_avatar || defaultAvatar" alt="">
                     </a>
                     <a href="javascript:void(0)" class="edit-avatar">不喜欢，点击换一个</a>
                 </div>
-                <Form :model="user" :label-width="80" :rules="ruleValidate" class="wrapper-base-info" ref="userinfoform">
+                <Form :model="userCopy" :label-width="80" :rules="ruleValidate" class="wrapper-base-info"
+                      ref="userinfoform">
                     <FormItem label="qq" prop="user_login">
-                        <Input v-model="user.user_login" placeholder="输入qq 号 快速评论" @on-change="inputQQ"/>
+                        <Input v-model="userCopy.user_login" placeholder="输入qq 号 快速评论" @on-change="inputQQ"/>
                     </FormItem>
                     <FormItem label="昵称" prop="user_nickname">
-                        <Input v-model="user.user_nickname" placeholder="nickname" @on-change="lockNickName"/>
+                        <Input v-model="userCopy.user_nickname" placeholder="nickname" @on-change="lockNickName"/>
                     </FormItem>
                     <FormItem label="邮箱" prop="user_email">
-                        <Input v-model="user.user_email" placeholder="email"/>
+                        <Input v-model="userCopy.user_email" placeholder="email"/>
                     </FormItem>
                     <FormItem label="网址" prop="user_url">
-                        <Input v-model="user.user_url" placeholder="email"/>
+                        <Input v-model="userCopy.user_url" placeholder="email"/>
                     </FormItem>
                 </Form>
             </div>
@@ -122,7 +130,7 @@
     http://q.qlogo.cn/headimg_dl?dst_uin=871839012&spec=100
  -->
 <script>
-import _ from 'lodash'
+// import _ from 'lodash'
 import CollapseTransition from '@/utils/collapse-transition'
 import CommentInput from './comment-input'
 import { on } from '../../utils/dom'
@@ -188,10 +196,19 @@ const qqReg = /[1-9][0-9]{4,}/
 export default {
     name: 'comment',
     data () {
+        let user = {
+            'id': 0,
+            'user_login': '',
+            'user_nickname': '',
+            'user_email': '',
+            'user_avatar': null,
+            'user_url': '',
+            'user_status': 0
+        }
         return {
             content: '',
             replyContent: '',
-            commentList: [1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3],
+            commentList: [],
             sortList: [
                 {name: '按时间正序', d: 'desc'},
                 {name: '按时间倒序', d: 'asc'}
@@ -201,19 +218,13 @@ export default {
             status: commentStatus.success,
             commentDate: {
                 comment_parent: null,
-                content: '',
                 members: [],
-                placeholder: ''
+                parent: this.postsId,
+                placeholder: '',
+                page: 1
             },
-            user: {
-                'id': 0,
-                'user_login': '',
-                'user_nickname': '',
-                'user_email': '',
-                'user_avatar': null,
-                'user_url': '',
-                'user_status': 0
-            },
+            user,
+            userCopy: _.cloneDeep(user),
             ruleValidate: {
                 user_nickname: [
                     {type: 'string', min: 1, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~'}
@@ -225,7 +236,14 @@ export default {
                     {type: 'url', trigger: 'blur', message: '网址格式不正确'}
                 ],
                 user_login: [
-                    {type: 'regexp', min: 3, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~', pattern: /^[a-zA-Z0-9_\-]{3,18}$/}
+                    {
+                        type: 'regexp',
+                        min: 3,
+                        max: 18,
+                        trigger: 'blur',
+                        message: '虽然知道你很长，但是请控制在18个长度以内哦~',
+                        pattern: /^[a-zA-Z0-9_\-]{3,18}$/
+                    }
                 ]
             },
             defaultAvatar: 'http://oht47c0d0.bkt.clouddn.com/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
@@ -243,11 +261,10 @@ export default {
             return !!this.user.id
         },
         currentAvatar () {
-            // if (this.isLogin) {
             return this.user.user_avatar || this.defaultAvatar
-            // } else {
-            //     return this.defaultAvatar
-            // }
+        },
+        commentOrder () {
+            return _.orderBy(this.commentList,['createdAt'], ['desc'])
         }
     },
     methods: {
@@ -261,7 +278,13 @@ export default {
         },
         handleSend (content, realLength) {
             if (this.isLogin) {
-                this.comment(content)
+                // this.comment(content)
+                content = content.trim()
+                if (content.length < 2 || content.length > 1000) {
+                    this.$Message.warning('请提交不包含表情， 2 - 1000 字以内的评论')
+                    return null
+                }
+
             } else {
                 this.infoModal = true
             }
@@ -299,7 +322,12 @@ export default {
                 let valid = await this.$refs.userinfoform.validate()
                 if (valid) {
                     // 完善评论信息
-                    let result = await api.npost('/api/comment/write-user', this.user)
+                    let result = await api.npost('/api/comment/write-user', this.userCopy)
+                    api.token = result.token
+                    for (let key in this.user) {
+                        this.user[key] = result[key]
+                    }
+                    this.infoModal = false
                 } else {
                     let fields = this.$refs.userinfoform.fields
                     fields.forEach((field) => {
@@ -309,24 +337,44 @@ export default {
                     })
                 }
             } catch (e) {
-                console.log(e)
+                this.$Message.info(e.message)
+                if (e.message === '错误的账号') {
+                    this.userCopy.user_login = this.user.user_login
+                }
             }
         },
-        comment () {
-            // 提价评论
+        handleCommentSuccess (result, {comment_parent}) {
+            if (comment_parent) {
+
+            } else {
+                this.commentList.push(result)
+            }
+        },
+        async fetchComment () {
+            this.comment_status = commentStatus.loading
+            try {
+                // 获取评论列表
+                let result = await api.nget('/api/comment/', this.commentDate)
+                this.commentList = result
+                this.comment_status = commentStatus.success
+                // console.log('comment load')
+            } catch (e) {
+                console.error(e)
+                this.comment_status = commentStatus.error
+            }
         }
     },
     async created () {
         async function inputQQ () {
             if (this.lockNick) return
-            let qq = this.user.user_login
+            let qq = this.userCopy.user_login
             try {
                 if (qqReg.test(qq)) {
                     let result = await api.nget(`/api/tools/qinfo`, {key: qq})
                     // console.log(result)
                     if (result) {
-                        this.user.user_nickname = result.nickname
-                        this.user.user_avatar = result.avatar
+                        this.userCopy.user_nickname = result.nickname
+                        this.userCopy.user_avatar = result.avatar
                     }
                 }
             } catch (e) {
@@ -335,11 +383,14 @@ export default {
         }
 
         this.inputQQ = _.debounce(inputQQ.bind(this), 500)
+        this.fetchComment()
+
         try {
             let u = await api.nget('/api/user/auth')
             for (let key in this.user) {
                 this.user[key] = u[key]
             }
+            this.userCopy = _.cloneDeep(this.user)
         } catch (e) {
             console.log(e)
         }

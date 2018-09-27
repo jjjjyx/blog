@@ -2,7 +2,17 @@
 
 import _ from 'lodash'
 import api from '@/utils/api'
-import {transformMetas, POST_WRITER_STATUS} from '../../utils/common'
+import {POST_WRITER_STATUS} from '../../utils/common'
+
+function transformMetas (metas = []) {
+    let obj = {}
+    if (_.isArray(metas)) {
+        metas.forEach((item) => {
+            obj[item.meta_key] = item
+        })
+    }
+    return obj
+}
 // import Vue from 'vue'
 
 // const POST_WRITER_STATUS = {

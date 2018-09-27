@@ -11,7 +11,7 @@ const Op = sequelize.Op
 const log = require('log4js').getLogger('routers')
 
 module.exports.generatePostHtml = function (post) {
-    let {sticky, displayContent} = post.getMetasObj()
+    let {sticky, displayContent} = post.metas
     let stickyHtml = ''
     if (sticky && sticky.meta_value === '1')
         stickyHtml = '<color-icon class="j-article__sticky" type="icon-color-sticky" size="24" title="置顶"></color-icon>'
