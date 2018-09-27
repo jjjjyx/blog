@@ -17,7 +17,7 @@
             <div class="am-inline-block">智慧如你，不想<span @click="toComment">发表一点想法</span>咩~</div>
         </div>
         <ul class="comment-list-warp">
-            <li class="comment-list__item" v-for="(comment, index) in commentOrder" :key="i">
+            <li class="comment-list__item" v-for="(comment, index) in commentOrder" :key="index">
                 <div class="user-avatar comment-user-avatar">
                     <img :src="comment.comment_author_avatar" alt="user-avatar">
                 </div>
@@ -61,10 +61,10 @@
                         <!--</li>-->
                     <!--</ul>-->
                     <collapse-transition>
-                        <comment-input v-if="commentDate.comment_parent === i" class="reply-input-warp"
+                        <comment-input v-if="commentDate.commentParent === i" class="reply-input-warp"
                                        @auth="infoModal = true"
                                        :posts-id="postsId" :show-cancel="true" :placeholder="commentDate.placeholder"
-                                       @cancelReply="commentDate.comment_parent = null"
+                                       @cancelReply="commentDate.commentParent = null"
                                        @comment-success="handleCommentSuccess"
                                        v-model="replyContent">
                         </comment-input>
@@ -130,6 +130,7 @@
     http://q.qlogo.cn/headimg_dl?dst_uin=871839012&spec=100
  -->
 <script>
+/* eslint-disable no-undef */
 // import _ from 'lodash'
 import CollapseTransition from '@/utils/collapse-transition'
 import CommentInput from './comment-input'
@@ -217,7 +218,7 @@ export default {
             comment_status: commentStatus,
             status: commentStatus.success,
             commentDate: {
-                comment_parent: null,
+                commentParent: null,
                 members: [],
                 parent: this.postsId,
                 placeholder: '',
@@ -242,7 +243,7 @@ export default {
                         max: 18,
                         trigger: 'blur',
                         message: '虽然知道你很长，但是请控制在18个长度以内哦~',
-                        pattern: /^[a-zA-Z0-9_\-]{3,18}$/
+                        pattern: /^[a-zA-Z0-9_\\-]{3,18}$/
                     }
                 ]
             },
@@ -264,7 +265,7 @@ export default {
             return this.user.user_avatar || this.defaultAvatar
         },
         commentOrder () {
-            return _.orderBy(this.commentList,['createdAt'], ['desc'])
+            return _.orderBy(this.commentList, ['createdAt'], ['desc'])
         }
     },
     methods: {
@@ -284,7 +285,6 @@ export default {
                     this.$Message.warning('请提交不包含表情， 2 - 1000 字以内的评论')
                     return null
                 }
-
             } else {
                 this.infoModal = true
             }
@@ -300,10 +300,10 @@ export default {
             if (replyTarget) {
                 p = `回复 ${replyTarget.comment_author} `
             }
-            if (this.commentDate.comment_parent === id && p === this.commentDate.placeholder) {
-                this.commentDate.comment_parent = null
+            if (this.commentDate.commentParent === id && p === this.commentDate.placeholder) {
+                this.commentDate.commentParent = null
             } else {
-                this.commentDate.comment_parent = id
+                this.commentDate.commentParent = id
                 this.commentDate.placeholder = p
             }
         },
@@ -343,8 +343,8 @@ export default {
                 }
             }
         },
-        handleCommentSuccess (result, {comment_parent}) {
-            if (comment_parent) {
+        handleCommentSuccess (result, {commentParent}) {
+            if (commentParent) {
 
             } else {
                 this.commentList.push(result)

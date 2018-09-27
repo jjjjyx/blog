@@ -96,7 +96,7 @@ export default {
                     return null
                 }
                 try {
-                    let result = await api.npost('/api/comment', {content,...this.$parent.commentDate})
+                    let result = await api.npost('/api/comment', {content, ...this.$parent.commentDate})
                     this.$emit('comment-success', result, this.$parent.commentDate)
                 } catch (e) {
                     this.$Message.info(e.message)
@@ -105,7 +105,6 @@ export default {
                 // this.infoModal = true
                 this.$emit('auth')
             }
-
         },
         handleAddEmoji (value) {
             this.currentValue += value

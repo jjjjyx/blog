@@ -1,5 +1,6 @@
        /* jshint indent: 2 */
 const {Enum} = require('../common/enum')
+const common = require('../common/common')
 const _ = require('lodash')
 /*
 关于
@@ -163,7 +164,18 @@ module.exports = function (sequelize, DataTypes) {
         // 不要忘了启用 timestamps
         timestamps:true,
         deletedAt: "deleteAt",
-        paranoid: true
+        paranoid: true,
+        getterMethods : {
+            metas () {
+                return common.transformMetas(this.getDataValue('metas'))
+                // return moment(this.getDataValue('createdAt')).format('YYYY-M-D hh:mm');
+            }
+        },
+        setterMethods: {
+            metas (value) {
+                this.setDataValue('metas', value)
+            }
+        }
         // indexes:[{
         //     unique: true,
         //     fields: ['post_name','post_title']

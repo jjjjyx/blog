@@ -1,6 +1,4 @@
 /* jshint indent: 2 */
-const common = require('../common/common')
-
 // function getMetasObj (){
 //     console.log(this.getDataValue('metas'))
 //     return common.transformMetas(this.metas)
@@ -23,13 +21,7 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'j_postmeta',
-        timestamps: false,
-        getterMethods : {
-            metas () {
-                return common.transformMetas(this.getDataValue('metas'))
-                // return moment(this.getDataValue('createdAt')).format('YYYY-M-D hh:mm');
-            }
-        }
+        timestamps: false
     });
     const {post: postModel} = sequelize.models
 

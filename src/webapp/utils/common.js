@@ -75,8 +75,6 @@ export function dateFormat (timeInMs, pattern = defaultDatePattern) {
     }
 }
 
-
-
 const x = '0123456789qwertyuioplkjhgfdsazxcvbnmQWERTYUIOPLKJHGFDSAZXCVBNM'
 
 export function randomChar (l = 6) {

@@ -13,6 +13,9 @@ const log = require('log4js').getLogger('routers')
 module.exports.generatePostHtml = function (post) {
     let {sticky, displayContent} = post.metas
     let stickyHtml = ''
+    // if (sticky) {
+    //     console.log('post.id = ', post.id, '  sticky.meta_value', sticky.meta_value, ' ====', sticky.meta_value === '1')
+    // }
     if (sticky && sticky.meta_value === '1')
         stickyHtml = '<color-icon class="j-article__sticky" type="icon-color-sticky" size="24" title="置顶"></color-icon>'
     let title = post.post_title
@@ -53,10 +56,7 @@ module.exports.generatePostHtml = function (post) {
     return `<article class="j-article-item j-block">
     <div class="j-article-item-content">
         <h3 class="j-article__title">
-            <a href="${url}" target="_blank">
-                ${stickyHtml}
-                ${xss(title)}
-            </a>
+            <a href="${url}" target="_blank"> ${stickyHtml} ${xss(title)} </a>
         </h3>
         <div class="j-article__metas float-right j-article__opt">
             <a class="j-article__a read mr-2" href="${url}" target="_blank">
