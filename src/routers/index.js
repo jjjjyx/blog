@@ -16,7 +16,7 @@ const unless = require('express-unless')
 //     '/bg/admin'
 // ]
 const unless_path = {
-    path: ['/api/user/login', '/api/img/callback', '/api/tools/qinfo'],
+    path: ['/api/user/login', '/api/img/callback', '/api/tools/qinfo', '/api/comment/write-user'],
     method: 'OPTIONS'
 }
 // debug('创建身份验证中间件，并设置 req.user')
@@ -49,7 +49,7 @@ module.exports = function (app) {
     app.use('/api', jwtCheck.unless(unless_path))
     // app.use("/api",middleware.unless(unless_path))
     app.use('/api/user', require('./api/user.js'))
-    app.use('/api/comment', guard.check('comment'), require('./api/comment.js'))
+    app.use('/api/comment', guard.check('comment').unless({path: '/api/comment/write-user'}), require('./api/comment.js'))
     // 后面的需要管理员
     app.use('/api', guard.check('admin').unless(unless_path))
     app.use('/api/post', require('./api/posts.js'))

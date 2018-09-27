@@ -53,6 +53,7 @@
         "serve-favicon": "^2.5.0",
         "shortid": "^2.2.12",
         "spark-md5": "^3.0.0",
+        "useragent": "^2.3.0",
         "vue": "^2.5.16",
         "vue-grid-layout": "^2.1.13",
         "vue-router": "^3.0.1",

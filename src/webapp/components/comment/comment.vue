@@ -60,36 +60,38 @@
                         <comment-input v-if="commentDate.comment_parent === i" class="reply-input-warp"
                                        :posts-id="postsId" :show-cancel="true" :placeholder="commentDate.placeholder"
                                        @cancelReply="commentDate.comment_parent = null"
-                                       v-model="replyContent">
+                                       v-model="replyContent" @on-send="handleSend">
                         </comment-input>
                     </collapse-transition>
                 </div>
             </li>
         </ul>
         <comment-input v-model="content" v-if="commentList.length >= 10"/>
-        <Modal v-model="infoModal" title="一个必须填写的表单" @on-ok="ok" @on-cancel="cancel">
+        <Modal v-model="infoModal" title="一个必须填写的表单">
             <div class="user-info-wrap">
                 <div class="sidebar-user-avatar">
                     <a href="javascript:void(0)" class="user-avatar-area">
-                        <img src="http://oht47c0d0.bkt.clouddn.com/0e4cf690-376c-11e7-81cc-c5fb8304dee6" alt="">
+                        <img :src="currentAvatar" alt="">
                     </a>
                     <a href="javascript:void(0)" class="edit-avatar">不喜欢，点击换一个</a>
                 </div>
-                <Form :model="user" :label-width="80" :rules="ruleValidate" class="wrapper-base-info">
-                    <FormItem label="qq" prop="qq">
+                <Form :model="user" :label-width="80" :rules="ruleValidate" class="wrapper-base-info" ref="userinfoform">
+                    <FormItem label="qq" prop="user_login">
                         <Input v-model="user.user_login" placeholder="输入qq 号 快速评论" @on-change="inputQQ"/>
                     </FormItem>
-                    <FormItem label="昵称" prop="nickname">
+                    <FormItem label="昵称" prop="user_nickname">
                         <Input v-model="user.user_nickname" placeholder="nickname" @on-change="lockNickName"/>
                     </FormItem>
-                    <FormItem label="邮箱" prop="email">
+                    <FormItem label="邮箱" prop="user_email">
                         <Input v-model="user.user_email" placeholder="email"/>
                     </FormItem>
-                    <FormItem label="网址" prop="url">
+                    <FormItem label="网址" prop="user_url">
                         <Input v-model="user.user_url" placeholder="email"/>
                     </FormItem>
                 </Form>
             </div>
+            <Button slot="footer" type="text" @click="infoModal = false">取消</Button>
+            <Button slot="footer" type="primary" @click="handleOk">确认</Button>
         </Modal>
     </aside>
 </template>
@@ -210,21 +212,21 @@ export default {
                 'user_email': '',
                 'user_avatar': null,
                 'user_url': '',
-                'user_status': 1
+                'user_status': 0
             },
             ruleValidate: {
-                nickname: [
+                user_nickname: [
                     {type: 'string', min: 1, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~'}
                 ],
-                email: [
+                user_email: [
                     {type: 'email', trigger: 'blur', message: '不要调皮，邮箱格式你心里没点`atob(\'Qg==\');`数吗'}
                 ],
-                url: [
+                user_url: [
                     {type: 'url', trigger: 'blur', message: '网址格式不正确'}
+                ],
+                user_login: [
+                    {type: 'regexp', min: 3, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~', pattern: /^[a-zA-Z0-9_\-]{3,18}$/}
                 ]
-                // qq: [ 如果仅输入了这一项，首选验证是否满足qq的验证，满足尝试抓取qq 号信息
-                //
-                // ]
             },
             defaultAvatar: 'http://oht47c0d0.bkt.clouddn.com/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
             infoModal: false,
@@ -238,7 +240,7 @@ export default {
     },
     computed: {
         isLogin () {
-            return this.user.id
+            return !!this.user.id
         },
         currentAvatar () {
             // if (this.isLogin) {
@@ -258,13 +260,11 @@ export default {
             window.history.pushState({}, 0, url)
         },
         handleSend (content, realLength) {
-            if (!this.isLogIn) {
+            if (this.isLogin) {
+                this.comment(content)
+            } else {
                 this.infoModal = true
-                return
             }
-            content = content.trim()
-            // 2 - 1000
-            console.log('content', content)
         },
         /**
          * 回复
@@ -293,6 +293,27 @@ export default {
                 return
             }
             this.lockNick = true
+        },
+        handleOk: async function () {
+            try {
+                let valid = await this.$refs.userinfoform.validate()
+                if (valid) {
+                    // 完善评论信息
+                    let result = await api.npost('/api/comment/write-user', this.user)
+                } else {
+                    let fields = this.$refs.userinfoform.fields
+                    fields.forEach((field) => {
+                        if (field.validateState === 'error' && field.showMessage) {
+                            this.$Message.info(field.validateMessage)
+                        }
+                    })
+                }
+            } catch (e) {
+                console.log(e)
+            }
+        },
+        comment () {
+            // 提价评论
         }
     },
     async created () {
@@ -302,7 +323,11 @@ export default {
             try {
                 if (qqReg.test(qq)) {
                     let result = await api.nget(`/api/tools/qinfo`, {key: qq})
-                    console.log(result)
+                    // console.log(result)
+                    if (result) {
+                        this.user.user_nickname = result.nickname
+                        this.user.user_avatar = result.avatar
+                    }
                 }
             } catch (e) {
                 console.log('获取qq 用户信息失败')

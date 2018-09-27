@@ -77,6 +77,7 @@ module.exports.formatDate = function (time, pattern = 'YYYY-M-D hh:mm') {
 module.exports.create = create
 module.exports.renderer = renderer
 module.exports.cache = cache
+module.exports.redisClient = redis
 
 module.exports.clearCache = function () {
     log.debug('清空路由缓存')

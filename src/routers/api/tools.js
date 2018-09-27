@@ -14,23 +14,21 @@ const {sanitizeBody} = require('express-validator/filter')
 const common = require('../common')
 const iconv = require('iconv-lite');
 
-const qqReg = /^[1-9][0-9]{4,}$/
-// 根据 qq 号获取昵称 头像
-// const qqAPI = 'http://users.qzone.qq.com/'
 
+const redisClient = utils.redisClient
+const qqReg = /^[1-9][0-9]{4,}$/
 const qqAvater = 'http://q.qlogo.cn/headimg_dl?spec=140&dst_uin='  // 大小 140
-// function portraitCallBack (p) {
-//     return Object.values(p)[0]
-// }
-const qinfo = [
-    query('key').custom((value) => {
-        debug('qinfo qq = ', value)
-        return qqReg.test(value)
-    }).withMessage('请提交正确的qq'),
-    utils.validationResult,
-    function (req, res, next) {
-        let qq = req.query.key
-        log.debug('获取 qq = $s 信息', qq)
+const key_suffix = ':ip_for_qq_info'
+const ipUpdateCountkey = 'update_count' // 修改次数
+// const ipInfoskeys = 'infos' // ip 查询qq信息的历史
+
+log.debug('qq reg = ', qqReg)
+log.debug('qq AvatarUrl = ', qqAvater)
+log.debug('qq key_suffix = ', key_suffix)
+
+
+function getQinfoByqq (qq) {
+    return new Promise((resolve, reject) => {
         http.get(`http://users.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=${qq}`, (resp) => {
             let data = []
             // A chunk of data has been recieved.
@@ -44,14 +42,41 @@ const qinfo = [
                 body =  Object.values(JSON.parse(body))[0]
                 // ["http://qlogo1.store.qq.com/qzone/617044132/617044132/100",231,-1,0,0,0,"蓝鲨捞鱼王",0]
                 let nickname = body[6]
-                return res.status(200).json(Result.success({
+                resolve({
                     avatar: `${qqAvater}${qq}`,
                     nickname
-                }))
+                })
             })
-        }).on('error', (err) => {
-            log.error('qinfo Error:', err)
-        })
+        }).on('error', reject)
+    })
+}
+const qinfo = [
+    query('key').custom((value) => {
+        debug('qinfo qq = ', value)
+        return qqReg.test(value)
+    }).withMessage('请提交正确的qq'),
+    utils.validationResult,
+    async function (req, res, next) {
+        let qq = req.query.key
+        log.debug('获取 qq = %s 信息', qq)
+        try {
+            let ip = utils.getClientIp(req)
+            let uipKey = ip + key_suffix
+            let count = await redisClient.hget(uipKey, ipUpdateCountkey)
+            let info
+            // 获取成功后，绑定这个ip ，并允许更改5次，并记录
+            if (count >= 5) {
+                info = JSON.parse(await redisClient.hget(uipKey, qq))
+            } else {
+                info = await getQinfoByqq(qq)
+                redisClient.hset(uipKey, qq, JSON.stringify(info))
+                redisClient.hincrby(uipKey, ipUpdateCountkey, 1)
+            }
+            return res.status(200).json(Result.success(info))
+        } catch (e) {
+            log.error('qinfo Error:', e)
+            next()
+        }
     }
 ]
 
