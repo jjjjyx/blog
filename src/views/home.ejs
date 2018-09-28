@@ -23,7 +23,7 @@
         <div class="slant slant__right"></div>
     </div>
     <row class="container" style="margin-top: 70px;">
-        <i-col span="16" class="articles">
+        <i-col :xs="24" :md="16" class="articles">
             <tabs size="small">
                 <tab-pane label="最新文章" class="j-article-list">
                     <%-articleList%>
@@ -37,7 +37,7 @@
                 <!--<tab-pane label="毕业论文">标签三的内容</tab-pane>-->
             </tabs>
         </i-col>
-        <i-col span="7" offset="1">
+        <i-col :xs="24" :md="{span:7, offset: 1}" >
             <%-sidebar%>
         </i-col>
     </row>
