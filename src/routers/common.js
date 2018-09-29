@@ -2,6 +2,7 @@ const path = require('path')
 const xss = require('xss')
 const marked = require('marked')
 const _ = require('lodash')
+const debug = require('debug')('app:routers:common')
 const ejs = require('ejs')
 const utils = require('../utils')
 const {Enum} = require('../common/enum')
@@ -297,3 +298,10 @@ const userRole = {
 }
 
 module.exports.userRole = userRole
+
+function ipAndRoute (req) {
+    let key = utils.getClientIp(req) + ':' + req.baseUrl + req.path
+    debug('ipAndRoute key = %s', key)
+    return key;
+}
+module.exports.ipAndRoute = ipAndRoute

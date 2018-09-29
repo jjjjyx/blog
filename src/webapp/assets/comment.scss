@@ -1,5 +1,5 @@
 $font-color: #8e9da7;
-$font-color2: #99a2aa;
+$font-color2: #b7b7b7;
 $font-color3: #00a1d6;
 $border-color2: #e5e9ef;
 
@@ -74,15 +74,15 @@ $border-color2: #e5e9ef;
         margin: 24px 0 0 5px;
     }
 
-    &:first-child .comment-content {
-        border-top: none;
-    }
+    //&:first-child .comment-content {
+    //    border-top: none;
+    //}
 }
 .comment-content {
     position: relative;
     margin-left: 85px;
     padding: 22px 0 14px;
-    border-top: 1px solid $border-color2;
+    border-bottom: 1px solid $border-color2;
 }
 .comment-content__header {
     font-size: 12px;
@@ -114,6 +114,7 @@ $border-color2: #e5e9ef;
     overflow: hidden;
     word-wrap: break-word;
     word-break: break-word;
+    color: black;
 }
 .comment-content__footer {
     color: $font-color2;
@@ -140,6 +141,13 @@ $border-color2: #e5e9ef;
     }
     .opt + span {
         cursor: default;
+    }
+}
+
+.comment-page {
+    margin: 1.5rem 0;
+    .ivu-page-options {
+        float: right;
     }
 }
 
@@ -170,10 +178,10 @@ $border-color2: #e5e9ef;
     color: $font-color2;
     line-height: 26px;
     font-size: 12px;
-
+    user-select: none;
     time {
         vertical-align: middle;
-        margin-right: 20px;
+        margin-right: 5px;
     }
 }
 
@@ -398,6 +406,7 @@ $border-color2: #e5e9ef;
     width: 165px;
     padding: 2px;
     border: 1px solid #d7dde4;
+    user-select: none;
 }
 .user-avatar-area img{
     width: 100%;

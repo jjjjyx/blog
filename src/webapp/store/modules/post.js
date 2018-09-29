@@ -4,15 +4,15 @@ import _ from 'lodash'
 import api from '@/utils/api'
 import {POST_WRITER_STATUS} from '../../utils/common'
 
-function transformMetas (metas = []) {
-    let obj = {}
-    if (_.isArray(metas)) {
-        metas.forEach((item) => {
-            obj[item.meta_key] = item
-        })
-    }
-    return obj
-}
+// function transformMetas (metas = []) {
+//     let obj = {}
+//     if (_.isArray(metas)) {
+//         metas.forEach((item) => {
+//             obj[item.meta_key] = item
+//         })
+//     }
+//     return obj
+// }
 // import Vue from 'vue'
 
 // const POST_WRITER_STATUS = {
@@ -238,16 +238,20 @@ const mutations = {
                 value.revision.forEach((item) => {
                     item.autosave = item.type === `${value.id}-autosave-v1`
                     item.curr = item.updatedAt === value.updatedAt
-                    item.metas = transformMetas(item.metas)
+                    // item.metas = transformMetas(item.metas)
                     // item.post_content = false
                 })
             }
             // 转换metas
-            value.metas = transformMetas(value.metas)
+            // value.metas = transformMetas(value.metas)
             for (let key in value) {
                 if (state.hasOwnProperty(key)) {
                     state[key] = value[key]
                 }
+            }
+            let {sticky} = value.metas
+            if (sticky) {
+                state.sticky = _.toNumber(sticky.meta_value) ? 'sticky' : ''
             }
             let {category, post_tag: postTag} = _.groupBy(value.terms, 'taxonomy')
             if (postTag) state.new_tag = postTag.map((i) => i.name)

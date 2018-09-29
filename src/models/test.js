@@ -1,4 +1,4 @@
-const {termDao, postDao, postMetaDao, sequelize} = require('./index')
+const {termDao, postDao, postMetaDao, commentDao, sequelize} = require('./index')
 const {Enum} = require('../common/enum')
 const Op = sequelize.Op;
 // termDao.findAll({
@@ -30,13 +30,16 @@ SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`po
     //     }
     // })
 
-     let result =  await sequelize.query(queryCategorySticky,
-        {type: sequelize.QueryTypes.SELECT, replacements: ['uncategorized', 3]})
-    let o = result[0]
+    //  let result =  await sequelize.query(queryCategorySticky,
+    //     {type: sequelize.QueryTypes.SELECT, replacements: ['uncategorized', 3]})
+    // let o = result[0]
+
+    // let result = await commentDao.count({where: {comment_id: 'c_LcBqdFg5'}})
+    let result = await commentDao.max('comment_karma',{where: {comment_id: 'aaa'}}) || 0
 
     console.log('result= ', result )
-    console.log(o.user)
-    console.log(JSON.stringify({a: Op.in}))
+    // console.log(o.user)
+    // console.log(JSON.stringify({a: Op.in}))
 
 })()
 // postDao.findById(98).then(async (post)=>{

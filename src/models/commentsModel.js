@@ -3,6 +3,10 @@
 // ALTER TABLE `blog`.`j_comments` CHANGE `comment_author` `comment_author` VARCHAR(50) CHARSET utf8 COLLATE utf8_bin NULL;
 // ALTER TABLE `blog`.`j_comments` DROP FOREIGN KEY `j_comments_ibfk_2`;
 // ALTER TABLE `blog`.`j_comments` ADD CONSTRAINT `j_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `blog`.`j_users`(`id`) ON UPDATE CASCADE ON DELETE SET NULL;
+
+//
+// ALTER TABLE `blog`.`j_comments` DROP FOREIGN KEY `j_comments_ibfk_1`;
+// ALTER TABLE `blog`.`j_comments` ADD CONSTRAINT `j_comments_ibfk_1` FOREIGN KEY (`comment_parent`) REFERENCES `blog`.`j_comments`(`id`) ON UPDATE CASCADE ON DELETE SET NULL;
 const moment = require('moment')
 
 module.exports = function (sequelize, DataTypes) {
@@ -108,6 +112,9 @@ module.exports = function (sequelize, DataTypes) {
 
     userModel.hasMany(commentModel, {foreignKey: 'user_id', targetKey: 'id'})
     commentModel.belongsTo(userModel, {foreignKey: 'user_id', targetKey: 'id'})
+
+    commentModel.hasMany(commentModel, {as: 'child', foreignKey: 'comment_parent', sourceKey: 'id'})
+    // commentModel.belongsTo(commentModel, {foreignKey: 'comment_parent', targetKey: 'id'})
 
     return commentModel
 };

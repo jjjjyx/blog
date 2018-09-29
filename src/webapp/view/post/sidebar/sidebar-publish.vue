@@ -251,8 +251,9 @@ export default {
             // 主要重置 状态， 密码 置顶
             this.resetPostStatus()
             this.publishValue.passValue = this.currentPost.post_password
-            this.publishValue.sticky = this.currentPost.sticky
 
+            this.publishValue.sticky = this.currentPost.sticky
+            console.log('this.publishValue.sticky === ', this.publishValue.sticky)
             if (this.currentPost.post_password) {
                 this.publishValue.status = 'pass'
             } else if (this.currentPost.post_status === 'private') {

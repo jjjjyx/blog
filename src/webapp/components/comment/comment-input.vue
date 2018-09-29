@@ -98,6 +98,7 @@ export default {
                 try {
                     let result = await api.npost('/api/comment', {content, ...this.$parent.commentDate})
                     this.$emit('comment-success', result, this.$parent.commentDate)
+                    this.currentValue = ''
                 } catch (e) {
                     this.$Message.info(e.message)
                 }

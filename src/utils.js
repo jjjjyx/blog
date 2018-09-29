@@ -16,6 +16,10 @@ const ExpressRedisCache = require('express-redis-cache')
 const marked = require('marked')
 const renderer = new marked.Renderer()
 const config = require('../config')
+
+
+moment.locale('zh-cn')
+
 const textChar = (text) => text || ' '
 const emptyChar = () => ''
 for (let i in renderer) {

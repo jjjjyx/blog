@@ -2,31 +2,34 @@
     <aside class="comment-wrapper">
         <comment-input @auth="infoModal = true" @comment-success="handleCommentSuccess" v-model="content"/>
         <div class="j-comment-head">
-            <span v-if="commentList.length">{{commentList.length}} 条评论</span>
+            <span v-if="commentList.length">{{totalDisplay}} 条评论</span>
             <span v-else>暂无评论</span>
             <ul class="float-right">
-                <li v-for="item in sortList" :key="item.d" :class="{'active':sort === item.d}" @click="sort=item.d"><a
+                <li v-for="item in sortList" :key="item.d" :class="{'active':commentDate.sort === item.d}" @click="commentDate.sort = item.d"><a
                     href="javascript:;">{{item.name}}</a></li>
             </ul>
         </div>
-        <div class="j-comment-empty" v-if="status===comment_status.loading">加载中评论中...</div>
-        <div class="j-comment-empty" v-else-if="status===comment_status.error">评论加载失败..</div>
-        <div class="j-comment-empty" v-else-if="status===comment_status.success && !commentList.length">
+        <div class="j-comment-empty" v-if="status===COMMENT_STATUS.loading">加载中评论中...</div>
+        <div class="j-comment-empty" v-else-if="status===COMMENT_STATUS.error">评论加载失败..</div>
+        <div class="j-comment-empty" v-else-if="status===COMMENT_STATUS.success && !commentList.length">
             <!--<font-icon type="icon-color-doge" size="36"></font-icon>-->
             <img src="http://oht47c0d0.bkt.clouddn.com/FuwU_vvhI2bw4fRq8MO1AKax0RpF" alt="[doge]">
             <div class="am-inline-block">智慧如你，不想<span @click="toComment">发表一点想法</span>咩~</div>
         </div>
         <ul class="comment-list-warp">
-            <li class="comment-list__item" v-for="(comment, index) in commentOrder" :key="index">
+            <li class="comment-list__item" v-for="(comment, index) in commentList" :key="index">
                 <div class="user-avatar comment-user-avatar">
                     <img :src="comment.comment_author_avatar" alt="user-avatar">
                 </div>
                 <div class="comment-content">
-                    <header class="comment-content__header">
-                        <a class="comment-user-name name">{{comment.comment_author}}</a>
-                        <!--<a v-if="item.user_id" class="admin" title="管理员"><i class="icon-guanliyuan iconfont "></i></a>-->
+                    <comment-username class="comment-content__header" :user="comment.user">
                         <span class="float-right"># {{comment.comment_karma}}</span>
-                    </header>
+                    </comment-username>
+                    <!--<header class="comment-content__header">-->
+                        <!--<a class="comment-user-name name">{{comment.comment_author}}</a>-->
+                        <!--&lt;!&ndash;<a class="admin" title="管理员"><i class="icon-guanliyuan iconfont "></i></a>&ndash;&gt;-->
+                        <!---->
+                    <!--</header>-->
                     <div class="comment-content__body">{{comment.comment_content}}</div>
                     <footer class="comment-content__footer">
                         <font-icon type="icon-color-phone"></font-icon>
@@ -40,31 +43,28 @@
                         <!--v-if="!item.user_id"-->
                         <span class="float-right j-report">举报</span>
                     </footer>
-                    <!--<ul class="reply-list-warp">-->
-                        <!--<li v-for="item2 in 10 - i" class="reply-list__item" :key="item2">-->
-                            <!--<div class="comment-user-avatar float-left">-->
-                                <!--<img src="http://oht47c0d0.bkt.clouddn.com/0e4cf690-376c-11e7-81cc-c5fb8304dee6"-->
-                                     <!--alt="user-avatar">-->
-                            <!--</div>-->
-                            <!--<div class="reply-content">-->
-                                <!--<div class="reply-content__body">-->
-                                    <!--<a class="comment-user-name">冬枣</a>-->
-                                    <!--<span class="text">72.hot-update.jso</span>-->
-                                <!--</div>-->
-                                <!--<div class="reply-content__footer">-->
-                                    <!--<time datetime="2018-9-19 10:31" style="">2018-9-19 10:31</time>-->
-                                    <!--<Button type="text" size="small"-->
-                                            <!--@click="reply(i, {comment_author: item2, comment_id: 1})">回复-->
-                                    <!--</Button>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</li>-->
-                    <!--</ul>-->
+                    <ul class="reply-list-warp">
+                        <li v-for="item2 in comment.child" class="reply-list__item" :key="item2">
+                            <div class="comment-user-avatar float-left">
+                                <img :src="item2.comment_author_avatar" alt="user-avatar">
+                            </div>
+                            <div class="reply-content">
+                                <comment-username class="reply-content__body" :user="item2.user">
+                                    <span class="text">{{item2.comment_content}}</span>
+                                </comment-username>
+                                <div class="reply-content__footer">
+                                    <time :datetime="item2.createdAt">{{item2.time}}</time>
+                                    <Button type="text" size="small" @click="reply(comment.id, item2)">回复
+                                    </Button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
                     <collapse-transition>
-                        <comment-input v-if="commentDate.commentParent === i" class="reply-input-warp"
+                        <comment-input v-if="commentDate.comment_parent === comment.id" class="reply-input-warp"
                                        @auth="infoModal = true"
                                        :posts-id="postsId" :show-cancel="true" :placeholder="commentDate.placeholder"
-                                       @cancelReply="commentDate.commentParent = null"
+                                       @cancelReply="commentDate.comment_parent = null"
                                        @comment-success="handleCommentSuccess"
                                        v-model="replyContent">
                         </comment-input>
@@ -72,6 +72,9 @@
                 </div>
             </li>
         </ul>
+        <div class="comment-page">
+            <Page :total="total" show-elevator @on-change="handlePageChange"></Page>
+        </div>
 
         <comment-input v-model="content" v-if="commentList.length >= 10" @auth="infoModal = true" @comment-success="handleCommentSuccess"/>
         <Modal v-model="infoModal" title="一个必须填写的表单" scrollable="true">
@@ -80,7 +83,7 @@
                     <a href="javascript:void(0)" class="user-avatar-area">
                         <img :src="userCopy.user_avatar || defaultAvatar" alt="">
                     </a>
-                    <a href="javascript:void(0)" class="edit-avatar">不喜欢，点击换一个</a>
+                    <a @click="changeAvatar" class="edit-avatar">不喜欢，点击换一个</a>
                 </div>
                 <Form :model="userCopy" :label-width="80" :rules="ruleValidate" class="wrapper-base-info"
                       ref="userinfoform">
@@ -133,6 +136,7 @@
 /* eslint-disable no-undef */
 // import _ from 'lodash'
 import CollapseTransition from '@/utils/collapse-transition'
+import CommentUsername from './comment-username'
 import CommentInput from './comment-input'
 import { on } from '../../utils/dom'
 import api from '../../utils/api'
@@ -187,7 +191,7 @@ on(window, 'load', () => {
 })
 
 // import
-const commentStatus = {
+const COMMENT_STATUS = {
     loading: 'loading',
     error: 'error',
     success: 'success'
@@ -207,55 +211,55 @@ export default {
             'user_status': 0
         }
         return {
+            // 主評論
             content: '',
+            // 回復
             replyContent: '',
+            // 評論數
+            total: 0,
+            // 全部评论，包括回复
+            totalDisplay: 0,
+            // 评论离别
             commentList: [],
+            // 当前状态
+            COMMENT_STATUS,
+            status: COMMENT_STATUS.success,
+            // 当前登录的用户
+            user,
+            userCopy: _.cloneDeep(user),
+            // 评论数据
+            commentDate: {
+                comment_parent: null,
+                members: [],
+                parent: this.postsId,
+                placeholder: '',
+                page: 1,
+                sort: 'desc'
+            },
+            // 排序规则
             sortList: [
                 {name: '按时间正序', d: 'desc'},
                 {name: '按时间倒序', d: 'asc'}
             ],
-            sort: 'desc',
-            comment_status: commentStatus,
-            status: commentStatus.success,
-            commentDate: {
-                commentParent: null,
-                members: [],
-                parent: this.postsId,
-                placeholder: '',
-                page: 1
-            },
-            user,
-            userCopy: _.cloneDeep(user),
+            // 账号验证规则
             ruleValidate: {
-                user_nickname: [
-                    {type: 'string', min: 1, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~'}
-                ],
-                user_email: [
-                    {type: 'email', trigger: 'blur', message: '不要调皮，邮箱格式你心里没点`atob(\'Qg==\');`数吗'}
-                ],
-                user_url: [
-                    {type: 'url', trigger: 'blur', message: '网址格式不正确'}
-                ],
-                user_login: [
-                    {
-                        type: 'regexp',
-                        min: 3,
-                        max: 18,
-                        trigger: 'blur',
-                        message: '虽然知道你很长，但是请控制在18个长度以内哦~',
-                        pattern: /^[a-zA-Z0-9_\\-]{3,18}$/
-                    }
-                ]
+                user_nickname: [{type: 'string', min: 1, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~'}],
+                user_email: [{type: 'email', trigger: 'blur', message: '不要调皮，邮箱格式你心里没点`atob(\'Qg==\');`数吗'}],
+                user_url: [{type: 'url', trigger: 'blur', message: '网址格式不正确'}],
+                user_login: [{type: 'regexp', min: 3, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~', pattern: /^[a-zA-Z0-9_\\-]{3,18}$/}]
             },
             defaultAvatar: 'http://oht47c0d0.bkt.clouddn.com/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
+            // 用户表单
             infoModal: false,
+            // 是否修改过昵称
             lockNick: false
         }
     },
     props: ['postsId', 'author', 'email', 'url', 'avatar'],
     components: {
         CollapseTransition,
-        CommentInput
+        CommentInput,
+        CommentUsername
     },
     computed: {
         isLogin () {
@@ -264,9 +268,9 @@ export default {
         currentAvatar () {
             return this.user.user_avatar || this.defaultAvatar
         },
-        commentOrder () {
-            return _.orderBy(this.commentList, ['createdAt'], ['desc'])
-        }
+        // commentOrder () {
+        //     return _.orderBy(this.commentList, ['createdAt'], [this.sort])
+        // }
     },
     methods: {
         toComment () {
@@ -277,16 +281,14 @@ export default {
             let url = '#comment'
             window.history.pushState({}, 0, url)
         },
-        handleSend (content, realLength) {
-            if (this.isLogin) {
-                // this.comment(content)
-                content = content.trim()
-                if (content.length < 2 || content.length > 1000) {
-                    this.$Message.warning('请提交不包含表情， 2 - 1000 字以内的评论')
-                    return null
-                }
-            } else {
-                this.infoModal = true
+        async changeAvatar () {
+            // console.log(11)
+            try {
+                let data = await api.nget('/api/reply/change-avatar')
+                console.log(data)
+                this.userCopy.user_avatar = data
+            } catch (e) {
+                this.$Message.info(e.message)
             }
         },
         /**
@@ -300,10 +302,11 @@ export default {
             if (replyTarget) {
                 p = `回复 ${replyTarget.comment_author} `
             }
-            if (this.commentDate.commentParent === id && p === this.commentDate.placeholder) {
-                this.commentDate.commentParent = null
+            if (this.commentDate.comment_parent === id && p === this.commentDate.placeholder) {
+                this.commentDate.comment_parent = null
+                this.commentDate.placeholder = ''
             } else {
-                this.commentDate.commentParent = id
+                this.commentDate.comment_parent = id
                 this.commentDate.placeholder = p
             }
         },
@@ -322,7 +325,7 @@ export default {
                 let valid = await this.$refs.userinfoform.validate()
                 if (valid) {
                     // 完善评论信息
-                    let result = await api.npost('/api/comment/write-user', this.userCopy)
+                    let result = await api.npost('/api/reply/write-user', this.userCopy)
                     api.token = result.token
                     for (let key in this.user) {
                         this.user[key] = result[key]
@@ -343,24 +346,38 @@ export default {
                 }
             }
         },
-        handleCommentSuccess (result, {commentParent}) {
+        handleCommentSuccess (result, {comment_parent: commentParent}) {
             if (commentParent) {
-
+                this.commentDate.comment_parent = null
+                this.commentDate.placeholder = ''
+                // 添加到对应才child
+                let comment = this.commentList.find(item => item.id === commentParent)
+                comment.child.splice(0, 0, result)
             } else {
-                this.commentList.push(result)
+                if (this.commentDate.sort === 'desc') {
+                    this.commentList.splice(0, 0, result)
+                } else {
+                    this.commentList.push(result)
+                }
             }
         },
+        handlePageChange (page) {
+            this.commentDate.page = page
+            this.fetchComment()
+        },
         async fetchComment () {
-            this.comment_status = commentStatus.loading
+            this.status = COMMENT_STATUS.loading
             try {
                 // 获取评论列表
-                let result = await api.nget('/api/comment/', this.commentDate)
+                let {result, total, total_display} = await api.nget('/api/reply', this.commentDate)
                 this.commentList = result
-                this.comment_status = commentStatus.success
+                this.total = total
+                this.totalDisplay = total_display
+                this.status = COMMENT_STATUS.success
                 // console.log('comment load')
             } catch (e) {
                 console.error(e)
-                this.comment_status = commentStatus.error
+                this.status = COMMENT_STATUS.error
             }
         }
     },
@@ -396,7 +413,6 @@ export default {
         }
     },
     mounted () {
-
     }
 }
 </script>
