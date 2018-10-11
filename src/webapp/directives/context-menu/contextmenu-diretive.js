@@ -1,13 +1,21 @@
 import Vue from 'vue'
+import _ from 'lodash'
 import contextMenuVue from './context-menu'
 import {off, on} from '../../utils/dom'
 const ContextMenuConstructor = Vue.extend(contextMenuVue)
 
 export default {
     bind (el, binding, vnode) {
-        console.log('binding', binding)
+        // console.log('binding', binding, el)
         let value = binding.value
         let {menus, targetEl} = value
+        menus = _.cloneDeep(menus)
+        menus.forEach(function __ (item) {
+            item._disabled = typeof item.disabled === 'function' ? item.disabled() : item.disabled
+            if (item.child) {
+                item.child.forEach(__)
+            }
+        })
         let $contextMenu = new ContextMenuConstructor({
             data: {menus}
         })
@@ -18,26 +26,26 @@ export default {
             e.stopPropagation()
             e.preventDefault()
             $contextMenu.$nextTick(() => {
-                let target = e.path.find((t) => t.matches(targetEl))
+                let target = e.path.find((t) => t.matches && t.matches(targetEl))
                 $contextMenu.showMenu(e, target)
             })
         }
-        let _handlClick = () => {
+        let _handleClick = () => {
             $contextMenu.hideMenu()
         }
-        // 绑定事件
-        on(el, 'contextmenu', _preventContextMenuEvent)
-        on(el, 'click', _handlClick)
-        document.body.appendChild($contextEl)
+
         el.__data__ = {
             $contextMenu,
             offEvent: () => {
                 off(el, 'contextmenu', _preventContextMenuEvent)
-                off(el, 'click', _handlClick)
+                off(el, 'click', _handleClick)
             }
         }
+        // 绑定事件
+        on(el, 'contextmenu', _preventContextMenuEvent)
+        on(el, 'click', _handleClick)
+        document.body.appendChild($contextEl)
     },
-    componentUpdated  (el, binding, vnode) { },
     unbind  (el, binding, vnode) {
         let {$contextMenu, offEvent} = el.__data__
         offEvent()

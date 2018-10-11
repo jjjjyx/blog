@@ -2,12 +2,12 @@
 <div class="cm-container cm-container--flex medium__warp">
     <div class="cm-container--flex__left">
         <!--<div class="medium__img-opt">-->
-        <Form ref="formItem" :model="formItem" :rules="ruleInline" inline class="medium__opt">
+        <Form ref="formItem" :model="formItem" :rules="ruleInline" inline class="medium__opt" @submit.prevent="handleSubmit">
             <div class="ivu-form-item">
                 <label class="ivu-form-item-label">目录：</label>
             </div>
             <form-item prop="space" class="mr-4">
-                <Select v-model="formItem.space" style="width:100px" placeholder="选择图片空间">
+                <Select v-model="formItem.space" style="width:100px" placeholder="选择图片空间" @on-change="handleChangeImgSpace">
                     <Option v-for="(v, k) in imgSpaces" :value="k" :key="k">{{ v }}</Option>
                 </Select>
             </form-item>
@@ -31,12 +31,12 @@
                         <Icon type="ios-arrow-down"></Icon>
                     </a>
                     <DropdownMenu slot="list">
+                        <DropdownMenu >
+                            <DropdownItem @click.native="formItem.size = ''">全部尺寸</DropdownItem>
+                        </DropdownMenu>
                         <DropdownItem v-for="(v, k) in sizeLabels" :key="k" :name="k">{{v}}</DropdownItem>
                         <Dropdown placement="right-start">
-                            <DropdownItem>
-                                预设
-                                <Icon type="ios-arrow-forward"></Icon>
-                            </DropdownItem>
+                            <DropdownItem>预设<Icon type="ios-arrow-forward"></Icon></DropdownItem>
                             <DropdownMenu slot="list">
                                 <DropdownItem v-for="item in presetSize" :key="item" :name="item">{{item}}</DropdownItem>
                             </DropdownMenu>
@@ -75,30 +75,40 @@
                 <Button type="primary" @click="handleSubmit('formItem')">搜索</Button>
             </FormItem>
             <FormItem class="float-right">
+                <Tooltip content="原生空间管理">
+                    <Button type="text" icon="soup-can"></Button>
+                </Tooltip>
+                <Button  @click="clearInvalidImg">清除失效图片</Button>
                 <Button type="primary" @click="handleUpload">上传新图片</Button>
             </FormItem>
         </Form>
         <!--</div>-->
-        <div class="medium__img" ref="imgs" v-context-menu="{menus: contentItems, targetEl: '.img__item'}">
-            <waterfall :line-gap="216" :watch="data" @reflowed="isBusy = false" ref="waterfall">
+        <Scroll @mousedown.native="handleImagesWarpMouseDown" class="medium__img" ref="imgs" :height="scrollHeight" :on-reach-bottom="fetchMedia" v-context-menu="{menus: contentItems, targetEl: '.img__item'}">
+
+            <!--<waterfall :line-gap="216" :watch="data" @reflowed="isBusy = false" ref="waterfall">-->
                 <!-- each component is wrapped by a waterfall slot -->
-                <waterfall-slot v-for="(item, index) in data" :width="item.width" :height="item.height" :order="index" :key="index">
-                    <div class="img__item" :class="{active: item._checked}" @click="item._checked = !item._checked">
-                        <img :src="item.url" alt="">
+                <!--<waterfall-slot v-for="(item, index) in data" :width="item.width" :height="item.height + 50" :order="index" :key="index">-->
+                    <div class="img__item" v-for="(item, index) in data" :key="index"
+                         :data-key="item.hash" :data-originUrl="item.url" :data-index="index" @mousedown.stop="handleMouseDownImg($event, item)"
+                         :class="{'img__item--active': item._checked}">
+                        <div class="img">
+                            <img :src="item.url+'?imageView2/1/w/180/h/180/format/jpg/q/75|watermark/2/text/ampqanl4/font/Y291cmllciBuZXc=/fontsize/240/fill/I0ZERkRGRA==/dissolve/84/gravity/SouthWest/dx/10/dy/10|imageslim'" alt="">
+                        </div>
+                        <span :title="item.name || item.key">{{item.name || item.key}}</span>
                     </div>
-                </waterfall-slot>
-            </waterfall>
+                <!--</waterfall-slot>-->
+            <!--</waterfall>-->
             <div class="medium__img--not-more" v-if="!isNext">
                 没有更多了
             </div>
-        </div>
+        </Scroll>
     </div>
     <div class="cm-container--flex__modal medium__right">
         <h2 class="ivu-card-head" >
             图片信息
         </h2>
         <div style="height: 100%;overflow: auto">
-           {{selectedList}}
+           <pre>{{selectedList}}</pre>
         </div>
 
     </div>
@@ -106,14 +116,23 @@
         <input title="点击选择文件" id="h5Input0" ref="h5Input0" multiple accept="image/*" type="file" name="html5uploader"
                style="position:absolute;opacity:0;top:0;left:0;width:100%;height:100%;cursor:pointer;">
     </form>
+    <pswp ref="pswp"></pswp>
+    <input style="position: absolute;left: -999px;opacity: 0" ref="copyrelay"/>
 </div>
 </template>
 
 <script>
-import Waterfall from 'vue-waterfall/lib/waterfall'
-import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
+import _ from 'lodash'
+import 'photoswipe/dist/photoswipe.css'
+import 'photoswipe/dist/default-skin/default-skin.css'
+import PhotoSwipe from 'photoswipe/dist/photoswipe'
+import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
+import pswp from '@/components/pswp/pswp.vue'
+// import Waterfall from 'vue-waterfall/lib/waterfall'
+// import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import {mapGetters} from 'vuex'
-import {on} from '../utils/dom'
+import {on, off} from '../utils/dom'
+import {getMetaKeyCode} from '../utils/common'
 // import crud from '@/components/curd'
 // <!--mapState mapActions-->
 import api from '@/utils/api'
@@ -133,6 +152,7 @@ import api from '@/utils/api'
 //     "createdAt": "2018-08-12T17:18:49.000Z",
 //     "_checked": false
 // },
+
 const sizeLabels = {
     '9': '特大尺寸',
     '8': '大尺寸',
@@ -143,18 +163,28 @@ export default {
     // mixins: [crud],
     name: 'media-management',
     data () {
+        let moveTarget = []
+        let imgSpaces = ['public', 'cover', 'post', 'avatar']
+        for (let k of imgSpaces) {
+            moveTarget.push({
+                label: this.$store.getters.imgSpaces[k],
+                callback: (e, target) => {
+                    this.moveImg(target, k)
+                }
+            })
+        }
         return {
             formItem: {
                 space: 'all',
                 hash: '',
-                size: ''
+                size: '',
+                color: null
             },
             ruleInline: {},
             idKey: 'hash',
             active: 'img',
             sizeLabels,
             presetSize: ['1920x1080', '1680x1050', '1440x900', '1366x768', '1280x1024', '1280x800', '1024x768'],
-            activeColor: null,
             presetColors: [
                 {color: '#DE2020', text: '红色'},
                 {color: '#FE6C00', text: '橙色'},
@@ -172,54 +202,70 @@ export default {
                     text: '黑白'
                 }
             ],
+            activeColor: null,
+
             colorPanelVisible: false,
-            isBusy: false,
+            // isBusy: false,
             isNext: true,
             data: [],
             currPage: 1,
+            scrollHeight: 300,
             contentItems: [
                 {
                     label: '查看',
-                    get disabled () {
-                        return this.selectedNum
-                    },
-                    callback: (e) => {
-                        console.log(12312, e)
+                    callback: (e, target) => {
+                        if (target) {
+                            let index = target.getAttribute('data-index')
+                            this.openGallery(index)
+                        } else {
+                            this.$Message.info('请选择图片查看')
+                        }
                     }
                 },
                 {
-                    label: '复制链接'
+                    label: '复制链接',
+                    callback: (e, target) => {
+                        if (target) {
+                            let url = target.getAttribute('data-originUrl')
+                            this.copy(url)
+                        } else {
+                            this.$Message.info('请选择图片')
+                        }
+                    }
                 },
                 {
-                    label: '复制 markdown 链接'
+                    label: '复制 markdown 链接',
+                    callback: (e, target) => {
+                        if (target) {
+                            let url = target.getAttribute('data-originUrl')
+                            this.copy(`![image](${url})`)
+                        } else {
+                            this.$Message.info('请选择图片')
+                        }
+                    }
                 },
                 {
                     label: '移动到其他目录',
-                    child: [
-                        {
-                            label: '目录二',
-                            callback: (e) => {
-                                console.log(12312, e)
-                            }
-                        },
-                        {
-                            label: '目录三'
-                        },
-                        {
-                            label: '目录四'
-                        }
-                    ]
+                    child: moveTarget
                 },
                 {
                     divided: true,
-                    label: '删除'
+                    label: '删除',
+                    callback: (e, target) => {
+                        this.delImg(target)
+                    }
                 }
-            ]
+            ],
+            galleryOptions: {
+                shareEl: false,
+                history: false
+            }
         }
     },
     components: {
-        Waterfall,
-        WaterfallSlot
+        pswp
+        // Waterfall,
+        // WaterfallSlot
     },
     computed: {
         ...mapGetters({
@@ -240,11 +286,34 @@ export default {
         }
     },
     methods: {
-        // ...mapActions({'fetchMedia': 'fetchMedia'}),
+        _handleKeyDown: function (e) {
+            let keyCode = getMetaKeyCode(e)
+            switch (keyCode) {
+                case 4113: // 按下了 ctrl
+                case 16400: // 按下了 shift
+                case 20497: // 同时按下了 shift ctrl
+                case 20496: // 同时按下了 ctrl shift
+                    this.keydownCode = keyCode
+                    break
+                case 116: // 按下了F5
+                    // this.fetchMedia()
+                    // e.preventDefault()
+                    break
+                default:
+                    this.keydownCode = null
+            }
+        },
         async fetchMedia () {
+            if (!this.isNext) return false
             try {
-                let result = await api.nget('/api/img/list', {page: this.currPage})
-                result.forEach(i => (i._checked = false))
+                let result = await api.nget('/api/img/list', {page: this.currPage, ...this.formItem, color: this.activeColor && this.activeColor.color})
+                result.forEach(i => {
+                    i._checked = false
+                    // 图片查看查询所需要的属性
+                    i.src = i.url
+                    i.w = i.width
+                    i.h = i.height
+                })
                 if (result.length === 0) {
                     this.isNext = false
                     this.$Message.info('没有更多了呢')
@@ -256,17 +325,47 @@ export default {
                 this.$Message.error('获取资源数据失败')
             }
         },
-        async fetch () {
-            if (!this.isBusy) {
-                this.isBusy = true
-                this.fetchMedia()
-                // this.items.push.apply(this.items, ItemFactory.get(50))
-            }
-            // await this._fetch(this.page)
-            // this.page++
-        },
+        // 提交搜索表单
         handleSubmit () {
+            this.handleChangeImgSpace()
         },
+        // 点击图片列表
+        handleMouseDownImg (e, item) {
+            this.data.forEach(i => {
+                i._checked = false
+            })
+            item._checked = true
+            // item._checked
+        },
+        // 点击容器空白处
+        handleImagesWarpMouseDown (e) {
+            this.data.forEach(i => {
+                i._checked = false
+            })
+        },
+        copy (text) {
+            this.$refs.copyrelay.value = text
+            this.$refs.copyrelay.focus()
+            this.$refs.copyrelay.select()
+            try {
+                if (document.execCommand('copy', false, null)) {
+                    this.$Message.success('复制成功')
+                } else {
+                    this.$Message.success('复制失败')
+                }
+            } catch (err) {
+                this.$Message.success('复制失败')
+            }
+        },
+        // 切换图片空间
+        handleChangeImgSpace () {
+            this.isNext = true
+            this.currPage = 1
+            this.data = []
+            this.fetchMedia()
+        },
+        // 清除失效图片，包括缓存
+        clearInvalidImg () {},
         handleUpload: function (name = 'file') {
             // upload.openSelectFile(name)
             // if (name === 'folder') { // 选择文件夹
@@ -304,18 +403,68 @@ export default {
             this.$refs.h5Input0.value = null
             // console.log(files)
         },
-        cancel () {}
+        _getSelectImages (target) {
+            let key
+            let items = []
+            if (target) {
+                key = target.getAttribute('data-key')
+                // if (this.formItem.space !== 'all') {
+                let item = this.data.find(item => item.hash === key)
+                item && items.push(item)
+                // }
+            } else {
+                items = this.selectedList
+            }
+            return items
+        },
+        async delImg (target) {
+            let items = this._getSelectImages(target)
+            let key = items.map(item => item.hash)
+            try {
+                let result = await api.npost('/api/img/del',{key: key[0]})
+                // if (this.formItem.space !== 'all') {
+                this.data = _.difference(this.data, items)
+                // }
+            } catch (e) {
+                this.$Message.info('删除失败')
+            }
+        },
+        async moveImg (target, space) {
+            let items = this._getSelectImages(target)
+            let key = items.map(item => item.hash)
+            try {
+                let result = await api.npost('/api/img/move',{key, space})
+                if (this.formItem.space !== 'all') {
+                    this.data = _.difference(this.data, items.filter(item => item.space !== space))
+                }
+            } catch (e) {
+                this.$Message.info('移动失败')
+            }
+
+            // console.log('space', target , space)
+        },
+
+        openGallery (index) {
+            this.galleryOptions.index = index
+            let data = _.cloneDeep(this.data)
+            let gallery = new PhotoSwipe(this.$refs.pswp.$el, PhotoSwipeDefaultUI, data, this.galleryOptions)
+            gallery.init()
+        }
     },
-    created () {
-        this.fetch()
+    async created () {
+        await this.fetchMedia()
+        on(document.body, 'keydown', this._handleKeyDown)
+    },
+    destroyed () {
+        off(document.body, 'keydown', this._handleKeyDown)
     },
     mounted () {
-        on(this.$refs.imgs, 'scroll', () => {
-            let scrollTop = this.$refs.imgs.scrollTop
-            if (scrollTop + this.$refs.imgs.clientHeight >= this.$refs.waterfall.$el.clientHeight) {
-                this.fetch()
-            }
-        })
+        let onResize = _.debounce((e) => {
+            // console.log(this.$refs['imgs'].$el.clientHeight)
+            this.scrollHeight = this.$refs['imgs'].$el.clientHeight
+        }, 1000)
+        onResize()
+        on(window, 'resize', onResize)
     }
 }
 </script>

@@ -267,7 +267,7 @@ export default {
         },
         currentAvatar () {
             return this.user.user_avatar || this.defaultAvatar
-        },
+        }
         // commentOrder () {
         //     return _.orderBy(this.commentList, ['createdAt'], [this.sort])
         // }
@@ -369,10 +369,10 @@ export default {
             this.status = COMMENT_STATUS.loading
             try {
                 // 获取评论列表
-                let {result, total, total_display} = await api.nget('/api/reply', this.commentDate)
+                let {result, total, total_display: totalDisplay} = await api.nget('/api/reply', this.commentDate)
                 this.commentList = result
                 this.total = total
-                this.totalDisplay = total_display
+                this.totalDisplay = totalDisplay
                 this.status = COMMENT_STATUS.success
                 // console.log('comment load')
             } catch (e) {

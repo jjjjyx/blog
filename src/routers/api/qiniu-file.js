@@ -6,12 +6,14 @@ const router = express.Router()
 const debug = require('debug')('app:routers:api.qiniu-file')
 const log = require('log4js').getLogger('api.qiniu-file')
 const {check, validationResult} = require('express-validator/check')
-const {resourceDao} = require('../../models/index')
-const {sanitizeBody} = require('express-validator/filter')
+const Color = require('color')
+const {resourceDao, sequelize} = require('../../models/index')
+const Op = sequelize.Op
+const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
 const Result = require('../../common/resultUtils')
 const _ = require('lodash')
 const qiniu = require('qiniu')
-const {Enum, labels} = require('../../common/enum')
+const {Enum} = require('../../common/enum')
 const utils = require('../../utils')
 const imgSpaces = Object.values(Enum.ImgEnum)
 // const img
@@ -53,25 +55,11 @@ qiniu_config.zone = qiniu.zone.Zone_z0
 
 const bucketManager = new qiniu.rs.BucketManager(mac, qiniu_config)
 const token = [
-    // check('ext').isAlpha,
-    // check('md5', '账号不可为空且3-6位').isHash('md5').withMessage('请提交文件md5'),
-    // check('prefix').isInt(),
-    // utils.validationResult,
     async function (req, res) {
         res.header('Cache-Control', 'max-age=0, private, must-revalidate')
         res.header('Pragma', 'no-cache')
         res.header('Expires', 0)
         let token = putPolicy.uploadToken(mac)
-
-        // let {md5, prefix} = req.query
-        // if (prefix > imgPrefixs.length) {
-        //     prefix = 0
-        // }
-
-        // let key = Enum.ImgEnum[imgPrefixs[prefix]] + md5
-        // key = qiniu.util.urlsafeBase64Encode(key)
-
-        // ext = _.last(ext.split('/')) || path.extname(name)
 
         if (token) {
             return res.status(200).json(Result.success(token))
@@ -87,11 +75,14 @@ const syncDelete = function (key) {
             if (err) {
                 reject(err)
             } else {
+                // console.log(respInfo , respBody)
                 // console.log(respBody, respInfo)
-                if (respInfo.statusCode == 200) {
+                if (respInfo.statusCode === 200) {
+                    resolve()
+                } else if (respInfo.statusCode === 612) { // 文件资源部存在
                     resolve()
                 } else {
-                    reject(new Error(respBody))
+                    reject(new Error(respBody.error))
                 }
             }
         })
@@ -104,7 +95,7 @@ const syncListPrefix = function (options) {
             if (err) {
                 reject(err)
             }
-            if (respInfo.statusCode == 200) {
+            if (respInfo.statusCode === 200) {
                 //如果这个nextMarker不为空，那么还有未列举完毕的文件列表，下次调用listPrefix的时候，
                 //指定options里面的marker为这个值
                 let nextMarker = respBody.marker
@@ -162,19 +153,55 @@ const syncListPrefix = function (options) {
 // ]
 
 const size = 30
+const allowSpace = Object.values(Enum.ImgEnum)
+const sanitizeSpace = sanitizeQuery('space')
+    .customSanitizer((value) => {
+        debug(`sanitizeSpace v = ${value}`)
+        if (allowSpace.indexOf(value) === -1) {
+            return Enum.ImgEnum.ALL
+        } else {
+            return value
+        }
+    })
+let checkAllowSpace = ['public', 'cover', 'post', 'avatar']
+const checkSpace = check('space').isIn(allowSpace)
 
 const list = [
     check('page').isInt(),
+    // check('hash').isString(),
+    sanitizeSpace,
+    // check('space').isInt(),
+    utils.validationResult,
     async function (req, res) {
-        let {page} = req.query
+        let {page, space, hash, color} = req.query
         log.info('查询获取图片列表： query = ', JSON.stringify(req.query))
         page = page || 1
+        let where = {}
+        if (space !== Enum.ImgEnum.ALL) {
+            where.space = space
+        }
+
+        if (hash && _.isString(hash)) {
+            where[Op.or] = []
+            where[Op.or].push({hash: {[Op.like]: `%${hash}%`}})
+            where[Op.or].push({name: {[Op.like]: `%${hash}%`}})
+        }
         try {
             let result = await resourceDao.findAll({
+                where,
                 limit: size,
                 offset: (page - 1) * size,
                 order: ['hash']
             })
+            // 筛选颜色
+            // Color
+            try {
+                let c1 = Color(color)
+                result = result.filter((item) => c1.contrast(Color(item.color)) < 3)
+            } catch (e) {
+
+            }
+
             return res.status(200).json(Result.success(result))
         } catch (e) {
             log.error('getMediaAll error by :', e)
@@ -183,8 +210,28 @@ const list = [
     }
 ]
 
+const move = [
+    // sanitizeBody('key').trim(),
+    checkSpace,
+    check('key').exists(),
+    utils.validationResult,
+    async function (req, res, next) {
+        let {key, space} = req.body
+        debug(`移动空间文件 key = %s， space = %s`, key, space)
+        try {
+            await resourceDao.update({space}, {
+                where: {hash: key}
+            })
+            return res.status(200).json(Result.success())
+        } catch (e) {
+            log.error(`移动空间文件 key = %s 失败 `, key, e)
+            return res.status(200).json(Result.info('移动空间文件'))
+        }
+
+    }
+]
+
 const del = [
-    sanitizeBody('key').trim(),
     check('key').exists().isString().withMessage('请提交 key !'),
     utils.validationResult,
     async function (req, res) {
@@ -192,9 +239,14 @@ const del = [
         debug(`删除空间文件 key = [${key}]`)
         try {
             await syncDelete(key)
+            await resourceDao.destroy({
+                paranoid: false,
+                force: true,
+                where: {hash: key}
+            })
             return res.status(200).json(Result.success())
         } catch (e) {
-            debug(`删除空间文件 key = [${key}] 失败,原因：${e.message}`)
+            log.error(`删除空间文件 key = %s 失败,原因`, key, e)
             return res.status(200).json(Result.info('删除文件失败'))
         }
     }
@@ -223,7 +275,7 @@ const callback = [
 
         // space = space || Enum.ImgEnum.ALL
         if (imgSpaces.indexOf(space) === -1) {
-             space = Enum.ImgEnum.ALL
+            space = Enum.ImgEnum.ALL
         }
         let values = {
             key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url, space
@@ -248,6 +300,9 @@ router.route('/token')
 
 router.route('/list')
     .get(list)
+
+router.route('/move')
+    .post(move)
 
 router.route('/del')
     .post(del)

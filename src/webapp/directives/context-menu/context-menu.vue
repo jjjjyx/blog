@@ -39,10 +39,19 @@ export default {
             this.y = clientY
             this.originEvent = e
             this.target = target
+            this.watchMenusDisabled()
             this.visible = true
         },
         hideMenu (x, y) {
             this.visible = false
+        },
+        watchMenusDisabled () {
+            this.menus.forEach(function __ (item) {
+                item._disabled = typeof item.disabled === 'function' ? item.disabled() : item.disabled
+                if (item.child) {
+                    item.child.forEach(__)
+                }
+            })
         }
     },
     mounted () {
