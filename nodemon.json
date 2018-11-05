@@ -1,28 +1,28 @@
 {
-  "restartable": "rs",
-  "ignore": [
-    ".git",
-    "doc",
-    "src/views",
-    "src/webapp",
-    "webpack",
-    "static",
-    "node_modules/**/node_modules"
-  ],
-  "verbose": true,
-  "execMap": {
-    "js": "node --harmony"
-  },
-  "watch": [
-    "app.js",
-    "src/common",
-    "src/models",
-    "src/routers",
-    "src/utils.js",
-    "src/before-listen.js"
-  ],
-  "env": {
-    "NODE_ENV": "development"
-  },
-  "ext": "js json"
+    "restartable": "rs",
+    "ignore": [
+        ".git",
+        "doc",
+        "src/views",
+        "src/webapp",
+        "webpack",
+        "static",
+        "node_modules/**/node_modules"
+    ],
+    "verbose": true,
+    "execMap": {
+        "js": "node --harmony"
+    },
+    "watch": [
+        "app.js",
+        "src/utils.js",
+        "src/before-listen.js",
+        "src/common/",
+        "src/models/",
+        "src/routers/"
+    ],
+    "env": {
+        "NODE_ENV": "development"
+    },
+    "ext": "js json"
 }

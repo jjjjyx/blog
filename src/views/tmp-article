@@ -2,7 +2,7 @@
                         <carousel v-model="value1" autoplay arrow="never">
                             <carousel-item>
                                 <div class="j-img-warp">
-                                    <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/780/format/jpg" alt="">
+                                    <img src="http://image.cdn.mbdoge.cn/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/780/format/jpg" alt="">
                                 </div>
                             </carousel-item>
                             <carousel-item>
@@ -54,7 +54,7 @@
                     </article>
                     <article class="j-article-item j-top-img" v-for="i in 2" :key="i">
                         <div class="j-img-warp j-vertical-center">
-                            <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/780/format/jpg" alt="">
+                            <img src="http://image.cdn.mbdoge.cn/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/780/format/jpg" alt="">
                         </div>
                         <div class="j-article-item-content">
                             <h3 class="j-article__title">
@@ -121,7 +121,7 @@
                                 <time class="time" title="2018/6/20 22:37">2018/6/20 22:37</time>
                             </div>
                             <div class="j-img-warp">
-                                <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/h/120/format/jpg" alt="">
+                                <img src="http://image.cdn.mbdoge.cn/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/h/120/format/jpg" alt="">
                             </div>
                             <p class="j-article__intro">
                                 互联网的发展，学习是越来越重要了，人们不可能不学习，如果不学习那他将被社会，被互联网淘汰。而博客作为学习的结晶，前人的经验，在学习的路上是很重要的组成部分。博客可以有效的结合图片，文字，能够给读者留下很深刻的影响，为学习带来便利。
@@ -136,7 +136,7 @@
                     </article>
                     <article class="j-article-item j-left-img j-block" v-for="i in 2" :key="i">
                         <div class="j-img-warp">
-                            <img src="http://oht47c0d0.bkt.clouddn.com/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/200/format/jpg" alt="">
+                            <img src="http://image.cdn.mbdoge.cn/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/200/format/jpg" alt="">
                         </div>
                         <div class="j-article-item-content">
                             <h3 class="j-article__title">

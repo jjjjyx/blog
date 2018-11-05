@@ -7,7 +7,7 @@ const state = {
     // user: null
     collapsed: false,
     backgroundColor: 'black',
-    backgroundImage: 'http://oht47c0d0.bkt.clouddn.com/sidebar-1.jpg',
+    backgroundImage: 'http://image.cdn.mbdoge.cn/sidebar-1.jpg',
     image: true,
     color: 'red'
 }

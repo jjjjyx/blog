@@ -13,7 +13,7 @@
         <div class="j-comment-empty" v-else-if="status===COMMENT_STATUS.error">评论加载失败..</div>
         <div class="j-comment-empty" v-else-if="status===COMMENT_STATUS.success && !commentList.length">
             <!--<font-icon type="icon-color-doge" size="36"></font-icon>-->
-            <img src="http://oht47c0d0.bkt.clouddn.com/FuwU_vvhI2bw4fRq8MO1AKax0RpF" alt="[doge]">
+            <img src="http://image.cdn.mbdoge.cn/FuwU_vvhI2bw4fRq8MO1AKax0RpF" alt="[doge]">
             <div class="am-inline-block">智慧如你，不想<span @click="toComment">发表一点想法</span>咩~</div>
         </div>
         <ul class="comment-list-warp">
@@ -248,7 +248,7 @@ export default {
                 user_url: [{type: 'url', trigger: 'blur', message: '网址格式不正确'}],
                 user_login: [{type: 'regexp', min: 3, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~', pattern: /^[a-zA-Z0-9_\\-]{3,18}$/}]
             },
-            defaultAvatar: 'http://oht47c0d0.bkt.clouddn.com/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
+            defaultAvatar: 'http://image.cdn.mbdoge.cn/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
             // 用户表单
             infoModal: false,
             // 是否修改过昵称
