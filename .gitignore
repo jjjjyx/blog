@@ -47,17 +47,10 @@ client/favicon.png
 /client/public/tmp
 kfavicon.png
 
-/service/test/*
 
-!/service/test/*.js
 
-/public/*
-!/public/preloader.*
-!/public/favicon.ico
-!/public/editormd
-!/public/lib
 dump.rdb
 sql.sql
-src/model/*
 *.sql
 .idea/
+sql/

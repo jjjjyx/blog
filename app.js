@@ -68,8 +68,9 @@ app.use(function (req, res, next) {
 if (IS_DEV) {
     let webpack = require('webpack'),
         webpackDevMiddleware = require('webpack-dev-middleware'),
-        webpackHotMiddleware = require('webpack-hot-middleware'),
-        webpackDevConfig = require('./webpack/webpack.dev.conf')
+        webpackHotMiddleware = require('webpack-hot-middleware');
+        // webpackDevConfig = require('./webpack/webpack.dev.conf')
+    const webpackDevConfig = require('@vue/cli-service/webpack.config')
     // static_dir = express.static(path.join(__dirname, 'static'))
     let compiler = webpack(webpackDevConfig)
     // attach to the compiler & the server

@@ -6,9 +6,9 @@
     <aside class="wrapper__sidebar" :class="wrapperSidebarClasses" :style="wrapperSidebarStyles">
 
         <router-link to="/" active-class='active' exact class="sidebar-header__item header-brands wrapper__sidebar--divided" tag="header">
-            <!--http://oht47c0d0.bkt.clouddn.com/797d3a20-0016-11e7-8ec4-c526ba0271a0.png-->
+            <!--http://image.cdn.mbdoge.cn/797d3a20-0016-11e7-8ec4-c526ba0271a0.png-->
             <div class="header-brands__logo" title="返回首页">
-                <img src="http://oht47c0d0.bkt.clouddn.com/12f2aa30-3174-11e7-a772-3734af15197f.png" alt="首页">
+                <img src="http://image.cdn.mbdoge.cn/12f2aa30-3174-11e7-a772-3734af15197f.png" alt="首页">
             </div>
             <div class="header-brands__title" title="返回首页">
                 mbdoge<span>.cn</span>
@@ -19,7 +19,7 @@
         </router-link>
         <div class="sidebar-header__item header-user wrapper__sidebar--divided">
             <div class="header-user__image">
-                <img src="http://oht47c0d0.bkt.clouddn.com/140d5330-376d-11e7-81cc-c5fb8304dee6" alt="">
+                <img src="http://image.cdn.mbdoge.cn/140d5330-376d-11e7-81cc-c5fb8304dee6" alt="">
             </div>
             <div class="header-user__info">
                 <h6>酱酱酱酱油鲜</h6>
