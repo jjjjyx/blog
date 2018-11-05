@@ -3,6 +3,7 @@ const path = require('path')
 function resolve (dir) {
 	return path.join(__dirname, dir)
 }
+const entrys = ['home', 'about', 'archives', 'article', 'category', 'tags']
 
 module.exports = {
     pages: {
@@ -16,8 +17,11 @@ module.exports = {
     },
 
     chainWebpack: (config) => {
-        config.entry('home').add('./src/webapp/home')
-        // config.output.filename('js/[name].js').chunkFilename('js/[name].js')
+        entrys.forEach((entry)=>{
+            config.entry(entry).add(`./src/webapp/${entry}.js`).end()
+        })
+
+        config.output.filename('js/[name].js')
 		// config.resolve.alias.set('@view', resolve('src/view'))
 		config.resolve.alias.set('@', resolve('src/webapp'))
         // config.optimization.runtimeChunk({name: 'runtime'})
@@ -34,12 +38,7 @@ module.exports = {
         //         chunks: 'initial',
         //         reuseExistingChunk: true
         // }
-        config
-            .optimization.splitChunks({
-            cacheGroups: {
-
-            }
-        })
+        config.optimization.splitChunks({cacheGroups: {}})
 	},
 
     lintOnSave: undefined,
@@ -47,7 +46,7 @@ module.exports = {
     outputDir: undefined,
     assetsDir: undefined,
     runtimeCompiler: undefined,
-    productionSourceMap: undefined,
+    productionSourceMap: false,
     parallel: undefined,
 
     filenameHashing: false

@@ -102,7 +102,9 @@
             "parser": "babel-eslint"
         },
         "rules": {
-            "vue/no-parsing-error": "off"
+            "vue/no-parsing-error": "off",
+            "vue/no-unused-vars": "warning",
+            "no-unused-vars": "off"
         }
     },
     "postcss": {

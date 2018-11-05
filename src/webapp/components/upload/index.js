@@ -2,7 +2,7 @@ import Vue from 'vue'
 import _ from 'lodash'
 import { on } from '@/utils/dom'
 import Upload from './upload'
-import {randomChar} from '@/utils/common'
+import { randomChar } from '@/utils/common'
 
 const UploadConstructor = Vue.extend(Upload)
 
@@ -77,6 +77,7 @@ function initDropDom () {
         $div.style.display = 'none'
     })
 }
+
 // function initDownDom () {
 //     let ifa = document.createElement("iframe")
 //     ifa.setAttribute("id","down-file-iframe");
@@ -120,6 +121,7 @@ function install (Vue, opts = {}) {
     Vue.prototype.$uploadFiles = instance.uploadFiles
     // Vue.prototype.$uploadFile = instance.upload
 }
+
 // export {
 //     install
 // }
