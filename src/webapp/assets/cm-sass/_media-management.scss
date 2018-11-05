@@ -12,7 +12,7 @@
 .medium__img {
     height: 100%;
     border-top: 1px solid $border-color;
-    overflow-y: scroll;
+    overflow-y: hidden;
 
     .img__item img{
         //width: 100%;
@@ -20,7 +20,7 @@
         box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.2);
         user-select: none;
     }
-    .img__item span {
+    .img__item .title {
         text-align: center;
         display: block;
         overflow: hidden;
@@ -28,7 +28,7 @@
         text-overflow: ellipsis;
     }
     .img__item .img {
-        height: 180px;
+        height: 150px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -37,7 +37,7 @@
     }
     .img__item {
         float: left;
-        width: 200px;
+        width: 170px;
         //height: 200px;
         margin: .5rem;
         //border: 1px solid $border-color;

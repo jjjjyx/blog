@@ -37,7 +37,7 @@ Promise.all([api.nget('/api/user/auth'), api.nget('/api/site/dict')]).then((resu
     store.commit('USER_SET_INFO', user)
     store.commit('SET_DICT', dict)
     return true
-}).then(appInit).catch(async (e) => {
+}).then(appInit).catch((e) => {
     // let a = await e
     new Vue().$Modal.error({
         title: '错误',

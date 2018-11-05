@@ -83,75 +83,39 @@
             </FormItem>
         </Form>
         <!--</div>-->
-        <Scroll @mousedown.native="handleImagesWarpMouseDown" class="medium__img" ref="imgs" :height="scrollHeight" :on-reach-bottom="fetchMedia" v-context-menu="{menus: contentItems, targetEl: '.img__item'}">
-
-            <!--<waterfall :line-gap="216" :watch="data" @reflowed="isBusy = false" ref="waterfall">-->
-                <!-- each component is wrapped by a waterfall slot -->
-                <!--<waterfall-slot v-for="(item, index) in data" :width="item.width" :height="item.height + 50" :order="index" :key="index">-->
-                    <div class="img__item" v-for="(item, index) in data" :key="index"
-                         :data-key="item.hash" :data-originUrl="item.url" :data-index="index" @mousedown.stop="handleMouseDownImg($event, item)"
-                         :class="{'img__item--active': item._checked}">
-                        <div class="img">
-                            <img :src="item.url+'?imageView2/1/w/180/h/180/format/jpg/q/75|watermark/2/text/ampqanl4/font/Y291cmllciBuZXc=/fontsize/240/fill/I0ZERkRGRA==/dissolve/84/gravity/SouthWest/dx/10/dy/10|imageslim'" alt="">
-                        </div>
-                        <span :title="item.name || item.key">{{item.name || item.key}}</span>
-                    </div>
-                <!--</waterfall-slot>-->
-            <!--</waterfall>-->
-            <div class="medium__img--not-more" v-if="!isNext">
-                没有更多了
-            </div>
-        </Scroll>
+        <img-grid @move-img="moveImg" :data="data"></img-grid>
     </div>
-    <div class="cm-container--flex__modal medium__right">
-        <h2 class="ivu-card-head" >
-            图片信息
-        </h2>
-        <div style="height: 100%;overflow: auto">
-           <pre>{{selectedList}}</pre>
-        </div>
+    <!--<div class="cm-container&#45;&#45;flex__modal medium__right">-->
+        <!--<h2 class="ivu-card-head" >-->
+            <!--图片信息-->
+        <!--</h2>-->
+        <!--<div style="height: 100%;overflow: auto">-->
+           <!--<pre>{{selectedList}}</pre>-->
+        <!--</div>-->
 
-    </div>
+    <!--</div>-->
     <form class="h5-uploader-form" action="javascript:void(0);" @change="handleUploadChange" style="position: absolute; opacity: 0; top: -999px; left: 0; width: 0%; height: 0; cursor: pointer; opacity: 0;">
         <input title="点击选择文件" id="h5Input0" ref="h5Input0" multiple accept="image/*" type="file" name="html5uploader"
                style="position:absolute;opacity:0;top:0;left:0;width:100%;height:100%;cursor:pointer;">
     </form>
     <pswp ref="pswp"></pswp>
-    <input style="position: absolute;left: -999px;opacity: 0" ref="copyrelay"/>
 </div>
 </template>
 
 <script>
 import _ from 'lodash'
-import 'photoswipe/dist/photoswipe.css'
-import 'photoswipe/dist/default-skin/default-skin.css'
-import PhotoSwipe from 'photoswipe/dist/photoswipe'
-import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
+
 import pswp from '@/components/pswp/pswp.vue'
+import ImgGrid from './img-grid'
+
 // import Waterfall from 'vue-waterfall/lib/waterfall'
 // import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
 import {mapGetters} from 'vuex'
-import {on, off} from '../utils/dom'
-import {getMetaKeyCode} from '../utils/common'
+import {on, off} from '@/utils/dom'
+import {getMetaKeyCode} from '@/utils/common'
 // import crud from '@/components/curd'
 // <!--mapState mapActions-->
 import api from '@/utils/api'
-// {
-//     "hash": "Fg2ZZ0VmdYVnj8CsFy1-BGgmcsml",
-//     "key": "Fg2ZZ0VmdYVnj8CsFy1-BGgmcsml",
-//     "name": "1_120403103421_5.jpg",
-//     "size": 61624,
-//     "color": "#525b64",
-//     "uuid": "a60bcf7d-973e-4282-9123-913f052268f2",
-//     "mimeType": "image/jpeg",
-//     "bucket": "jyximg",
-//     "url": "http://oht47c0d0.bkt.clouddn.com/Fg2ZZ0VmdYVnj8CsFy1-BGgmcsml",
-//     "width": 740,
-//     "height": 462,
-//     "space": "public",
-//     "createdAt": "2018-08-12T17:18:49.000Z",
-//     "_checked": false
-// },
 
 const sizeLabels = {
     '9': '特大尺寸',
@@ -163,16 +127,7 @@ export default {
     // mixins: [crud],
     name: 'media-management',
     data () {
-        let moveTarget = []
-        let imgSpaces = ['public', 'cover', 'post', 'avatar']
-        for (let k of imgSpaces) {
-            moveTarget.push({
-                label: this.$store.getters.imgSpaces[k],
-                callback: (e, target) => {
-                    this.moveImg(target, k)
-                }
-            })
-        }
+
         return {
             formItem: {
                 space: 'all',
@@ -209,60 +164,11 @@ export default {
             isNext: true,
             data: [],
             currPage: 1,
-            scrollHeight: 300,
-            contentItems: [
-                {
-                    label: '查看',
-                    callback: (e, target) => {
-                        if (target) {
-                            let index = target.getAttribute('data-index')
-                            this.openGallery(index)
-                        } else {
-                            this.$Message.info('请选择图片查看')
-                        }
-                    }
-                },
-                {
-                    label: '复制链接',
-                    callback: (e, target) => {
-                        if (target) {
-                            let url = target.getAttribute('data-originUrl')
-                            this.copy(url)
-                        } else {
-                            this.$Message.info('请选择图片')
-                        }
-                    }
-                },
-                {
-                    label: '复制 markdown 链接',
-                    callback: (e, target) => {
-                        if (target) {
-                            let url = target.getAttribute('data-originUrl')
-                            this.copy(`![image](${url})`)
-                        } else {
-                            this.$Message.info('请选择图片')
-                        }
-                    }
-                },
-                {
-                    label: '移动到其他目录',
-                    child: moveTarget
-                },
-                {
-                    divided: true,
-                    label: '删除',
-                    callback: (e, target) => {
-                        this.delImg(target)
-                    }
-                }
-            ],
-            galleryOptions: {
-                shareEl: false,
-                history: false
-            }
+            scrollHeight: 300
         }
     },
     components: {
+        ImgGrid,
         pswp
         // Waterfall,
         // WaterfallSlot
@@ -337,26 +243,7 @@ export default {
             item._checked = true
             // item._checked
         },
-        // 点击容器空白处
-        handleImagesWarpMouseDown (e) {
-            this.data.forEach(i => {
-                i._checked = false
-            })
-        },
-        copy (text) {
-            this.$refs.copyrelay.value = text
-            this.$refs.copyrelay.focus()
-            this.$refs.copyrelay.select()
-            try {
-                if (document.execCommand('copy', false, null)) {
-                    this.$Message.success('复制成功')
-                } else {
-                    this.$Message.success('复制失败')
-                }
-            } catch (err) {
-                this.$Message.success('复制失败')
-            }
-        },
+
         // 切换图片空间
         handleChangeImgSpace () {
             this.isNext = true
@@ -442,13 +329,6 @@ export default {
             }
 
             // console.log('space', target , space)
-        },
-
-        openGallery (index) {
-            this.galleryOptions.index = index
-            let data = _.cloneDeep(this.data)
-            let gallery = new PhotoSwipe(this.$refs.pswp.$el, PhotoSwipeDefaultUI, data, this.galleryOptions)
-            gallery.init()
         }
     },
     async created () {
@@ -457,14 +337,6 @@ export default {
     },
     destroyed () {
         off(document.body, 'keydown', this._handleKeyDown)
-    },
-    mounted () {
-        let onResize = _.debounce((e) => {
-            // console.log(this.$refs['imgs'].$el.clientHeight)
-            this.scrollHeight = this.$refs['imgs'].$el.clientHeight
-        }, 1000)
-        onResize()
-        on(window, 'resize', onResize)
     }
 }
 </script>

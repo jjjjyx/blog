@@ -14,7 +14,7 @@ const menus = [
             {title: '回收站', key: 'trash', name: 'post_trash', icon: 'ios-trash'}
         ]
     },
-    {title: '媒体管理', key: 'media', name: 'media', icon: 'camera'},
+    {title: '媒体管理', key: 'media/media', name: 'media', icon: 'camera'},
     {title: '留言管理', key: 'a', name: 'a', icon: 'ios-chatbubble-outline'},
     {title: '访客管理', key: 'b', name: 'b', icon: 'coffee'},
     {title: '用户管理', key: 'c', name: 'c', icon: 'ios-people-outline'},

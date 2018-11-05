@@ -152,7 +152,7 @@ const syncListPrefix = function (options) {
 //     }
 // ]
 
-const size = 30
+const size = 50
 const allowSpace = Object.values(Enum.ImgEnum)
 const sanitizeSpace = sanitizeQuery('space')
     .customSanitizer((value) => {
