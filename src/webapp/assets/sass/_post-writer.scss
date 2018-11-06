@@ -1,0 +1,241 @@
+// 编辑文章页面
+.post-writer-content {
+    display: flex;
+    flex-direction: row;
+    padding: 0 !important;
+    flex: 1;
+    overflow: hidden;
+}
+
+// 左侧
+.post-body-content {
+    position: relative;
+    flex-basis: 100%;
+    //height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.post-title-wrap {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+
+    .title {
+        width: 100%;
+        height: 50px;
+        padding: 0 20px;
+        margin-bottom: 0;
+        border: none;
+        // border-bottom: 1px solid #d9d9d9;
+        font-size: 25px;
+        font-weight: normal;
+        line-height: 50px;
+        box-shadow: none;
+        outline: none;
+        -webkit-appearance: none;
+    }
+    .post-title-options {
+        flex-shrink: 0;
+    }
+}
+.post-tag-wrap {
+    flex-shrink: 0;
+    padding: 0 20px;
+    cursor: default;
+    color: #868E8E;
+
+    .input-tag{
+        display: inline-block;
+        position: static;
+        padding: 0;
+        width: 8.2em;
+        line-height: 1.21428571em;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        color: #000;
+        outline: 0;
+        -webkit-tap-highlight-color: rgba(255,255,255,0);
+        z-index: 2;
+    }
+}
+
+.saving-notice {
+    position: absolute;
+    top: 5px;
+    right: 15px;
+    z-index: 1140;
+}
+
+.post-markdown-wrap {
+    flex-basis: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.post-status-bar {
+    flex-shrink: 0;
+    padding: 5px 20px;
+    border-top: 1px solid #dddee1;
+    text-align: right;
+}
+
+// 右侧
+.postbox-container {
+    flex-basis: 350px;
+    flex-shrink: 0;
+    padding: 20px;
+    overflow-y: scroll;
+}
+.postbox {
+    margin-bottom: 20px;
+}
+//.postbox.sortable-chosen {
+//    position: relative;
+//    &:after {
+//        content: ' ';
+//        position: absolute;
+//        top: 0;
+//        left: 0;
+//        background-color: $gray-100;
+//        width: 100%;
+//        height: 100%;
+//        border-radius: 5px;
+//        border: 1px dashed $gray-300;
+//    }
+//}
+.postbox .ivu-card-head {
+    background-color: $gray-100;
+    cursor: default;
+}
+.postbox .ivu-card-extra {
+    top: 10px;
+}
+.postbox .postbox-options {
+    border-top: 1px solid $gray-300;
+    font-size: 12px;
+    padding: 10px 0 0;
+}
+
+.j-collapse {
+    font-size: 13px;
+}
+.j-collapse-item {
+    margin-bottom: 5px;
+}
+.j-collapse-body {
+    padding: 5px;
+}
+.j-collapse-item .j-collapse-header i {
+    font-size: 16px;
+    width: 16px;
+    margin-right: 5px;
+}
+
+.sidebar-category-list {
+    .ivu-radio + i {
+        min-width: 18px;
+    }
+}
+// _overload-markdown
+.v-note-wrapper .v-note-op.shadow,
+.v-note-wrapper .v-note-panel.shadow{
+    box-shadow: none !important;
+}
+//.post-markdown-wrap .v-note-wrapper {
+//    z-index: 1011;
+//}
+
+
+.flip-list-move {
+    transition: transform 0.5s;
+}
+
+.post-tag-list {
+    max-height: 30vh;
+    .ivu-checkbox-group-item {
+        display: block;
+        padding: 5px 0;
+    }
+}
+
+// 文章版本
+.post-version-wrapper {
+    display: flex;
+    //padding: 1rem;
+}
+
+.post-version__list {
+    width: 220px;
+    flex-shrink: 0;
+    margin-right: 1rem;
+    display: flex;
+    flex-direction: column;
+    @at-root #{&}--body {
+        border-right: 1px solid $border-color;
+        height: 600px;
+        overflow-y: scroll;
+        padding: 1rem 0;
+        .ivu-timeline-item.active {
+            color: $primary;
+        }
+    }
+    @at-root #{&}--footer {
+        flex: 1;
+        text-align: center;
+        color: $gray-400;
+        padding: 1rem;
+    }
+    @at-root #{&}--time {
+        cursor: pointer;
+        font-weight: 600;
+    }
+    @at-root #{&}--author {
+        font-size: 1.2rem;
+        padding-left: 1rem;
+        cursor: default;
+    }
+}
+
+.post-version__content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    // 文章标题
+    @at-root #{&}--footer {
+        flex-shrink: 0;
+        text-align: right;
+    }
+    @at-root #{&}--body {
+        height: 100%;
+        position: relative;
+    }
+    @at-root #{&}--header {
+        //font-weight: 600;
+        flex-shrink: 0;
+        font-size: 1.2rem;
+        position: relative;
+    }
+    @at-root #{&}--title {
+        padding: 1rem 0;
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid $border-color;
+        @at-root #{&}--pt {
+            display: inline-block;
+            max-width: 120px;
+            overflow: hidden;
+            word-wrap: normal; /* for IE */
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            //vertical-align: middle;
+        }
+    }
+    @at-root #{&}--desc {
+        padding: 1rem 0;
+        font-size: 1rem;
+    }
+}
+// 重置
+.v-note-wrapper {
+    z-index: 1000!important;
+}

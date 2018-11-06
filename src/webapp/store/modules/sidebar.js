@@ -1,7 +1,9 @@
 'use strict'
 
-import _ from 'lodash'
-// import store from '../index'
+import isBoolean from 'lodash/isBoolean'
+
+import menus from '@/router/menus'
+
 
 const state = {
     // user: null
@@ -9,11 +11,14 @@ const state = {
     backgroundColor: 'black',
     backgroundImage: 'http://image.cdn.mbdoge.cn/sidebar-1.jpg',
     image: true,
-    color: 'red'
+    color: 'red',
+
+    menus,
+    addMenus: []
 }
+// 可能会有权限的需求
 const getters = {
-    // 是否登录
-    // isLogin: state => state.id !== 0 && (+new Date() - state.validateTime) < 60 * 60 * 1000, // 小于一小时
+    // menus: state => state.menus
 }
 
 // actions
@@ -26,15 +31,19 @@ const actions = {
     }
 }
 const mutations = {
+    SET_ROUTERS: (state, routers) => {
+        state.addMenus = routers
+        state.menus = menus.concat(routers)
+    },
     TOGGLE_SIDEBAR_MINI (state, obj) {
-        if (_.isBoolean(obj)) {
+        if (isBoolean(obj)) {
             state.collapsed = obj
         } else {
             state.collapsed = !state.collapsed
         }
     },
     TOGGLE_SIDEBAR_IMAGE (state, obj) {
-        if (_.isBoolean(obj)) {
+        if (isBoolean(obj)) {
             state.image = obj
         } else {
             state.image = !state.image

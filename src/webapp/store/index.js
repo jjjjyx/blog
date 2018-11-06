@@ -6,9 +6,9 @@ import Vuex from 'vuex'
 import createLogger from 'vuex/dist/logger'
 import modules from './modules'
 import { mutations } from './mutations.js'
-import actions from './actions'
-import createPersistedState from 'vuex-persistedstate'
-import { homeRouter } from '../router/router'
+import * as actions from './actions'
+// import createPersistedState from 'vuex-persistedstate'
+import { homeRouter } from '../router/menus'
 
 Vue.use(Vuex)
 
@@ -60,6 +60,7 @@ const state = {
     },
     site: [],
     siteMap: {},
+    language: localStorage.getItem('local') || 'zh-CN',
     breadCrumbList: [],
     homeRouter
 }
@@ -69,11 +70,12 @@ const getters = {
     defaultCategoryValue: state => _.toNumber(state.siteMap['defaultCategoryId'].value)
 }
 const debug = process.env.NODE_ENV !== 'production'
-const plugins = [createPersistedState({
-    filter: ({type}) => {
-        return type !== 'APPEND_MEDIA'
-    }
-})]
+const plugins = []
+    // [createPersistedState({
+    //     filter: ({type}) => {
+    //         return type !== 'APPEND_MEDIA'
+    //     }
+    // })]
 
 if (debug) {
     plugins.push(createLogger())

@@ -101,7 +101,7 @@ module.exports.clearCache = function () {
     log.debug('清空路由缓存')
     cache.get((error, entries) => {
         if (error) {
-            log.error('清除缓存发生错误', e)
+            log.error('清除缓存发生错误', error)
         }
         entries.forEach((item) => {
             cache.del(item.name, () => {

@@ -1,28 +1,24 @@
 'use strict'
 
-import _ from 'lodash'
-import api from '@/utils/api'
-// import Vue from 'vue'
+import differenceBy from 'lodash/differenceBy'
+import groupBy from 'lodash/groupBy'
+import merge from 'lodash/merge'
+
+import * as post from '../../api/posts'
+import * as term from '../../api/terms'
+
 const state = {
-    // user: null
+
     posts: [],
     trashPosts: [],
 
     categoryList: [],
     tagList: []
 
-    // imgList: []
 }
 
 const getters = {
     selectedPost: state => state.posts.filter((item) => item._checked)
-    // user: state => state.user
-    // tagsList: state => state.termList.filter((item) => {
-    //     return item.taxonomy === 'post_tag'
-    // }),
-    // categoryList: state => state.termList.filter((item) => {
-    //     return item.taxonomy === 'category'
-    // })
 }
 
 // actions
@@ -33,20 +29,35 @@ const actions = {
             if (state.posts.length !== 0) return
         }
         try {
-            let result = await api.nget('/api/post/')
+            let result = await post.fetchAll()
             result.forEach(i => (i._checked = false))
             commit('SET_POST', result)
         } catch (e) {
             this._vm.$Message.error('获取文章数据失败')
         }
     },
+    // 文章的创建，修改，都在 store/modules/post.js 中
+    async deletePost ({commit, state, getters, dispatch}, items) {
+        if (!(items instanceof Array)) {
+            items = [items]
+        }
+        if (items.length === 0) {
+            return []
+        }
+        let ids = items.map((item) => item.id)
+        await post.moveTrash(ids)
+        commit({type: 'removeData', key: 'posts', arr: items})
+        // 更新回收站
+        dispatch('fetchTrash')
+    },
+
     async fetchTerms ({commit, state}, force = true) {
         if (!force) {
             // 不是强制的则判断当期是否有值，
             if (state.categoryList.length !== 0 || state.tagList.length !== 0) return
         }
         try {
-            let result = await api.nget('/api/term/')
+            let result = await term.fetchAll()
             result.forEach(i => (i._checked = false))
             commit('SET_TERMS', result)
         } catch (e) {
@@ -59,15 +70,17 @@ const actions = {
             if (state.trashPosts.length !== 0) return
         }
         try {
-            let result = await api.nget('/api/post/trash')
+            let result = await post.fetchTrashAll()
             result.forEach(i => (i._checked = false))
             commit('SET_POST_TRASH', result)
         } catch (e) {
             this._vm.$Message.error('获取回收站数据失败')
         }
     },
+
+
     del_post ({commit, state, getters, dispatch}, item) {
-        // state.posts = _.differenceBy(state.posts, arr, 'id')
+        // state.posts = differenceBy(state.posts, arr, 'id')
         commit({type: 'removeData', key: 'posts', arr: item})
         // 更新回收站
         dispatch('fetchTrash')
@@ -121,19 +134,19 @@ const mutations = {
     // APPEND_MEDIA (state, data) {
     //     state.imgList.push(...data)
     // },
-    removeData (state, {key, arr}) {
-        state[key] = _.differenceBy(state[key], arr, 'id')
+    removeData (state, {key, arr, idKey = 'id'}) {
+        state[key] = differenceBy(state[key], arr, idKey)
     },
     addData (state, {key, item}) {
         state[key].push(item)
     },
     editData (state, {key, item}) {
         let index = state[key].find((i) => i.id === item.id)
-        _.merge(index, item)
+        merge(index, item)
         // state[key].push(item)
     },
     SET_TERMS (state, data) {
-        let {category: categoryList, post_tag: tagList} = _.groupBy(data, 'taxonomy')
+        let {category: categoryList, post_tag: tagList} = groupBy(data, 'taxonomy')
         state.categoryList = categoryList || []
         state.tagList = tagList || []
     },

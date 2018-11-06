@@ -288,7 +288,7 @@ const callback = [
                 let result = await resourceDao.findOne({where: {hash}})
                 return res.status(200).json(Result.success(result))
             }
-            debug('callback error by :', e.message)
+            log.error('callback error by :', e)
             return res.status(200).json(Result.error())
         }
 

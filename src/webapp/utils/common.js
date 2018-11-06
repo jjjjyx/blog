@@ -117,3 +117,7 @@ export const POST_WRITER_STATUS = {
     saving: '保存中',
     posted: '发布于'
 }
+
+export function hyphenToHump (str) {
+    return str.replace(/-(\w)/g, (all, letter) => letter.toUpperCase())
+}

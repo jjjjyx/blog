@@ -1,27 +1,10 @@
 'use strict'
 
 import _ from 'lodash'
-import api from '@/utils/api'
+import * as post from '../../api/posts'
 import {POST_WRITER_STATUS} from '../../utils/common'
 
-// function transformMetas (metas = []) {
-//     let obj = {}
-//     if (_.isArray(metas)) {
-//         metas.forEach((item) => {
-//             obj[item.meta_key] = item
-//         })
-//     }
-//     return obj
-// }
-// import Vue from 'vue'
 
-// const POST_WRITER_STATUS = {
-//     normal: '',
-//     save: '已保存',
-//     saveing: '保存中',
-//     edit: '已修改 - 未保存',
-//     auto_draft: '自动草稿'
-// }
 
 const state = {
     'id': 0,
@@ -94,12 +77,11 @@ const actions = {
                 return 0
             }
 
-            let result = await api.npost('/api/post/new_post', {post_title: ''})
+            let result = await post.create()
             commit('SET_CURRENT_POST', result)
             commit('updateEditorStatus', POST_WRITER_STATUS.created)
-            // this.currentStatus = POST_WRITER_STATUS.auto_draft
         } catch (e) {
-            this.$Message.info('创建新文章失败，请重新刷新页面')
+            this.$Message.info('创建新文章失败，请重试')
         }
     },
     async fetchPostInfo ({commit, state}, poi) {
@@ -107,7 +89,7 @@ const actions = {
         if (poi && _.isNumber(poi)) {
             try {
                 // console.log('poi', poi)
-                let result = await api.nget(`/api/post/${poi}`)
+                let result = await post.get(poi)
                 commit('SET_CURRENT_POST', result)
                 commit('updateEditorStatus', POST_WRITER_STATUS.created)
                 //     commit('updateEditorStatus', POST_WRITER_STATUS.posted)
@@ -116,7 +98,7 @@ const actions = {
                 // }
                 return true
             } catch (e) {
-                console.log(e)
+                this._vm.$Message.error('获取文章信息失败')
             }
         }
         return false
