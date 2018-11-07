@@ -1,8 +1,8 @@
 <template>
-    <div class="cm-container site__warp">
+    <div class="curd-container site__warp">
         <div class="site__opts">
-            <Button type="success" style="width: 100px" :disabled="!isModify" @click="save">保存</Button>
-            <Button type="error" style="width: 100px" :disabled="!isModify" @click="reset">还原</Button>
+            <Button type="success" style="width: 100px" :disabled="!isModify" @click="save" class="mr-2" v-t="'curd.action.save'"></Button>
+            <Button type="error" style="width: 100px" :disabled="!isModify" @click="reset" v-t="'curd.action.reset'"></Button>
         </div>
         <!--<div>-->
 
@@ -17,34 +17,28 @@
                          :is-resizable="false"
                          :vertical-compact="true"
                          :use-css-transforms="true"
+
             >
-                <!--drag-allow-from=".vue-draggable-handle"-->
-                <!--drag-ignore-from=".no-drag"-->
+
                 <grid-item v-for="item in layout" :key="item.i"
+                           class="ivu-card ivu-card-bordered ivu-card-dis-hover"
                            :x="item.x"
                            :y="item.y"
                            :w="item.w"
                            :h="item.h"
                            :i="item.i"
+                           drag-allow-from=".vue-draggable-handle"
+                           drag-ignore-from=".no-drag"
                 >
-                    <Card dis-hover>
-                        <h4 slot="title">{{siteLayout[item.i].name}}</h4>
-                        <Form :model="formTop" label-position="top">
-                            <FormItem v-for="key in siteLayout[item.i].items" :key="key">
-                                <h3 slot="label">{{siteMap[key].text}}</h3>
-                                <small slot="label">{{siteMap[key].textSmall}}</small>
-                                <Input v-model="siteMap[key].value"/>
-                            </FormItem>
-                        </Form>
-                    </Card>
-                    <!--<div class="text">-->
-                        <!--<div class="vue-draggable-handle"></div>-->
-                        <!--<div class="no-drag">-->
-                            <!--<span>{{item.i}}</span>-->
-                            <!--<br/>-->
-                            <!--<button>test</button>-->
-                        <!--</div>-->
-                    <!--</div>-->
+
+                    <h4 class="vue-draggable-handle ivu-card-head">{{siteLayout[item.i].name}}</h4>
+                    <Form :model="formTop" label-position="top" class="no-drag ivu-card-body">
+                        <FormItem v-for="key in siteLayout[item.i].items" :key="key">
+                            <h3 slot="label">{{siteMap[key].text}}</h3>
+                            <small slot="label">{{siteMap[key].textSmall}}</small>
+                            <Input v-model="siteMap[key].value"/>
+                        </FormItem>
+                    </Form>
                 </grid-item>
             </grid-layout>
         </div>
@@ -226,16 +220,16 @@ export default {
         cursor: pointer;
     }
 
-    .vue-draggable-handle {
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        top: 0;
-        left: 0;
-        padding: 0 8px 8px 0;
-        background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>") no-repeat bottom right;
-        background-origin: content-box;
-        box-sizing: border-box;
-        cursor: pointer;
-    }
+    /*.vue-draggable-handle {*/
+        /*position: absolute;*/
+        /*width: 20px;*/
+        /*height: 20px;*/
+        /*top: 0;*/
+        /*left: 0;*/
+        /*padding: 0 8px 8px 0;*/
+        /*background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>") no-repeat bottom right;*/
+        /*background-origin: content-box;*/
+        /*box-sizing: border-box;*/
+        /*cursor: pointer;*/
+    /*}*/
 </style>

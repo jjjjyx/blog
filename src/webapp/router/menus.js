@@ -70,6 +70,15 @@ const menus = [
 		]
 	},
     {title: 'media', path: 'media', name: 'media', icon: 'md-image'},
+    {
+        title: 'system', path: 'system', name: 'system', icon: 'md-globe',
+        redirect: '/system/site',
+        child : [
+            {
+                title: 'website', path: 'website', name: 'website', icon: 'ios-aperture'
+            }
+        ]
+    },
 	{
 		title: 'nested', path: 'menus', name: 'menus',
 		redirect: '/menus/menus1',
