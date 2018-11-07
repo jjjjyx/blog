@@ -1,0 +1,126 @@
+@import "./sass/functions";
+@import "./sass/var";
+@import "./sass/variables";
+@import "./sass/mixins";
+@import "./sass/utilities";
+@import "./sass/utilities/display";
+
+$nav-height: 56px;
+$sider-bg-color : #282d2f;
+$sider-bg-deep-color : #1f2224;
+$sider-width: 240px;
+$sider-collapsed-width: 78px;
+$sider-logo-bg-color: $sider-bg-color;
+$link-color: $blue;
+$app-body-background-color: $white;
+@import "./sass/icon";
+@import "./sass/reboot";
+
+
+body {
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    font-size: 1rem;
+}
+
+
+$badge-colors: map_merge($colors, (
+    "rose": #e91e63,
+    "white": hsla(0,0%,78%,.2),
+    'black': $black
+));
+
+@import "sass/overload-iview";
+@import "sass/admin-layout";
+@import "sass/admin-sidebar";
+@import "sass/admin-plugin";
+@import "sass/admin-header";
+@import "sass/admin-tabs";
+@import "sass/admin-login";
+@import "sass/admin-alert";
+@import "sass/admin-curd";
+//@import "sass/location";
+@import "sass/icon-select";
+//@import "sass/scrollbar";
+//@import "sass/error";
+@import "sass/post-writer";
+@import "sass/tabs-style";
+@import "sass/media-management";
+@import "sass/site";
+
+
+.h1, .h2, .h3, .h4, .h6, .h5 {
+    //font-family: Roboto,Helvetica,Arial,sans-serif;
+    font-weight: 300;
+    //line-height: 1.5em;
+}
+
+
+
+
+//@import "./sass/functions";
+//@import "./sass/var";
+//@import "./sass/variables";
+//@import "./sass/mixins";
+//@import "./sass/utilities";
+//@import "./sass/utilities/display";
+//@import "./sass/icon";
+//@import "./cm-sass/reboot";
+//
+//
+//$nav-height: 56px;
+//$sider-bg-color : #282d2f;
+//$sider-bg-deep-color : #1f2224;
+//$sider-width: 240px;
+//$sider-collapsed-width: 78px;
+//$sider-logo-bg-color: $sider-bg-color;
+//
+//
+////$badge-colors: (
+////    "purple": #9c27b0,
+////    "blue": #00bcd4,
+////    "green": #4caf50,
+////    "orange": #ff9800,
+////    "rose": #e91e63,
+////    "red": $logo-color,
+////    "black": $black,
+////    "white": hsla(0,0%,78%,.2)
+////);
+//
+//$badge-colors: map_merge($colors, (
+//    "rose": #e91e63,
+//    "white": hsla(0,0%,78%,.2),
+//    'black': $black
+//));
+//
+//@import "cm-sass/overload-iview";
+//@import "cm-sass/cm-layout";
+//@import "cm-sass/cm";
+//@import "cm-sass/cm-nav";
+//@import "cm-sass/cm-sidebar";
+//@import "cm-sass/cm-tabs";
+//@import "cm-sass/post-writer";
+//@import "cm-sass/cms-crud";
+//@import "cm-sass/media-management";
+//@import "cm-sass/upload";
+//@import "cm-sass/site";
+//@import "cm-sass/plugin";
+//@import "cm-sass/icon-select";
+//@import "sass/scrollbar";
+//
+//.wrapper {
+//    background: #eee;
+//    height: 100%;
+//    min-width: 1103px;
+//    overflow-x: auto;
+//    overflow-y: hidden;
+//}
+//
+//.h1, .h2, .h3, .h4, .h6, .h5 {
+//    //font-family: Roboto,Helvetica,Arial,sans-serif;
+//    font-weight: 300;
+//    //line-height: 1.5em;
+//}

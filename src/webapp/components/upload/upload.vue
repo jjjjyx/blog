@@ -40,10 +40,14 @@
     import CollapseTransition from '@/utils/collapse-transition'
     import ajax from '@/utils/ajax'
     import store from '@/store'
-    // import renders from '../renders'
-    import _ from 'lodash'
+    import orderBy from 'lodash/orderBy'
+    import isString from 'lodash/isString'
+    import cloneDeep from 'lodash/cloneDeep'
+    import differenceBy from 'lodash/differenceBy'
+    import isArray from 'lodash/isArray'
+    import isFunction from 'lodash/isFunction'
     import { Queue, Task } from './task-queue'
-    // import const Q = require('./taskQueue')
+
     import { randomChar, formatFileSize } from '@/utils/common'
 
     function transformExtToClass (ext) {
@@ -107,7 +111,8 @@
         })
         let dom
         switch (status) {
-            case 'ready' :{
+            case 'ready':{
+
                 let play = h('i-button', {
                     props: {type: 'text', size: 'small', icon: 'play'},
                     style: {marginRight: '5px'},
@@ -118,11 +123,12 @@
                         }
                     }
                 })
-                dom = [play, remove]
+                dom = h('div', [play, remove])
                 break
             }
-            case 'success' : {
-                dom = []
+            case 'success':{
+
+                dom = h('div', [])
                 break
             }
             case 'uploading':{ // 上传中 显示进度 以及取消上传 暂时不支持暂停上传（断点续传）
@@ -137,10 +143,10 @@
                         }
                     }
                 })
-                dom = [cancel]
+                dom = h('div', [cancel])
                 break
             }
-            case 'fail' :{ // 上传失败 显示 重试与删除
+            case 'fail':{ // 上传失败 显示 重试与删除
                 let retry = h('i-button', {
                     props: {type: 'text', size: 'small', icon: 'refresh'},
                     style: {marginRight: '5px'},
@@ -151,11 +157,11 @@
                         }
                     }
                 })
-                dom = [retry, remove]
+                dom = h('div', [retry, remove])
                 break
             }
             default :
-                dom = []
+                dom = h('span')
         }
         return dom
     }
@@ -322,8 +328,7 @@
                 let files = this.fileList.slice(0, this.bigQueueLimit + this.viewNum)
                 // 排序
                 // 按照状态 排序，UPLOADING > READY > ERROR > FAIL > QUEUE >SUCCESS
-
-                return _.orderBy(files, ['status', 'name'], ['asc', 'asc'])
+                return orderBy(files, ['status', 'name'], ['asc', 'asc'])
             },
             isBigQueue: function () {
                 return this.fileList.length > this.bigQueueLimit
@@ -404,7 +409,8 @@
             uploadFiles: function (files, opts = {}) {
                 let {space} = opts
                 // 队列的最大值不限制， 但是限制同上上传的格式
-                if (_.isArray(files)) {
+                if (isArray(files)) {
+
                     // let postFiles = Array.prototype.slice.call(files)
 
                     if (files.length === 0) return
@@ -413,8 +419,7 @@
                     // this.fileList
                     if (this.fileList.length + files.length > this.bigQueueLimit) {
                         let successFiles = this.fileList.filter(item => item.status === FileStatus.SUCCESS)
-
-                        this.fileList = _.differenceBy(this.fileList, successFiles, 'uid')
+                        this.fileList = differenceBy(this.fileList, successFiles, 'uid')
                     }
                     // 提交一个数组 作为一个批次
                     // 生成随机key
@@ -449,7 +454,7 @@
                     })
                 }
             },
-            beforeUpload: function (file) {
+            beforeUpload: function () { // file
                 //
                 // file
                 // 队列上传控制 验证 秒传
@@ -459,7 +464,7 @@
             },
 
             upload (rawFile, opts = {}) {
-                opts = Object.assign({}, _.cloneDeep(this.options), opts)
+                opts = Object.assign({}, cloneDeep(this.options), opts)
                 opts.rawFile = rawFile
                 this.post(opts)
                 // const before = this.beforeUpload(rawFile)
@@ -519,14 +524,14 @@
                 }
                 // check maxSize
                 if (this.maxSize) {
-                    // console.log('rawfile.size = [%s] this.masSize = [%s]', rawFile.size, this.maxSize)
+                    console.log('rawfile.size = [%s] this.masSize = [%s]', rawFile.size, this.maxSize)
                     if (rawFile.size > this.maxSize * 1024) {
                         this.onExceededSize(rawFile, this.fileList)
                         return false
                     }
                 }
 
-                let isBase64 = _.isString(rawFile.miniurl)
+                let isBase64 = isString(rawFile.miniurl)
                 if (!isBase64) {
                     data.token = token
                     data['x:name'] = rawFile.name
@@ -547,26 +552,25 @@
                             resolve()
                         }
                         this.handleSuccess(res, rawFile)
-                        if (_.isFunction(onSuccess)) {
+                        if (isFunction(onSuccess)) {
                             onSuccess(res)
                         }
                         delete this.reqs[uid]
                     },
                     onError: err => {
                         this.handleError(err, rawFile)
-                        if (_.isFunction(onError)) {
+                        if (isFunction(onError)) {
                             onError(err)
                         }
                     }
                 }
                 this.reqs[uid] = ajax(options)
             },
-
-            onFormatError: function () {
-                // console.log('onFormatError', a)
+            onFormatError: function (...a) {
+                console.log('onFormatError', a)
             },
-            onExceededSize: function () {
-                // console.log('onExceededSize', a)
+            onExceededSize: function (...a) {
+                console.log('onExceededSize', a)
             },
             handleProgress: function (ev, rawFile) {
                 const file = this.getFile(rawFile)
@@ -592,8 +596,8 @@
                 // this.onError(err, file, this.uploadFiles);
                 // this.onChange(file, this.uploadFiles);
             },
-            handleRemove () {
-                // console.log('handleRemove', a)
+            handleRemove (...a) {
+                console.log('handleRemove', a)
                 // const fileList = this.fileList
                 // fileList.splice(fileList.indexOf(file), 1)
                 // this.handleRemove(file, fileList)

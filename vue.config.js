@@ -9,7 +9,7 @@ module.exports = {
     pages: {
     	admin: {
     		// 入口js的路径
-    		entry: './src/webapp/cms',
+    		entry: './src/webapp/admin',
     		// 页面模板路径
     		template: './static/admin.html',
             filename: 'jyx-admin/admin.html'

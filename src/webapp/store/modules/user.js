@@ -1,6 +1,8 @@
 'use strict'
 
-import _ from 'lodash'
+
+import merge from 'lodash/merge'
+import cloneDeep from 'lodash/cloneDeep'
 // import store from '../index'
 
 const state = {
@@ -22,7 +24,7 @@ const state = {
     'validateTime': 0
 }
 
-const defaultUser = _.cloneDeep(state)
+const defaultUser = cloneDeep(state)
 const getters = {
     // 是否登录
     isLogin: state => state.id !== 0 && (+new Date() - state.validateTime) < 60 * 60 * 1000, // 小于一小时
@@ -47,7 +49,7 @@ const actions = {
 }
 const mutations = {
     USER_SET_INFO (state, user) {
-        _.merge(state, user)
+        merge(state, user)
         state.validateTime = Date.now()
         // state.user = user
     },

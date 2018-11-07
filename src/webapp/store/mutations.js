@@ -15,15 +15,20 @@ export const mutations = {
         }
     },
     setBreadCrumb (state, matched) {
+        // console.log('==', matched, state)
         state.breadCrumbList = [state.homeRouter] // getBreadCrumbList(routeMetched, state.homeRoute)
-        for (let matchedKey in matched) {
-            let item = matched[matchedKey]
-            if (item.meta.hideInMenu) continue
-            let parent = item.meta.parent
-            parent && state.breadCrumbList.push(parent)
+        for (let item of matched) {
+            if (item.meta.hide) continue
+            if (!item.name) continue
+            // let parent = item.meta.parent
+            // parent && state.breadCrumbList.push(parent)
             state.breadCrumbList.push(item.meta)
         }
-    }
+    },
+    SET_LANGUAGE: (state, language) => {
+        state.language = language
+        localStorage.setItem('local', language)
+    },
     // toggleSidebar(state,v){
     //     state.isSidebarShow = !!v;
     // },

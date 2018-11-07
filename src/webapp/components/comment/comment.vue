@@ -134,12 +134,12 @@
  -->
 <script>
 /* eslint-disable no-undef */
-// import _ from 'lodash'
+
 import CollapseTransition from '@/utils/collapse-transition'
 import CommentUsername from './comment-username'
 import CommentInput from './comment-input'
 import { on } from '../../utils/dom'
-import api from '../../utils/api'
+import api from '@/api'
 
 function scrollTop (el, from = 0, to, duration = 500) {
     if (!window.requestAnimationFrame) {
@@ -177,9 +177,7 @@ function scrollTop (el, from = 0, to, duration = 500) {
 function scorllEl (el) {
     const sTop = document.documentElement.scrollTop || document.body.scrollTop
     const to = el.offsetTop - 300
-    scrollTop(window, sTop, to, 1000, () => {
-        console.log(document.documentElement.scrollTop || document.body.scrollTop)
-    })
+    scrollTop(window, sTop, to, 1000)
 }
 
 on(window, 'load', () => {

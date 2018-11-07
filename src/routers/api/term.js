@@ -4,20 +4,21 @@ const express = require('express')
 
 const _ = require('lodash')
 const debug = require('debug')('app:routers:api.term')
+const log = require('log4js').getLogger('api.term')
 const router = express.Router()
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const utils = require('../../utils')
 const Result = require('../../common/resultUtils')
 const {Enum} = require('../../common/enum')
-const {termDao, postDao, sequelize} = require('../../models/index')
+const {termDao, sequelize} = require('../../models/index')
 
-const {term_relationships: termRelationshipsDao } = sequelize.models
+const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
 
 const sanitizeId = sanitizeBody('id').toInt()
 const sanitizeName = sanitizeBody('name').escape().trim()
-const sanitizeIcon = sanitizeBody('icon').escape().trim().customSanitizer((value)=>{
+const sanitizeIcon = sanitizeBody('icon').escape().trim().customSanitizer((value) => {
     if (!value) {
         return 'iconfont icon-ziyuan1'
     }
@@ -32,7 +33,7 @@ const sanitizeSlug = sanitizeBody('slug').trim().customSanitizer((value) => {
         return value
     }
 })
-const checkId = body('id').isInt().withMessage("请提交正确的ID")
+const checkId = body('id').isInt().withMessage('请提交正确的ID')
 const checkName = body('name').isString().withMessage('请提交正确的名称').custom((value) => {
     debug('checkName name = ', value)
     return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,30}$/.test(value)
@@ -43,8 +44,8 @@ const slugV = (value) => {
     debug('checkSlug slug = ', value)
     return /^[a-zA-Z0-9\-_]{1,30}$/.test(value)
 }
-const checkSlug = body('slug').exists().withMessage('必须').custom(slugV).withMessage(slugMsg)
-const checkSlug2 = body('slug').isLength({min: 0, max: 30}).custom(slugV).withMessage(slugMsg)
+const checkCreateSlug = body('slug').exists().withMessage('必须').custom(slugV).withMessage(slugMsg)
+const checkUpdateSlug = body('slug').isLength({min: 0, max: 30}).custom(slugV).withMessage(slugMsg)
 const checkDescription = body('description').isLength({min: 0, max: 140})
 const checkIcon = body('icon').custom((value) => {
     // todo 验证 icon
@@ -53,84 +54,141 @@ const checkIcon = body('icon').custom((value) => {
 })
 // const default_id = SITE.defaultCategoryId
 
-const addTerm = [
+const createTerm = async function (term) {
+    try {
+        console.log(term)
+        let {name, slug, description, icon, taxonomy} = term
+        debug(`createTerm taxonomy = %s, name = %s, slug = %s`, taxonomy, name, slug)
+
+        // 检查同名 ，检查 slug
+        let result = await termDao.findOne({
+            where: {
+                taxonomy,
+                [Op.or]: [{name}, {slug}]
+            }
+        })
+        if (result != null) {
+            return Result.info('已存在')
+        }
+        result = await termDao.create({name, slug, taxonomy, description, icon})
+
+        return Result.success(result.toJSON())
+    } catch (e) {
+        log.error('editTerm error by :', e)
+        return Result.error()
+    }
+}
+
+const updateTerm = async function (term) {
+    try {
+        let {name, slug, description, icon, taxonomy, id} = term
+
+        debug(`updateTerm id = %s taxonomy = %s, name = %s, slug = %s`, id, taxonomy, name, slug)
+
+        // 检查同名 ，检查 slug
+        let result = await termDao.findOne({
+            where: {
+                taxonomy,
+                id: {[Op.ne]: id},
+                [Op.or]: [{name}, {slug}]
+            }
+        })
+        if (result != null) {
+            return Result.info('名称或别名已存在! ')
+        }
+        let values = {id, name, slug, description, icon}
+        await termDao.update(values, {
+            where: {
+                id: id
+            }
+        })
+        return Result.success()
+    } catch (e) {
+        log.error('updateTerm error by :', e)
+        return Result.error()
+    }
+}
+
+/**
+ * 添加分类
+ * @type {any[]}
+ */
+const addCategory = [
     sanitizeName,
     sanitizeSlug,
     sanitizeIcon,
     checkName,
-    checkSlug,
+    checkCreateSlug,
     checkIcon,
     checkDescription,
     utils.validationResult,
     async function (req, res, next) {
-        let {name, slug, description, icon} = req.body
-        debug(`addTerm name =[${name}], slug[${slug}]`)
-        try {
-            // 检查同名 ，检查 slug
-            let result = await termDao.findOne({
-                where: {
-                    taxonomy: Enum.TaxonomyEnum.CATEGORY,
-                    [Op.or]: [{name}, {slug}]
-                }
-            })
-            if (result != null) {
-                return res.status(200).json(Result.info('分类名称或别名已存在'))
-            }
-            result = await termDao.create({
-                name, slug,taxonomy: Enum.TaxonomyEnum.CATEGORY,
-                description, icon, count: 0
-            })
-            return res.status(200).json(Result.success(result.toJSON()))
-        } catch (e) {
-            debug('addTerm error by :', e.message)
-            return res.status(200).json(Result.error())
-        }
+        req.body.taxonomy = Enum.TaxonomyEnum.CATEGORY
+        createTerm(req.body).then((result) => {
+            res.status(200).json(result)
+        })
     }
 ]
 
-const editTerm = [
+/**
+ * 添加标签
+ * @type {any[]}
+ */
+const addTag = [
+    sanitizeName,
+    sanitizeSlug,
+    checkName,
+    checkCreateSlug,
+    checkDescription,
+    utils.validationResult,
+    async function (req, res, next) {
+        req.body.taxonomy = Enum.TaxonomyEnum.POST_TAG
+        createTerm(req.body).then((result) => {
+            res.status(200).json(result)
+        })
+    }
+]
+
+const editCategory = [
     sanitizeId,
     sanitizeName,
     sanitizeIcon,
     checkId,
     checkName,
-    checkSlug2,
+    checkUpdateSlug,
     checkIcon,
     checkDescription,
     utils.validationResult,
     async function (req, res) {
-        let {id, name, slug, description, icon} = req.body
-        let values = {id, name, slug, description, icon}
-        debug(`editTerm id= [${id}] name =[${name}], slug[${slug}]`)
-        try {
-            if (id === SITE.defaultCategoryId) {
-                return res.status(200).json(Result.info('失败!此分类不可修改'))
-            }
-            // 检查同名 ，检查 slug
-            let result = await termDao.findOne({
-                where: {
-                    taxonomy: Enum.TaxonomyEnum.CATEGORY,
-                    id: { [Op.ne]: id },
-                    [Op.or]: [{name}, {slug}]
-                }
-            })
-            if (result != null) {
-                return res.status(200).json(Result.info('分类名称或别名已存在! 修改失败'))
-            }
-
-            await termDao.update(values,{
-                where:{
-                    id: id
-                }
-            })
-            return res.status(200).json(Result.success())
-        } catch (e) {
-
-            debug('editTerm error by :', e.message)
-            return res.status(200).json(Result.error())
+        let {id} = req.body
+        if (id === SITE.defaultCategoryId) {
+            return res.status(200).json(Result.info('默认分类不可修改'))
         }
+        updateTerm(req.body).then((result) => {
+            return res.status(200).json(result)
+        })
     }
 ]
+
+const editTag = [
+    sanitizeId,
+    sanitizeName,
+    checkId,
+    checkName,
+    checkUpdateSlug,
+    checkDescription,
+    utils.validationResult,
+    async function (req, res) {
+        let {id} = req.body
+        if (id === SITE.defaultCategoryId) {
+            return res.status(200).json(Result.info('默认分类不可修改'))
+        }
+        updateTerm(req.body).then((result) => {
+            return res.status(200).json(result)
+        })
+    }
+]
+
 // 直接删除 不需要保留
 const del = [
     // sanitizeId,
@@ -143,8 +201,8 @@ const del = [
         // 删除掉文章的引用
         try {
             let terms = await termDao.findAll({
-                where:{
-                    id:{
+                where: {
+                    id: {
                         [Op.in]: ids,
                         [Op.not]: SITE.defaultCategoryId
                     }
@@ -160,11 +218,11 @@ const del = [
                 let post_tag_ids = post_tag.map(fn)
                 debug(`del term id = [${category_ids},${post_tag_ids}] 其中标签：[${post_tag_ids}] ${post_tag_ids.length}个，分类：[${category_ids}], ${category_ids.length} 个`)
                 // 分类的移动文章到默认分类
-                if (category_ids.length){
+                if (category_ids.length) {
                     termRelationshipsDao.update(
                         {term_id: SITE.defaultCategoryId},
                         {where: {term_id: category_ids}}
-                    ).then(()=>{
+                    ).then(() => {
                         // 删除分类
                         termDao.destroy({paranoid: false, force: true, where: {id: category_ids}})
                     })
@@ -173,7 +231,7 @@ const del = [
                 // 删除对应关系
                 if (post_tag_ids.length) {
                     let _destroy = {paranoid: false, force: true, where: {term_id: post_tag_ids}}
-                    termRelationshipsDao.destroy(_destroy).then(() =>{
+                    termRelationshipsDao.destroy(_destroy).then(() => {
                         // 删除标签
                         termDao.destroy({paranoid: false, force: true, where: {id: post_tag_ids}})
                     })
@@ -181,103 +239,27 @@ const del = [
             }
             return res.status(200).json(Result.success())
         } catch (e) {
-            debug('delTerm error by :', e.message)
+            log.error('delTerm error by', e)
             return res.status(200).json(Result.error())
         }
     }
 ]
 
-// 标签=============
-const addTag = [
-    sanitizeName,
-    sanitizeSlug,
-    checkName,
-    checkSlug,
-    checkDescription,
-    utils.validationResult,
-    async function (req, res, next) {
-        let {name, slug, description} = req.body
-        debug(`addTag name =[${name}], slug[${slug}]`)
-        try {
-            // 检查同名 ，检查 slug
-            let result = await termDao.findOne({
-                where: {
-                    taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                    [Op.or]: [{name}, {slug}]
-                }
-            })
-            if (result != null) {
-                return res.status(200).json(Result.info('标签名称或别名已存在'))
+const getAll = async function (req, res) {
+    try {
+        let result = await termDao.findAll({
+            attributes: {
+                include: [
+                    [sequelize.literal('(SELECT COUNT(`term_relationships`.`object_id`) FROM  `j_term_relationships` AS `term_relationships` WHERE `term_relationships`.`term_id` = `term`.`id` )'), 'count']
+                ]
             }
-            result = await termDao.create({
-                name, slug, taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                description
-            })
-
-            return res.status(200).json(Result.success(result.toJSON()))
-        } catch (e) {
-            debug('addTag error by :', e.message)
-            return res.status(200).json(Result.error())
-        }
+        })
+        return res.status(200).json(Result.success(result))
+    } catch (e) {
+        log.error('getAll error by ', e)
+        return res.status(200).json(Result.error())
     }
-]
-
-const editTag = [
-    sanitizeId,
-    sanitizeName,
-    checkId,
-    checkName,
-    checkSlug2,
-    checkDescription,
-    utils.validationResult,
-    async function (req, res) {
-        let {id, name, slug, description} = req.body
-        let values = {id, name, slug, description}
-        debug(`editTerm id= [${id}] name =[${name}], slug[${slug}]`)
-        try {
-            // 检查同名 ，检查 slug
-            let result = await termDao.findOne({
-                where: {
-                    taxonomy: Enum.TaxonomyEnum.POST_TAG,
-                    id: { [Op.ne]: id },
-                    [Op.or]: [{name}, {slug}]
-                }
-            })
-            if (result != null) {
-                return res.status(200).json(Result.info('标签名称或别名已存在! 修改失败'))
-            }
-
-            await termDao.update(values,{
-                where:{
-                    id: id
-                }
-            })
-            return res.status(200).json(Result.success())
-        } catch (e) {
-
-            debug('editTerm error by :', e.message)
-            return res.status(200).json(Result.error())
-        }
-    }
-]
-
-const getAll = [
-    async function (req, res) {
-        try {
-            let result = await termDao.findAll({
-                attributes: {
-                    include:[
-                        [sequelize.literal('(SELECT COUNT(`term_relationships`.`object_id`) FROM  `j_term_relationships` AS `term_relationships` WHERE `term_relationships`.`term_id` = `term`.`id` )'), 'count']
-                    ]
-                }
-            })
-            return res.status(200).json(Result.success(result))
-        } catch (e) {
-            debug('getAll error by :', e.message)
-            return res.status(200).json(Result.error())
-        }
-    }
-]
+}
 
 const test = [
     async function (req, res, next) {
@@ -315,8 +297,8 @@ const test = [
     }
 ]
 
-router.route('/category/add').post(addTerm)
-router.route('/category/edit').post(editTerm)
+router.route('/category/add').post(addCategory)
+router.route('/category/edit').post(editCategory)
 router.route('/category/del').post(del)
 
 router.route('/tag/add').post(addTag)

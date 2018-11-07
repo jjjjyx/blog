@@ -1,14 +1,13 @@
 'use strict'
 
-import _ from 'lodash'
+import toNumber from 'lodash/toNumber'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createLogger from 'vuex/dist/logger'
 import modules from './modules'
 import { mutations } from './mutations.js'
-import actions from './actions'
-import createPersistedState from 'vuex-persistedstate'
-import { homeRouter } from '../router/router'
+import * as actions from './actions'
+import { homeRouter } from '../router/menus'
 
 Vue.use(Vuex)
 
@@ -60,20 +59,22 @@ const state = {
     },
     site: [],
     siteMap: {},
+    language: localStorage.getItem('local') || 'zh-CN',
     breadCrumbList: [],
     homeRouter
 }
 const getters = {
     postStatusDict: state => state.dict.postStatus,
     imgSpaces: state => state.dict.img,
-    defaultCategoryValue: state => _.toNumber(state.siteMap['defaultCategoryId'].value)
+    defaultCategoryValue: state => toNumber(state.siteMap['defaultCategoryId'].value)
 }
 const debug = process.env.NODE_ENV !== 'production'
-const plugins = [createPersistedState({
-    filter: ({type}) => {
-        return type !== 'APPEND_MEDIA'
-    }
-})]
+const plugins = []
+    // [createPersistedState({
+    //     filter: ({type}) => {
+    //         return type !== 'APPEND_MEDIA'
+    //     }
+    // })]
 
 if (debug) {
     plugins.push(createLogger())

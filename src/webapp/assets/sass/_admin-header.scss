@@ -1,0 +1,89 @@
+
+.main-header-container {
+  display: flex;
+  align-items: center;
+  height: $nav-height;
+  background-color: white;
+  .ivu-menu-horizontal {
+    height: $nav-height;
+    line-height: $nav-height;
+  }
+  .ivu-menu {
+    z-index: 901;
+    //box-shadow: 0 1px 1px rgba(0, 0, 0, .08);
+  }
+}
+
+.main-header__minimize {
+  width: 50px;
+  flex-shrink: 0;
+  text-align: center;
+  margin-right: 1rem;
+}
+
+.main-header__breadcrumb {
+  flex-shrink: 0;
+  .h3 {
+    float: right;
+    font-weight: 400;
+  }
+  &.ivu-breadcrumb>span {
+    display: inline-block;
+  }
+  &.ivu-breadcrumb span.ivu-breadcrumb-item-link {
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  //&.ivu-breadcrumb > span:last-child .ivu-breadcrumb-item-link {
+  //  cursor: default;
+  //}
+  &.ivu-breadcrumb i {
+    font-size: 14px;
+    margin-right: 0.75rem;
+    vertical-align: middle;
+  }
+}
+
+.main-header--right {
+  margin-left: auto;
+  margin-right: 15px;
+  .ivu-dropdown,.ivu-btn-icon-only {
+    margin-left: 1rem;
+  }
+  .ivu-btn-text {
+    padding-left: .5rem;
+    padding-right: .5rem;
+    //font-size: 20px;
+  }
+  .ivu-btn-icon-only {
+    font-size: 18px;
+    //margin-right: .75rem;
+  }
+
+  .ivu-btn-icon-only:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  .ivu-dropdown__header {
+    padding: .5rem 1.3rem;
+  }
+}
+
+// 面包屑动画
+.breadcrumb-enter-active, .breadcrumb-leave-active {
+  transition: all .5s
+}
+
+.breadcrumb-enter, .breadcrumb-leave-active {
+  opacity: 0;
+  transform: translateX(20px)
+}
+
+.breadcrumb-move {
+  //transition: all .5s
+}
+
+.breadcrumb-leave-active {
+  position: absolute
+}

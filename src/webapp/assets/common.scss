@@ -5,7 +5,6 @@
 @import "./sass/mixins";
 @import "./sass/utilities";
 @import "./sass/reboot";
-@import "./sass/overload-iview";
 @import "./sass/nav";
 @import "./sass/icon";
 @import "./sass/footer";
@@ -106,4 +105,14 @@
     &::after {
         bottom: 5px;
     }
+}
+
+.ivu-tabs-ink-bar {
+    background-color: $logo-color;
+}
+.ivu-tabs-nav .ivu-tabs-tab-active {
+    color: $logo-color;
+}
+.ivu-tabs-nav .ivu-tabs-tab:hover {
+    color: $logo-color;
 }

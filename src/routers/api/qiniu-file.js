@@ -5,11 +5,11 @@ const express = require('express')
 const router = express.Router()
 const debug = require('debug')('app:routers:api.qiniu-file')
 const log = require('log4js').getLogger('api.qiniu-file')
-const {check, validationResult} = require('express-validator/check')
+const {check} = require('express-validator/check')
 const Color = require('color')
 const {resourceDao, sequelize} = require('../../models/index')
 const Op = sequelize.Op
-const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
+const {sanitizeQuery} = require('express-validator/filter')
 const Result = require('../../common/resultUtils')
 const _ = require('lodash')
 const qiniu = require('qiniu')
@@ -288,7 +288,7 @@ const callback = [
                 let result = await resourceDao.findOne({where: {hash}})
                 return res.status(200).json(Result.success(result))
             }
-            debug('callback error by :', e.message)
+            log.error('callback error by :', e)
             return res.status(200).json(Result.error())
         }
 

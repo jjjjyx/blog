@@ -3,7 +3,7 @@
 import './assets/common.scss'
 import './assets/home.scss'
 import Icon from './components/icon'
-import api from './utils/api'
+import api from '@/api'
 /* eslint-disable no-unused-vars,no-undef  */
 Vue.use(Icon)
 Vue.config.productionTip = false

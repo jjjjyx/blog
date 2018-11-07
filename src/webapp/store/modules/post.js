@@ -1,27 +1,16 @@
 'use strict'
 
-import _ from 'lodash'
-import api from '@/utils/api'
+import cloneDeep from 'lodash/cloneDeep'
+import toNumber from 'lodash/toNumber'
+import isNumber  from 'lodash/isNumber'
+import isObject from 'lodash/isObject'
+import isArray from 'lodash/isArray'
+import groupBy from 'lodash/groupBy'
+
+import * as post from '../../api/posts'
 import {POST_WRITER_STATUS} from '../../utils/common'
 
-// function transformMetas (metas = []) {
-//     let obj = {}
-//     if (_.isArray(metas)) {
-//         metas.forEach((item) => {
-//             obj[item.meta_key] = item
-//         })
-//     }
-//     return obj
-// }
-// import Vue from 'vue'
 
-// const POST_WRITER_STATUS = {
-//     normal: '',
-//     save: '已保存',
-//     saveing: '保存中',
-//     edit: '已修改 - 未保存',
-//     auto_draft: '自动草稿'
-// }
 
 const state = {
     'id': 0,
@@ -59,8 +48,8 @@ const state = {
 // 可以merge的key
 let mergeKeys = ['comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'render_value', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'post_password', 'sticky', 'updatedAt', 'createdAt']
 
-const copyPost = _.cloneDeep(state)
-let currCopy = _.cloneDeep(state)
+const copyPost = cloneDeep(state)
+let currCopy = cloneDeep(state)
 
 const getters = {
     categoryValue: (state, getters) => state.category_id || getters.defaultCategoryValue,
@@ -68,7 +57,7 @@ const getters = {
     // 仅在保存中， 编辑 状态时提示
     showLeaveTip: state => state.status === POST_WRITER_STATUS.saving || state.status === POST_WRITER_STATUS.edited,
     ajaxPostClone: state => {
-        let obj = _.cloneDeep(state)
+        let obj = cloneDeep(state)
         delete obj.terms
         delete obj.metas
         delete obj.user
@@ -94,20 +83,19 @@ const actions = {
                 return 0
             }
 
-            let result = await api.npost('/api/post/new_post', {post_title: ''})
+            let result = await post.create()
             commit('SET_CURRENT_POST', result)
             commit('updateEditorStatus', POST_WRITER_STATUS.created)
-            // this.currentStatus = POST_WRITER_STATUS.auto_draft
         } catch (e) {
-            this.$Message.info('创建新文章失败，请重新刷新页面')
+            this.$Message.info('创建新文章失败，请重试')
         }
     },
-    async fetchPostInfo ({commit, state}, poi) {
-        poi = _.toNumber(poi)
-        if (poi && _.isNumber(poi)) {
+    async fetchPostInfo ({commit}, poi) {
+        poi = toNumber(poi)
+        if (poi && isNumber(poi)) {
             try {
                 // console.log('poi', poi)
-                let result = await api.nget(`/api/post/${poi}`)
+                let result = await post.get(poi)
                 commit('SET_CURRENT_POST', result)
                 commit('updateEditorStatus', POST_WRITER_STATUS.created)
                 //     commit('updateEditorStatus', POST_WRITER_STATUS.posted)
@@ -116,12 +104,12 @@ const actions = {
                 // }
                 return true
             } catch (e) {
-                console.log(e)
+                this._vm.$Message.error('获取文章信息失败')
             }
         }
         return false
     },
-    afterRelease ({commit, state}, {revision, mergeObj}) {
+    afterRelease ({commit}, {revision, mergeObj}) {
         // console.log('revision = ', revision)
         // console.log('mergeObj = ', mergeObj)
         commit('mergePost', mergeObj)
@@ -178,7 +166,7 @@ const mutations = {
     updateSticky (state, value) {
         state.sticky = value
     },
-    shiftPostTag (state, value) {
+    shiftPostTag (state) {
         state.new_tag.shift()
     },
     splicePostTag (state, index) {
@@ -211,7 +199,7 @@ const mutations = {
     // 主要作用是保持与后端的数据同步，减少再次请求数据
     updateAutoSaveContent (state, obj) {
         let autoRevision = state.revision.find(item => item.autosave)
-        if (_.isObject(autoRevision)) {
+        if (isObject(autoRevision)) {
             console.log('updateAutoSaveContent: ', obj, autoRevision)
             autoRevision.post_content = obj.post_content
             autoRevision.post_title = obj.post_title
@@ -227,14 +215,14 @@ const mutations = {
     },
     SET_CURRENT_POST (state, value) {
         // 先重置， 在设置
-        if (_.isObject(value)) {
+        if (isObject(value)) {
             for (let key in copyPost) {
                 if (state.hasOwnProperty(key)) {
                     state[key] = copyPost[key]
                 }
             }
             // 标记自动版本
-            if (value.revision && _.isArray(value.revision)) {
+            if (value.revision && isArray(value.revision)) {
                 value.revision.forEach((item) => {
                     item.autosave = item.type === `${value.id}-autosave-v1`
                     item.curr = item.updatedAt === value.updatedAt
@@ -251,13 +239,13 @@ const mutations = {
             }
             let {sticky} = value.metas
             if (sticky) {
-                state.sticky = _.toNumber(sticky.meta_value) ? 'sticky' : ''
+                state.sticky = toNumber(sticky.meta_value) ? 'sticky' : ''
             }
-            let {category, post_tag: postTag} = _.groupBy(value.terms, 'taxonomy')
+            let {category, post_tag: postTag} = groupBy(value.terms, 'taxonomy')
             if (postTag) state.new_tag = postTag.map((i) => i.name)
             if (category) state.category_id = category[0].id
 
-            currCopy = _.cloneDeep(state)
+            currCopy = cloneDeep(state)
         }
     }
 }

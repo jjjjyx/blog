@@ -32,7 +32,7 @@
 <script>
 import FEmoji from './emoji.vue'
 import {on, off} from '../../utils/dom'
-import api from '../../utils/api'
+import api from '@/api'
 import { getMetaKeyCode } from '../../utils/common'
 
 export default {
