@@ -79,43 +79,6 @@ const menus = [
             }
         ]
     },
-	{
-		title: 'nested', path: 'menus', name: 'menus',
-		redirect: '/menus/menus1',
-		child: [
-			{
-				title: 'menus-1',
-				path: 'menus1',
-				name: 'menus - 1'
-
-			},
-			{
-				title: 'menus-2',
-				path: 'menus2',
-				name: 'menus - 2',
-				redirect: '/menus/menus2/menus2-1',
-				child: [
-					{
-						title: 'menus-2-1',
-						path: 'menus2-1',
-						name: 'menus - 2 - 1'
-					},
-					{
-						title: 'menus-2-2',
-						path: 'menus2-2',
-						name: 'menus - 2 - 2'
-					},
-					{
-						title: 'menus-2-3',
-						path: 'menus2-3',
-						name: 'menus - 2 - 3'
-					}
-				]
-			}
-			// {title: 'menus - 3', path: 'menus3', name: 'menus - 3'}
-		]
-	},
-
 	// {title: 'domain', path: 'domain', name: 'domain', icon: 'md-globe'}
 	// {title: 'location', path: 'location', name: 'location'},
 ]

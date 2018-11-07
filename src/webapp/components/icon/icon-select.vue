@@ -31,7 +31,7 @@
 
 <script>
     import find from 'lodash/find'
-    import groupBy from 'lodash/groupBy'
+    // import groupBy from 'lodash/groupBy'
     import icons from './icon.json'
     // 转换icon 兼容2 种形式
     // http://v2.iviewui.com/dist/22.0ca0216960fcc1cd7e27.chunk.js

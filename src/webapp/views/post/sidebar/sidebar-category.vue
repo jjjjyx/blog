@@ -37,7 +37,7 @@
 <script>
 import orderBy from 'lodash/orderBy'
 import {mapState} from 'vuex'
-import api from '@/utils/api'
+import api from '@/api'
 import {verification} from '@/utils/common'
 import CollapseTransition from '@/utils/collapse-transition'
 

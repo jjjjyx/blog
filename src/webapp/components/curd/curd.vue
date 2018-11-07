@@ -87,7 +87,6 @@
 
     import { on, off } from '@/utils/dom'
     import { getMetaKeyCode } from '@/utils/common'
-    // import api from '@/utils/api'
 
     // import CurdAdd from './components/curd-add'
     import renderAction from './components/curd-render-action'
@@ -217,7 +216,7 @@
             // 	}
             //
             // },
-            _updateDataSelectedStatus (tmp) {
+            _updateDataSelectedStatus () {
                 // 所以在这里更新数据的默认选中情况
                 // console.log(tmp[0], this.selectedList[0], tmp[0]===this.selectedList[0])
                 // differenceBy(tmp, )

@@ -38,7 +38,7 @@ export default {
     },
     props: ['item', 'index'],
     methods: {
-        handleMouseDown (e) {
+        handleMouseDown () {
 
         }
     }

@@ -20,7 +20,7 @@
 </template>
 
 <script>
-    import api from '@/utils/api'
+    import api from '@/api'
 	const noAllowTypes = ['index', 'selection', 'expand', 'html', 'PK']
 	export default {
 		name: 'curd-add',

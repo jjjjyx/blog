@@ -7,7 +7,7 @@ import isString from 'lodash/isString'
 import Layout from '@/views/layout/layout'
 import menus from './menus'
 import store from '../store'
-import api from '../utils/api'
+import * as user from '../api/user'
 
 Vue.use(Router)
 
@@ -92,7 +92,7 @@ async function isLogIn () {
     // 判段用户实例是否存在或者过期
     if (!store.getters.isLogin) {
         try {
-            let data = await api.nget('/api/user/info')
+            let data = await user.auth()
             store.commit('USER_SET_INFO', data)
             loginStatus = true
         } catch (e) {

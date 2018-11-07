@@ -287,7 +287,7 @@
                 }
                 this.$store.commit('updatePostContent', {value, render})
             },
-            async handleMdSave (value, render) {
+            async handleMdSave () { // value, render
                 // title 绑定了
                 // 如果当前的通知没有被关闭 这个提示用户是否覆盖
                 if (this.showVersionWarning) {

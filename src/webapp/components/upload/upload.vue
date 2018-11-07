@@ -454,7 +454,7 @@
                     })
                 }
             },
-            beforeUpload: function (file) {
+            beforeUpload: function () { // file
                 //
                 // file
                 // 队列上传控制 验证 秒传

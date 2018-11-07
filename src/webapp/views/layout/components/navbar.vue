@@ -54,8 +54,9 @@
 
 <script>
 	// import last from 'lodash/last'
-	import api from '@/utils/api'
-	import { dateFormat } from '@/utils/common'
+	import * as user from '../../../api/user'
+	import api from '@/api'
+    import { dateFormat } from '@/utils/common'
 	import screenfull from 'screenfull'
 	import { mapState, mapMutations, mapActions } from 'vuex'
 
@@ -134,9 +135,9 @@
 				this.errorModalVisible = true
 			},
 			screenFull () {
-				throw new Error('asdasd')
+				// throw new Error('asdasd')
 				if (!screenfull.enabled) {
-					this.$Message.warning(this.$t('messages.screen_full_warning'))
+					this.$Message.warning(this.$t('messa ges.screen_full_warning'))
 					return false
 				}
 				screenfull.toggle()
@@ -147,10 +148,14 @@
 				this.$Message.success(this.$t('messages.switch_language'))
 			},
 			logout () {
-				api.nget('/api/user/signout').then(() => {
-					api.token = null
-					location.reload()
-				})
+                user.logout().then(()=>{
+                    api.token = null
+                    location.reload()
+                })
+				// api.nget('/api/user/signout').then(() => {
+				// 	api.token = null
+				// 	location.reload()
+				// })
 			}
 		},
 		watch: {

@@ -166,7 +166,7 @@ const mutations = {
     updateSticky (state, value) {
         state.sticky = value
     },
-    shiftPostTag (state, value) {
+    shiftPostTag (state) {
         state.new_tag.shift()
     },
     splicePostTag (state, index) {

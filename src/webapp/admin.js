@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import iView from 'iview'
 
-import api from '@/utils/api'
+import api from '@/api'
 import App from './admin.vue'
 import router from './router'
 import i18n from './lang'

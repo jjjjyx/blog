@@ -30,7 +30,6 @@ import Vue from 'vue'
 import {mapState, mapActions} from 'vuex'
 import {dateFormat} from '@/utils/common'
 import curd from '../../components/curd/curd.vue'
-// import api from '@/utils/api'
 import PostTitle from './col/post-title'
 
 Vue.component('post-title', PostTitle)

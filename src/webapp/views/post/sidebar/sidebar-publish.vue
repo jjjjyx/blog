@@ -113,7 +113,6 @@
 import merge from 'lodash/merge'
 import {mapGetters, mapState} from 'vuex'
 import CollapseTransition from '@/utils/collapse-transition'
-// import api from '@/utils/api'
 import {dateFormat} from '@/utils/common'
 import * as post from '../../../api/posts'
 

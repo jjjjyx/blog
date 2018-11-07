@@ -139,7 +139,7 @@ import CollapseTransition from '@/utils/collapse-transition'
 import CommentUsername from './comment-username'
 import CommentInput from './comment-input'
 import { on } from '../../utils/dom'
-import api from '../../utils/api'
+import api from '@/api'
 
 function scrollTop (el, from = 0, to, duration = 500) {
     if (!window.requestAnimationFrame) {

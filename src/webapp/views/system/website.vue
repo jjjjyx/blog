@@ -51,7 +51,7 @@ import transform from 'lodash/transform'
 import isEqual from 'lodash/isEqual'
 import isObject from 'lodash/isObject'
 import cloneDeep from 'lodash/cloneDeep'
-import api from '@/utils/api'
+import api from '@/api'
 import {GridItem, GridLayout} from 'vue-grid-layout'
 // ResponsiveGridLayout
 // mapState, mapActions,

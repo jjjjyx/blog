@@ -1,6 +1,6 @@
 <template>
     <!--:on-reach-bottom="fetchMedia"-->
-    <Scroll @mousedown.native="handleImagesWarpMouseDown"
+    <Scroll @mousedown.native="handleImagesWarpMouseDown" :on-reach-bottom="handleReachBottom"
             class="medium__img" ref="imgs"
             :height="scrollHeight"
             v-context-menu="{menus: contentItems, targetEl: '.img__item'}">
@@ -26,6 +26,7 @@ const galleryOptions = {
     shareEl: false,
     history: false
 }
+// todo 媒体文件的多选， 翻译
 export default {
     name: 'img-grid',
     data () {
@@ -36,7 +37,6 @@ export default {
                 label: this.$store.getters.imgSpaces[k],
                 callback: (e, target) => {
                     this.$emit('move-img', target, k)
-                    // this.moveImg(target, k)
                 }
             })
         }
@@ -100,6 +100,9 @@ export default {
         }
     },
     methods: {
+        handleReachBottom () {
+            return this.$parent.fetchMedia()
+        },
         // 点击容器空白处
         handleImagesWarpMouseDown () {
             this.data.forEach(i => {

@@ -24,7 +24,6 @@
 import {mapGetters} from 'vuex'
 // import {mavonEditor} from 'mavon-editor'
 // console.log(mavonEditor.getMarkdownIt())
-// import api from '@/utils/api'
 export default {
     name: 'post-title',
     computed: {
