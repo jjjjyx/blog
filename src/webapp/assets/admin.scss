@@ -43,11 +43,12 @@ $badge-colors: map_merge($colors, (
 @import "sass/admin-alert";
 @import "sass/admin-curd";
 //@import "sass/location";
-////@import "sass/icon-select";
+@import "sass/icon-select";
 //@import "sass/scrollbar";
 //@import "sass/error";
 @import "sass/post-writer";
 @import "sass/tabs-style";
+@import "sass/media-management";
 
 
 .h1, .h2, .h3, .h4, .h6, .h5 {

@@ -15,7 +15,7 @@ export function fetchAll () {
  * @returns {Promise<*>}
  */
 export function createTag (tag) {
-    return api.npost(`/api/tag/add`, tag)
+    return api.npost(`/api/term/tag/add`, tag)
 }
 
 /**
@@ -24,7 +24,7 @@ export function createTag (tag) {
  * @returns {Promise<*>}
  */
 export function createCategory (category) {
-    return api.npost(`/api/category/add`, category)
+    return api.npost(`/api/term/category/add`, category)
 }
 
 /**
@@ -33,7 +33,7 @@ export function createCategory (category) {
  * @returns {Promise<*>}
  */
 export function updateTag (tag) {
-    return api.npost(`/api/tag/edit`, tag)
+    return api.npost(`/api/term/tag/edit`, tag)
 }
 /**
  * 修改分类
@@ -41,7 +41,7 @@ export function updateTag (tag) {
  * @returns {Promise<*>}
  */
 export function updateCategory (category) {
-    return api.npost(`/api/category/edit`, category)
+    return api.npost(`/api/term/category/edit`, category)
 }
 
 /**
@@ -50,7 +50,7 @@ export function updateCategory (category) {
  * @returns {Promise<*>}
  */
 export function deleteTag (ids) {
-    return api.npost(`/api/tag/del`, {ids})
+    return api.npost(`/api/term/tag/del`, {ids})
 }
 /**
  * 删除分类
@@ -58,7 +58,7 @@ export function deleteTag (ids) {
  * @returns {Promise<*>}
  */
 export function deleteCategory (ids) {
-    return api.npost(`/api/category/del`, {ids})
+    return api.npost(`/api/term/category/del`, {ids})
 }
 
 

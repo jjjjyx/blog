@@ -1,7 +1,6 @@
 import isEqualWith from 'lodash/isEqualWith'
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
-import api from '@/utils/api'
 
 export default {
     data () {
@@ -27,10 +26,10 @@ export default {
         }
     },
     props: {
-        url: {
-            type: String,
-            required: true
-        },
+        // url: {
+        //     type: String,
+        //     required: true
+        // },
         action: {
             type: String,
             default: 'insert',
@@ -49,18 +48,13 @@ export default {
             return this.url.replace(/\/(\w)/g, '-$1')
         },
         title () {
-            if (this.action === 'insert') {
-                return `添加新${this.prefix}`
-            } else {
-                return `编辑${this.prefix} # ${this.formItem.id} - ${this.formItem.name}`
-            }
+            return this.$t(`curd.fun_${this.action}_title`, {name: this.labelName, key: this.formItem.id})
         },
         confirmText () {
-            if (this.action === 'insert') {
-                return '增加'
-            } else {
-                return '修改'
-            }
+            return this.$t('curd.action.' + this.action)
+        },
+        labelName: function () {
+            return this.$t('curd.' + this.prefix)
         }
     },
     methods: {
@@ -68,11 +62,12 @@ export default {
             this.confirmStatus = true
             let flag = true
             try {
-                let result = await api.npost(`/api/${this.url}/add`, this.formItem)
-                this.$store.dispatch('add_' + this.url, result)
-                this.$Message.success('添加成功')
+                await this.insertAction(this.formItem)
+                // let result = await api.npost(`/api/${this.url}/add`, this.formItem)
+                // this.$store.dispatch('add_' + this.url, result)
+                this.$Message.success(this.$t('messages.curd.add_success'))
             } catch (e) {
-                this.$Message.error(e.message)
+                this.$Message.error(this.$t('messages.curd.add_fail', e))
                 flag = false
             }
             this.confirmStatus = false
@@ -82,13 +77,14 @@ export default {
             this.confirmStatus = true
             let flag = true
             try {
-                await api.npost(`/api/${this.url}/edit`, this.formItem)
-                this.$store.dispatch('edit_' + this.url, this.formItem)
+                await this.updateAction(this.formItem)
+                // await api.npost(`/api/${this.url}/edit`, this.formItem)
+                // this.$store.dispatch('edit_' + this.url, this.formItem)
                 // 此时的target对象是表格copy 的对象 与vuex管理的不是同一个对象 需要手动更新target对象的值
                 merge(this.target, this.formItem)
-                this.$Message.success('修改成功')
+                this.$Message.success(this.$t('messages.curd.update_success'))
             } catch (e) {
-                this.$Message.error(e.message)
+                this.$Message.error(this.$t('messages.curd.update_fail', e))
                 flag = false
             }
             this.confirmStatus = false

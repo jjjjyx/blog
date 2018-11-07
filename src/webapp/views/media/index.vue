@@ -1,6 +1,6 @@
 <template>
-<div class="cm-container cm-container--flex medium__warp">
-    <div class="cm-container--flex__left">
+<div class="curd-container curd-container--flex medium__warp">
+    <div class="curd-container--flex__left">
         <!--<div class="medium__img-opt">-->
         <Form ref="formItem" :model="formItem" :rules="ruleInline" inline class="medium__opt" @submit.prevent="handleSubmit">
             <div class="ivu-form-item">
@@ -78,7 +78,7 @@
                 <Tooltip content="原生空间管理">
                     <Button type="text" icon="soup-can"></Button>
                 </Tooltip>
-                <Button  @click="clearInvalidImg">清除失效图片</Button>
+                <Button  @click="clearInvalidImg" class="mr-2">清除失效图片</Button>
                 <Button type="primary" @click="handleUpload">上传新图片</Button>
             </FormItem>
         </Form>
@@ -104,18 +104,16 @@
 
 <script>
 import difference from 'lodash/difference'
+import {mapGetters} from 'vuex'
 
 import pswp from '@/components/pswp/pswp.vue'
-import ImgGrid from './img-grid'
-
-// import Waterfall from 'vue-waterfall/lib/waterfall'
-// import WaterfallSlot from 'vue-waterfall/lib/waterfall-slot'
-import {mapGetters} from 'vuex'
-import {on, off} from '@/utils/dom'
 import {getMetaKeyCode} from '@/utils/common'
-// import crud from '@/components/curd'
-// <!--mapState mapActions-->
-import api from '@/utils/api'
+import {on, off} from '@/utils/dom'
+
+import ImgGrid from './img-grid'
+import * as media from '../../api/media'
+
+
 
 const sizeLabels = {
     '9': '特大尺寸',
@@ -212,7 +210,7 @@ export default {
         async fetchMedia () {
             if (!this.isNext) return false
             try {
-                let result = await api.nget('/api/img/list', {page: this.currPage, ...this.formItem, color: this.activeColor && this.activeColor.color})
+                let result = await media.fetchAll({...this.formItem, color: this.activeColor && this.activeColor.color}, this.currPage)
                 result.forEach(i => {
                     i._checked = false
                     // 图片查看查询所需要的属性
@@ -277,7 +275,8 @@ export default {
             let postFiles = Array.prototype.slice.call(files)
             // this.uploadFiles(files);
             let data = {'x:space': this.formItem.space}
-            let token = await api.nget('/api/img/token')
+
+            let token = await media.token()
 
             this.$uploadFiles(postFiles, {
                 space: this.formItem.space,
@@ -308,7 +307,7 @@ export default {
             let items = this._getSelectImages(target)
             let key = items.map(item => item.hash)
             try {
-                await api.npost('/api/img/del',{key: key[0]})
+                await media.deleteImg(key[0])
                 // if (this.formItem.space !== 'all') {
                 this.data = difference(this.data, items)
                 // }
@@ -320,10 +319,11 @@ export default {
             let items = this._getSelectImages(target)
             let key = items.map(item => item.hash)
             try {
-                await api.npost('/api/img/move',{key, space})
+                await media.move(key, space)
                 if (this.formItem.space !== 'all') {
                     this.data = difference(this.data, items.filter(item => item.space !== space))
                 }
+                this.$Message.success('完成移动')
             } catch (e) {
                 this.$Message.info('移动失败')
             }

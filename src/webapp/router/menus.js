@@ -57,9 +57,19 @@ const menus = [
 			},
             {
 				title: 'post_writer', path: 'writer', name: 'post_writer', textIcon: '编辑',icon: 'icon-combinedshapecopy2'
+			},
+            {
+				title: 'tag_management', path: 'tag', name: 'tag_management', textIcon: '标签',icon: 'md-pricetags'
+			},
+            {
+				title: 'category_management', path: 'category', name: 'category_management', textIcon: '分类',icon: 'icon-ziyuan1'
+			},
+            {
+				title: 'trash', path: 'trash', name: 'trash', icon: 'ios-trash'
 			}
 		]
 	},
+    {title: 'media', path: 'media', name: 'media', icon: 'md-image'},
 	{
 		title: 'nested', path: 'menus', name: 'menus',
 		redirect: '/menus/menus1',
@@ -96,7 +106,7 @@ const menus = [
 			// {title: 'menus - 3', path: 'menus3', name: 'menus - 3'}
 		]
 	},
-	// {title: 'system_site', path: 'system', name: 'system_site'},
+
 	// {title: 'domain', path: 'domain', name: 'domain', icon: 'md-globe'}
 	// {title: 'location', path: 'location', name: 'location'},
 ]

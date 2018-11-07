@@ -21,6 +21,16 @@ const getters = {
     selectedPost: state => state.posts.filter((item) => item._checked)
 }
 
+function checkItems (items) {
+    if (!(items instanceof Array)) {
+        items = [items]
+    }
+    if (items.length === 0) {
+        return []
+    }
+    return items
+}
+
 // actions
 const actions = {
     async fetchPosts ({commit, state}, force = true) {
@@ -37,13 +47,8 @@ const actions = {
         }
     },
     // 文章的创建，修改，都在 store/modules/post.js 中
-    async deletePost ({commit, state, getters, dispatch}, items) {
-        if (!(items instanceof Array)) {
-            items = [items]
-        }
-        if (items.length === 0) {
-            return []
-        }
+    async deletePost ({commit, dispatch}, items) {
+        items = checkItems(items)
         let ids = items.map((item) => item.id)
         await post.moveTrash(ids)
         commit({type: 'removeData', key: 'posts', arr: items})
@@ -78,50 +83,62 @@ const actions = {
         }
     },
 
-
-    del_post ({commit, state, getters, dispatch}, item) {
-        // state.posts = differenceBy(state.posts, arr, 'id')
-        commit({type: 'removeData', key: 'posts', arr: item})
-        // 更新回收站
-        dispatch('fetchTrash')
-    },
-    'del_term/tag' ({commit, state, getters, dispatch}, item) {
+    async deleteTermTag ({commit}, items) {
+        items = checkItems(items)
+        let ids = items.map((item) => item.id)
+        await term.deleteTag(ids)
         commit({
             type: 'removeData',
             key: 'tagList',
-            arr: item
+            arr: items
         })
     },
-    'del_term/category' ({commit, state, getters, dispatch}, item) {
-        let index = item.findIndex(item => item.id === getters.defaultCategoryValue)
+    async deleteTermCategory ({commit, getters}, items) {
+        items = checkItems(items)
+
+        let index = items.findIndex(item => item.id === getters.defaultCategoryValue) // 检查默认分类
         if (index >= 0) {
-            item.splice(index, 1)
+            items.splice(index, 1)
         }
-        if (!item.length) {
+        if (!items.length) {
             this._vm.$Message.info('默认分类不可删除')
         } else {
-            commit({type: 'removeData', key: 'categoryList', arr: item})
+            let ids = items.map((item) => item.id)
+            await term.deleteCategory(ids)
+            commit({type: 'removeData', key: 'categoryList', arr: items})
         }
     },
-    'del_post/trash' ({commit, state, getters, dispatch}, item) {
-        commit({type: 'removeData', key: 'trashPosts', arr: item})
+
+    async deleteTrash ({commit}, items) {
+        // commit({type: 'removeData', key: 'trashPosts', arr: item})
+        items = checkItems(items)
+        let ids = items.map((item) => item.id)
+        await post.deleteTrash(ids)
+        commit({
+            type: 'removeData',
+            key: 'trashPosts',
+            arr: items
+        })
     },
 
-    'add_term/tag' ({commit, state, getters, dispatch}, item) {
-        commit({type: 'addData', key: 'tagList', item})
+    addTermTag ({commit}, tag) {
+        return term.createTag(tag).then((item) => commit({type: 'addData', key: 'tagList', item}))
     },
-    'add_term/category' ({commit, state, getters, dispatch}, item) {
-        commit({type: 'addData', key: 'categoryList', item})
+    updateTermTag ({commit}, tag) {
+        return term.updateTag(tag).then((item) => commit({type: 'editData', key: 'tagList', item}))
     },
-
-    'edit_term/category' ({commit, state, getters, dispatch}, item) {
-        commit({type: 'editData', key: 'categoryList', item})
+    addTermCategory ({commit}, category) {
+        return term.createCategory(category).then((item) => commit({type: 'addData', key: 'categoryList', item}))
     },
-    'edit_term/tag' ({commit, state, getters, dispatch}, item) {
-        commit({type: 'editData', key: 'tagList', item})
+    updateTermCategory ({commit}, category) {
+        return term.updateCategory(category).then((item) => commit({type: 'editData', key: 'categoryList', item}))
     },
-    revert_post ({commit, state, getters, dispatch}, item) {
-        commit('REVERT_POST', item)
+    revertPost ({commit}, item) {
+        return post.trashRevert(item.id).then(() => commit('REMOVE_TRASH_POST', item))
+    },
+    clearTrashPost ({commit}, item) {
+        // 清除回收站也是调用相同的 mutations
+        return post.deleteTrash(item.id).then(() => commit('REMOVE_TRASH_POST', item))
     }
 }
 const mutations = {
@@ -153,16 +170,10 @@ const mutations = {
     addCategoryList (state, value) {
         state.categoryList.push(value)
     },
-    REVERT_POST (state, value) {
+    REMOVE_TRASH_POST (state, value) {
         let index = state.trashPosts.indexOf(value)
         state.trashPosts.splice(index, 1)
     }
-    // updateCategoryValue (state, value) {
-    //     state.sidebarCategoryValue = value
-    // },
-    // updateAddCategoryList (state, value) {
-    //     state.termList.push(value)
-    // }
 }
 
 export default {

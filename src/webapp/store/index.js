@@ -7,7 +7,6 @@ import createLogger from 'vuex/dist/logger'
 import modules from './modules'
 import { mutations } from './mutations.js'
 import * as actions from './actions'
-// import createPersistedState from 'vuex-persistedstate'
 import { homeRouter } from '../router/menus'
 
 Vue.use(Vuex)

@@ -32,7 +32,7 @@
             <div v-html="renderContent(target.post_content)" class="markdown-content"></div>
         </div>
         <div class="trash-post-opt">
-            <Button type="success" style="width: 150px" @click="revert">恢复文章</Button>
+            <Button type="success" style="width: 150px" @click="revert" class="mr-2">恢复文章</Button>
             <Button type="error" style="width: 150px" @click="rm">彻底删除</Button>
         </div>
     </div>
@@ -45,7 +45,7 @@ import {mavonEditor} from 'mavon-editor'
 import {mapState, mapActions, mapGetters} from 'vuex'
 
 // import crud from '@/components/crud'
-import api from '@/utils/api'
+// import api from '@/utils/api'
 
 export default {
     name: 'post-trash',
@@ -65,7 +65,10 @@ export default {
     },
     methods: {
         ...mapActions({
-            'fetchTrash': 'fetchTrash'
+            'fetchTrash': 'fetchTrash',
+            'fetchPosts': 'fetchPosts',
+            'revertPost': 'revertPost',
+            'clearTrashPost': 'clearTrashPost'
         }),
         async fetch (force = false) {
             await this.fetchTrash(force)
@@ -88,10 +91,8 @@ export default {
             return content ? this.it.render(content) : ''
         },
         async revert () {
-            let ids = [this.target.id]
             try {
-                await api.npost(`/api/${this.active}/revert`, {ids})
-                this.$store.dispatch('revert_post', this.target)
+                await this.revertPost(this.target)
                 this.$Message.success('恢复完成')
             } catch (e) {
                 this.$Message.info('失败')
@@ -99,16 +100,18 @@ export default {
         },
         async rm () {
             try {
-                await this.remove([this.target])
+                await this.clearTrashPost(this.target)
                 this.target = this.data[0]
+                this.$Message.success('删除成功')
             } catch (e) {
-
+                this.$Message.info('失败')
             }
         }
     },
     beforeRouteLeave (to, from, next) {
         // 离开前刷新下文章
-        this.$store.dispatch('fetchPosts', true)
+        this.fetchPosts(true)
+        // this.$store.dispatch('fetchPosts', true)
         next()
     },
     created () {

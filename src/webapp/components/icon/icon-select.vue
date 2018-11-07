@@ -69,7 +69,7 @@
         return item
     }
 
-    const {one, font, iView} = icons
+    const {one, font} = icons
 
     let groups = [one, font]
     // icons['one'].icons
@@ -80,18 +80,18 @@
             icons[iconKey] = changeFontIcon(prefix, icons[iconKey])
         }
     })
-    const iViewIconGroups = groupBy(iView.icons, 'pack')
-    for (let key in iViewIconGroups) {
-        iViewIconGroups[key].forEach((icon) => {
-            icon.type = icon.name
-            icon.tag = icon.tag.split(', ')
-            delete icon.name
-        })
-        groups.push({
-            label: key,
-            icons: iViewIconGroups[key]
-        })
-    }
+    // const iViewIconGroups = groupBy(iView.icons, 'pack')
+    // for (let key in iViewIconGroups) {
+    //     iViewIconGroups[key].forEach((icon) => {
+    //         icon.type = icon.name
+    //         icon.tag = icon.tag.split(', ')
+    //         delete icon.name
+    //     })
+    //     groups.push({
+    //         label: key,
+    //         icons: iViewIconGroups[key]
+    //     })
+    // }
 
     export default {
         name: 'icon-select',

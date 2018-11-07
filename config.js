@@ -10,7 +10,7 @@ const CONFIG = {
     maxAge: 365 * 5 * 60000 * 60 * 24,
     cacheTimeOut: 60 * 60 * 24 * 2, // 单位秒  2 天
     secret: '$2a$10$5A/Wb/EnCwdS2Yxdk0ouGe4beJn7ZTpPD9ofzMdaLc45EgIZwURg6',
-    defaultAvatar: 'http://oht47c0d0.bkt.clouddn.com/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
+    defaultAvatar: 'http://image.cdn.mbdoge.cn/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
     db: {
         development: {
             username: 'blog',
@@ -68,7 +68,7 @@ module.exports = CONFIG
 //     'ACCESS_KEY': 'yON2TZBHksg2FxJdZzrZcm5hDLzEB-YG7I1iyw6I',
 //     'SECRET_KEY': 'lAkKzNLxsNs9eQXJ6DTyjJAxf6A0A_wsTGYxZDGH',
 //     'Bucket_Name': 'jyximg',
-//     'Domain': 'http://oht47c0d0.bkt.clouddn.com/',
+//     'Domain': 'http://image.cdn.mbdoge.cn/',
 //     UP_HOST : 'http://upload.qiniu.com',
 //     UC_HOST :'http://uc.qbox.me',
 //     RS_HOST : 'http://rs.qbox.me',

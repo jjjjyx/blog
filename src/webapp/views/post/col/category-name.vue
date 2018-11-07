@@ -1,5 +1,5 @@
 <template>
-    <div class="cms-table-title-wrap">
+    <div class="curd-table-title-wrap">
         <div class="category-name-icon">
             <Poptip placement="bottom" trigger="hover">
                 <font-icon  :type="category.icon" ></font-icon>
@@ -13,7 +13,7 @@
                 <a href="javascript:;">{{category.name}}</a>
                 <!--<span> &#45;&#45; 文章个数 ( <a href="javascript:;" class="u">{{category.count||0}}</a> )</span>-->
             </div>
-            <button-group size="small" class="cms-table-options2">
+            <button-group size="small" class="curd-table-options2">
                 <i-button type="text" :disabled="isDefaultCategory" @click="$emit('edit', category)">编辑</i-button>
                 <i-button type="text" :disabled="isDefaultCategory" @click="$emit('del', category)" style="color: rgb(237, 63, 20);">
                     删除
@@ -47,7 +47,7 @@ export default {
 }
 </script>
 <style scoped>
-    .cms-table-title-wrap {
+    .curd-table-title-wrap {
         display: flex;
         align-items: center;
     }

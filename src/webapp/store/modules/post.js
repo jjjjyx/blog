@@ -2,6 +2,7 @@
 
 import cloneDeep from 'lodash/cloneDeep'
 import toNumber from 'lodash/toNumber'
+import isNumber  from 'lodash/isNumber'
 import isObject from 'lodash/isObject'
 import isArray from 'lodash/isArray'
 import groupBy from 'lodash/groupBy'
@@ -89,7 +90,7 @@ const actions = {
             this.$Message.info('创建新文章失败，请重试')
         }
     },
-    async fetchPostInfo ({commit, state}, poi) {
+    async fetchPostInfo ({commit}, poi) {
         poi = toNumber(poi)
         if (poi && isNumber(poi)) {
             try {
@@ -108,7 +109,7 @@ const actions = {
         }
         return false
     },
-    afterRelease ({commit, state}, {revision, mergeObj}) {
+    afterRelease ({commit}, {revision, mergeObj}) {
         // console.log('revision = ', revision)
         // console.log('mergeObj = ', mergeObj)
         commit('mergePost', mergeObj)

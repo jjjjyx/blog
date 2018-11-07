@@ -56,6 +56,7 @@ const checkIcon = body('icon').custom((value) => {
 
 const createTerm = async function (term) {
     try {
+        console.log(term)
         let {name, slug, description, icon, taxonomy} = term
         debug(`createTerm taxonomy = %s, name = %s, slug = %s`, taxonomy, name, slug)
 
@@ -123,7 +124,7 @@ const addCategory = [
     utils.validationResult,
     async function (req, res, next) {
         req.body.taxonomy = Enum.TaxonomyEnum.CATEGORY
-        createTerm(res.body).then((result) => {
+        createTerm(req.body).then((result) => {
             res.status(200).json(result)
         })
     }
@@ -142,7 +143,7 @@ const addTag = [
     utils.validationResult,
     async function (req, res, next) {
         req.body.taxonomy = Enum.TaxonomyEnum.POST_TAG
-        createTerm(res.body).then((result) => {
+        createTerm(req.body).then((result) => {
             res.status(200).json(result)
         })
     }

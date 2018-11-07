@@ -113,8 +113,9 @@
 import merge from 'lodash/merge'
 import {mapGetters, mapState} from 'vuex'
 import CollapseTransition from '@/utils/collapse-transition'
-import api from '@/utils/api'
+// import api from '@/utils/api'
 import {dateFormat} from '@/utils/common'
+import * as post from '../../../api/posts'
 
 export default {
     components: {
@@ -275,7 +276,7 @@ export default {
             let obj = this.$store.getters.ajaxPostClone
 
             if (!this.isPublish) { // 点击发布  // 如果当前状态没有修改过，并且点击了发布则修改文章状态为发布状态 否则发送修改的状态
-                if (mergeObj.post_status === this.this.currentPost.post_status) {
+                if (mergeObj.post_status === this.currentPost.post_status) {
                     mergeObj.post_status = this.publishValue.postStatus = 'publish'
                 }
                 // } else { // 点击更新
@@ -284,7 +285,8 @@ export default {
             merge(obj, mergeObj)
             // console.log('before obj', obj)
             try {
-                let revision = await api.npost('/api/post/release', obj)
+                // let revision = await api.npost('/api/post/release', obj)
+                let revision = await post.release(obj)
                 this.$Message.success({
                     render: h => {
                         let a = h('a', {

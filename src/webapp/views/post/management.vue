@@ -1,5 +1,5 @@
 <template>
-    <curd :columns="columns"
+    <curd :columns="columns" class="curd-container"
           :formItem="formItem"
           :name="name"
           :data="data"

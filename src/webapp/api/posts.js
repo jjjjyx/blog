@@ -63,6 +63,15 @@ export function moveTrash (ids) {
 }
 
 /**
+ * 从回收站批量删除文章
+ * @param ids
+ * @returns {Promise<*>}
+ */
+export function deleteTrash (ids) {
+    return api.npost(`/api/post/trash/del`, {ids})
+}
+
+/**
  * 批量从回收站还原文章
  * @param ids
  * @returns {Promise<*>}

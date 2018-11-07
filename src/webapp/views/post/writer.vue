@@ -84,7 +84,7 @@
             </div>
         </Modal>
         <version-modal ref="versionModal" :visible.sync="versionModel" @restore="showVersionWarning = false"></version-modal>
-        <Alert ref="alert" v-show="showVersionWarning" closable show-icon type="warning">有一个自动保存的版本比如下显示的版本还要新 <a href="javascript:;" @click="openVersionModel()">查看自动保存的版本</a></Alert>
+        <!--<Alert ref="alert" v-show="showVersionWarning" closable show-icon type="warning">有一个自动保存的版本比如下显示的版本还要新 <a href="javascript:;" @click="openVersionModel()">查看自动保存的版本</a></Alert>-->
     </div>
 
 </template>
@@ -103,6 +103,8 @@ import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
 import api from '@/utils/api'
+import * as post from '../../api/posts'
+import * as media from '../../api/media'
 // import ajax from '@/utils/ajax'
 import {on, off} from '@/utils/dom'
 import {verification, getMetaKeyCode, POST_WRITER_STATUS, dateFormat} from '@/utils/common'
@@ -218,7 +220,7 @@ export default {
                     // 3 = post/img/
                     // let tokenParam = {'x:space': 'post'} // 固定上传到文件空间
 
-                    let token = await api.nget('/api/img/token')
+                    let token = await media.token()
                     this.$uploadFiles(file, {
                         space: 'post',
                         action: 'http://up-z2.qiniu.com/putb64/-1/x:space/cG9zdA==', // post = 'cG9zdA=='  固定上传到文件空间
@@ -291,11 +293,8 @@ export default {
             // this.renderValue = render
             let obj = this.$store.getters.ajaxPostClone
             try {
-                let serverObj = await api.npost('/api/post/save', obj)
-                // console.log('save result = ', result)
+                let serverObj = await post.update(obj)
                 this.pushRouter('replace')
-
-                // this.$store.commit('updatePostStatus', serverObj.post_status)
                 let mergeObj = {
                     guid: serverObj.guid,
                     post_date: serverObj.post_date
@@ -416,7 +415,7 @@ export default {
         }
     },
     watch: {
-        editorStatus: function (val) {
+        editorStatus: function () {
             if (this.showLeaveTip) {
                 window.onbeforeunload = function () {
                     return '确认离开页面，当前修改将会丢弃'
@@ -476,8 +475,8 @@ export default {
         next()
     },
     mounted () {
-        let $alert = this.$refs.alert.$el
-        this.$el.parentNode.insertBefore($alert, this.$el)
+        // let $alert = this.$refs.alert.$el
+        // this.$el.parentNode.insertBefore($alert, this.$el)
 
         // postBody
 
@@ -485,8 +484,8 @@ export default {
         // this.tableHeight = h
         let onResize = debounce((e) => {
             // 这里地方 不知道什么缘故需要设置一下容易的宽度，好像flex 布局有什么坑
-            // let width = this.$el.clientWidth - this.$refs['postBox'].clientWidth
-            // this.$refs['postBody'].style.width = `${width}px`
+            let width = this.$el.clientWidth - this.$refs['postBox'].clientWidth
+            this.$refs['postBody'].style.width = `${width}px`
         }, 1000)
         onResize()
         on(window, 'resize', onResize)

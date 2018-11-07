@@ -66,7 +66,8 @@
     width: 100%;
     padding-right: 24px;
     //border-right: 1px solid $border-color;
-    @extend .curd-container
+    @extend .curd-container;
+    padding: 0;
   }
   @at-root #{&}__modal {
     max-width: 500px;
@@ -155,12 +156,14 @@
     padding-right: 0;
     margin-right: .5rem;
     text-decoration: underline;
+    background-color: transparent;
 }
 //.curd-table-options2 .ivu-btn-text span {
 //    cursor: pointer;
 //}
 .curd-table-options2 .ivu-btn-text:hover {
     text-decoration: underline;
+    background-color: transparent;
 }
 
 .post-table-title {
