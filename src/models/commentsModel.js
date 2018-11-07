@@ -98,7 +98,7 @@ module.exports = function (sequelize, DataTypes) {
                 //  时间超过当前时间 10分钟显示精确时间
                 let curr = moment().subtract(10, 'minutes');
                 // moment("2018-09-27T18:49:48.525") 2018-09-27T10:59:48.525Z
-                console.log(curr, new Date(), moment())
+                // console.log(curr, new Date(), moment())
                 let t = moment(this.getDataValue('createdAt'))
                 if (t.isBefore(curr)) {
                     return t.format('YYYY-M-D hh:mm')

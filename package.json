@@ -107,8 +107,8 @@
         "rules": {
             "vue/no-parsing-error": "off",
             "vue/no-unused-vars": "warning",
-            "no-unused-vars": "off",
-            "no-console": "off"
+            "no-console": "off",
+            "no-unused-vars": "off"
         }
     },
     "postcss": {

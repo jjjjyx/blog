@@ -47,6 +47,7 @@
     import isArray from 'lodash/isArray'
     import isFunction from 'lodash/isFunction'
     import { Queue, Task } from './task-queue'
+
     import { randomChar, formatFileSize } from '@/utils/common'
 
     function transformExtToClass (ext) {
@@ -111,6 +112,7 @@
         let dom
         switch (status) {
             case 'ready':{
+
                 let play = h('i-button', {
                     props: {type: 'text', size: 'small', icon: 'play'},
                     style: {marginRight: '5px'},
@@ -121,7 +123,6 @@
                         }
                     }
                 })
-
                 dom = h('div', [play, remove])
                 break
             }
@@ -327,7 +328,6 @@
                 let files = this.fileList.slice(0, this.bigQueueLimit + this.viewNum)
                 // 排序
                 // 按照状态 排序，UPLOADING > READY > ERROR > FAIL > QUEUE >SUCCESS
-
                 return orderBy(files, ['status', 'name'], ['asc', 'asc'])
             },
             isBigQueue: function () {
@@ -410,6 +410,7 @@
                 let {space} = opts
                 // 队列的最大值不限制， 但是限制同上上传的格式
                 if (isArray(files)) {
+
                     // let postFiles = Array.prototype.slice.call(files)
 
                     if (files.length === 0) return
@@ -418,7 +419,6 @@
                     // this.fileList
                     if (this.fileList.length + files.length > this.bigQueueLimit) {
                         let successFiles = this.fileList.filter(item => item.status === FileStatus.SUCCESS)
-
                         this.fileList = differenceBy(this.fileList, successFiles, 'uid')
                     }
                     // 提交一个数组 作为一个批次
@@ -566,7 +566,6 @@
                 }
                 this.reqs[uid] = ajax(options)
             },
-
             onFormatError: function (...a) {
                 console.log('onFormatError', a)
             },

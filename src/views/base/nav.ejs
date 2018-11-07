@@ -95,7 +95,7 @@ window.onscroll = e_scroll
             var b = document.querySelector('.wrapper-header')
             c = function (a) {
                 a = window.pageYOffset
-                0 == a && b.classList.add('top')
+                0 === a && b.classList.add('top')
                 0 < a && b.classList.remove('top')
                 25 < a && (b.classList.add('gizle'), a > d ? b.classList.remove('sabit') : b.classList.add('sabit'), d = a)
             }
