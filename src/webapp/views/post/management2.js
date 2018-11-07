@@ -1,4 +1,5 @@
-import _ from 'lodash'
+import find from 'lodash/find'
+import filter from 'lodash/filter'
 import Vue from 'vue'
 import {mapState, mapActions} from 'vuex'
 import {dateFormat} from '@/utils/common'
@@ -20,7 +21,7 @@ const renderAuthor = function (h, {row}) {
     return h('span', row.user.user_nickname)
 }
 const renderCategory = function (h, {row}) {
-    let category = _.find(row.terms, ['taxonomy', 'category'])
+    let category = find(row.terms, ['taxonomy', 'category'])
     return h('Tooltip', {
         props: {
             content: category.description
@@ -28,7 +29,7 @@ const renderCategory = function (h, {row}) {
     }, category.name)
 }
 const renderTags = function (h, {row}) {
-    let tags = _.filter(row.terms, ['taxonomy', 'post_tag'])
+    let tags = filter(row.terms, ['taxonomy', 'post_tag'])
     let $tags = tags.map((tag) => {
         return h('Tooltip', {
             props: {

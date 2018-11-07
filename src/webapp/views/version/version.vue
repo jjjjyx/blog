@@ -79,7 +79,8 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import difference from 'lodash/difference'
+import orderBy from 'lodash/orderBy'
 import CodeDiff from '@/components/code-diff/code-diff'
 import {mapState, mapGetters} from 'vuex'
 import {dateFormat} from '@/utils/common'
@@ -106,7 +107,7 @@ export default {
         }),
         ...mapGetters(['defaultCategoryValue']),
         versions: function () {
-            return _.orderBy(this.currentPost.revision, ['updatedAt'], ['desc'])
+            return orderBy(this.currentPost.revision, ['updatedAt'], ['desc'])
         },
         // 是否是当前版本
         isCurrent: function () {
@@ -137,7 +138,7 @@ export default {
             // console.log('activeTags', tags, this.currentPost.new_tag)
             // if (tags.length === 0) return false
             if (this.currentPost.new_tag.length === tags.length) { // 长度相等
-                return _.difference(this.currentPost.new_tag, tags).length // 取交集，无交集不显示
+                return difference(this.currentPost.new_tag, tags).length // 取交集，无交集不显示
             }
             return true
         }

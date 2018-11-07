@@ -13,12 +13,13 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import debounce from 'lodash/debounce'
+import cloneDeep from 'lodash/cloneDeep'
 import 'photoswipe/dist/photoswipe.css'
 import 'photoswipe/dist/default-skin/default-skin.css'
 import PhotoSwipe from 'photoswipe/dist/photoswipe'
 import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
-import {on, off} from '@/utils/dom'
+import {on} from '@/utils/dom'
 import ImgItem from './img-item'
 
 const galleryOptions = {
@@ -100,14 +101,14 @@ export default {
     },
     methods: {
         // 点击容器空白处
-        handleImagesWarpMouseDown (e) {
+        handleImagesWarpMouseDown () {
             this.data.forEach(i => {
                 i._checked = false
             })
         },
         openGallery (index) {
             galleryOptions.index = index
-            let data = _.cloneDeep(this.data)
+            let data = cloneDeep(this.data)
             let gallery = new PhotoSwipe(this.$refs.pswp.$el, PhotoSwipeDefaultUI, data, galleryOptions)
             gallery.init()
         },
@@ -127,8 +128,7 @@ export default {
         },
     },
     mounted () {
-        let onResize = _.debounce((e) => {
-            // console.log(this.$refs['imgs'].$el.clientHeight)
+        let onResize = debounce(() => {
             this.scrollHeight = this.$refs['imgs'].$el.clientHeight
         }, 1000)
         onResize()

@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import orderBy from 'lodash/orderBy'
 import {mapState} from 'vuex'
 import api from '@/utils/api'
 import {verification} from '@/utils/common'
@@ -56,8 +56,8 @@ export default {
             'categoryList': state => state.data.categoryList
         }),
         commonCategoryList: function () {
-            let arr = _.orderBy(this.categoryList, ['count'], ['desc']).slice(0, 5)
-            return arr
+
+            return orderBy(this.categoryList, ['count'], ['desc']).slice(0, 5)
         },
         categoryValue: {
             get () {

@@ -20,7 +20,7 @@
 <script>
 // const UserList = ['U', 'Lucy', 'Tom', 'Edward'];
 import {getTimeText, dateFormat} from '../../../utils/common'
-import _ from 'lodash'
+import orderBy from 'lodash/orderBy'
 const ColorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae']
 
 export default {
@@ -34,7 +34,7 @@ export default {
     },
     computed: {
         versions: function () {
-            return _.orderBy(this.currentPost.revision, ['updatedAt'], ['desc'])
+            return orderBy(this.currentPost.revision, ['updatedAt'], ['desc'])
         }
     },
     methods: {

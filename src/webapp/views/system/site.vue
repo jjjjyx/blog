@@ -53,7 +53,10 @@
 
 <script>
 // import {mapState} from 'vuex'
-import _ from 'lodash'
+import transform from 'lodash/transform'
+import isEqual from 'lodash/isEqual'
+import isObject from 'lodash/isObject'
+import cloneDeep from 'lodash/cloneDeep'
 import api from '@/utils/api'
 import {GridItem, GridLayout} from 'vue-grid-layout'
 // ResponsiveGridLayout
@@ -66,9 +69,9 @@ import {GridItem, GridLayout} from 'vue-grid-layout'
  * @return {Object}        Return a new object who represent the diff
  */
 function difference (object, base) {
-    return _.transform(object, function (result, value, key) {
-        if (!_.isEqual(value, base[key])) {
-            result[key] = (_.isObject(value) && _.isObject(base[key])) ? difference(value, base[key]) : value
+    return transform(object, function (result, value, key) {
+        if (!isEqual(value, base[key])) {
+            result[key] = (isObject(value) && isObject(base[key])) ? difference(value, base[key]) : value
         }
     })
 }
@@ -119,7 +122,7 @@ export default {
         return {
             formTop: {},
             isModify: false,
-            siteMap: _.cloneDeep(this.$store.state.siteMap),
+            siteMap: cloneDeep(this.$store.state.siteMap),
             siteLayout,
             // layout: layout
             layout: [
@@ -139,7 +142,7 @@ export default {
     },
     methods: {
         reset () {
-            this.siteMap = _.cloneDeep(this.$store.state.siteMap)
+            this.siteMap = cloneDeep(this.$store.state.siteMap)
         },
         async save () {
             let diff = difference(this.siteMap, this.$store.state.siteMap)
@@ -150,7 +153,7 @@ export default {
                 await api.npost('/api/site/update', diff)
                 this.$Message.info('保存成功')
                 this.$store.commit('updateSite', diff)
-                this.siteMap = _.cloneDeep(this.$store.state.siteMap)
+                this.siteMap = cloneDeep(this.$store.state.siteMap)
             } catch (e) {
                 this.$Message.error(e.message)
             }
@@ -159,7 +162,7 @@ export default {
     watch: {
         siteMap: {
             handler: function (val) {
-                this.isModify = !_.isEqual(val, this.$store.state.siteMap)
+                this.isModify = !isEqual(val, this.$store.state.siteMap)
             },
             deep: true
         }

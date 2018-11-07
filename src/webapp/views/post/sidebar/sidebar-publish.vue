@@ -110,7 +110,7 @@
 
 <script>
 
-import _ from 'lodash'
+import merge from 'lodash/merge'
 import {mapGetters, mapState} from 'vuex'
 import CollapseTransition from '@/utils/collapse-transition'
 import api from '@/utils/api'
@@ -281,7 +281,7 @@ export default {
                 // } else { // 点击更新
             }
             // 发起请求前不合并参数，这里只是临时合并，待发布成功后的回调后再更新文章信息
-            _.merge(obj, mergeObj)
+            merge(obj, mergeObj)
             // console.log('before obj', obj)
             try {
                 let revision = await api.npost('/api/post/release', obj)

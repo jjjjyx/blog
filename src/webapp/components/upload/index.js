@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import _ from 'lodash'
+import isFunction from 'lodash/isFunction'
 import { on } from '@/utils/dom'
 import Upload from './upload'
-import {randomChar} from '@/utils/common'
+import { randomChar } from '@/utils/common'
 
 const UploadConstructor = Vue.extend(Upload)
 
@@ -15,10 +15,10 @@ function handleFileSelect (e) {
     // 生成一个随机key 作为同的依据
     let key = randomChar(16)
     // let files = []
-    // let addFile = _.debounce(instance.uploadFiles, 500)
+    // let addFile = debounce(instance.uploadFiles, 500)
     let eachEntry = function (entries) {
         for (let i = 0; i < entries.length; i++) {
-            let entry = _.isFunction(entries[i].webkitGetAsEntry) ? entries[i].webkitGetAsEntry() : entries[i]
+            let entry = isFunction(entries[i].webkitGetAsEntry) ? entries[i].webkitGetAsEntry() : entries[i]
             if (entry.isFile) {
                 entry.file(function (file) {
                     // console.log(file, entry, this)
@@ -77,6 +77,7 @@ function initDropDom () {
         $div.style.display = 'none'
     })
 }
+
 // function initDownDom () {
 //     let ifa = document.createElement("iframe")
 //     ifa.setAttribute("id","down-file-iframe");
@@ -120,6 +121,7 @@ function install (Vue, opts = {}) {
     Vue.prototype.$uploadFiles = instance.uploadFiles
     // Vue.prototype.$uploadFile = instance.upload
 }
+
 // export {
 //     install
 // }

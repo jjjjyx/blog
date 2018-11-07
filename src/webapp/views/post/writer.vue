@@ -91,10 +91,14 @@
 
 <script>
 
-import _ from 'lodash'
+import first from 'lodash/first'
+import debounce from 'lodash/debounce'
+import isNumber from 'lodash/isNumber'
+import toNumber from 'lodash/toNumber'
 
 import draggable from 'vuedraggable'
 import {mapActions, mapGetters, mapState} from 'vuex'
+import store from '../../store'
 import {mavonEditor} from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 
@@ -354,9 +358,9 @@ export default {
         },
         checkVersion () {
             // 如果版本记录中 有最后修改时间大于当前修改时间的
-            let firstRevision = _.first(this.currentPost.revision)
+            let firstRevision = first(this.currentPost.revision)
             if (!firstRevision) return null
-            let revisionFirstTime = new Date(_.first(this.currentPost.revision).updatedAt).getTime()
+            let revisionFirstTime = new Date(first(this.currentPost.revision).updatedAt).getTime()
             let currUpdatedAt = new Date(this.currentPost.updatedAt).getTime()
             if (revisionFirstTime > currUpdatedAt) {
                 this.showVersionWarning = true
@@ -427,7 +431,14 @@ export default {
     },
     async beforeRouteEnter (to, from, next) {
         let {poi, active} = to.query
-        poi = _.toNumber(poi)
+        poi = toNumber(poi)
+        if (!poi) { // 没有传递poi 进入此路由， 判断store 里有没有
+            poi = store.state.post.id
+            if (!(poi && isNumber(poi))) { // 不存在文章
+                active = 'new'
+            }
+        }
+        // let poi = store.state.post.id
         // 如果有尚未保存的文章 给出提示
         next(async (vm) => {
             let thisId = vm.currentPost.id
@@ -472,7 +483,7 @@ export default {
 
         // let h = this.$refs['table-wrapper'].clientHeight
         // this.tableHeight = h
-        let onResize = _.debounce((e) => {
+        let onResize = debounce((e) => {
             // 这里地方 不知道什么缘故需要设置一下容易的宽度，好像flex 布局有什么坑
             // let width = this.$el.clientWidth - this.$refs['postBox'].clientWidth
             // this.$refs['postBody'].style.width = `${width}px`

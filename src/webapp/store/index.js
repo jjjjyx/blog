@@ -1,6 +1,6 @@
 'use strict'
 
-import _ from 'lodash'
+import toNumber from 'lodash/toNumber'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import createLogger from 'vuex/dist/logger'
@@ -67,7 +67,7 @@ const state = {
 const getters = {
     postStatusDict: state => state.dict.postStatus,
     imgSpaces: state => state.dict.img,
-    defaultCategoryValue: state => _.toNumber(state.siteMap['defaultCategoryId'].value)
+    defaultCategoryValue: state => toNumber(state.siteMap['defaultCategoryId'].value)
 }
 const debug = process.env.NODE_ENV !== 'production'
 const plugins = []

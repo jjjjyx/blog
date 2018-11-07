@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import isEmpty from 'lodash/isEmpty'
 import {mavonEditor} from 'mavon-editor'
 import {mapState, mapActions, mapGetters} from 'vuex'
 
@@ -69,7 +69,7 @@ export default {
         }),
         async fetch (force = false) {
             await this.fetchTrash(force)
-            if (_.isEmpty(this.target)) {
+            if (isEmpty(this.target)) {
                 this.target = this.data[0]
             }
         },

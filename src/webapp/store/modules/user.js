@@ -1,6 +1,7 @@
 'use strict'
 
-import _ from 'lodash'
+
+import merge from 'lodash/merge'
 // import store from '../index'
 
 const state = {
@@ -47,7 +48,7 @@ const actions = {
 }
 const mutations = {
     USER_SET_INFO (state, user) {
-        _.merge(state, user)
+        merge(state, user)
         state.validateTime = Date.now()
         // state.user = user
     },

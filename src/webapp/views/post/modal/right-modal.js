@@ -1,19 +1,27 @@
-import _ from 'lodash'
+import isEqualWith from 'lodash/isEqualWith'
+import cloneDeep from 'lodash/cloneDeep'
+import merge from 'lodash/merge'
 import api from '@/utils/api'
+
 export default {
     data () {
         return {
             ruleValidate: {
                 name: [
-                    { required: true, message: 'The name cannot be empty', trigger: 'blur' },
-                    {type: 'string', pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,30}$/, trigger: 'blur', message: '名称只能包含中文英文，下划线，数字,且在长度不超过10！'}
+                    {required: true, message: 'The name cannot be empty', trigger: 'blur'},
+                    {
+                        type: 'string',
+                        pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,30}$/,
+                        trigger: 'blur',
+                        message: '名称只能包含中文英文，下划线，数字,且在长度不超过10！'
+                    }
                 ],
                 description: [
                     {type: 'string', max: 140, trigger: 'blur', message: '备注请控制在140字内'}
                 ]
             },
             prefix: '',
-            formItem: _.cloneDeep(this.target),
+            formItem: cloneDeep(this.target),
             isModify: false,
             confirmStatus: false
         }
@@ -77,7 +85,7 @@ export default {
                 await api.npost(`/api/${this.url}/edit`, this.formItem)
                 this.$store.dispatch('edit_' + this.url, this.formItem)
                 // 此时的target对象是表格copy 的对象 与vuex管理的不是同一个对象 需要手动更新target对象的值
-                _.merge(this.target, this.formItem)
+                merge(this.target, this.formItem)
                 this.$Message.success('修改成功')
             } catch (e) {
                 this.$Message.error(e.message)
@@ -89,8 +97,8 @@ export default {
         handleConfirm () {
             return this[`__${this.action}`]()
         },
-        reset (form = 'form') {
-            _.merge(this.formItem, this.target)
+        reset () {
+            merge(this.formItem, this.target)
             // console.log(this.formItem)
         }
     },
@@ -100,14 +108,14 @@ export default {
                 if (v) {
                     // 回填
                     // 深度复制一份 在保存修改后重新赋值回去
-                    this.formItem = _.cloneDeep(this.target)
+                    this.formItem = cloneDeep(this.target)
                 }
             },
             deep: true
         },
         formItem: {
             handler: function (val) {
-                this.isModify = !_.isEqualWith(val, this.target)
+                this.isModify = !isEqualWith(val, this.target)
             },
             deep: true
         }

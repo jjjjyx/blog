@@ -1,6 +1,11 @@
 'use strict'
 
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import toNumber from 'lodash/toNumber'
+import isObject from 'lodash/isObject'
+import isArray from 'lodash/isArray'
+import groupBy from 'lodash/groupBy'
+
 import * as post from '../../api/posts'
 import {POST_WRITER_STATUS} from '../../utils/common'
 
@@ -42,8 +47,8 @@ const state = {
 // 可以merge的key
 let mergeKeys = ['comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'render_value', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'post_password', 'sticky', 'updatedAt', 'createdAt']
 
-const copyPost = _.cloneDeep(state)
-let currCopy = _.cloneDeep(state)
+const copyPost = cloneDeep(state)
+let currCopy = cloneDeep(state)
 
 const getters = {
     categoryValue: (state, getters) => state.category_id || getters.defaultCategoryValue,
@@ -51,7 +56,7 @@ const getters = {
     // 仅在保存中， 编辑 状态时提示
     showLeaveTip: state => state.status === POST_WRITER_STATUS.saving || state.status === POST_WRITER_STATUS.edited,
     ajaxPostClone: state => {
-        let obj = _.cloneDeep(state)
+        let obj = cloneDeep(state)
         delete obj.terms
         delete obj.metas
         delete obj.user
@@ -85,8 +90,8 @@ const actions = {
         }
     },
     async fetchPostInfo ({commit, state}, poi) {
-        poi = _.toNumber(poi)
-        if (poi && _.isNumber(poi)) {
+        poi = toNumber(poi)
+        if (poi && isNumber(poi)) {
             try {
                 // console.log('poi', poi)
                 let result = await post.get(poi)
@@ -193,7 +198,7 @@ const mutations = {
     // 主要作用是保持与后端的数据同步，减少再次请求数据
     updateAutoSaveContent (state, obj) {
         let autoRevision = state.revision.find(item => item.autosave)
-        if (_.isObject(autoRevision)) {
+        if (isObject(autoRevision)) {
             console.log('updateAutoSaveContent: ', obj, autoRevision)
             autoRevision.post_content = obj.post_content
             autoRevision.post_title = obj.post_title
@@ -209,14 +214,14 @@ const mutations = {
     },
     SET_CURRENT_POST (state, value) {
         // 先重置， 在设置
-        if (_.isObject(value)) {
+        if (isObject(value)) {
             for (let key in copyPost) {
                 if (state.hasOwnProperty(key)) {
                     state[key] = copyPost[key]
                 }
             }
             // 标记自动版本
-            if (value.revision && _.isArray(value.revision)) {
+            if (value.revision && isArray(value.revision)) {
                 value.revision.forEach((item) => {
                     item.autosave = item.type === `${value.id}-autosave-v1`
                     item.curr = item.updatedAt === value.updatedAt
@@ -233,13 +238,13 @@ const mutations = {
             }
             let {sticky} = value.metas
             if (sticky) {
-                state.sticky = _.toNumber(sticky.meta_value) ? 'sticky' : ''
+                state.sticky = toNumber(sticky.meta_value) ? 'sticky' : ''
             }
-            let {category, post_tag: postTag} = _.groupBy(value.terms, 'taxonomy')
+            let {category, post_tag: postTag} = groupBy(value.terms, 'taxonomy')
             if (postTag) state.new_tag = postTag.map((i) => i.name)
             if (category) state.category_id = category[0].id
 
-            currCopy = _.cloneDeep(state)
+            currCopy = cloneDeep(state)
         }
     }
 }

@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import _ from 'lodash'
+import difference from 'lodash/difference'
 
 import pswp from '@/components/pswp/pswp.vue'
 import ImgGrid from './img-grid'
@@ -253,7 +253,7 @@ export default {
         },
         // 清除失效图片，包括缓存
         clearInvalidImg () {},
-        handleUpload: function (name = 'file') {
+        handleUpload: function () { // name = 'file'
             // upload.openSelectFile(name)
             // if (name === 'folder') { // 选择文件夹
             //     // this.$Notice.open({
@@ -308,9 +308,9 @@ export default {
             let items = this._getSelectImages(target)
             let key = items.map(item => item.hash)
             try {
-                let result = await api.npost('/api/img/del',{key: key[0]})
+                await api.npost('/api/img/del',{key: key[0]})
                 // if (this.formItem.space !== 'all') {
-                this.data = _.difference(this.data, items)
+                this.data = difference(this.data, items)
                 // }
             } catch (e) {
                 this.$Message.info('删除失败')
@@ -320,9 +320,9 @@ export default {
             let items = this._getSelectImages(target)
             let key = items.map(item => item.hash)
             try {
-                let result = await api.npost('/api/img/move',{key, space})
+                await api.npost('/api/img/move',{key, space})
                 if (this.formItem.space !== 'all') {
-                    this.data = _.difference(this.data, items.filter(item => item.space !== space))
+                    this.data = difference(this.data, items.filter(item => item.space !== space))
                 }
             } catch (e) {
                 this.$Message.info('移动失败')

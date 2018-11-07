@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
 import i18n from '../../lang'
 import contextMenuVue from './context-menu'
 import { off, on } from '../../utils/dom'
@@ -11,7 +11,7 @@ export default {
 		// console.log('binding', binding, el)
 		let value = binding.value
 		let {menus, targetEl} = value
-		menus = _.cloneDeep(menus)
+		menus = cloneDeep(menus)
 		menus.forEach(function __ (item) {
 			item._disabled = typeof item.disabled === 'function' ? item.disabled() : item.disabled
 			if (item.child) {
