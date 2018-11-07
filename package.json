@@ -104,11 +104,17 @@
         "parserOptions": {
             "parser": "babel-eslint"
         },
+        "globals": {
+            "SITE": true,
+            "IS_DEV": true,
+            "config": true
+        },
         "rules": {
             "vue/no-parsing-error": "off",
             "vue/no-unused-vars": "warning",
             "no-console": "off",
-            "no-unused-vars": "off"
+            "no-unused-vars": "off",
+            "no-case-declarations": "off"
         }
     },
     "postcss": {

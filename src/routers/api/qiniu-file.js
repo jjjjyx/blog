@@ -199,7 +199,7 @@ const list = [
                 let c1 = Color(color)
                 result = result.filter((item) => c1.contrast(Color(item.color)) < 3)
             } catch (e) {
-
+                debug('转换颜色失败 color = ', color)
             }
 
             return res.status(200).json(Result.success(result))

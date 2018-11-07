@@ -107,7 +107,7 @@ const writeUser = [
         } else if (user_login) { // 没有登录，但是提交账号
             req.checkBody('user_login').custom((value) => {
                 debug('writeUser user_login = ', value)
-                return /^[a-zA-Z0-9_\-]{3,18}$/.test(value)
+                return /^[a-zA-Z0-9_\\-]{3,18}$/.test(value)
             }).withMessage('请提交正确的账号')
         } else { // 即没有登录，也没提交 随机一个，不能够使用之前的历史，如果用户使用同一个设备，隐身模式的话将会产生记住身份的错误 只需要限制用户的访问频率即可
 
