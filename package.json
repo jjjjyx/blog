@@ -62,6 +62,7 @@
         "shortid": "^2.2.12",
         "spark-md5": "^3.0.0",
         "useragent": "^2.3.0",
+        "uuid": "^3.3.2",
         "vue": "^2.5.16",
         "vue-grid-layout": "^2.1.13",
         "vue-i18n": "^8.3.0",

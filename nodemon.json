@@ -9,6 +9,7 @@
         "static",
         "node_modules/**/node_modules"
     ],
+    "delay": "2500",
     "verbose": true,
     "execMap": {
         "js": "node --harmony"

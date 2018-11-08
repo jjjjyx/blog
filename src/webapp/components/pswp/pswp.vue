@@ -69,6 +69,12 @@
 
 <script>
 export default {
-    name: 'pswp'
+    name: 'pswp',
+    destroyed () {
+        document.body.removeChild(this.$el)
+    },
+    mounted () {
+        document.body.appendChild(this.$el)
+    }
 }
 </script>

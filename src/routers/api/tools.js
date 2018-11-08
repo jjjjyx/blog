@@ -1,19 +1,18 @@
 'use strict'
 
 const http = require('http')
-const _ = require('lodash')
+const iconv = require('iconv-lite')
+
 const express = require('express')
-const router = express.Router()
 const debug = require('debug')('app:routers:api.tools')
 const log = require('log4js').getLogger('api.tools')
+const {query} = require('express-validator/check')
+
 const utils = require('../../utils')
 const Result = require('../../common/resultUtils')
-const {siteDao, termDao} = require('../../models/index')
-const {query} = require('express-validator/check')
-const {sanitizeBody} = require('express-validator/filter')
-const common = require('../common')
-const iconv = require('iconv-lite');
-
+const router = express.Router()
+// const {siteDao, termDao} = require('../../models/index')
+// const {sanitizeBody} = require('express-validator/filter')
 
 const redisClient = utils.redisClient
 const qqReg = /^[1-9][0-9]{4,}$/
@@ -25,7 +24,6 @@ const ipUpdateCountkey = 'update_count' // 修改次数
 log.debug('qq reg = ', qqReg)
 log.debug('qq AvatarUrl = ', qqAvater)
 log.debug('qq key_suffix = ', key_suffix)
-
 
 function getQinfoByqq (qq) {
     return new Promise((resolve, reject) => {
@@ -39,7 +37,7 @@ function getQinfoByqq (qq) {
             resp.on('end', () => {
                 let body = iconv.decode(Buffer.concat(data), 'gbk')
                 body = body.replace(/portraitCallBack\((.+?)\)/, '$1')
-                body =  Object.values(JSON.parse(body))[0]
+                body = Object.values(JSON.parse(body))[0]
                 // ["http://qlogo1.store.qq.com/qzone/617044132/617044132/100",231,-1,0,0,0,"蓝鲨捞鱼王",0]
                 let nickname = body[6]
                 resolve({
@@ -50,6 +48,7 @@ function getQinfoByqq (qq) {
         }).on('error', reject)
     })
 }
+
 const qinfo = [
     query('key').custom((value) => {
         debug('qinfo qq = ', value)

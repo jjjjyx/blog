@@ -22,15 +22,34 @@ export function fetchAll ({hash, space, color}, page) {
 
 /**
  * 将图片移动到指定空间
+ * 支持批量
  * @param key 图片id
  * @param space 空间
  * @returns {Promise<*>}
  */
-export function move (key, space) {
-    return api.nget('/api/img/move', {key, space})
+export function move (keys, space) {
+    return api.npost('/api/img/move', {keys, space})
 }
 
 
-export function deleteImg (key) {
-    return api.nget('/api/img/del', {key})
+export function deleteImg (keys) {
+    return api.npost('/api/img/del', {keys})
+}
+
+/**
+ * 检测失效的图标，
+ * 失效的图片包括 存在本地但是已在客户端删除的文件
+ * 没有被使用的图片
+ * 访问失败的图片
+ */
+export function detect (){
+    return api.nget('/api/img/detect')
+}
+
+/**
+ * 同步本地与七牛服务器的图片
+ * @returns {Promise<*>}
+ */
+export function sync (){
+    return api.nget('/api/img/sync')
 }
