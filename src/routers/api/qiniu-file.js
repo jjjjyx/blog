@@ -373,8 +373,16 @@ function detectImageUrl (url) {
 
 const detect = async function (req, res, next) {
     // 获取全部资源
+    // todo 探测比较慢 临时写几个测试用
+    // {
+    //     where: {
+    //         hash: ['Fg5Rt_GF1zdn-ph_Nfr4CT7J8Fvi','Fg8yOQDNGye2zcAIhYH8OQBv7oXC', 'FgaPkbw_VxB9hSjsMiDWzdYRccGY', 'FglabNLND9aqVkgfVypjXQJqGVQx']
+    //     }
+    // }
     try {
-        let result = await resourceDao.findAll()
+        let result = await resourceDao.findAll(
+
+        )
         let failNotFound = []
         // let fail = {
         //     404: failNotFound

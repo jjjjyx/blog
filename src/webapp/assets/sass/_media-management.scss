@@ -130,7 +130,7 @@
 }
 
 .invalid-curd-warp {
-    .curd-toolbar, .curd-header  {
+    .curd-toolbar__filter-form, .curd-toolbar--right, .curd-header {
         display: none;
     }
     .curd-body {

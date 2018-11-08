@@ -115,7 +115,7 @@
                    style="position:absolute;opacity:0;top:0;left:0;width:100%;height:100%;cursor:pointer;">
         </form>
         <pswp ref="pswp"></pswp>
-        <invalid-image :visible="invalidImageModalVisible" :data="invalidImageData"/>
+        <invalid-image :visible="invalidImageModalVisible" :data.sync="invalidImageData"/>
         <input style="position: absolute;left: -999px;opacity: 0" ref="copyrelay"/>
     </div>
 </template>

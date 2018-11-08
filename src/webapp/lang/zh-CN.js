@@ -194,6 +194,17 @@ export default {
             action: '@:curd.columns.action'
         }
     },
+    invalid: {
+        columns: {
+            hash: 'Hash',
+            type: '失效原因',
+            url: '链接',
+            size: '大小',
+            name: '文件名称',
+            createdAt: '@:curd.columns.createdAt',
+            action: '@:curd.columns.action'
+        }
+    },
     error: {
         404: '页面未找到',
         '404_desc': '请检查您输入的网址是否正确，请点击以下按钮返回主页' // 或者发送错误报告

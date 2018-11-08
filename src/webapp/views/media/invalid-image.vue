@@ -6,9 +6,14 @@
             :data="data"
             :fetch="() => {}"
             :deleteAction="deleteImage"
-            :page-size="20"
+            :page-size="10"
             ref="curd"
-        />
+        >
+            <!--todo 顶部的工具部分被屏蔽，导致这个显示不出来  批量删除很关键-->
+            <template slot="form-buttons" slot-scope="scope">
+                <i-button icon="md-trash" :disabled="scope.selectedNum === 0" @click="deleteImage(scope.selectedList)">删除</i-button>
+            </template>
+        </curd>
 
         <!--<Collapse simple>-->
             <!--<Panel :name="k" v-for="(v, k) in data" :key="k">-->
@@ -30,7 +35,13 @@
 </template>
 
 <script>
+    import differenceBy from 'lodash/differenceBy'
 	import Curd from '../../components/curd/curd'
+    import {dateFormat} from '../../utils/common'
+    import * as media from '../../api/media'
+    const renderDate = function (h, {row}) {
+        return [dateFormat(row.createdAt)]
+    }
     export default {
 		name: 'invalid-image',
         components: {Curd},
@@ -41,7 +52,7 @@
             },
             data: {
                 type: Array,
-            },
+            }
         },
         data () {
             return {
@@ -49,12 +60,12 @@
                 modalVisible: this.visible,
                 columns: [
                     {type: 'selection', width: 40, align: 'center'},
-                    {title: 'ID', key: 'hash', width: 90, sortable: true},
-                    {title: '文件名称', key: 'name', width: 150, sortable: true},
-                    {title: '大小', key: 'size', width: 90, sortable: true},
-                    {title: 'url', key: 'url', width: 100},
-                    {title: '失效类型', key: 'type'},
-                    // {title: '创建时间', key: 'createdAt', width: 150, render: renderDate.bind(this)},
+                    {title: 'ID', key: 'hash'},
+                    {title: '文件名称', key: 'name' },
+                    {title: '大小', key: 'size' },
+                    {title: 'url', key: 'url' },
+                    {title: '失效类型', key: 'type', width: 100,},
+                    {title: '创建时间', key: 'createdAt', width: 150, render: renderDate.bind(this)},
                     {title: 'action', key: 'action', width: 200, type: 'action'}
                 ]
             }
@@ -70,8 +81,18 @@
             }
         },
         methods: {
-            deleteImage () {
-
+            async deleteImage (items) {
+                let keys = items.map(item => item.hash)
+                console.log(keys)
+                try {
+                    await media.deleteImg(keys)
+                    // if (this.formItem.space !== 'all') {
+                    // this.data = difference(this.data, items)
+                    // }
+                    this.$emit('update:data', differenceBy(this.data, items, 'hash'))
+                } catch (e) {
+                    this.$Message.info('删除失败')
+                }
             }
         }
 	}
