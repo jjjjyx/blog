@@ -183,7 +183,7 @@ async function getImageInfo (url) {
 }
 
 
-const size = 50
+const size = 100
 const allowSpace = Object.values(Enum.ImgEnum)
 const sanitizeSpace = sanitizeQuery('space')
     .customSanitizer((value) => {

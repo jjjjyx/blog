@@ -18,7 +18,8 @@ export const mutations = {
         // console.log('==', matched, state)
         state.breadCrumbList = [state.homeRouter] // getBreadCrumbList(routeMetched, state.homeRoute)
         for (let item of matched) {
-            if (item.meta.hide) continue
+            if (item.name === state.homeRouter.name) continue
+            // if (item.meta.hide) continue
             if (!item.name) continue
             // let parent = item.meta.parent
             // parent && state.breadCrumbList.push(parent)

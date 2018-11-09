@@ -26,31 +26,22 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
-client/dist
 dist
-client/home
 
 sftp-config.json
 
 private.js
-
-client/public/img/logoquan14746110164.psd
-
 *.psd
-
-client/public/img/logoquan14696215588.PNG
-
-client/favicon.png
 *.bak
 /bak
 /doc/view
-/client/public/tmp
+
 kfavicon.png
-
-
 
 dump.rdb
 sql.sql
 *.sql
 .idea/
 sql/
+package-lock.json
+yarn.lock

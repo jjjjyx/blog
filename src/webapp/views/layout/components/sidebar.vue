@@ -15,7 +15,7 @@
     </router-link>
     <div class="sidebar-header__item header-user wrapper__sidebar--divided">
         <div class="header-user__image">
-            <img src="http://image.cdn.mbdoge.cn/140d5330-376d-11e7-81cc-c5fb8304dee6" alt="">
+            <img :src="user.user_avatar" alt="">
         </div>
         <div class="header-user__info">
             <h6>{{user.user_nickname}}</h6>
@@ -44,7 +44,7 @@ export default {
     components: {Logo, SidebarItem},
     data () {
         return {
-			accordion: true,
+			accordion: false,
 			activeName: null,
 			openedNames: [],
         }

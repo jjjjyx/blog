@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   height: $nav-height;
-  background-color: white;
+  background-color: transparent;
   .ivu-menu-horizontal {
     height: $nav-height;
     line-height: $nav-height;
@@ -86,4 +86,10 @@
 
 .breadcrumb-leave-active {
   position: absolute
+}
+
+.layout-style-v2 {
+    .main-header-container {
+        border-bottom: 1px solid $border-color;
+    }
 }

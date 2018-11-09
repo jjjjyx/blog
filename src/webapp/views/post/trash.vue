@@ -1,5 +1,5 @@
 <template>
-<div class="cm-container trash-container">
+<div class="curd-container trash-container">
     <div class="trash-list-warp">
         <!--<Tooltip content="刷新">-->
 
@@ -141,6 +141,7 @@ export default {
         border-bottom: 1px solid #e9eaec;
     }
     .trash-list-warp__list {
+        height: 100%;
         list-style: none;
         overflow-y: scroll;
     }

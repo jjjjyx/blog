@@ -7,7 +7,10 @@ export default {
         'post_writer': '文章编辑',
         'tag_management': '标签管理',
         'category_management': '分类管理',
+        'pages': '页面',
+        'blank': '空白页面',
         'media': '媒体管理',
+        'profile': '用户资料',
         'trash': '回收站',
         'nested': '嵌套路由',
         'system': '系统设置',
@@ -22,7 +25,7 @@ export default {
     },
     navbar: {
         welcome: '欢迎您：',
-        userSet: '账号设置',
+        profile: '个人资料',
         logOut: '退出登录',
         dashboard: '控制台',
         home: '首页',
@@ -110,7 +113,7 @@ export default {
         'INVALID_PARAMETERS': '无效的参数'
     },
     curd: {
-        search_label: '关键字',
+        search_label: '搜索',
         search_placeholder: '搜索...',
         total: '已全部加载，共 {0} 条',
         header_text: '全部 {name}',

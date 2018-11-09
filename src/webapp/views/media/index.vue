@@ -85,15 +85,16 @@
                     </Poptip>
                 </form-item>
                 <FormItem>
-                    <Button type="primary" @click="handleSubmit('formItem')">搜索</Button>
-                </FormItem>
-                <FormItem class="float-right">
-                    <Tooltip content="原生空间管理">
-                        <Button type="text" icon="soup-can"></Button>
-                    </Tooltip>
+                    <Button @click="handleSubmit('formItem')" type="primary" class="mr-2">搜索</Button>
+                    <!--<Tooltip content="原生空间管理">-->
+                    <!--<Button type="text" icon="soup-can"></Button>-->
+                    <!--</Tooltip>-->
                     <Button @click="clearInvalidImg" class="mr-2" :loading="detectLoading">探测失效图片</Button>
                     <Button @click="sync" class="mr-2" :loading="syncLoading">同步本地图片</Button>
-                    <Button type="primary" @click="handleUpload">上传新图片</Button>
+                    <Button @click="handleUpload" type="primary">上传新图片</Button>
+                </FormItem>
+                <FormItem class="float-right">
+
                 </FormItem>
             </Form>
             <!--</div>-->
@@ -114,7 +115,6 @@
                    name="html5uploader"
                    style="position:absolute;opacity:0;top:0;left:0;width:100%;height:100%;cursor:pointer;">
         </form>
-        <pswp ref="pswp"></pswp>
         <invalid-image :visible="invalidImageModalVisible" :data.sync="invalidImageData"/>
         <input style="position: absolute;left: -999px;opacity: 0" ref="copyrelay"/>
     </div>
@@ -122,15 +122,14 @@
 
 <script>
     import difference from 'lodash/difference'
-    import cloneDeep from 'lodash/cloneDeep'
 
     import { mapGetters } from 'vuex'
-    import 'photoswipe/dist/photoswipe.css'
-    import 'photoswipe/dist/default-skin/default-skin.css'
-    import PhotoSwipe from 'photoswipe/dist/photoswipe'
-    import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
+    // import 'photoswipe/dist/photoswipe.css'
+    // import 'photoswipe/dist/default-skin/default-skin.css'
+    // import PhotoSwipe from 'photoswipe/dist/photoswipe'
+    // import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
 
-    import pswp from '@/components/pswp/pswp.vue'
+    // import pswp from '@/components/pswp/pswp.vue'
     import { getMetaKeyCode } from '@/utils/common'
     import { on, off } from '@/utils/dom'
 
@@ -250,8 +249,7 @@
         },
         components: {
             InvalidImage,
-            ImgGrid,
-            pswp
+            ImgGrid
             // Waterfall,
             // WaterfallSlot
         },
@@ -325,7 +323,7 @@
                     this.invalidImageModalVisible = true
                     this.invalidImageData = data
                 } catch (e) {
-                    this.$Message.error('探测出现异常:'+e.message)
+                    this.$Message.error('探测出现异常:' + e.message)
                 } finally {
                     this.detectLoading = false
                     this.$Notice.close('detect_notice')
@@ -346,7 +344,7 @@
                     this.currPage = 1
                     this.fetchMedia() // 刷新当前空间
                 } catch (e) {
-                    this.$Message.error('同步出现异常:'+e.message)
+                    this.$Message.error('同步出现异常:' + e.message)
                 } finally {
                     this.syncLoading = false
                     this.$Notice.close('sync_notice')
@@ -432,15 +430,13 @@
                 // console.log('space', target , space)
             },
             openGallery (index) {
-                galleryOptions.index = index
-                // let data = cloneDeep(this.data)
                 let data = this.data.map(item => ({
                     src: item.url,
                     w: item.width,
                     h: item.height
                 }))
-                let gallery = new PhotoSwipe(this.$refs.pswp.$el, PhotoSwipeDefaultUI, data, galleryOptions)
-                gallery.init()
+
+                this.$photoswipe.open(parseInt(index, 10), data)
             },
             copy (text) {
                 this.$refs.copyrelay.value = text

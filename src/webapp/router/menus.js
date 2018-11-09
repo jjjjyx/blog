@@ -30,7 +30,7 @@ const homeRouter = {
  */
 const menus = [
 	// {title: '404', path: '404', name: 'error-404', hide: true, layout: false, component: 'errorPage/404'},
-	// {title: '401', path: '/401', name: 'error-401', hide: true},
+
 	homeRouter,
 	{
 		title: 'sign', path: 'sign', name: 'sign', hide: true, layout: '/sign/sign',
@@ -70,12 +70,25 @@ const menus = [
 		]
 	},
     {title: 'media', path: 'media', name: 'media', icon: 'md-image'},
+
+    {
+        title: 'pages', path: 'pages', name: 'pages', icon: 'ios-aperture',
+        redirect: '/pages/blank',
+        child : [
+            {
+                title: 'blank', path: 'blank', name: 'blank', icon: 'ios-document-outline'
+            },
+            {
+                title: 'profile', path: 'profile', name: 'profile', hide: true
+            }
+        ]
+    },
     {
         title: 'system', path: 'system', name: 'system', icon: 'md-globe',
         redirect: '/system/site',
         child : [
             {
-                title: 'website', path: 'website', name: 'website', icon: 'ios-aperture'
+                title: 'website', path: 'website', name: 'website', icon: 'ios-settings'
             }
         ]
     },

@@ -1,0 +1,97 @@
+
+.pages-profile-container {
+
+    h1 {
+        margin-bottom: 2rem;
+    }
+}
+
+.user-base-profile-row {
+    display: flex;
+}
+
+.user-base-profile-warp {
+    margin-left: 4rem;
+    width: 100%;
+}
+
+.card-user-avatar-warp {
+    width: 500px;
+    user-select: none;
+    flex-shrink: 0;
+    .image {
+        height: 200px;
+        overflow: hidden;
+        border-radius: $border-radius;
+        position: relative;
+    }
+    .image img {
+        max-width: 100%;
+    }
+    .image::after {
+        content: '';
+        background-color: $black;
+        width: 100%;
+        height: 100%;
+        display: block;
+        position: absolute;
+        opacity: .2;
+        top: 0;
+        z-index: 1;
+    }
+
+    .card-extra {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        z-index: 2;
+    }
+    .card-extra i {
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .card-body {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+    }
+    .user-avatar {
+        margin: -80px auto 0;
+        width: 130px;
+        height: 130px;
+        box-shadow: 0 10px 30px -12px rgba(0,0,0,.42), 0 4px 25px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.2);
+        border: 3px solid white;
+        border-radius: 50%;
+        overflow: hidden;
+        //padding: 5px;
+    }
+    .user-avatar img{
+        max-width: 100%;
+    }
+    h4, h2 {
+        user-select: text;
+    }
+}
+
+
+// 公共的card 样式 抽取组件时请带走
+
+.card {
+    border-radius: $border-radius;
+
+    position: relative;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 15px 1px rgba(39, 39, 39, 0.1);
+    background-color: #fff;
+}
+.card .card-header {
+
+}
+.card .card-body {
+    padding: 15px 15px 10px 15px;
+}
+.card .card-footer {
+    padding: 15px 15px 10px 15px;
+}

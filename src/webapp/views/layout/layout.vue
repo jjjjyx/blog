@@ -2,9 +2,9 @@
     <div class="wrapper">
         <Sidebar class="sidebar-container" ></Sidebar>
         <div class="main-container">
-            <navbar class="main__header"/>
+            <main-header class="main__header"/>
             <main-alert class="main__alert"/>
-            <tabs class="main__tabs"/>
+            <main-tabs class="main__tabs"/>
             <transition name="fade-transform" mode="out-in">
                 <!--<keep-alive :include="cachedViews">-->
                 <router-view :key="key" class="main__content"/>
@@ -19,9 +19,9 @@
 <script>
 
 	import Sidebar from './components/sidebar'
-	import Navbar from './components/navbar'
-	import plugin from './components/plugin'
-	import Tabs from './components/tabs'
+	import MainHeader from './components/main-header-1.vue'
+    import MainPlugin from './components/main-plugin'
+	import MainTabs from './components/main-tabs'
 	import MainFooter from './components/main-footer'
 	import MainAlert from './components/main-alert'
 
@@ -30,10 +30,10 @@
 		components: {
 			MainAlert,
 			MainFooter,
-			Tabs,
-			Sidebar,
-			Navbar,
-			plugin
+            MainHeader,
+            MainPlugin,
+			MainTabs,
+			Sidebar
 		},
 		computed: {
 			cachedViews() {

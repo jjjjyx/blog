@@ -16,7 +16,7 @@ export default {
 	},
 	navbar: {
 		welcome: '歡迎您：',
-		userSet: '賬號設置',
+		profile: '個人資料',
 		logOut: '退出登錄',
 		dashboard: '控制台',
 		home: '首頁',

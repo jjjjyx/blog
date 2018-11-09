@@ -1,5 +1,5 @@
 <template>
-    <Card>
+    <Card >
         <p slot="title" v-text="title"></p>
         <Form :model="formItem" :label-width="100" ref="form" :rules="ruleValidate">
             <FormItem :label="$t('tag.modal.name')" prop="name">

@@ -16,7 +16,7 @@ export default {
 	},
 	navbar: {
 		welcome: 'Signed in as ',
-		userSet: 'Settings',
+		profile: 'Your Profile',
 		logOut: 'Sign out',
 		dashboard: 'Dashboard',
 		home: 'Home',

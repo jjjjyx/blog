@@ -11,6 +11,7 @@ import store from './store'
 import directives from './directives'
 import upload from './components/upload'
 import Icon from './components/icon'
+import PhotoSwipe from './components/photo-swipe'
 
 import 'normalize.css'
 import 'iview/dist/styles/iview.css'
@@ -23,6 +24,7 @@ Vue.use(iView, {
 Vue.use(Icon)
 Vue.use(upload)
 Vue.use(directives)
+Vue.use(PhotoSwipe)
 Vue.config.productionTip = false
 
 function appInit () {

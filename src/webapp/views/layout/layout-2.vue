@@ -1,47 +1,46 @@
 <template>
-    <div class="wrapper">
+    <div class="wrapper layout-style-v2">
+        <!-- todo 放一些欢迎用于， 比如检查时间 中午上午下午晚上好之类的 ，天气模块-->
         <Sidebar class="sidebar-container" ></Sidebar>
         <div class="main-container">
-            <navbar class="main__header"/>
-            <main-alert class="main__alert"/>
-            <tabs class="main__tabs"/>
+            <main-header class="main__header"/>
+            <!--<main-alert class="main__alert"/>-->
+            <!--<tabs class="main__tabs"/>-->
             <transition name="fade-transform" mode="out-in">
                 <!--<keep-alive :include="cachedViews">-->
                 <router-view :key="key" class="main__content"/>
                 <!--</keep-alive>-->
             </transition>
             <main-footer/>
-            <plugin class="main__plugin"></plugin>
+            <main-plugin class="main__plugin"></main-plugin>
         </div>
     </div>
 </template>
 
 <script>
 
-import Sidebar from './components/sidebar'
-import Navbar from './components/navbar'
-import plugin from './components/plugin'
-import Tabs from './components/tabs'
-import MainFooter from './components/main-footer'
-import MainAlert from './components/main-alert'
+	import Sidebar from './components/sidebar'
+	import MainHeader from './components/main-header-2'
+	import MainPlugin from './components/main-plugin'
+	import MainFooter from './components/main-footer'
+	import MainAlert from './components/main-alert'
 
-export default {
-    name: 'layout',
-    components: {
-		MainAlert,
-		MainFooter,
-		Tabs,
-		Sidebar,
-		Navbar,
-		plugin
-    },
-	computed: {
-		cachedViews() {
-			return this.$store.state.tagsView.cachedViews
+	export default {
+		name: 'layout',
+		components: {
+			MainAlert,
+			MainFooter,
+            MainHeader,
+            MainPlugin,
+			Sidebar
 		},
-		key() {
-			return this.$route.fullPath
+		computed: {
+			cachedViews() {
+				return this.$store.state.tagsView.cachedViews
+			},
+			key() {
+				return this.$route.fullPath
+			}
 		}
-    }
-}
+	}
 </script>

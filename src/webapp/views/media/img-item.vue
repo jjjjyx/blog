@@ -6,7 +6,7 @@
         <div class="img">
             <img :src="item.url + imgStyle" alt="">
         </div>
-        <span class="title" :title="item.name || item.key">{{item.name || item.key}}</span>
+        <!--<span class="title" :title="item.name || item.key">{{item.name || item.key}}</span>-->
         <div class="check">
             <font-icon type="md-checkmark-circle"></font-icon>
         </div>

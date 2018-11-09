@@ -59,6 +59,10 @@
 .ivu-table {
     // 表格字体太小
     font-size: 1rem;
+    background-color: transparent;
+}
+.ivu-table:before {
+    content: none;
 }
 
 .ivu-table-cell {

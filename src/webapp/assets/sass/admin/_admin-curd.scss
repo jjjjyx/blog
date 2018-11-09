@@ -1,0 +1,181 @@
+
+.curd-container {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    background: rgb(255, 255, 255);
+    border-radius: 6px;
+    padding: 24px 24px 0;
+    min-height: 700px;
+}
+
+.curd-header {
+    position: relative;
+    font-size: 1rem;
+    margin-top: 1rem;
+    padding: 0 1rem;
+
+    .ivu-breadcrumb {
+        //position: absolute;
+        //top: 0;
+        //left: 10px;
+    }
+}
+
+.curd-body {
+    margin: 15px 0 0;
+    height: 100%;
+    position: relative;
+    flex: auto;
+    overflow-y: hidden;
+    .curd-body--table {
+        border: none;
+        margin-top: 0;
+    }
+    .curd-body--table tr > th:first-child .ivu-table-cell, .curd-body--table tr > td:first-child .ivu-table-cell {
+        padding-left: 20px;
+        padding-right: 0;
+        .ivu-checkbox-wrapper {
+            margin-right: 0;
+        }
+
+    }
+    //.curd-body--table .ivu-table:before {
+    //  content: none;
+    //}
+    .curd-body--table .ivu-table:after {
+        width: 0;
+    }
+}
+
+.curd-footer {
+    flex-shrink: 0;
+    padding: 1rem 0;
+    //text-align: right;
+    .ivu-btn {
+        margin-right: .25rem;
+    }
+}
+
+.curd-container--flex {
+    display: flex;
+    flex-direction: row;
+    @at-root #{&}__left {
+        width: 100%;
+        padding-right: 24px;
+        //border-right: 1px solid $border-color;
+        @extend .curd-container;
+        padding: 0;
+    }
+    @at-root #{&}__modal {
+        max-width: 500px;
+        min-width: 350px;
+        flex-shrink: 1;
+        padding: 0 0 0 24px;
+        position: relative;
+        //border-top: 1px solid $border-color;
+        &:before {
+            //content: '';
+            width: 1px;
+            background-color: $border-color;
+            height: 90%;
+            position: absolute;
+            left: 12px;
+            top: 5%;
+            opacity: .5;
+        }
+    }
+    .curd-body {
+        //margin: 15px 0 0 -24px !important;
+    }
+}
+
+.curd-toolbar {
+
+    .curd-toolbar--right {
+        text-align: right;
+    }
+    .ivu-btn-icon-only:focus {
+        outline: none;
+        box-shadow: none;
+    }
+    .ivu-btn-icon-only i {
+        font-size: 18px;
+        line-height: 1;
+    }
+}
+
+.curd-toolbar__filter-form {
+    float: left;
+    margin-right: 20px;
+}
+
+.curd-toolbar__filter-form .ivu-form-item {
+    margin-bottom: 0;
+    &:last-child .ivu-form-item-content {
+        margin-left: 0 !important;
+    }
+}
+
+//
+//.table-buttons{
+//  text-align: right;
+//  font-size: 0;
+//  flex-shrink: 0;
+//}
+//
+//.table-buttons .ivu-select-dropdown {
+//  text-align: left;
+//}
+.curd-fun-container {
+
+}
+
+.curd-fun__title {
+    line-height: 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 2rem;
+}
+
+.curd-table-title-wrap {
+    padding: .25rem 0;
+}
+
+.curd-table-options {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.ivu-table-row-hover .curd-table-options {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.curd-table-options2 .ivu-btn, .curd-table-options .ivu-btn {
+    font-size: 1rem;
+}
+
+.curd-table-options2 .ivu-btn-text {
+    padding-left: 0;
+    padding-right: 0;
+    margin-right: .5rem;
+    text-decoration: underline;
+    background-color: transparent;
+}
+
+//.curd-table-options2 .ivu-btn-text span {
+//    cursor: pointer;
+//}
+.curd-table-options2 .ivu-btn-text:hover {
+    text-decoration: underline;
+    background-color: transparent;
+}
+
+.post-table-title {
+    font-size: 14px;
+}
+
+.post-table-content {
+    margin-bottom: .5em;
+}
