@@ -51,6 +51,7 @@
         "moment": "^2.22.2",
         "mysql2": "^1.5.3",
         "normalize.css": "^8.0.0",
+        "pbkdf2": "^3.0.17",
         "perfect-scrollbar": "^1.4.0",
         "photoswipe": "^4.1.2",
         "qiniu": "^7.2.0",

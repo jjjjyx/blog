@@ -32,21 +32,21 @@ const menus = [
 	// {title: '404', path: '404', name: 'error-404', hide: true, layout: false, component: 'errorPage/404'},
 
 	homeRouter,
-	{
-		title: 'sign', path: 'sign', name: 'sign', hide: true, layout: '/sign/sign',
-		redirect: '/sign/in',
-		child: [
-			{
-				title: 'sign_in', path: 'in', name: 'sign_in'
-			},
-			{
-				title: 'sign_up', path: 'up', name: 'sign_up'
-			},
-			{
-				title: 'sign_forgot_pass', path: 'forgot_pass', name: 'sign_forgot_pass'
-			}
-		]
-	},
+    {
+        title: 'sign', path: 'sign', name: 'sign', hide: true, layout: '/sign/sign',
+        redirect: '/sign/in',
+        child: [
+            {
+                title: 'sign_in', path: 'in', name: 'sign_in'
+            },
+            // {
+            //     title: 'sign_up', path: 'up', name: 'sign_up'
+            // },
+            {
+                title: 'sign_forgot_pass', path: 'forgot_pass', name: 'sign_forgot_pass'
+            }
+        ]
+    },
 	// {title: 'test', path: 'tt', name: 'ttt', layout: '/layout/test'}, // 使用其他布局示例，应用布局文件 @/views/layout/test
 	{
 		title: 'post', path: 'post', name: 'post', textIcon: 'post',

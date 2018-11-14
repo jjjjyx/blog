@@ -1,6 +1,7 @@
 
 .pages-profile-container {
-
+    overflow-y: auto;
+    overflow-x: hidden;
     h1 {
         margin-bottom: 2rem;
     }
@@ -8,17 +9,77 @@
 
 .user-base-profile-row {
     display: flex;
+    margin-bottom: 1rem;
+    .ivu-form-item {
+        margin-bottom: 0;
+    }
+    .ivu-form-item:not(:last-child) {
+        border-bottom: 1px dotted $border-color;
+    }
+    .ivu-form-item-error-tip {
+        top: 4px;
+        left: 310px;
+    }
+}
+.user-pass-change-warp {
+    //.ivu-form-item {
+    //    margin-bottom: 1rem;
+    //}
+    //.ivu-form-item-label {
+    //    padding-top: 15px;
+    //    padding-bottom: 15px;
+    //}
+    //.ivu-form-item-content {
+    //    padding-top: 5px;
+    //}
 }
 
+
+
 .user-base-profile-warp {
-    margin-left: 4rem;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .user-base-profile__header {
+
+    }
+}
+
+.user-profile-warp {
+    padding: 1rem;
+    .ivu-form {
+        height: 100%;
+        padding: 0 2rem;
+        //width: ;
+    }
+
+
+    .ivu-form-item-label {
+        text-transform: capitalize;
+    }
+    .ivu-form-item-content {
+        //padding: 5px;
+    }
+    textarea {
+        margin: 5px 0;
+    }
+    .ivu-input {
+        width: 300px;
+        //border-width: 0 ;
+        //border-radius: 0;
+    }
+    .ivu-input:focus {
+        outline: none;
+        box-shadow: none
+    }
 }
 
 .card-user-avatar-warp {
     width: 500px;
     user-select: none;
     flex-shrink: 0;
+    text-align: center;
     .image {
         height: 200px;
         overflow: hidden;

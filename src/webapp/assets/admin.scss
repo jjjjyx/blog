@@ -50,7 +50,11 @@ $badge-colors: map_merge($colors, (
 @import "sass/admin/media-management";
 @import "sass/admin/site";
 @import "sass/admin/pages-profile";
+@import "sass/admin/admin-login";
 @import "sass/tabs-style";
+@import "sass/social";
+
+
 //@import "sass/location";
 //@import "sass/scrollbar";
 //@import "sass/error";

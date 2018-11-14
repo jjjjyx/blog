@@ -11,7 +11,6 @@
 @import "./sass/scrollbar";
 
 
-
 .h1, .h2, .h3, .h4, .h6, .h5 {
     //font-family: Roboto,Helvetica,Arial,sans-serif;
     font-weight: 300;
@@ -65,21 +64,6 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-}
-
-.list-unstyled {
-    padding-left: 0;
-    list-style: none;
-}
-.list-inline {
-    padding-left: 0;
-    margin-left: -5px;
-    list-style: none;
-}
-.list-inline>li {
-    display: inline-block;
-    padding-right: 5px;
-    padding-left: 5px;
 }
 
 // 框样式 块样式

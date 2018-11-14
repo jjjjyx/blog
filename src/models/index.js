@@ -18,6 +18,7 @@ const sequelize = new Sequelize(db_config.database, db_config.username,
 let models = [
     'usersModel.js',
     'usersMetaModel.js',
+    'usersLogModel.js',
     'commentsModel.js',
     'commentMetaModel.js',
     'postsModel.js',

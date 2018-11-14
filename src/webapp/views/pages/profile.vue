@@ -6,53 +6,40 @@
 
         <!-- 用户基础资料 头像等-->
         <div class="user-base-profile-row">
-            <div class="card-user-avatar-warp card">
-                <div class="image card-header">
-                    <img src="http://image.cdn.mbdoge.cn/FnHqrCMNHlUprEQ_b-Z0TJuo394i" alt="">
-                    <!-- 设置背景图片 -->
-                    <!--<div class="toobar">-->
-                        <!---->
-                    <!--</div>-->
-
-                </div>
-                <div class="card-extra">
-                    <!-- todo 图片选择组件-->
-                    <Tooltip content="设置这个背景" class="image-setting-btn">
-                        <Icon type="md-settings" />
-                    </Tooltip >
-                </div>
-                <div class="card-body">
-                    <div class="user-avatar">
-                        <img :src="user.user_avatar" alt="">
-                    </div>
-                    <h2 class="mt-3">{{user.user_nickname}}</h2>
-                    <!-- todo user field -->
-                    <h4>前端 / 懂点架构的前端</h4>
-                </div>
-                <div class="card-footer">
-                    <!--33-->
-                </div>
-            </div>
-            <div class="user-base-profile-warp">
-                <h2>用户基本资料</h2>
-                <hr>
-                <table>
-                    <tr>
-                        <td>username</td>
-                        <td>酱酱酱酱油鲜</td>
-                    </tr>
-                </table>
-            </div>
+            <user-avatar-card></user-avatar-card>
+            <user-base-info class="user-profile-warp"></user-base-info>
         </div>
 
+        <row >
+            <user-subscribe class="user-profile-warp ivu-col ivu-col-span-12"></user-subscribe>
+            <user-pass-change class="user-profile-warp ivu-col ivu-col-span-12"></user-pass-change>
+            <!-- 关于我 个人简介-->
+            <!-- 密码修改 -->
+        </row>
+        <row >
+            <user-login-history class="user-profile-warp ivu-col ivu-col-span-12"></user-login-history>
+        </row>
     </div>
 </template>
 
 <script>
+    // import cloneDeep from 'lodash/cloneDeep'
     import { mapState } from 'vuex'
+    import InfoRow from './components/info-row'
+    import UserAvatarCard from './components/user-avatar-card'
+    import UserBaseInfo from './components/user-base-info'
+    import UserPassChange from './components/user-pass-change'
+    import UserLoginHistory from './components/user-login-history'
+    import UserSubscribe from './components/user-subscribe'
 
     export default {
         name: 'profile',
+        components: {UserSubscribe, UserLoginHistory, UserPassChange, UserBaseInfo, UserAvatarCard, InfoRow},
+        data () {
+            return {
+                userBaseInfo: {}
+            }
+        },
         computed: {
             ...mapState({
                 'user': state => state.user

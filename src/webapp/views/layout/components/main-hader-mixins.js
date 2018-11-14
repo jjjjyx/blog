@@ -86,7 +86,7 @@ export default {
         screenFull () {
             // throw new Error('asdasd')
             if (!screenfull.enabled) {
-                this.$Message.warning(this.$t('messa ges.screen_full_warning'))
+                this.$Message.warning(this.$t('messages.screen_full_warning'))
                 return false
             }
             screenfull.toggle()

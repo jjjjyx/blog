@@ -34,10 +34,16 @@ const ImgEnum = {
     'AVATAR': 'avatar'
 }
 
+const LogType = {
+    'LOGIN': 'login',
+    'UPDATE': 'update'
+}
+
 module.exports.Enum =  {
     PostStatusEnum,
     StatusEnum,
     TaxonomyEnum,
     SiteEnum,
-    ImgEnum
+    ImgEnum,
+    LogType
 }

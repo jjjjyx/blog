@@ -76,6 +76,8 @@ export default {
             username_up_length: '帐户长度必须介于6到24个字符之间。',
             password_empty: '请填写密码',
             password_length: '密码长度不能小于6位',
+            password_fail: '密码强度不够, 必须是大小写字符数字特殊字符的组合，长度 6 - 18位',
+            password_old: '新密码不可与旧密码相同',
             password_up_length: '密码长度必须介于8到32个字符之间。',
             nickname_empty: '请填写昵称',
             pass_check_empty: '请再次输入你的密码',

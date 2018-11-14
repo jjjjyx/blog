@@ -1,6 +1,6 @@
 const model = require('./models')
 // {force: true}
-model.sequelize.sync({force: true}).then(async () => {
+model.sequelize.sync().then(async () => {
     console.log('init db ok.');
     process.exit(0);
     // console.log(model.postsDao)

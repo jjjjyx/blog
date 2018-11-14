@@ -1,0 +1,37 @@
+
+.social-ul {
+    list-style: none;
+}
+
+.social-ul__a {
+    display: block;
+    border-radius: $border-radius;
+    height: 28px;
+    width: 28px;
+    line-height: 28px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.17s ease-in-out;
+    &:hover {
+        border-color: $border-color;
+        //background-color: #263241;
+        i {
+            animation: toTopFromBottom .2s forwards;
+        }
+    }
+}
+
+@keyframes toTopFromBottom {
+    49% {
+        transform: translateY(-100%);
+    }
+    50% {
+        opacity: 0;
+        filter: alpha(opacity=0);
+        transform: translateY(100%);
+    }
+    51% {
+        opacity: 1;
+        filter: alpha(opacity=100);
+    }
+}

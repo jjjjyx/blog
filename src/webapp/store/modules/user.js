@@ -44,7 +44,7 @@ const actions = {
     //     }
     // }
     mergeUser ({commit}, obj) {
-        commit('MERGEUSER', obj)
+        commit('USER_SET_INFO', obj)
     }
 }
 const mutations = {
