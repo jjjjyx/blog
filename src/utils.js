@@ -1,21 +1,23 @@
 'use strict'
 
-const debug = require('debug')('app:utils:' + process.pid)
-const log = require('log4js').getLogger('utils')
+const _ = require('lodash')
 const Promise = require('bluebird')
 const moment = require('moment')
-// const Redis = require('ioredis')
 const redis = require("redis")
-const client = redis.createClient()
 const JWTR = require('jwt-redis')
 const shortid = require('shortid')
-const _ = require('lodash')
+
 const {validationResult} = require('express-validator/check')
-const Result = require('./common/resultUtils')
 const ExpressRedisCache = require('express-redis-cache')
+
+const debug = require('debug')('app:utils:' + process.pid)
+const log = require('log4js').getLogger('utils')
+const Result = require('./common/resultUtils')
 const marked = require('marked')
-const renderer = new marked.Renderer()
 const config = require('../config')
+
+const client = redis.createClient()
+const renderer = new marked.Renderer()
 
 
 moment.locale('zh-cn')
@@ -59,12 +61,20 @@ Promise.promisifyAll(client)
 // log.info('设置时区 Asia/Shanghai')
 
 
-async function create (obj, expiresIn = TOKEN_EXPIRATION_SEC) {
+async function createToken (obj, expiresIn = TOKEN_EXPIRATION_SEC) {
 
     if (_.isEmpty(obj)) throw new Error('Data cannot be empty.')
     let token = await jwtr.signAsync(obj, secret, {expiresIn: expiresIn})
     log.info('Token generated for user: %s, token: %s', obj.user_login, token)
     return token
+}
+
+function destroyTokenById (id) {
+    // if (_.isEmpty(obj)) throw new Error('Data cannot be empty.')
+    console.log('destroy Token for user id %s', id)
+    // let decode = await
+    // log.info('Token generated for user: %s, token: %s', obj.user_login, token)
+    return jwtr.destroyByIdAsync(id)
 }
 
 // const x="0123456789qwertyuioplkjhgfdsazxcvbnm";
@@ -91,7 +101,8 @@ module.exports.formatDate = function (time, pattern = 'YYYY-M-D hh:mm') {
     return moment(time).format(pattern)
 }
 
-module.exports.create = create
+module.exports.createToken = createToken
+module.exports.destroyTokenById = destroyTokenById
 module.exports.renderer = renderer
 module.exports.cache = cache
 module.exports.redisClient = client

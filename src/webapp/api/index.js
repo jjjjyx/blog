@@ -144,8 +144,12 @@ export default {
     post,
     set token(value) {
         console.log('更新用户token')
-        token = 'Bearer ' + value;
-        localStorage.setItem('authorization', value)
+        if (value) {
+            token = 'Bearer ' + value;
+            localStorage.setItem('authorization', value)
+        } else {
+            localStorage.removeItem('authorization')
+        }
     },
     get token() {
         return token

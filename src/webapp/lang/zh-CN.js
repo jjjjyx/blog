@@ -55,6 +55,7 @@ export default {
 
         signin_valid_error: '请输入账号密码',
         signin_error: '登录失败',
+        signin_success: '登录成功',
 
         curd: {
             del_warning_title: '删除提示',

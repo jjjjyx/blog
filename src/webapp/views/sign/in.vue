@@ -2,14 +2,14 @@
     <Form ref="formItem" :model="formItem" :rules="ruleInline">
         <h1 class="login__title">{{$t('login.login_title')}}</h1>
         <FormItem prop="username">
-            <Input type="text" v-model="formItem.username" placeholder="Username">
-            <Icon type="ios-person-outline" slot="prepend"></Icon>
-            </Input>
+            <i-input type="text" v-model="formItem.username" placeholder="Username">
+                <Icon type="ios-person-outline" slot="prepend"></Icon>
+            </i-input>
         </FormItem>
         <FormItem prop="password">
-            <Input type="password" v-model="formItem.password" placeholder="Password">
-            <Icon type="ios-lock-outline" slot="prepend"></Icon>
-            </Input>
+            <i-input type="password" v-model="formItem.password" placeholder="Password">
+                <Icon type="ios-lock-outline" slot="prepend"></Icon>
+            </i-input>
         </FormItem>
 
 
@@ -35,13 +35,13 @@
             </FormItem>
         </div>
         <Button type="error" :loading="loading" class="login__btn" @click="handleSubmit('formItem')" shape="circle"
-                icon="md-arrow-round-forward"/>
+                icon="md-arrow-round-forward"></Button>
     </Form>
 </template>
 
 <script>
 	import api from '@/api'
-    import user from '@/api/user'
+    import * as user from '@/api/user'
 	// import config from '@/config'
 	// const {token_key} = config
 	import { mapActions, mapState } from 'vuex'
@@ -85,7 +85,7 @@
             }
 		},
 		methods: {
-			...mapActions(['setLanguage']),
+			...mapActions(['setLanguage', 'fetchDict']),
 			async handleSubmit (name) {
 				this.loading = true
 				let valid = await this.$refs[name].validate()
@@ -95,11 +95,12 @@
 					return this.$Message.error(this.$t('messages.signin_valid_error'))
 				}
 				try {
-					let {token} = await user.login(this.formItem.username, this.formItem.password)
-					api.token = token
+                    api.token = await user.login(this.formItem.username, this.formItem.password)
+                    this.fetchDict()
 					// // 没有勾选 清除掉 localStorage 这样仅
 					// localStorage.setItem(token_key, '')
 					this.$router.push({path: this.redirect || '/'})
+					this.$Message.success(this.$t('messages.signin_success'))
 				} catch (e) {
 					this.$Message.error(this.$t('messages.signin_error'))
 				} finally {

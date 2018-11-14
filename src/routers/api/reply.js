@@ -184,7 +184,7 @@ const writeUser = [
                 user = user.toJSON()
                 delete user.user_pass
                 user.permissions = common.userRole[user.role]
-                token = await utils.create(user)
+                token = await utils.createToken(user)
             }
 
             return res.status(200).json(Result.success({

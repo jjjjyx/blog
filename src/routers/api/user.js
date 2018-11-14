@@ -60,7 +60,7 @@ const login = [
 
                 delete user.user_pass
                 user.permissions = common.userRole[user.role]
-                let result = await utils.create(user)
+                let result = await utils.createToken(user)
                 req.user = user
                 createUserLog(req, '用户登陆', Enum.LogType.LOGIN)
                 //Token generated
@@ -79,7 +79,17 @@ const login = [
 ]
 
 const logout = async function (req, res) {
-
+    // 清除 token
+    let {id} = req.user
+    try {
+        let de
+        if (id) {
+            de = await utils.destroyTokenById(id)
+        }
+        return res.status(200).json(Result.success(de))
+    } catch (e) {
+        return res.status(200).json(Result.error())
+    }
 }
 
 const auth = function (req, res, next) {
@@ -117,7 +127,7 @@ const update_info = [
 
             delete user.user_pass
             user.permissions = common.userRole[user.role]
-            let result = await utils.create(user)
+            let result = await utils.createToken(user)
             createUserLog(req, '修改用户信息', Enum.LogType.UPDATE)
             // 更新用户需要更新 token
             return res.status(200).json(Result.success(result))

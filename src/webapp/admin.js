@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import iView from 'iview'
 
-import api from '@/api'
+// import api from '@/api'
 import App from './admin.vue'
 import router from './router'
 import i18n from './lang'
@@ -27,35 +27,37 @@ Vue.use(directives)
 Vue.use(PhotoSwipe)
 Vue.config.productionTip = false
 
-function appInit () {
-    /* eslint-disable no-new */
-    new Vue({
-        router,
-        store,
-        i18n,
-        render: h => h(App)
-    }).$mount('#app')
-    window.fulfilLoading && window.fulfilLoading()
-}
+// function appInit () {
+/* eslint-disable no-new */
+new Vue({
+    router,
+    store,
+    i18n,
+    render: h => h(App)
+}).$mount('#app')
+
+window.fulfilLoading && window.fulfilLoading()
+// }
 
 // 初始化数据
 // 获取基本信息，例如枚举字段的标签
-
-Promise.all([api.nget('/api/user/auth'), api.nget('/api/site/dict')])
-    .then((results) => {
-        let [user, dict] = results
-        store.commit('USER_SET_INFO', user)
-        store.commit('SET_DICT', dict)
-        return true
-    })
-    .then(appInit)
-    .catch((e) => {
-        // let a = await e
-        new Vue().$Modal.error({
-            title: '错误',
-            content: e,
-            onOk: () => {
-                window.location.href = '/' // 跳转到首页
-            }
-        })
-    })
+store.dispatch('fetchDict')
+// Promise.all([api.nget('/api/site/dict')])
+//     .then((results) => {
+//         let [ dict] = results
+//         // store.commit('USER_SET_INFO', user)
+//         store.commit('SET_DICT', dict)
+//         return true
+//     })
+//     // .then(appInit)
+//     .catch((e) => {
+//         // app.rout
+//     //     // let a = await e
+//     //     new Vue().$Modal.error({
+//     //         title: '错误',
+//     //         content: e,
+//     //         onOk: () => {
+//     //             window.location.href = '/' // 跳转到首页
+//     //         }
+//     //     })
+//     })
