@@ -140,6 +140,9 @@ import CommentUsername from './comment-username'
 import CommentInput from './comment-input'
 import { on } from '../../utils/dom'
 import api from '@/api'
+import * as commentApi from '@/api/comment'
+import * as toolsApi from '@/api/tools'
+import * as userApi from '@/api/user'
 
 function scrollTop (el, from = 0, to, duration = 500) {
     if (!window.requestAnimationFrame) {
@@ -284,7 +287,7 @@ export default {
         async changeAvatar () {
             // console.log(11)
             try {
-                let data = await api.nget('/api/reply/change-avatar')
+                let data = await commentApi.changeAvatar()
                 console.log(data)
                 this.userCopy.user_avatar = data
             } catch (e) {
@@ -325,7 +328,7 @@ export default {
                 let valid = await this.$refs.userinfoform.validate()
                 if (valid) {
                     // 完善评论信息
-                    let result = await api.npost('/api/reply/write-user', this.userCopy)
+                    let result = await commentApi.writeUser(this.userCopy)
                     api.token = result.token
                     for (let key in this.user) {
                         this.user[key] = result[key]
@@ -369,7 +372,7 @@ export default {
             this.status = COMMENT_STATUS.loading
             try {
                 // 获取评论列表
-                let {result, total, total_display: totalDisplay} = await api.nget('/api/reply', this.commentDate)
+                let {result, total, total_display: totalDisplay} = await commentApi.getComments(this.commentDate)
                 this.commentList = result
                 this.total = total
                 this.totalDisplay = totalDisplay
@@ -390,7 +393,7 @@ export default {
             let qq = this.userCopy.user_login
             try {
                 if (qqReg.test(qq)) {
-                    let result = await api.nget(`/api/tools/qinfo`, {key: qq})
+                    let result = await toolsApi.getQQInfo(qq)
                     // console.log(result)
                     if (result) {
                         this.userCopy.user_nickname = result.nickname
@@ -406,7 +409,7 @@ export default {
         this.fetchComment()
 
         try {
-            let u = await api.nget('/api/user/auth')
+            let u = await userApi.auth()
             for (let key in this.user) {
                 this.user[key] = u[key]
             }
