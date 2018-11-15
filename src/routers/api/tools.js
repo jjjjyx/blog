@@ -59,7 +59,7 @@ const qinfo = [
         let qq = req.query.key
         log.debug('获取 qq = %s 信息', qq)
         try {
-            let ip = utils.getClientIp(req)
+            let ip = req.clientIp
             let uipKey = ip + key_suffix
             let count = await redisClient.hgetAsync(uipKey, ipUpdateCountkey)
             let info

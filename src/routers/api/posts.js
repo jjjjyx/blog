@@ -20,6 +20,7 @@ const Op = sequelize.Op
 const trashSaveDay = 30
 // 文章别名 必须提交 但是不满足格式不会报错而是启用id
 const postNameReg = /^[_a-zA-Z0-9-]{1,60}$/
+const termNameReg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
 // 允许提交的文章状态
 const allowPostStatus = [
     Enum.PostStatusEnum.PENDING,
@@ -36,6 +37,7 @@ const TagsLength = 16
 log.debug('文章最大标签数', TagsLength)
 log.debug('allowPostStatus = %s', JSON.stringify(allowPostStatus))
 log.debug('postNameReg = %s', postNameReg)
+log.debug('termNameReg %s天', termNameReg)
 log.debug('回收站保存文章 %s天', trashSaveDay)
 // id
 const sanitizeId = sanitizeBody('id').toInt()
@@ -118,7 +120,6 @@ const checkAuthor = body('post_author')
                 })
         }
     })
-// const sanitizeSticky
 const sanitizePostDate = sanitizeBody('post_date').toDate()
 const sanitizeSticky = sanitizeBody('sticky').toBoolean()
 
@@ -150,12 +151,11 @@ const _createTerms = async function ({new_tag, tags_id}) {
     // 验证new_tag 的名字
     // /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
     // 包含有错误的tag 驳回请求 因为这个名字会在前端验证，能提交错误的不是什么好请求
-    let testReg = new_tag.every((tag) => utils.termReg.test(tag))
+    let testReg = new_tag.every((tag) => termNameReg.test(tag))
     debug('_createTerms testReg = %s', testReg)
     if (!testReg) {
         log.debug('_createTerms fail: 错误的标签名称')
         throw new Error('错误的标签名称')
-        // return Result.info()
     }
 
     // 验证tags_id

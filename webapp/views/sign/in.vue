@@ -96,7 +96,7 @@
 				}
 				try {
                     api.token = await user.login(this.formItem.username, this.formItem.password)
-                    this.fetchDict()
+                    // this.fetchDict()
 					// // 没有勾选 清除掉 localStorage 这样仅
 					// localStorage.setItem(token_key, '')
 					this.$router.push({path: this.redirect || '/'})

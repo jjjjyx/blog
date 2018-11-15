@@ -7,50 +7,37 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const compression = require('compression') // 压缩
 const unless = require('express-unless')
-const utils = require('./src/utils')
-// const session = require('express-session')
-const expressValidator = require('express-validator')
+
+const ValidatorMiddleware = require('./src/express-middleware/validator')
+const clientIp = require('./src/express-middleware/clientIp')
+const logger = require('./src/express-middleware/logger')
+
+const UnauthorizedError = require('./src/errors/UnauthorizedError')
 const Result = require('./src/common/resultUtils')
-const middlewareOptions = require('./src/common/middlewareOptions')
-const log = log4js.getLogger('app')
-
-global.config = require('./config')
-
-// global.NODE_ENV = process.env.NODE_ENV || 'production';
 
 debug('Starting application')
+const log = log4js.getLogger('app')
 const app = express()
 const IS_DEV = app.get('env') === 'development'
+
+global.config = require('./config')
 global.IS_DEV = IS_DEV
 
-// app.engine('.ejs', require('ejs').__express);
-// app.engine('html', require('ejs').renderFile)
 app.set('view engine', 'ejs')
 app.set('views', path.resolve(__dirname, './src/views'))
 // app.set('trust proxy', 1) // 信任第一代理
 
 debug('Attaching plugins')
-app.use(log4js.connectLogger(log4js.getLogger('http'), {
-    level: 'auto',
-    format: (req, res, format) => format(`http - ${utils.getClientIp(req)} - ":method :url HTTP/:http-version" :status :content-length ":referrer" ":user-agent"`)
-}))
 app.use(bodyParser.json({limit: '50mb'})) // for parsing application/json
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true})) // for parsing application/x-www-form-urlencoded
-// 没有使用文件上传的操作
-// app.use(multer()); // for parsing multipart/form-data
+// app.use(multer()); // for parsing multipart/form-data  // 没有使用文件上传的操作
 app.use(cookieParser())
-// gzip 压缩
-app.use(compression())
-app.use(expressValidator(middlewareOptions.validator))
-
-// app.use(session({
-//     secret: config.secret,
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { secure: true }
-// }))
-
+app.use(compression()) // gzip 压缩
+app.use(clientIp)
+app.use(ValidatorMiddleware)
+app.use(logger)
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
+
 app.use(function (req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
@@ -64,7 +51,6 @@ app.use(function (req, res, next) {
 })
 
 // 指定静态目录
-// let compiler
 if (IS_DEV) {
     let webpack = require('webpack'),
         webpackDevMiddleware = require('webpack-dev-middleware'),
@@ -104,8 +90,7 @@ app.use(function (req, res, next) {
 // api 的错误拦截器 返回值都是json
 app.use('/api/', function (err, req, res, next) {
     res.status(err.status || 500)
-    console.log(req.user)
-    if (err.name === 'UnauthorizedError') {
+    if (err instanceof UnauthorizedError) {
         log.info('用户身份验证失败')
         return res.json(Result.error('invalid token...'))
     } else {
@@ -116,7 +101,7 @@ app.use('/api/', function (err, req, res, next) {
 
 app.use(function (err, req, res, next) {
     res.status(err.status || 500)
-    if (err.name === 'UnauthorizedError') {
+    if (err instanceof UnauthorizedError) {
         log.info('用户身份验证失败')
         return res.send('invalid token...')
     }

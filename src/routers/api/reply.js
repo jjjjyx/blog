@@ -2,30 +2,25 @@
 
 const _ = require('lodash')
 const express = require('express')
-const router = express.Router()
+const rateLimiter = require('redis-rate-limiter')
 const debug = require('debug')('app:routers:api.comment')
 const log = require('log4js').getLogger('api.comment')
+const {sanitizeQuery} = require('express-validator/filter')
+const {query} = require('express-validator/check')
+
+const {commentDao, userDao} = require('../../models/index')
+const jwt = require('../../express-middleware/auth/jwt')
 const utils = require('../../utils')
 const Result = require('../../common/resultUtils')
-const {commentDao, userDao} = require('../../models/index')
-const {query} = require('express-validator/check')
-const {sanitizeQuery} = require('express-validator/filter')
 const common = require('../common')
-const imgList = require("./avatar.json")
+const imgList = require('./avatar.json')
 
+const router = express.Router()
 const qqReg = /^[1-9][0-9]{4,}$/
 const commentPageSize = 15
 const defaultAvatar = config.defaultAvatar
 
-const rateLimiter = require('redis-rate-limiter');
-const {secret} = config
-
-// function ipAndRouteAndKey (req) {
-//     let key = utils.getClientIp(req) + ':' + req.baseUrl + req.path + ":" + req.body.key
-//     debug('ipAndRouteAndKey key = %s', key)
-//     return key;
-// }
-
+// const {secret} = config
 
 const getCommentById = [
     query('parent').not().isEmpty().withMessage('对象不可为空'),
@@ -41,12 +36,17 @@ const getCommentById = [
                     comment_parent: null
                 },
                 include: [
-                    {model: commentDao, as: 'child', order: [['createdAt', 'DESC']], include: [{model: userDao,attributes: {exclude: ['user_pass']}}]},
-                    {model: userDao,attributes: {exclude: ['user_pass']}}
+                    {
+                        model: commentDao,
+                        as: 'child',
+                        order: [['createdAt', 'DESC']],
+                        include: [{model: userDao, attributes: {exclude: ['user_pass']}}]
+                    },
+                    {model: userDao, attributes: {exclude: ['user_pass']}}
                 ],
                 order: [['createdAt', 'DESC']],
                 offset: (page - 1) * commentPageSize,
-                limit: commentPageSize,
+                limit: commentPageSize
             })
             let total = await commentDao.count({where: {comment_id: parent, comment_parent: null}})
             let total2 = await commentDao.count({where: {comment_id: parent}})
@@ -92,11 +92,12 @@ const writeUser = [
     // rateLimiter.middleware({redis: client, key: ipAndRouteAndKey, rate: '3/m'}),
     async function (req, res, next) {
         let user
-        if (req.headers.authorization &&
-            req.headers.authorization.split(' ')[0] === 'Bearer') {
-            let token = req.headers.authorization.split(' ')[1]
-            user = await utils.jwtr.verifyAsync(token, secret)
+        try {
+            let token = jwt.getToken(req)
+            user = await jwt.verifyToken(token)
             req.user = user
+        } catch (e) {
+            debug('writeUser ,token error by', e.message)
         }
 
         let {user_email, user_url, user_login, user_nickname, user_avatar} = req.body
@@ -153,7 +154,7 @@ const writeUser = [
         //     return res.status(200).json(Result.info('.'))
         // }
         let {user_email, user_url, user_login, user_nickname, user_avatar} = req.body
-        let ip = utils.getClientIp(req)
+        let ip = req.clientIp
         try {
             let user = req.user
             let token
@@ -162,7 +163,7 @@ const writeUser = [
                 user.user_url = user_url
                 user.user_nickname = user_nickname
                 user.user_avatar = user_avatar
-                userDao.update({where: {id: user.id}}, {user_email, user_url, user_nickname, user_avatar,})
+                userDao.update({where: {id: user.id}}, {user_email, user_url, user_nickname, user_avatar})
             } else {
                 user = await userDao.findOrCreate({
                     where: {
@@ -184,7 +185,7 @@ const writeUser = [
                 user = user.toJSON()
                 delete user.user_pass
                 user.permissions = common.userRole[user.role]
-                token = await utils.createToken(user)
+                token = await jwt.createToken(user)
             }
 
             return res.status(200).json(Result.success({
@@ -209,7 +210,6 @@ const writeUser = [
         // 如果已经有用户身份，则拒接提交
     }
 ]
-
 
 const changeAvatar = [
     function (req, res, next) {

@@ -48,7 +48,7 @@ const comment = [
         // 创建
         let {parent, content, comment_parent} = req.body
         let {user_nickname, user_email, user_url, id, user_avatar} = req.user
-        let ip = utils.getClientIp(req)
+        let ip = req.clientIp
 
         let agent = req.headers['user-agent']
         let agentObj =  useragent.parse(agent)

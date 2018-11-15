@@ -56,7 +56,6 @@ const checkIcon = body('icon').custom((value) => {
 
 const createTerm = async function (term) {
     try {
-        console.log(term)
         let {name, slug, description, icon, taxonomy} = term
         debug(`createTerm taxonomy = %s, name = %s, slug = %s`, taxonomy, name, slug)
 
@@ -264,7 +263,6 @@ const getAll = async function (req, res) {
 const test = [
     async function (req, res, next) {
         let term = await termDao.findById(19)
-        console.log(term.toJSON())
         term.countPosts()
         // console.log(Object.getOwnPropertyDescriptors(term))
         // console.log(term.property)

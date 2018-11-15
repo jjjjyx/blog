@@ -1,20 +1,54 @@
-const qiniu = require('qiniu')
-const http = require('http')
-const {Enum} = require('../common/enum')
+
+const utils = require('../utils')
 const config = require('../../config')
-const uuidv1 = require('uuid/v1')
-// const redisClient = utils.redisClient;
+const {secret} = config
+let user = {
+    id: 1,
+    aaa:222
+};
+// (async function f () {
+//     let token = await utils.createToken(user)
+//     try {
+//     console.log(token)
+//
+//     let o = await utils.jwtr.decode(token)
+//     console.log(o)
+//
+//     o = await utils.jwtr.decode(token, { complete: true })
+//     console.log('1111==', o)
+//
+//     o = await utils.jwtr.verify(token, secret)
+//     console.log(o)
+//
+//     o = await utils.destroyTokenById(token)
+//     console.log(o)
+//
+//     o = await utils.jwtr.verify(token, secret)
+//
+//     } catch (e) {
+//         console.log(e)
+//         console.log('2====', token)
+//     }
+// })()
 
-const mac = new qiniu.auth.digest.Mac(config.qiUpload.ACCESS_KEY, config.qiUpload.SECRET_KEY)
-const qiniuConfig = new qiniu.conf.Config()
-qiniuConfig.zone = qiniu.zone.Zone_z0
 
-const bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig)
-const BUCKET_NAME = config.qiUpload.BUCKET_NAME
-const domain = config.qiUpload.Domain
-
-function detectImageUrl (url) {
-}
+// const qiniu = require('qiniu')
+// const http = require('http')
+// const {Enum} = require('../common/enum')
+// const config = require('../../config')
+// const uuidv1 = require('uuid/v1')
+// // const redisClient = utils.redisClient;
+//
+// const mac = new qiniu.auth.digest.Mac(config.qiUpload.ACCESS_KEY, config.qiUpload.SECRET_KEY)
+// const qiniuConfig = new qiniu.conf.Config()
+// qiniuConfig.zone = qiniu.zone.Zone_z0
+//
+// const bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig)
+// const BUCKET_NAME = config.qiUpload.BUCKET_NAME
+// const domain = config.qiUpload.Domain
+//
+// function detectImageUrl (url) {
+// }
 
 // function getURLJSONData (url) {
 //     url = encodeURI(url) // 防止中文

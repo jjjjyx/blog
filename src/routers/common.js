@@ -301,7 +301,7 @@ const userRole = {
 module.exports.userRole = userRole
 
 function ipAndRoute (req) {
-    let key = utils.getClientIp(req) + ':' + req.baseUrl + req.path
+    let key = req.clientIp + ':' + req.baseUrl + req.path
     debug('ipAndRoute key = %s', key)
     return key;
 }

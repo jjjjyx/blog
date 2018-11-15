@@ -1,7 +1,8 @@
-const debug = require('debug')('app:middlewareOptions')
+const debug = require('debug')('app:express-middleware:validator')
+const expressValidator = require('express-validator')
 const _ = require('lodash')
 
-module.exports.validator = {
+const validator = {
     customSanitizers: {
         toArray (value) {
             debug(`customSanitizers toArray(${value})`)
@@ -16,3 +17,5 @@ module.exports.validator = {
         }
     }
 }
+
+module.exports = expressValidator(validator)

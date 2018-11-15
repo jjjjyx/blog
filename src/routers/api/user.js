@@ -13,6 +13,7 @@ const utils = require('../../utils')
 const Result = require('../../common/resultUtils')
 const {Enum} = require('../../common/enum')
 const common = require('../common')
+const jwt = require('../../express-middleware/auth/jwt')
 
 const router = express.Router()
 
@@ -22,7 +23,7 @@ const createUserLog = function (req, action, type) {
     let agentObj = useragent.parse(agent)
     return userLogDao.create({
         user_id: user.id,
-        ip: utils.getClientIp(req),
+        ip: req.clientIp,
         action,
         type,
         agent: agentObj.toString()
@@ -34,11 +35,8 @@ const createUserLog = function (req, action, type) {
 //     '^(?![a-zA-z]+$)(?!\\d+$)(?![!@#$%^&*]+$)(?![a-zA-z\\d]+$)(?![a-zA-z!@#$%^&*]+$)(?![\\d!@#$%^&*]+$)[a-zA-Z\\d!@#$%^&*]+$')
 // log.trace('passReg %s', passReg)
 const login = [
-    check('username', '账号不可为空且3-6位')
-        .isString()
-        .withMessage('必须是字符串')
-        .isLength({min: 3, max: 6}),
-    check('password', '密码为6-18位').isBase64(),
+    check('username', '账号不可为空且3-6位').isString().withMessage('必须是字符串').isLength({min: 3, max: 6}),
+    check('password', '密码为6 - 18位').isBase64(),
     utils.validationResult,
     async function (req, res, next) {
         let {username, password} = req.body
@@ -60,10 +58,10 @@ const login = [
 
                 delete user.user_pass
                 user.permissions = common.userRole[user.role]
-                let result = await utils.createToken(user)
+                let result = await jwt.createToken(user)
                 req.user = user
                 createUserLog(req, '用户登陆', Enum.LogType.LOGIN)
-                //Token generated
+                // Token generated
                 return res.status(200).json(Result.success(result))
                 // 获得token
             } else {
@@ -80,13 +78,13 @@ const login = [
 
 const logout = async function (req, res) {
     // 清除 token
-    let {id} = req.user
+    let token = req.token
     try {
-        let de
-        if (id) {
-            de = await utils.destroyTokenById(id)
-        }
-        return res.status(200).json(Result.success(de))
+        createUserLog(req, '退出登录', Enum.LogType.LOGIN)
+        await jwt.destroyToken(token)
+        // 访问这个api 成功进来 肯定是登录状态
+        // 设置用户退出登录时间，设置登录时间
+        return res.status(200).json(Result.success())
     } catch (e) {
         return res.status(200).json(Result.error())
     }
@@ -127,7 +125,7 @@ const update_info = [
 
             delete user.user_pass
             user.permissions = common.userRole[user.role]
-            let result = await utils.createToken(user)
+            let result = await jwt.createToken(user)
             createUserLog(req, '修改用户信息', Enum.LogType.UPDATE)
             // 更新用户需要更新 token
             return res.status(200).json(Result.success(result))

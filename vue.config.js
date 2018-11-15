@@ -9,7 +9,7 @@ module.exports = {
     pages: {
     	admin: {
     		// 入口js的路径
-    		entry: './src/webapp/admin',
+    		entry: './webapp/admin',
     		// 页面模板路径
     		template: './static/admin.html',
             filename: 'jyx-admin/admin.html'
@@ -18,12 +18,12 @@ module.exports = {
 
     chainWebpack: (config) => {
         entrys.forEach((entry)=>{
-            config.entry(entry).add(`./src/webapp/${entry}.js`).end()
+            config.entry(entry).add(`./webapp/${entry}.js`).end()
         })
 
         config.output.filename('js/[name].js')
 		// config.resolve.alias.set('@view', resolve('src/view'))
-		config.resolve.alias.set('@', resolve('src/webapp'))
+		config.resolve.alias.set('@', resolve('webapp'))
         // config.optimization.runtimeChunk({name: 'runtime'})
         // vendors: {
         //     name: `chunk-vendors`,
