@@ -77,7 +77,6 @@
                 }
             },
             async save () {
-
                 let valid = await this.$refs.formData.validate()
                 if (!valid) {
                     return this.$Message.error(this.$t('messages.curd.valid_fail'))
@@ -86,6 +85,7 @@
                 try {
                     await user.changePass(this.formData)
                     this.$Message.success(this.$t('messages.curd.update_success'))
+                    this.$refs.formData.resetFields()
                 } catch (e) {
                     this.$Message.error(this.$t('messages.curd.update_fail', e))
                 }

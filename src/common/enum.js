@@ -36,7 +36,8 @@ const ImgEnum = {
 
 const LogType = {
     'LOGIN': 'login',
-    'UPDATE': 'update'
+    'UPDATE': 'update',
+    'LOGOUT': 'logout'
 }
 
 module.exports.Enum =  {

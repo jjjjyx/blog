@@ -18,6 +18,7 @@ const state = {
     'role': 0,
     'createdAt': '',
     'updatedAt': '',
+    'lastOnlineTime': 0,
     'jti': '',
     'iat': 0,
     'exp': 0,

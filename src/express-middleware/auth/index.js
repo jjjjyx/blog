@@ -36,7 +36,7 @@ const auth = function (req, res, next) {
     jwt.verifyToken(token).then((decoded) => {
         log.trace('auth verify success decoded = %s', decoded)
         set(req, requestProperty, decoded)
-        set(res, token, token)
+        set(req, 'token', token)
         next()
     }).catch((err) => {
         log.trace('auth verify fail decoded = %s', err)

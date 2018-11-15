@@ -23,7 +23,7 @@
             <FormItem label="join data">{{dateFormat(user.createdAt)}}</FormItem>
 
             <!--<info-row label="last online" value="-"/>-->
-            <FormItem label="last online">-</FormItem>
+            <FormItem label="last online">{{dateFormat(user.lastOnlineTime * 1000)}}</FormItem>
             <FormItem label="website" prop="user_url">
                 <i-input v-model="userBaseInfo.user_url" size="small"/>
             </FormItem>

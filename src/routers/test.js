@@ -1,35 +1,41 @@
 
-const utils = require('../utils')
+const jwt = require('../express-middleware/auth/jwt')
 const config = require('../../config')
+const {sequelize} = require('../models')
 const {secret} = config
 let user = {
     id: 1,
     aaa:222
 };
-// (async function f () {
-//     let token = await utils.createToken(user)
-//     try {
-//     console.log(token)
-//
-//     let o = await utils.jwtr.decode(token)
-//     console.log(o)
-//
-//     o = await utils.jwtr.decode(token, { complete: true })
-//     console.log('1111==', o)
-//
-//     o = await utils.jwtr.verify(token, secret)
-//     console.log(o)
-//
-//     o = await utils.destroyTokenById(token)
-//     console.log(o)
-//
-//     o = await utils.jwtr.verify(token, secret)
-//
-//     } catch (e) {
-//         console.log(e)
-//         console.log('2====', token)
-//     }
-// })()
+(async function f () {
+    // let token = await jwt.createToken(user)
+    // try {
+    //     console.log(token)
+    //
+    //     let o = await jwt.decode(token)
+    //     console.log(o)
+    //
+    // } catch (e) {
+    //     console.log(e)
+    //     console.log('2====', token)
+    // }
+
+    let USER_LAST_LOGIN_TIME_SQL = 'SELECT createdAt FROM j_userlogs WHERE user_id = ? AND TYPE = \'login\' ORDER BY createdAt DESC LIMIT 0, 1'
+    const _saveUserLastOnlineTime  = async function (userId) {
+        let [result] = await sequelize.query(USER_LAST_LOGIN_TIME_SQL, {
+            type: sequelize.QueryTypes.SELECT,
+            replacements: [userId]
+        })
+        console.log(result)
+        if (result) {
+            let time = (+result.createdAt) / 1000
+            console.log(time)
+        }
+        //     return result || '-'
+        // SELECT createdAt FROM j_userlogs WHERE user_id = 1 AND TYPE = 'login' ORDER BY createdAt DESC LIMIT 0, 1
+    }
+    _saveUserLastOnlineTime(1)
+})()
 
 
 // const qiniu = require('qiniu')

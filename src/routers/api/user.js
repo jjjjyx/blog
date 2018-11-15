@@ -8,7 +8,7 @@ const log = require('log4js').getLogger('api.user')
 const debug = require('debug')('app:routers:api.user')
 const {check} = require('express-validator/check')
 
-const {userDao, userLogDao} = require('../../models/index')
+const {userDao, userLogDao, userMetaDao, sequelize} = require('../../models/index')
 const utils = require('../../utils')
 const Result = require('../../common/resultUtils')
 const {Enum} = require('../../common/enum')
@@ -17,7 +17,7 @@ const jwt = require('../../express-middleware/auth/jwt')
 
 const router = express.Router()
 
-const createUserLog = function (req, action, type) {
+const _createUserLog = function (req, action, type) {
     let user = req.user
     let agent = req.headers['user-agent']
     let agentObj = useragent.parse(agent)
@@ -27,6 +27,39 @@ const createUserLog = function (req, action, type) {
         action,
         type,
         agent: agentObj.toString()
+    })
+}
+const _saveUserMeta = function (id, key, value) {
+    log.info('创建用户Meta，id = %d, key = %s, value = %s', id, key, value)
+    return userMetaDao.findOrCreate({
+        where: {
+            user_id: id,
+            meta_key: key
+        },
+        defaults: {
+            meta_value: value
+        }
+    }).spread((meta, created) => {
+        if (!created) {
+            log.info('创建用户Meta，id = %d, meta key = %s 已存在, 更新', id, key)
+            meta.meta_value = value
+            return meta.save()
+        }
+        return true
+    })
+}
+let USER_LAST_LOGIN_TIME_SQL = 'SELECT createdAt FROM j_userlogs WHERE user_id = ? AND TYPE = \'login\' ORDER BY createdAt DESC LIMIT 0, 1'
+const _saveUserLastOnlineTime  = function (userId) {
+    return sequelize.query(USER_LAST_LOGIN_TIME_SQL, {
+        type: sequelize.QueryTypes.SELECT,
+        replacements: [userId]
+    }).then(([result]) => {
+        if (result) {
+            let time = (+result.createdAt) / 1000
+            _saveUserMeta(userId, 'last_online_time', time)
+            return time
+        }
+        return null
     })
 }
 
@@ -58,9 +91,14 @@ const login = [
 
                 delete user.user_pass
                 user.permissions = common.userRole[user.role]
+                // 新增上次登录时间
+                user.lastOnlineTime = await _saveUserLastOnlineTime(user.id)
                 let result = await jwt.createToken(user)
                 req.user = user
-                createUserLog(req, '用户登陆', Enum.LogType.LOGIN)
+                // 获取上次登录时间，
+
+                // 记录本次登录
+                _createUserLog(req, '用户登陆', Enum.LogType.LOGIN)
                 // Token generated
                 return res.status(200).json(Result.success(result))
                 // 获得token
@@ -76,16 +114,32 @@ const login = [
     }
 ]
 
-const logout = async function (req, res) {
+/*
+可能存在的登录情况
+
+拿着过期的token 登录失败，后重新登录
+    // 监听到token 过期 设置用户过期 获取兼容到下面的情况
+用户更换浏览器生成新的token
+    // 获取日志最近登录一次登录的时间
+    // 更新上次登录时间
+用户正常退出登录，清除了浏览器token 重新登录
+    获取token 的签发时间作为上次登录时间
+ */
+
+const logout = async function (req, res, next) {
     // 清除 token
-    let token = req.token
+    let token =  req.token
     try {
-        createUserLog(req, '退出登录', Enum.LogType.LOGIN)
+        _createUserLog(req, '退出登录', Enum.LogType.LOGOUT)
         await jwt.destroyToken(token)
+        // let {iat, id} = req.user // 签发时间
+        // _saveUserMeta(id, 'last_online_time', iat)
         // 访问这个api 成功进来 肯定是登录状态
         // 设置用户退出登录时间，设置登录时间
         return res.status(200).json(Result.success())
     } catch (e) {
+        log.error('logout error by', e)
+        // next(e)
         return res.status(200).json(Result.error())
     }
 }
@@ -126,7 +180,7 @@ const update_info = [
             delete user.user_pass
             user.permissions = common.userRole[user.role]
             let result = await jwt.createToken(user)
-            createUserLog(req, '修改用户信息', Enum.LogType.UPDATE)
+            _createUserLog(req, '修改用户信息', Enum.LogType.UPDATE)
             // 更新用户需要更新 token
             return res.status(200).json(Result.success(result))
         } catch (e) {
@@ -176,7 +230,7 @@ const update_pass = [
                 user.user_pass = bcrypt.hashSync(new_pass)
                 await user.save()
 
-                createUserLog(req, '修改密码', Enum.LogType.UPDATE)
+                _createUserLog(req, '修改密码', Enum.LogType.UPDATE)
                 map = Result.success()
             } else {
                 debug('用户 = %s, 修改密码失败， 密码错误', user_login)

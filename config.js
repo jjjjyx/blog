@@ -12,7 +12,7 @@ const CONFIG = {
     secret: '$2a$10$5A/Wb/EnCwdS2Yxdk0ouGe4beJn7ZTpPD9ofzMdaLc45EgIZwURg6',
     tokenPrefix: 'Bearer',
     tokenHeaderKey: 'authorization',
-    tokenExpiration: '5 days',
+    tokenExpiration: '1 days',
     defaultAvatar: 'http://image.cdn.mbdoge.cn/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
     db: {
         development: {
