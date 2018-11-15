@@ -26,9 +26,10 @@ const getCommentById = [
     query('parent').not().isEmpty().withMessage('对象不可为空'),
     sanitizeQuery('page').toInt(),
     query('page').isInt(),
+    query('sort').isIn(['desc', 'asc']),
     utils.validationResult,
     async function (req, res, next) {
-        let {parent, page} = req.query
+        let {parent, page, sort = 'desc'} = req.query
         try {
             let result = await commentDao.findAll({
                 where: {
@@ -44,7 +45,7 @@ const getCommentById = [
                     },
                     {model: userDao, attributes: {exclude: ['user_pass']}}
                 ],
-                order: [['createdAt', 'DESC']],
+                order: [['createdAt', sort]],
                 offset: (page - 1) * commentPageSize,
                 limit: commentPageSize
             })

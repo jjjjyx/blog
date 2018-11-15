@@ -18,7 +18,7 @@ module.exports = function (app) {
     app.use('/tags', require('./tags.js'))
     app.use('/archives', require('./archives.js'))
     app.use('/about', require('./about.js'));
-    app.use('/jyx-admin', guard.check('admin'), require('./admin.js'))
+    app.use('/jyx-admin', require('./admin.js'))
 
     // 不需要登录使用的api
     app.use('/api/tools', require('./api/tools.js'))

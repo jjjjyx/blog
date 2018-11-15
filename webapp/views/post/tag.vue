@@ -41,7 +41,7 @@
                 name: 'tag',
                 columns: [
                     {type: 'selection', width: 40, align: 'center'},
-                    {title: 'ID', key: 'id', width: 90, sortable: true},
+                    // {title: 'ID', key: 'id', width: 90, sortable: true},
                     {title: '标签名称', key: 'name', width: 150, sortable: true},
                     {title: '计数', key: 'count', width: 90, sortable: true},
                     {title: '标识', key: 'slug', width: 100},

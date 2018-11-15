@@ -5,8 +5,9 @@
             <span v-if="commentList.length">{{totalDisplay}} 条评论</span>
             <span v-else>暂无评论</span>
             <ul class="float-right">
-                <li v-for="item in sortList" :key="item.d" :class="{'active':commentDate.sort === item.d}" @click="commentDate.sort = item.d"><a
-                    href="javascript:;">{{item.name}}</a></li>
+                <li v-for="item in sortList" :key="item.d" :class="{'active':commentDate.sort === item.d}" @click="commentDate.sort = item.d, fetchComment()">
+                    <a href="javascript:;">{{item.name}}</a>
+                </li>
             </ul>
         </div>
         <div class="j-comment-empty" v-if="status===COMMENT_STATUS.loading">加载中评论中...</div>
@@ -30,7 +31,7 @@
                         <!--&lt;!&ndash;<a class="admin" title="管理员"><i class="icon-guanliyuan iconfont "></i></a>&ndash;&gt;-->
                         <!---->
                     <!--</header>-->
-                    <div class="comment-content__body">{{comment.comment_content}}</div>
+                    <div class="comment-content__body" v-html="renderCommentContent(comment.comment_content)"></div>
                     <footer class="comment-content__footer">
                         <font-icon type="icon-color-phone"></font-icon>
                         <span class="">来自{{comment.comment_agent}}设备</span>
@@ -54,8 +55,7 @@
                                 </comment-username>
                                 <div class="reply-content__footer">
                                     <time :datetime="item2.createdAt">{{item2.time}}</time>
-                                    <Button type="text" size="small" @click="reply(comment.id, item2)">回复
-                                    </Button>
+                                    <Button type="text" size="small" @click="reply(comment.id, item2)">回复</Button>
                                 </div>
                             </div>
                         </li>
@@ -73,7 +73,7 @@
             </li>
         </ul>
         <div class="comment-page">
-            <Page :total="total" show-elevator @on-change="handlePageChange"></Page>
+            <Page :total="total" show-elevator @on-change="handlePageChange" :current.sync="commentDate.page"></Page>
         </div>
 
         <comment-input v-model="content" v-if="commentList.length >= 10" @auth="infoModal = true" @comment-success="handleCommentSuccess"/>
@@ -196,6 +196,7 @@ const COMMENT_STATUS = {
 }
 
 const qqReg = /[1-9][0-9]{4,}/
+const emojiReg = /:([\w\\+-]+):/g
 export default {
     name: 'comment',
     data () {
@@ -247,6 +248,7 @@ export default {
                 user_login: [{type: 'regexp', min: 3, max: 18, trigger: 'blur', message: '虽然知道你很长，但是请控制在18个长度以内哦~', pattern: /^[a-zA-Z0-9_\\-]{3,18}$/}]
             },
             defaultAvatar: 'http://image.cdn.mbdoge.cn/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
+            emojiPath: 'http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/',
             // 用户表单
             infoModal: false,
             // 是否修改过昵称
@@ -360,7 +362,7 @@ export default {
             }
         },
         handlePageChange (page) {
-            this.commentDate.page = page
+            // this.commentDate.page = page
             this.fetchComment()
         },
         async fetchComment () {
@@ -377,6 +379,9 @@ export default {
                 console.error(e)
                 this.status = COMMENT_STATUS.error
             }
+        },
+        renderCommentContent (content) {
+            return content.replace(emojiReg, ($1, $2)=> `<img src="${this.emojiPath}${$2}.png" title="${$2}" alt="${$2}" width="24" class="align-middle"/>`);
         }
     },
     async created () {
