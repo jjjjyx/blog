@@ -374,7 +374,7 @@
                 }
                 let postFiles = Array.prototype.slice.call(files)
                 // this.uploadFiles(files);
-                let data = {'x:space': this.formItem.space}
+                let data = {'x:space': this.formItem.space, 'x:remark': 'Local Upload'}
 
                 let token = await media.token()
 

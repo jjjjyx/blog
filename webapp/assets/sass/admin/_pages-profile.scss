@@ -81,7 +81,7 @@
     flex-shrink: 0;
     text-align: center;
     .image {
-        height: 200px;
+        height: 150px;
         overflow: hidden;
         border-radius: $border-radius;
         position: relative;
@@ -120,8 +120,8 @@
     }
     .user-avatar {
         margin: -80px auto 0;
-        width: 130px;
-        height: 130px;
+        width: 100px;
+        height: 100px;
         box-shadow: 0 10px 30px -12px rgba(0,0,0,.42), 0 4px 25px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.2);
         border: 3px solid white;
         border-radius: 50%;
@@ -132,6 +132,20 @@
         max-width: 100%;
     }
     h4, h2 {
+        user-select: text;
+    }
+    .extra-ul {
+        display: flex;
+        justify-content: space-between;
+    }
+    .extra-ul li {
+        width: 100%;
+    }
+    .extra-ul li:not(:last-child) {
+        border-right: 1px solid $border-color;
+    }
+    .extra-ul li span{
+        display: block;
         user-select: text;
     }
 }

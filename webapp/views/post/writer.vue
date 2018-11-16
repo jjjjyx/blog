@@ -228,9 +228,10 @@
                         // let tokenParam = {'x:space': 'post'} // 固定上传到文件空间
 
                         let token = await media.token()
+                        // Q2xpcGJvYXJk = 'Clipboard'
                         this.$uploadFiles(file, {
                             space: 'post',
-                            action: 'http://up-z2.qiniu.com/putb64/-1/x:space/cG9zdA==', // post = 'cG9zdA=='  固定上传到文件空间
+                            action: 'http://up-z2.qiniu.com/putb64/-1/x:space/cG9zdA==/x:remark/Q2xpcGJvYXJk', // post = 'cG9zdA=='  固定上传到文件空间
                             headers: {
                                 'Authorization': `UpToken ${token}`,
                                 'Content-Type': 'application/octet-stream'

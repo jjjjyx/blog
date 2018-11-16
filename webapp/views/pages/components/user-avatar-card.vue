@@ -23,51 +23,68 @@
             <h4>前端 / 懂点架构的前端</h4>
         </div>
         <!-- 允许自定义 这个列表-->
-        <ul class="social-ul list-inline mt-4">
+        <!--<ul class="social-ul list-inline mt-4">-->
+            <!--<li>-->
+                <!--<a class="social-ul__a" href="http://wpa.qq.com/msgrd?v=3&uin=871839012&site=qq&menu=yes" target="_blank">-->
+                    <!--<color-icon type="icon-color-QQ1" :size="22"></color-icon>-->
+                <!--</a>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<a class="social-ul__a" href="https://github.com/jjjjyx" target="_blank">-->
+                    <!--<color-icon type="icon-color-GitHub" :size="22"></color-icon>-->
+                <!--</a>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<a class="social-ul__a" href="http://weibo.com/5403878645" target="_blank">-->
+                    <!--<color-icon type="icon-color-weibo" :size="22"></color-icon>-->
+                <!--</a>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<Poptip placement="bottom" trigger="hover" >-->
+                    <!--<a class="social-ul__a" href="javascript:;">-->
+                        <!--<color-icon type="icon-color-weixin" :size="22"></color-icon>-->
+                    <!--</a>-->
+                    <!--<div slot="content">-->
+                        <!--<img src="http://image.cdn.mbdoge.cn/64807460-27ea-11e7-a8e7-a53b0973c884.png?imageView2/2/w/150/format/jpg" alt="">-->
+                    <!--</div>-->
+                <!--</Poptip>-->
+            <!--</li>-->
+            <!--<li>-->
+                <!--<a class="social-ul__a" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net"-->
+                   <!--target="_blank"><color-icon type="icon-color-youxiang" :size="22"></color-icon></a>-->
+            <!--</li>-->
+        <!--</ul>-->
+        <!--  文章数 | 图片数 | 标签 -->
+        <ul class="extra-ul list-inline mt-4">
             <li>
-                <a class="social-ul__a" href="http://wpa.qq.com/msgrd?v=3&uin=871839012&site=qq&menu=yes" target="_blank">
-                    <color-icon type="icon-color-QQ1" :size="22"></color-icon>
-                </a>
+                <span>{{statistics.publishPostNum}}</span>
+                <label>文章数</label>
             </li>
             <li>
-                <a class="social-ul__a" href="https://github.com/jjjjyx" target="_blank">
-                    <color-icon type="icon-color-GitHub" :size="22"></color-icon>
-                </a>
+                <span>{{statistics.mediaNum}}</span>
+                <label>图片数</label>
             </li>
             <li>
-                <a class="social-ul__a" href="http://weibo.com/5403878645" target="_blank">
-                    <color-icon type="icon-color-weibo" :size="22"></color-icon>
-                </a>
-            </li>
-            <li>
-                <Poptip placement="bottom" trigger="hover" >
-                    <a class="social-ul__a" href="javascript:;">
-                        <color-icon type="icon-color-weixin" :size="22"></color-icon>
-                    </a>
-                    <div slot="content">
-                        <img src="http://image.cdn.mbdoge.cn/64807460-27ea-11e7-a8e7-a53b0973c884.png?imageView2/2/w/150/format/jpg" alt="">
-                    </div>
-                </Poptip>
-            </li>
-            <li>
-                <a class="social-ul__a" href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=jyx@rpgame.net"
-                   target="_blank"><color-icon type="icon-color-youxiang" :size="22"></color-icon></a>
+                <span>{{statistics.tagNum}}</span>
+                <label>标签</label>
             </li>
         </ul>
         <div class="card-footer">
-            <!--33-->
+
+            <div class=""></div>
         </div>
     </div>
 </template>
 
 <script>
-    import { mapState } from 'vuex'
+    import { mapState, mapGetters } from 'vuex'
 	export default {
 		name: 'user-avatar-card',
         computed: {
             ...mapState({
-                'user': state => state.user
-            })
+                'user': state => state.user,
+                'statistics': state => state.data.statistics,
+            }),
         },
 	}
 </script>

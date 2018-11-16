@@ -8,10 +8,11 @@ const debug = require('debug')('app:routers:api.site')
 const log = require('log4js').getLogger('api.site')
 const utils = require('../../utils')
 const Result = require('../../common/resultUtils')
-const {siteDao, termDao} = require('../../models/index');
+const {siteDao, termDao, postDao, resourceDao} = require('../../models/index');
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
 const common = require('../common')
+const {Enum} = require('../../common/enum')
 
 const updateSite = function (key, value) {
     // return function () {
@@ -80,8 +81,22 @@ const getDict = async function (req, res) {
     return res.status(200).json(Result.success({site: siteList}))
 }
 
+const getStatistics = function (req, res) {
+    // 查询一些数据
+    // 文章个数， 标签数， 图片数
+    Promise.all([
+        postDao.count({where: {post_status: Enum.PostStatusEnum.PUBLISH}}),
+        termDao.count({where: {taxonomy: Enum.TaxonomyEnum.POST_TAG}}),
+        resourceDao.count()
+    ]).then(([publishPostNum, tagNum, mediaNum]) => {
+        return res.status(200).json(Result.success({publishPostNum, tagNum, mediaNum}))
+    })
+
+}
+
 router.route("/update").post(update)
 router.route("/").get(getSite)
 router.route("/dict").get(getDict)
+router.route("/statistics").get(getStatistics)
 
 module.exports = router

@@ -104,10 +104,19 @@
     // width: 700px;
     color: #333;
     padding: 2rem 1.5rem 5rem;
-    //background-color: @mainBgColor;
-
+    background-color: $white;
     border-radius: .5rem;
     margin-bottom: 2rem;
+    box-shadow: 0 0 5px rgba(0,0,0,.1);
+    .j-divider {
+        text-align: right;
+    }
+    .j-divider span{
+        margin-right: 30px;
+    }
+    .j-divider:last-child {
+        display: none;
+    }
 }
 
 .j-archives-item {
@@ -133,7 +142,7 @@
         }
     }
     .j-timeline {
-        width: 120px;
+        width: 100px;
         float: left;
         &::before {
             position: absolute;
@@ -149,7 +158,7 @@
         }
     }
     .j-content {
-        padding-left: 120px;
+        padding-left: 100px;
         word-break: break-all;
     }
     .j-article-info {
@@ -183,4 +192,31 @@
         border: 1px solid $border-color;
         overflow: hidden;
     }
+    .j-article-title {
+        font-weight: 100;
+        color: $info-color;
+        margin-bottom: .25rem;
+    }
+
+}
+.j-divider {
+    position: relative;
+}
+.j-divider:before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: #eee;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+.j-divider span{
+    display: inline-block;
+    background: #fff;
+    padding: 0 5px 0 18px;
+    position: relative;
+    margin-left: 30px;
+    color: $main-title-sub-color;
 }

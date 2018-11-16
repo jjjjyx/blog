@@ -1,10 +1,18 @@
 'use strict'
 
+
 const _ = require('lodash')
+const isArray = require('lodash/isArray')
+const isString = require('lodash/isString')
+const difference = require('lodash/difference')
+const differenceBy = require('lodash/differenceBy')
 const express = require('express')
 const qiniu = require('qiniu')
 const Color = require('color')
 const uuidv1 = require('uuid/v1')
+const UrlParse = require('url')
+const path = require('path')
+
 const debug = require('debug')('app:routers:api.qiniu-file')
 const log = require('log4js').getLogger('api.qiniu-file')
 const {check} = require('express-validator/check')
@@ -34,7 +42,8 @@ const returnBody = `
     "mimeType": $(mimeType),
     "ext": $(ext),
     "uuid": $(uuid),
-    "space": $(x:space)
+    "space": $(x:space),
+    "remark": $(x:remark),
 }
 `
 const qiniuOption = {
@@ -53,7 +62,7 @@ const putPolicy = new qiniu.rs.PutPolicy(qiniuOption)
 
 let qiniuConfig = new qiniu.conf.Config()
 //config.useHttpsDomain = true;
-qiniuConfig.zone = qiniu.zone.Zone_z0
+qiniuConfig.zone = qiniu.zone.Zone_z2
 
 const bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig)
 
@@ -83,7 +92,7 @@ const syncDelete = function (keys) {
     })
 }
 async function handleImage (image) {
-    let {key, hash, fsize, mimeType, putTime, type, status} = image
+    let {key, hash, fsize, mimeType, putTime, type, status, remark, space = Enum.ImgEnum.ALL} = image
     let url = domain + key
     let color = await getImageAveByUrl(url)
     color = color.replace('0x', '#')
@@ -102,15 +111,17 @@ async function handleImage (image) {
         ext,
         url,
         uuid,
-        space: Enum.ImgEnum.ALL
+        space,
+        remark
     }
-    resourceDao.findOrCreate(
+    return resourceDao.findOrCreate(
         {where: {hash} , defaults: values}
-    ).spread((user, created) => {
+    ).spread((img, created) => {
         if (created) {
             // 同步图片
             log.info('同步图片 key = %s, url = %s', hash, url)
         }
+        return img
     })
     // 获取图片颜色
     // @see
@@ -182,6 +193,42 @@ async function getImageInfo (url) {
     return data
 }
 
+/**
+ *
+ * @param url 图片资源
+ // * @param name 图片名称
+ * @param copyright 版权信息
+ * @returns {Promise<void>}
+ */
+function sisyphusFetch (url, name, copyright) {
+    let {host, pathname} = UrlParse.parse(url)
+    // url 不正确
+    if (!host) throw new Error('url 不正确，无法被解析')
+    name = name || path.basename(pathname)
+    copyright = copyright || `From the network: ${url}`
+    return new Promise((resolve, reject) => {
+        bucketManager.fetch(url, BUCKET_NAME, name, function(err, respBody, respInfo) {
+            if (err) { //478
+                debug('抓取网络图片失败图片失败 url = %s, name', url, name)
+                reject(err)
+            } else {
+                if (respInfo.statusCode === 200) {
+                    respBody.remark = copyright
+                    // respBody.space = Enum.ImgEnum.COVER
+                    respBody.putTime = (+new Date()) / 1000
+                    resolve(respBody)
+                    // console.log(respBody.key);
+                    // console.log(respBody.hash);
+                    // console.log(respBody.fsize);
+                    // console.log(respBody.mimeType);
+                } else {
+                    reject(new Error(respBody))
+                }
+            }
+        })
+    })
+}
+
 
 const size = 100
 const allowSpace = Object.values(Enum.ImgEnum)
@@ -235,7 +282,7 @@ const list = [
             where.space = space
         }
 
-        if (hash && _.isString(hash)) {
+        if (hash && isString(hash)) {
             where[Op.or] = []
             where[Op.or].push({hash: {[Op.like]: `%${hash}%`}})
             where[Op.or].push({name: {[Op.like]: `%${hash}%`}})
@@ -276,7 +323,7 @@ const move = [
     async function (req, res, next) {
         let {space} = req.body
         let {keys} = req.body
-        if (!_.isArray(keys)) {
+        if (!isArray(keys)) {
             keys = [keys]
         }
         debug(`移动空间文件 key = %s， space = %s`, keys, space)
@@ -298,18 +345,18 @@ const move = [
  */
 const del = [
     // check('key').exists().isString().withMessage('请提交 key !'),
-    utils.validationResult,
+    // utils.validationResult,
     async function (req, res) {
         // let key = req.body.key
         let {keys} = req.body
-        if (!_.isArray(keys)) {
+        if (!isArray(keys)) {
             keys = [keys]
         }
         debug(`删除空间文件 key = `, keys)
         try {
             let failKey = await syncDelete(keys)
             // 去掉失败的key
-            let successKey = _.difference(keys, failKey)
+            let successKey = difference(keys, failKey)
             await resourceDao.destroy({
                 paranoid: false,
                 force: true,
@@ -339,7 +386,7 @@ const callback = [
         //     "uuid": "c1cba196-4533-46ff-98fb-bb1f15849b8d"
         // }
 
-        let {key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid, space} = req.body
+        let {key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid, space, remark} = req.body
         let color = imageAve.RGB.replace('0x', '#')
         let {height, width} = info
         let url = domain + key
@@ -349,7 +396,7 @@ const callback = [
             space = Enum.ImgEnum.ALL
         }
         let values = {
-            key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url, space
+            key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url, space, remark
         }
         try {
             values = await resourceDao.create(values)
@@ -423,7 +470,7 @@ const syncQiniu = async function (req, res, next) {
     // let result = await resourceDao.findAll()
     let result = await sequelize.query('SELECT hash FROM j_resource', {type: sequelize.QueryTypes.SELECT})
     debug('本地已有图片个数 %d, 服务器上获取图片数 %d', result.length, images.length)
-    let notExistImages = _.differenceBy(images, result, 'hash')
+    let notExistImages = differenceBy(images, result, 'hash')
     debug('待同步个数 %d', notExistImages.length)
     try {
         for (let i = 0; i < notExistImages.length; i++) {
@@ -435,6 +482,26 @@ const syncQiniu = async function (req, res, next) {
         return res.status(200).json(Result.error())
     }
 }
+// 抓取网络的图片
+const sisyphus = [
+    check('url').isURL().withMessage('请提交正确url'),
+    checkSpace,
+    utils.validationResult,
+    async function (req, res, next) {
+        let {url, copyright, space} = req.body
+        try{
+            // 抓取
+            let image = await sisyphusFetch(url, null, copyright)
+            image.space = space
+            // 同步本地
+            let source = await handleImage(image)
+            return res.status(200).json(Result.success(source))
+        } catch (e) {
+            log.error('sisyphus error by :', e)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
 
 router.route('/token')
     .get(token)
@@ -453,6 +520,9 @@ router.route('/move')
 
 router.route('/del')
     .post(del)
+
+router.route('/sisyphus/fetch')
+    .post(sisyphus)
 
 router.route('/callback')
     .post(callback)

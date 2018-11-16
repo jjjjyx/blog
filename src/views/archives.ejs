@@ -13,7 +13,7 @@
          style="background-image:url('http://image.cdn.mbdoge.cn/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/1928/format/jpg');background-position: 0 -235px">
         <div class="container j-vertical-center">
             <h1>文章归档</h1>
-            <p>记录自己。 </p>
+            <p>观察下自己的写文水平的进阶线。这里只有原创，转载不会列出来哦~ 就看我能写几篇，写几天，或者....几年？</p>
         </div>
     </div>
     <div class="container j-archives-times">
@@ -41,9 +41,9 @@
                     <time datetime="<%=dateTime%>"><%=time%></time>
                 </div>
                 <div class="j-content">
-                    <a class="j-article-title am-text-lg">
+                    <h2 class="j-article-title am-text-lg">
                         <%=item.post_title%>
-                    </a>
+                    </h2>
                     <ul class="j-article-info list-inline">
                         <li class="j-article-author">
                             <img alt="<%=user.display_name%>"
@@ -62,6 +62,10 @@
             </div>
             <% } %>
         </div>
+        <div class="j-divider">
+            <span>divider</span>
+        </div>
+        <!--<Divider orientation="right">厉害的分割</Divider>-->
         <% } %>
     </div>
     <%- include('base/bottom', data); %>

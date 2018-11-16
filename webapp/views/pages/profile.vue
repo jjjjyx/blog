@@ -24,7 +24,7 @@
 
 <script>
     // import cloneDeep from 'lodash/cloneDeep'
-    import { mapState } from 'vuex'
+    import { mapState, mapActions } from 'vuex'
     import InfoRow from './components/info-row'
     import UserAvatarCard from './components/user-avatar-card'
     import UserBaseInfo from './components/user-base-info'
@@ -44,6 +44,12 @@
             ...mapState({
                 'user': state => state.user
             })
+        },
+        methods: {
+            ...mapActions(['fetchStatistics'])
+        },
+        mounted () {
+            this.fetchStatistics()
         }
     }
 </script>

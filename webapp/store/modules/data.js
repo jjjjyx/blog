@@ -4,8 +4,9 @@ import differenceBy from 'lodash/differenceBy'
 import groupBy from 'lodash/groupBy'
 import merge from 'lodash/merge'
 
-import * as post from '../../api/posts'
-import * as term from '../../api/terms'
+import * as postApi from '../../api/posts'
+import * as termApi from '../../api/terms'
+import * as globalSettingApi from '../../api/global-setting'
 
 const state = {
 
@@ -13,12 +14,19 @@ const state = {
     trashPosts: [],
 
     categoryList: [],
-    tagList: []
-
+    tagList: [],
+    statistics: {
+        publishPostNum: 0,
+        tagNum: 0,
+        mediaNum: 0
+    }
 }
 
 const getters = {
-    selectedPost: state => state.posts.filter((item) => item._checked)
+    selectedPost: state => state.posts.filter((item) => item._checked),
+    publishPost: state => state.posts.filter((item) => item.post_status === 'publish'),
+    // publishPostNum: (state,getter) => getter.publishPost.length,
+    // tagNum: state => state.tagList.length
 }
 
 function checkItems (items) {
@@ -33,13 +41,23 @@ function checkItems (items) {
 
 // actions
 const actions = {
+    async fetchStatistics ({commit, state}) {
+        try {
+            let result = await globalSettingApi.fetchAll()
+            // result.forEach(i => (i._checked = false))
+            commit('SET_STATISTICS', result)
+        } catch (e) {
+            // 失败不提示
+            // this._vm.$Message.error('获取文章数据失败')
+        }
+    },
     async fetchPosts ({commit, state}, force = true) {
         if (!force) {
             // 不是强制的则判断当期是否有值，
             if (state.posts.length !== 0) return
         }
         try {
-            let result = await post.fetchAll()
+            let result = await postApi.fetchAll()
             result.forEach(i => (i._checked = false))
             commit('SET_POST', result)
         } catch (e) {
@@ -50,7 +68,7 @@ const actions = {
     async deletePost ({commit, dispatch}, items) {
         items = checkItems(items)
         let ids = items.map((item) => item.id)
-        await post.moveTrash(ids)
+        await postApi.moveTrash(ids)
         commit({type: 'removeData', key: 'posts', arr: items})
         // 更新回收站
         dispatch('fetchTrash')
@@ -62,7 +80,7 @@ const actions = {
             if (state.categoryList.length !== 0 || state.tagList.length !== 0) return
         }
         try {
-            let result = await term.fetchAll()
+            let result = await termApi.fetchAll()
             result.forEach(i => (i._checked = false))
             commit('SET_TERMS', result)
         } catch (e) {
@@ -75,7 +93,7 @@ const actions = {
             if (state.trashPosts.length !== 0) return
         }
         try {
-            let result = await post.fetchTrashAll()
+            let result = await postApi.fetchTrashAll()
             result.forEach(i => (i._checked = false))
             commit('SET_POST_TRASH', result)
         } catch (e) {
@@ -86,7 +104,7 @@ const actions = {
     async deleteTermTag ({commit}, items) {
         items = checkItems(items)
         let ids = items.map((item) => item.id)
-        await term.deleteTag(ids)
+        await termApi.deleteTag(ids)
         commit({
             type: 'removeData',
             key: 'tagList',
@@ -104,7 +122,7 @@ const actions = {
             this._vm.$Message.info('默认分类不可删除')
         } else {
             let ids = items.map((item) => item.id)
-            await term.deleteCategory(ids)
+            await termApi.deleteCategory(ids)
             commit({type: 'removeData', key: 'categoryList', arr: items})
         }
     },
@@ -113,7 +131,7 @@ const actions = {
         // commit({type: 'removeData', key: 'trashPosts', arr: item})
         items = checkItems(items)
         let ids = items.map((item) => item.id)
-        await post.deleteTrash(ids)
+        await postApi.deleteTrash(ids)
         commit({
             type: 'removeData',
             key: 'trashPosts',
@@ -122,26 +140,29 @@ const actions = {
     },
 
     addTermTag ({commit}, tag) {
-        return term.createTag(tag).then((item) => commit({type: 'addData', key: 'tagList', item}))
+        return termApi.createTag(tag).then((item) => commit({type: 'addData', key: 'tagList', item}))
     },
     updateTermTag ({commit}, tag) {
-        return term.updateTag(tag).then((item) => commit({type: 'editData', key: 'tagList', item}))
+        return termApi.updateTag(tag).then((item) => commit({type: 'editData', key: 'tagList', item}))
     },
     addTermCategory ({commit}, category) {
-        return term.createCategory(category).then((item) => commit({type: 'addData', key: 'categoryList', item}))
+        return termApi.createCategory(category).then((item) => commit({type: 'addData', key: 'categoryList', item}))
     },
     updateTermCategory ({commit}, category) {
-        return term.updateCategory(category).then((item) => commit({type: 'editData', key: 'categoryList', item}))
+        return termApi.updateCategory(category).then((item) => commit({type: 'editData', key: 'categoryList', item}))
     },
     revertPost ({commit}, item) {
-        return post.trashRevert(item.id).then(() => commit('REMOVE_TRASH_POST', item))
+        return postApi.trashRevert(item.id).then(() => commit('REMOVE_TRASH_POST', item))
     },
     clearTrashPost ({commit}, item) {
         // 清除回收站也是调用相同的 mutations
-        return post.deleteTrash(item.id).then(() => commit('REMOVE_TRASH_POST', item))
+        return postApi.deleteTrash(item.id).then(() => commit('REMOVE_TRASH_POST', item))
     }
 }
 const mutations = {
+    SET_STATISTICS (state, data) {
+        merge(state.statistics, data)
+    },
     SET_POST (state, data) {
         state.posts = data
     },

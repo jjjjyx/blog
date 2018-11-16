@@ -1,6 +1,7 @@
 /* jshint indent: 2 */
-const {Enum} = require('../common/enum')
+// const {Enum} = require('../common/enum')
 
+// ALTER TABLE `blog`.`j_resource` CHANGE `space` `space` VARCHAR(80) CHARSET utf8 COLLATE utf8_bin DEFAULT 'all' NOT NULL;
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('resource', {
         hash: {
@@ -48,9 +49,14 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: false
         },
+        remark: { // 备注
+            type: DataTypes.STRING(500),
+            allowNull: true
+        },
         space: {
-            type: DataTypes.ENUM,
-            values: Object.values(Enum.ImgEnum),
+            type: DataTypes.STRING(80), // 取消掉枚举属性，
+            // type: DataTypes.ENUM,
+            // values: Object.values(Enum.ImgEnum),
             defaultValue: 'all',
             allowNull: false
         }
