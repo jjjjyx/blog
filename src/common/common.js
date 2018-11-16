@@ -1,4 +1,4 @@
-const _ = require('lodash')
+const isArray = require('lodash/isArray')
 const re = /_(\w)/g;
 
 // const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../models')
@@ -11,7 +11,7 @@ module.exports.transformStr3 = function(str) {
 
 module.exports.transformMetas = function (metas = []) {
     let obj = {}
-    if (_.isArray(metas)) {
+    if (isArray(metas)) {
         metas.forEach((item) => {
             obj[item.meta_key] = item
         })

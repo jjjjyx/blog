@@ -1,17 +1,13 @@
 'use strict'
 
-
-const _ = require('lodash')
 const isArray = require('lodash/isArray')
 const isString = require('lodash/isString')
 const difference = require('lodash/difference')
 const differenceBy = require('lodash/differenceBy')
 const express = require('express')
-const qiniu = require('qiniu')
+
 const Color = require('color')
 const uuidv1 = require('uuid/v1')
-const UrlParse = require('url')
-const path = require('path')
 
 const debug = require('debug')('app:routers:api.qiniu-file')
 const log = require('log4js').getLogger('api.qiniu-file')
@@ -21,82 +17,34 @@ const {sanitizeQuery} = require('express-validator/filter')
 const {resourceDao, sequelize} = require('../../models/index')
 const Result = require('../../common/resultUtils')
 const {Enum} = require('../../common/enum')
-const {getURLJSONData} = require('../common')
 const utils = require('../../utils')
+const qiniuApi = require('../../qiniuApi')
 
 const router = express.Router()
 const imgSpaces = Object.values(Enum.ImgEnum)
 const Op = sequelize.Op
 const domain = config.qiUpload.Domain
 const BUCKET_NAME = config.qiUpload.BUCKET_NAME
-const returnBody = `
-{
-    "key":$(key),
-    "hash":$(etag),
-    "size":$(fsize),
-    "bucket":"$(bucket)",
-    "name":"$(x:name)",
-    "info":$(imageInfo),
-    "imageAve":$(imageAve),
-    "exif": $(exif),
-    "mimeType": $(mimeType),
-    "ext": $(ext),
-    "uuid": $(uuid),
-    "space": $(x:space),
-    "remark": $(x:remark),
-}
-`
-const qiniuOption = {
-    scope: BUCKET_NAME,
-    expires: 600, // 10 分钟
-    returnBody: returnBody,
-    detectMime: 1,
-    callbackHost: 'www.mbdoge.cn',
-    callbackUrl: 'http://119.29.91.78:3878/api/img/callback',
-    callbackBody: returnBody,
-    callbackBodyType: 'application/json'
-    // saveKey: '$(et)'
-}
-const mac = new qiniu.auth.digest.Mac(config.qiUpload.ACCESS_KEY, config.qiUpload.SECRET_KEY)
-const putPolicy = new qiniu.rs.PutPolicy(qiniuOption)
-
-let qiniuConfig = new qiniu.conf.Config()
-//config.useHttpsDomain = true;
-qiniuConfig.zone = qiniu.zone.Zone_z2
-
-const bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig)
-
-const syncDelete = function (keys) {
-    let deleteOperations = keys.map((key) => qiniu.rs.deleteOp(BUCKET_NAME, key))
-    return new Promise((resolve, reject) => {
-        bucketManager.batch(deleteOperations, function (err, respBody, respInfo) {
-            if (err) {
-                reject(err)
-            } else {
-                // console.log(respInfo , respBody)
-                if (respInfo.statusCode === 298) { // 部分成功
-                    let failKey = []
-                    respBody.forEach((item, index) => {
-                        if (!(item.code === 200 || item.code === 612)) { // 资源不存在，或者删除成功 ，资源部存在的可能在别处删除了 这里也视为删除成功
-                            failKey.push(keys[index])
-                        }
-                    })
-                    resolve(failKey)
-                } else if (respInfo.statusCode === 200 || respInfo.statusCode === 612) {
-                    resolve()
-                } else {
-                    reject(new Error(respBody.error))
-                }
-            }
-        })
+const size = 100
+const allowSpace = Object.values(Enum.ImgEnum)
+const sanitizeSpace = sanitizeQuery('space')
+    .customSanitizer((value) => {
+        debug(`sanitizeSpace v = ${value}`)
+        if (allowSpace.indexOf(value) === -1) {
+            return Enum.ImgEnum.ALL
+        } else {
+            return value
+        }
     })
-}
+let checkAllowSpace = ['public', 'cover', 'post', 'avatar']
+const checkSpace = check('space').isIn(allowSpace)
+
 async function handleImage (image) {
     let {key, hash, fsize, mimeType, putTime, type, status, remark, space = Enum.ImgEnum.ALL} = image
     let url = domain + key
-    let color = await getImageAveByUrl(url)
+    let color = await qiniuApi.getImageAveByUrl(url)
     color = color.replace('0x', '#')
-    let {width, height, format: ext} = await getImageInfo(url)
+    let {width, height, format: ext} = await qiniuApi.getImageInfo(url)
     let uuid = uuidv1()
     let values = {
         key,
@@ -127,123 +75,6 @@ async function handleImage (image) {
     // @see
 }
 
-function getAllBybucket (bucket, marker = '') {
-    return new Promise((resolve, reject) => {
-        let options = {
-            limit: 999,
-            prefix: '',
-            marker
-        }
-        bucketManager.listPrefix(BUCKET_NAME, options, function (err, respBody, respInfo) {
-            if (err) {
-                console.log(err)
-                throw err
-            }
-            if (respInfo.statusCode === 200) {
-                let items = respBody.items
-                let nextMarker = respBody.marker
-                if (nextMarker) {
-                    getAllBybucket(bucket, nextMarker).then((result) => {
-                        resolve(items.concat(result))
-                    }).catch((e) => {
-                        reject(e)
-                    })
-                } else {
-                    resolve(items)
-                }
-
-                // items.forEach(function(item) {
-                //     console.log(item.key);
-                //     // console.log(item.putTime);
-                //     // console.log(item.hash);
-                //     // console.log(item.fsize);
-                //     // console.log(item.mimeType);
-                //     // console.log(item.endUser);
-                //     // console.log(item.type);
-                // });
-            } else {
-                reject(new Error(respBody))
-                // console.log(respInfo.statusCode);
-                // console.log(respBody);
-            }
-        })
-    })
-}
-
-/**
- * 获取图片平均色调
- * @see https://developer.qiniu.com/dora/manual/1268/image-average-hue-imageave
- * @param url
- */
-async function getImageAveByUrl (url) {
-    let data = await getURLJSONData(url + '?imageAve')
-    return data.RGB || ''
-}
-
-/**
- * 获取图片基本信息 高宽
- * @see https://developer.qiniu.com/dora/manual/1269/pictures-basic-information-imageinfo
- * @param url
- */
-async function getImageInfo (url) {
-    let data = await getURLJSONData(url + '?imageInfo')
-    if (data.error) {
-        return {'size': 0, 'format': '', 'width': 0, 'height': 0, 'colorModel': ''}
-    }
-    return data
-}
-
-/**
- *
- * @param url 图片资源
- // * @param name 图片名称
- * @param copyright 版权信息
- * @returns {Promise<void>}
- */
-function sisyphusFetch (url, name, copyright) {
-    let {host, pathname} = UrlParse.parse(url)
-    // url 不正确
-    if (!host) throw new Error('url 不正确，无法被解析')
-    name = name || path.basename(pathname)
-    copyright = copyright || `From the network: ${url}`
-    return new Promise((resolve, reject) => {
-        bucketManager.fetch(url, BUCKET_NAME, name, function(err, respBody, respInfo) {
-            if (err) { //478
-                debug('抓取网络图片失败图片失败 url = %s, name', url, name)
-                reject(err)
-            } else {
-                if (respInfo.statusCode === 200) {
-                    respBody.remark = copyright
-                    // respBody.space = Enum.ImgEnum.COVER
-                    respBody.putTime = (+new Date()) / 1000
-                    resolve(respBody)
-                    // console.log(respBody.key);
-                    // console.log(respBody.hash);
-                    // console.log(respBody.fsize);
-                    // console.log(respBody.mimeType);
-                } else {
-                    reject(new Error(respBody))
-                }
-            }
-        })
-    })
-}
-
-
-const size = 100
-const allowSpace = Object.values(Enum.ImgEnum)
-const sanitizeSpace = sanitizeQuery('space')
-    .customSanitizer((value) => {
-        debug(`sanitizeSpace v = ${value}`)
-        if (allowSpace.indexOf(value) === -1) {
-            return Enum.ImgEnum.ALL
-        } else {
-            return value
-        }
-    })
-let checkAllowSpace = ['public', 'cover', 'post', 'avatar']
-const checkSpace = check('space').isIn(allowSpace)
-
 /**
  * 上传token
  * @type {Function[]}
@@ -253,7 +84,7 @@ const token = [
         res.header('Cache-Control', 'max-age=0, private, must-revalidate')
         res.header('Pragma', 'no-cache')
         res.header('Expires', 0)
-        let token = putPolicy.uploadToken(mac)
+        let token = qiniuApi.uploadToken()
 
         if (token) {
             return res.status(200).json(Result.success(token))
@@ -354,7 +185,7 @@ const del = [
         }
         debug(`删除空间文件 key = `, keys)
         try {
-            let failKey = await syncDelete(keys)
+            let failKey = await qiniuApi.syncDelete(keys)
             // 去掉失败的key
             let successKey = difference(keys, failKey)
             await resourceDao.destroy({
@@ -370,48 +201,51 @@ const del = [
     }
 ]
 
-const callback = [
-    async function (req, res) {
-        // {
-        //     "key":"FhLm2F4r8Njh7Al50LSEYfD8Z49r",
-        //     "hash":"FhLm2F4r8Njh7Al50LSEYfD8Z49r",
-        //     "size":2286,
-        //     "bucket":"jyximg",
-        //     "name":"null",
-        //     "info":{"colorModel":"nrgba","format":"png","height":252,"size":2286,"width":316},
-        //     "imageAve":{"RGB":"0x6c6f70"},
-        //     "exif": null,
-        //     "mimeType": "image/png"
-        //     "ext": null,
-        //     "uuid": "c1cba196-4533-46ff-98fb-bb1f15849b8d"
-        // }
 
-        let {key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid, space, remark} = req.body
-        let color = imageAve.RGB.replace('0x', '#')
-        let {height, width} = info
-        let url = domain + key
+/**
 
-        // space = space || Enum.ImgEnum.ALL
-        if (imgSpaces.indexOf(space) === -1) {
-            space = Enum.ImgEnum.ALL
+ * @param req.body = {
+            "key":"FhLm2F4r8Njh7Al50LSEYfD8Z49r",
+            "hash":"FhLm2F4r8Njh7Al50LSEYfD8Z49r",
+            "size":2286,
+            "bucket":"jyximg",
+            "name":"null",
+            "info":{"colorModel":"nrgba","format":"png","height":252,"size":2286,"width":316},
+            "imageAve":{"RGB":"0x6c6f70"},
+            "exif": null,
+            "mimeType": "image/png"
+            "ext": null,
+            "uuid": "c1cba196-4533-46ff-98fb-bb1f15849b8d"
         }
-        let values = {
-            key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url, space, remark
-        }
-        try {
-            values = await resourceDao.create(values)
-            return res.status(200).json(Result.success(values))
-        } catch (e) {
-            if (e.name === 'SequelizeUniqueConstraintError') { // 重复了，返回实例
-                let result = await resourceDao.findOne({where: {hash}})
-                return res.status(200).json(Result.success(result))
-            }
-            log.error('callback error by :', e)
-            return res.status(200).json(Result.error())
-        }
+ * @param res
+ * @returns {Promise<*>}
+ */
+const callback =  async function (req, res) {
+    let {key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid, space, remark} = req.body
+    let color = imageAve.RGB.replace('0x', '#')
+    let {height, width} = info
+    let url = domain + key
 
+    // space = space || Enum.ImgEnum.ALL
+    if (imgSpaces.indexOf(space) === -1) {
+        space = Enum.ImgEnum.ALL
     }
-]
+    let values = {
+        key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url, space, remark
+    }
+    try {
+        values = await resourceDao.create(values)
+        return res.status(200).json(Result.success(values))
+    } catch (e) {
+        if (e.name === 'SequelizeUniqueConstraintError') { // 重复了，返回实例
+            let result = await resourceDao.findOne({where: {hash}})
+            return res.status(200).json(Result.success(result))
+        }
+        log.error('callback error by :', e)
+        return res.status(200).json(Result.error())
+    }
+}
+
 
 function detectImageUrl (url) {
 
@@ -419,26 +253,13 @@ function detectImageUrl (url) {
 
 
 const detect = async function (req, res, next) {
-    // 获取全部资源
-    // todo 探测比较慢 临时写几个测试用
-    // {
-    //     where: {
-    //         hash: ['Fg5Rt_GF1zdn-ph_Nfr4CT7J8Fvi','Fg8yOQDNGye2zcAIhYH8OQBv7oXC', 'FgaPkbw_VxB9hSjsMiDWzdYRccGY', 'FglabNLND9aqVkgfVypjXQJqGVQx']
-    //     }
-    // }
     try {
-        let result = await resourceDao.findAll(
-
-        )
+        let result = await resourceDao.findAll()
         let failNotFound = []
-        // let fail = {
-        //     404: failNotFound
-        // }
-        // 对每个图片访问测试，
         for (let i = 0; i < result.length; i++) {
             let image = result[i]
             try {
-                await getURLJSONData(image.url)
+                await utils.getURLJSONData(image.url)
                 let j = image.toJSON()
                 j.type = '404'
                 failNotFound.push(j)
@@ -447,8 +268,6 @@ const detect = async function (req, res, next) {
             }
         }
         // 引用计数统计
-
-        // console.log(failNotFound)
         return res.status(200).json(Result.success(failNotFound))
     } catch (e) {
         log.error('detect error by :', e)
@@ -464,7 +283,7 @@ const detect = async function (req, res, next) {
  * @returns {Promise<void>}
  */
 const syncQiniu = async function (req, res, next) {
-    let images = await getAllBybucket(BUCKET_NAME)
+    let images = await qiniuApi.getAllBybucket(BUCKET_NAME)
     // 图片较多， 优化
     // SELECT HASH FROM j_resource
     // let result = await resourceDao.findAll()
@@ -491,7 +310,7 @@ const sisyphus = [
         let {url, copyright, space} = req.body
         try{
             // 抓取
-            let image = await sisyphusFetch(url, null, copyright)
+            let image = await qiniuApi.sisyphusFetch(url, null, copyright)
             image.space = space
             // 同步本地
             let source = await handleImage(image)

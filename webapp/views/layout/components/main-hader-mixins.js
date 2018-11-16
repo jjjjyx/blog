@@ -98,9 +98,8 @@ export default {
         },
         logout () {
             user.logout().then(() => {
-                console.log('====')
-                // api.token = null
-                // location.reload()
+                api.token = null
+                location.reload()
             })
             // api.nget('/api/user/signout').then(() => {
             // 	api.token = null

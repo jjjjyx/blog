@@ -306,33 +306,3 @@ function ipAndRoute (req) {
     return key;
 }
 module.exports.ipAndRoute = ipAndRoute
-
-/**
- * 简单获取url 中json 数据, 方便使用外部调用api
- * @param url
- * @returns {Promise<any>}
- */
-function getURLJSONData (url) {
-    url = encodeURI(url) // 防止中文
-    return new Promise((resolve, reject) => {
-        http.get(url, resp => {
-            let data = ''
-            // A chunk of data has been recieved.
-            resp.on('data', (chunk) => {
-                data += chunk
-            })
-
-            // The whole response has been received. Print out the result.
-            resp.on('end', () => {
-                try {
-                    data = JSON.parse(data)
-                    resolve(data)
-                } catch (e) {
-                    reject(e)
-                }
-                // console.log(JSON.parse(data).explanation);
-            })
-        }).on('error', reject)
-    })
-}
-module.exports.getURLJSONData = getURLJSONData
