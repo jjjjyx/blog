@@ -2,20 +2,23 @@
 
 const _ = require('lodash')
 const express = require('express')
-const router = express.Router()
-const debug = require('debug')('app:routers:api.comment')
-const log = require('log4js').getLogger('api.comment')
-const utils = require('../../utils')
-const Result = require('../../common/resultUtils')
-const {commentDao} = require('../../models/index')
-const {body} = require('express-validator/check')
-const {sanitizeBody} = require('express-validator/filter')
-const common = require('../common')
 const useragent = require('useragent')
 const url = require('url')
 const rateLimiter = require('redis-rate-limiter');
+const {sanitizeBody} = require('express-validator/filter')
+const {body} = require('express-validator/check')
+const debug = require('debug')('app:routers:api.comment')
+const log = require('log4js').getLogger('api.comment')
+
+const {commentDao, postDao, sequelize} = require('../../models/index')
+const Result = require('../../common/result')
+const common = require('../../common/common')
+const utils = require('../../utils')
 
 
+const router = express.Router()
+const COMMENT_KEY = 'comment'
+const incrementPostComment = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ?) AND meta_key = '${COMMENT_KEY}'`
 const comment = [
     // 如果频率次数过多给出验证码
     // 限制访问频率为 每分钟8
@@ -41,7 +44,7 @@ const comment = [
             return obj !== null
         })
     }),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
 
         // console.log('req.body', req.body)
@@ -51,7 +54,7 @@ const comment = [
         let ip = req.clientIp
 
         let agent = req.headers['user-agent']
-        let agentObj =  useragent.parse(agent)
+        let agentObj = useragent.parse(agent)
         let osAgent = agentObj.os.family
 
         log.debug('用户 %s#%s 发表评论', req.user.id, req.user.user_login)
@@ -77,6 +80,19 @@ const comment = [
             let result = await commentDao.create(comment)
             log.info('创建评论，ID = ', result.id)
             result.dataValues.user = req.user
+            // 更新文章评论数  以后有别评论对象这里需要进行拆分
+
+            let [, metadata] = await sequelize.query(incrementPostComment, {replacements: [parent]})
+            if (metadata.changedRows === 0) {
+                // common.createMetaByMetaDao(postMetaDao, {post_id: })
+                let post = await postDao.findOne({
+                    where: {guid: parent}, attributes: ['id']
+                })
+                if (post !== null) {
+                    await common.updateOrCreatePostMeta(post.id, COMMENT_KEY, 1)
+                }
+            }
+
             return res.status(200).json(Result.success(result))
         } catch (e) {
             log.error('comment error by:', e)

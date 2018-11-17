@@ -2,6 +2,6 @@
 <div id="preloader">
     <div id="preloader-inner" class="battery"></div>
 </div>
-<script id="load-script" type="application/javascript">+function(d){function e(){var a,b=document.createElement("surface"),c={animation:"animationend",OAnimation:"oanimationend",MozAnimation:"mozAnimationEnd",WebkitAnimation:"webkitAnimationEnd"};for(a in c)if(void 0!==b.style[a])return c[a]}var b=document.getElementById("preloader"),f=document.getElementById("load-script");d.fulfilLoading=function(){b.className="fadeOut";var a=e();a&&b.addEventListener(a,function(){document.body.removeChild(b);document.body.removeChild(f);b.removeEventListener(a,arguments.callee,
+<script id="load-script" type="application/javascript">+function(d){function e(){var a,b=document.createElement("surface"),c={animation:"animationend",OAnimation:"oanimationend",MozAnimation:"mozAnimationEnd",WebkitAnimation:"webkitAnimationEnd"};for(a in c)if(void 0!==b.style[a])return c[a]}d.getAnimation = e;var b=document.getElementById("preloader"),f=document.getElementById("load-script");d.fulfilLoading=function(){b.className="fadeOut";var a=e();a&&b.addEventListener(a,function(){document.body.removeChild(b);document.body.removeChild(f);b.removeEventListener(a,arguments.callee,
     !1)})}}(window);
 </script>

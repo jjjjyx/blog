@@ -1,20 +1,23 @@
 'use strict'
 
 const express = require('express')
-
-const _ = require('lodash')
+const isArray = require('lodash/isArray')
+const groupBy = require('lodash/groupBy')
 const debug = require('debug')('app:routers:api.term')
 const log = require('log4js').getLogger('api.term')
-const router = express.Router()
+
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
-const utils = require('../../utils')
-const Result = require('../../common/resultUtils')
-const {Enum} = require('../../common/enum')
+
 const {termDao, sequelize} = require('../../models/index')
+const utils = require('../../utils')
+const Result = require('../../common/result')
+const {Enum} = require('../../common/enum')
+const common = require('../../common/common')
 
 const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
+const router = express.Router()
 
 const sanitizeId = sanitizeBody('id').toInt()
 const sanitizeName = sanitizeBody('name').escape().trim()
@@ -120,7 +123,7 @@ const addCategory = [
     checkCreateSlug,
     checkIcon,
     checkDescription,
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         req.body.taxonomy = Enum.TaxonomyEnum.CATEGORY
         createTerm(req.body).then((result) => {
@@ -139,7 +142,7 @@ const addTag = [
     checkName,
     checkCreateSlug,
     checkDescription,
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         req.body.taxonomy = Enum.TaxonomyEnum.POST_TAG
         createTerm(req.body).then((result) => {
@@ -157,7 +160,7 @@ const editCategory = [
     checkUpdateSlug,
     checkIcon,
     checkDescription,
-    utils.validationResult,
+    common.validationResult,
     async function (req, res) {
         let {id} = req.body
         if (id === SITE.defaultCategoryId) {
@@ -176,7 +179,7 @@ const editTag = [
     checkName,
     checkUpdateSlug,
     checkDescription,
-    utils.validationResult,
+    common.validationResult,
     async function (req, res) {
         let {id} = req.body
         if (id === SITE.defaultCategoryId) {
@@ -194,7 +197,7 @@ const del = [
     // checkId,
     async function (req, res) {
         let {ids} = req.body
-        if (!_.isArray(ids)) {
+        if (!isArray(ids)) {
             ids = [ids]
         }
         // 删除掉文章的引用
@@ -210,7 +213,7 @@ const del = [
             if (terms.length) {
                 // 调出标签与分类
                 let fn = (item) => item.id
-                let {category, post_tag} = _.groupBy(terms, (item) => item.taxonomy)
+                let {category, post_tag} = groupBy(terms, (item) => item.taxonomy)
                 category = category || []
                 post_tag = post_tag || []
                 let category_ids = category.map(fn)

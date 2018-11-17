@@ -4,7 +4,7 @@ const express = require('express')
 
 const router = express.Router()
 const debug = require('debug')('app:routers:tags')
-const common = require('./common')
+const common = require('../common/common')
 const log = require('log4js').getLogger('routers:tags')
 router.get('/', async function(req, res, next) {
     try {

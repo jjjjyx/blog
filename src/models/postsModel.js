@@ -1,7 +1,8 @@
-       /* jshint indent: 2 */
+/* jshint indent: 2 */
 const {Enum} = require('../common/enum')
-const common = require('../common/common')
-const _ = require('lodash')
+const utils = require('../utils')
+const groupBy = require('lodash/groupBy')
+
 /*
 关于
 此表用户记录与维护文章，以及文章的历史版本信息
@@ -21,14 +22,17 @@ const _ = require('lodash')
 
 
 function getCategoryOrTags () {
-   if (!this.terms) {
-       throw new Error('未获取到文章terms 信息')
-   }
-   let {category = [{name: ''}], post_tag: postTag = []} = _.groupBy(this.terms, 'taxonomy')
-   return {
-       category: category[0],
-       postTag
-   }
+    if (!this.terms) {
+        throw new Error('未获取到文章terms 信息')
+    }
+    let {category = [{name: ''}], post_tag: postTag = []} = groupBy(this.terms, 'taxonomy')
+    return {
+        category: category[0],
+        postTag
+    }
+}
+function updateOrCreateMeta (key, value) {
+
 }
 
 module.exports = function (sequelize, DataTypes) {
@@ -134,7 +138,7 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER(11),
             allowNull: true,
             defaultValue: '0'
-        },
+        }
         // 这几项属性改放在postmeta 中
         // author: {
         //     type: DataTypes.STRING(255),
@@ -162,13 +166,12 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         tableName: 'j_posts',
         // 不要忘了启用 timestamps
-        timestamps:true,
-        deletedAt: "deleteAt",
+        timestamps: true,
+        deletedAt: 'deleteAt',
         paranoid: true,
-        getterMethods : {
+        getterMethods: {
             metas () {
-                return common.transformMetas(this.getDataValue('metas'))
-                // return moment(this.getDataValue('createdAt')).format('YYYY-M-D hh:mm');
+                return utils.transformMetasToObject(this.getDataValue('metas'), 'meta_key')
             }
         },
         setterMethods: {
@@ -180,11 +183,11 @@ module.exports = function (sequelize, DataTypes) {
         //     unique: true,
         //     fields: ['post_name','post_title']
         // },]
-    });
+    })
     const {user: userModel} = sequelize.models
     userModel.hasMany(postModel, {foreignKey: 'post_author', targetKey: 'id'})
     postModel.belongsTo(userModel, {foreignKey: 'post_author', targetKey: 'id'})
 
     postModel.prototype.getCategoryOrTags = getCategoryOrTags
     return postModel
-};
+}

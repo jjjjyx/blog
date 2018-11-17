@@ -2,18 +2,16 @@
 
 const http = require('http')
 const iconv = require('iconv-lite')
-
 const express = require('express')
 const debug = require('debug')('app:routers:api.tools')
 const log = require('log4js').getLogger('api.tools')
 const {query} = require('express-validator/check')
 
 const utils = require('../../utils')
-const Result = require('../../common/resultUtils')
-const router = express.Router()
-// const {siteDao, termDao} = require('../../models/index')
-// const {sanitizeBody} = require('express-validator/filter')
+const Result = require('../../common/result')
+const common = require('../../common/common')
 
+const router = express.Router()
 const redisClient = utils.redisClient
 const qqReg = /^[1-9][0-9]{4,}$/
 const qqAvater = 'http://q.qlogo.cn/headimg_dl?spec=140&dst_uin='  // 大小 140
@@ -54,7 +52,7 @@ const qinfo = [
         debug('qinfo qq = ', value)
         return qqReg.test(value)
     }).withMessage('请提交正确的qq'),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         let qq = req.query.key
         log.debug('获取 qq = %s 信息', qq)

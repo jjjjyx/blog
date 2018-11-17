@@ -2,35 +2,25 @@
 
 const express = require('express')
 
-const router = express.Router()
 const debug = require('debug')('app:routers:category')
 const log = require('log4js').getLogger('routers:category')
 const {body, query} = require('express-validator/check')
 const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
-const {Enum} = require('../common/enum')
-const common = require('./common')
+
 const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../models')
+
 const {term_relationships: termRelationshipsDao} = sequelize.models
-const Op = sequelize.Op
+const {Enum} = require('../common/enum')
+const common = require('../common/common')
 const utils = require('../utils')
+
+const Op = sequelize.Op
+const router = express.Router()
 
 const renderCategoryList = [
     async function (req, res, next) {
         try {
-            let list = await termDao.findAll({
-                where: {
-                    taxonomy: Enum.TaxonomyEnum.CATEGORY,
-                    icon: {
-                        [Op.not]: null,
-                        [Op.ne]: ''
-                    }
-                },
-                attributes: {
-                    include: [
-                        common.termCountSql
-                    ]
-                }
-            })
+            let list = await common.loadCategory(100)
             res.render('category-list', {list})
         } catch (e) {
             next(e)
@@ -87,7 +77,7 @@ const renderCategory = [
 const loadPostByTerm = [
     sanitizeQuery('page').toInt(),
     query('page').isInt(),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         let slug = req.params.slug
         let page = req.query.page

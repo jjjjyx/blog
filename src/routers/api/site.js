@@ -1,18 +1,22 @@
 'use strict'
 
 
-const _ = require('lodash')
+const intersection = require('lodash/intersection')
 const express = require('express')
-const router = express.Router()
+
 const debug = require('debug')('app:routers:api.site')
 const log = require('log4js').getLogger('api.site')
-const utils = require('../../utils')
-const Result = require('../../common/resultUtils')
-const {siteDao, termDao, postDao, resourceDao} = require('../../models/index');
 const {body} = require('express-validator/check')
 const {sanitizeBody} = require('express-validator/filter')
-const common = require('../common')
+
+const {siteDao, termDao, postDao, resourceDao} = require('../../models/index');
+
+const common = require('../../common/common')
 const {Enum} = require('../../common/enum')
+const Result = require('../../common/result')
+const utils = require('../../utils')
+
+const router = express.Router()
 
 const updateSite = function (key, value) {
     // return function () {
@@ -28,7 +32,7 @@ const update = [
     // sanitizeBody('value').trim(),
     // body('key').exists().withMessage("key 为必须").isString().withMessage("请提交正确的key"),
     // body('value').exists().withMessage("value 为必须").isString().withMessage('请提及正确的value'),
-    // utils.validationResult,
+    // common.validationResult,
     async function (req, res) {
         // req.sanitizeBody('keys').toArray()
         // req.sanitizeBody('values').toArray()
@@ -43,7 +47,7 @@ const update = [
             //     return res.status(200).json(Result.info('参数个数不正确'))
             // }
             let allKeys = await siteDao.findAll({attributes: ['key']}).map(i => i.key)
-            let allowKey = _.intersection(allKeys, keys)
+            let allowKey = intersection(allKeys, keys)
             debug('site.update allowKey = %s', allowKey)
             let ups = allowKey.map(key => updateSite(key, req.body[key]))
 

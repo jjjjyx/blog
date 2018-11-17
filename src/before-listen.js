@@ -6,6 +6,7 @@ const debug = require('debug')('app:before-listen')
 const log = require('log4js').getLogger('before-listen')
 const {siteDao, termDao} = require('../src/models')
 const {Enum} = require('./common/enum')
+const utils = require('./utils')
 
 function randomHex () {
     let md5 = crypto.createHash('md5')
@@ -14,6 +15,7 @@ function randomHex () {
 }
 
 module.exports = async function (app) {
+    utils.clearCache()
     log.info('before-listen 注册全局函数')
     let siteList = await siteDao.findAll({
         where: {

@@ -9,10 +9,10 @@ const debug = require('debug')('app:routers:api.user')
 const {check} = require('express-validator/check')
 
 const {userDao, userLogDao, userMetaDao, sequelize} = require('../../models/index')
-const utils = require('../../utils')
-const Result = require('../../common/resultUtils')
+
+const Result = require('../../common/result')
 const {Enum} = require('../../common/enum')
-const common = require('../common')
+const common = require('../../common/common')
 const jwt = require('../../express-middleware/auth/jwt')
 
 const router = express.Router()
@@ -70,7 +70,7 @@ const _saveUserLastOnlineTime  = function (userId) {
 const login = [
     check('username', '账号不可为空且3-6位').isString().withMessage('必须是字符串').isLength({min: 3, max: 6}),
     check('password', '密码为6 - 18位').isBase64(),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         let {username, password} = req.body
         debug('login username = %s, password = ***', username)
@@ -204,7 +204,7 @@ const update_pass = [
     check('old_pass', '原始密码不可为空').isBase64(),
     check('new_pass', '新密码不可为空').isBase64(),
     check('cpass', '确认密码不可为空').isBase64(),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
 
         let {old_pass, new_pass, cpass} = req.body

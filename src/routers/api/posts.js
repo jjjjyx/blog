@@ -2,19 +2,23 @@
 'use strict'
 
 const express = require('express')
-const _ = require('lodash')
-const router = express.Router()
-const debug = require('debug')('app:routers:api.posts')
-const log = require('log4js').getLogger('api.posts')
+const marked = require("marked")
+const differenceBy = require('lodash/differenceBy')
+const difference = require('lodash/difference')
+const isEqual = require('lodash/isEqual')
 const {body, param} = require('express-validator/check')
 const {sanitizeBody, sanitizeParam} = require('express-validator/filter')
+const debug = require('debug')('app:routers:api.posts')
+const log = require('log4js').getLogger('api.posts')
+
 const utils = require('../../utils')
-const Result = require('../../common/resultUtils')
+const Result = require('../../common/result')
 const {Enum} = require('../../common/enum')
-const marked = require("marked")
+const common = require('../../common/common')
 
 const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../../models/index')
 const {term_relationships: termRelationshipsDao} = sequelize.models
+const router = express.Router()
 const Op = sequelize.Op
 
 const trashSaveDay = 30
@@ -188,7 +192,7 @@ const _createTerms = async function ({new_tag, tags_id}) {
     debug(`_createTerms 提交了标签名称：[%s]，其中[%s]是已存在的`, new_tag, newTags.map(tagToString))
 
     let _newTags = newTags.map((item) => item.name)
-    let new_tagsValue = _.difference(new_tag, _newTags).map((name) => ({
+    let new_tagsValue = difference(new_tag, _newTags).map((name) => ({
         name,
         taxonomy: Enum.TaxonomyEnum.POST_TAG,
         description: '',
@@ -222,7 +226,7 @@ const createTags = async function (req, res, post) {
     tags.push(category)
 
     let postTerms = await post.getTerms()
-    let d = _.differenceBy(postTerms, tags, 'id').length
+    let d = differenceBy(postTerms, tags, 'id').length
 
     // console.log('post.terms', await post.getTerms())
     if (d >= 0) {
@@ -262,32 +266,7 @@ const _save_update = function (post, {post_title, post_content, post_excerpt}) {
     //         }
     //     })
 }
-/**
- * 更新meta 的统一方法
- * @param id
- * @param key
- * @param value
- * @private
- */
-let _save_postMeta = function (id, key, value) {
-    log.info('创建文章Meta，id = %d, key = %s, value = %s', id, key, value)
-    return postMetaDao.findOrCreate({
-        where: {
-            post_id: id,
-            meta_key: key
-        },
-        defaults: {
-            meta_value: value
-        }
-    }).spread((meta, created) => {
-        if (!created) {
-            log.info('创建文章Meta，id = %d, meta key = %s 已存在, 更新', id, key)
-            meta.meta_value = value
-            return meta.save()
-        }
-        return true
-    })
-}
+
 /**
  * 保存文章, 仅保存标题，内容，摘录，标签
  *
@@ -302,7 +281,7 @@ const save = [
     checkId,
     checkContent,
     checkExcerpt,
-    utils.validationResult,
+    common.validationResult,
     async function (req, res) {
         let {post_title, id, post_content, post_excerpt} = req.body
         log.debug('before 保存文章，post_title = %s, id = %s', post_title, id)
@@ -390,8 +369,8 @@ const save = [
                 let new_tag = await _createTerms(req.body)
 
                 await Promise.all([
-                    _save_postMeta(autoSavePost.id, 'tags', JSON.stringify(new_tag.map(item => item.name))),
-                    _save_postMeta(autoSavePost.id, 'category', JSON.stringify(category.id))
+                    common.updateOrCreatePostMeta(autoSavePost.id, 'tags', JSON.stringify(new_tag.map(item => item.name))),
+                    common.updateOrCreatePostMeta(autoSavePost.id, 'category', JSON.stringify(category.id))
                 ])
                 debug(`save 文章存档 = [${autoSavePost.id}#${autoSavePost.post_name}]，保存分类标签记录!`)
 
@@ -411,7 +390,7 @@ const newPost = [
     sanitizeTitle,
     checkTitle,
     // body('id').isEmpty().withMessage('test').isInt().withMessage('分类id 不正确'),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res) {
         let {post_title} = req.body
         try {
@@ -436,7 +415,7 @@ const newPost = [
 
 const moverTrash = [
     // body('ids').exists().isArray().withMessage('请提交正确的文章ID列表'),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res) {
         try {
             req.sanitizeBody('ids').toArray()
@@ -477,7 +456,7 @@ const moverTrash = [
 // 删除文章的同时顺便删除 过期的文章
 // todo 删除多余的空白自动草稿
 const del = [
-    utils.validationResult,
+    common.validationResult,
     async function (req, res) {
         req.sanitizeBody('ids').toArray()
         let {ids} = req.body
@@ -699,7 +678,7 @@ const _getPostInfo = async function (req, res) {
 const postInfo = [
     sanitizeParam('id').toInt(),
     param('id').isInt().exists().withMessage('错误的id'),
-    utils.validationResult,
+    common.validationResult,
     _getPostInfo
 ]
 
@@ -739,7 +718,7 @@ const release = [
     // checkCategoryId,
     checkAuthor,
     // checkTagsId,
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         // todo 评论状态
         let {
@@ -799,9 +778,9 @@ const release = [
             // sticky
             let mdContent = marked(post_content, {renderer: utils.renderer})
             // Promise.all([
-            _save_postMeta(id, 'sticky', sticky)
-            _save_postMeta(id, 'render', render_value)
-            _save_postMeta(id, 'displayContent', mdContent.substr(0, 400))
+            common.updateOrCreatePostMeta(id, 'sticky', sticky)
+            common.updateOrCreatePostMeta(id, 'render', render_value)
+            common.updateOrCreatePostMeta(id, 'displayContent', mdContent.substr(0, 400))
             // ]).then(() => {
             //     log.debug('成功保存文章 #%d的meta 信息', post.id)
             // }).catch(e => log.error('保存文章#%d meta 失败:', post.id, e))
@@ -822,7 +801,7 @@ const release = [
             delete newValues.createdAt
             // 检查内容是否修改了，没有修改则不创建版本
             // debug(`是否修改了文章 = ${id}, result = ${result}`)
-            let isModify = _.isEqual(newValues, oldValues)
+            let isModify = isEqual(newValues, oldValues)
             debug('newValues: =', JSON.stringify(newValues))
             debug('oldValues: =', JSON.stringify(oldValues))
             debug(`是否修改了文章 isModify = ${!isModify}`)
@@ -837,7 +816,7 @@ const release = [
                 values.id = undefined
                 values.createdAt = undefined
                 let revision = await postDao.create(values)
-                _save_postMeta(revision.id, 'author', JSON.stringify(postAuthor || req.user))
+                common.updateOrCreatePostMeta(revision.id, 'author', JSON.stringify(postAuthor || req.user))
 
             }
             // }
@@ -886,7 +865,7 @@ const resetPostGuid = [
 //         console.log(req.body)
 //         next()
 //     },
-//     utils.validationResult,
+//     common.validationResult,
 //     function (req, res) {
 //         // console.log(req)
 //         console.log(req.body)

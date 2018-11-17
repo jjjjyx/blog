@@ -33,13 +33,13 @@
 <%-include('loading', data); %>
 <div id="app" class="article-a">
 <%
-    var metas = post.metas;
+    var metas = post.metas
     var navData = {name: 'category'}
-    var {category, post_tag} = _.groupBy(post.terms, (item) => item.taxonomy)
+    var {category, postTag} = post.getCategoryOrTags()
     var post_date = dateFormat(post.post_date, 'YYYY-M-D')
-    var categoryLabel = category[0].name
+    var categoryLabel = category.name
     var breadcrumbLabel
-    if (SITE.defaultCategoryId == category[0].id) {
+    if (SITE.defaultCategoryId == category.id) {
         breadcrumbLabel = dateFormat(post.post_date, 'YYYY年M月')
         navData.name = 'archives'
     } else {
@@ -91,17 +91,28 @@
             <%-post_content%>
         </article>
         <section class="article-a-footer">
-            <% if (post_tag) {%>
+            <% if (postTag.length) {%>
             <div class="article-a-footer__tag">
                 <color-icon type="icon-color-tag" size="24" class="mr-2 align-middle"></color-icon>
-                <% post_tag.forEach((tag) => {%><span class="ivu-tag ivu-tag-default ivu-tag-checked"><%=tag.name%></span><%})%>
+                <% postTag.forEach((tag) => {%><span class="ivu-tag ivu-tag-default ivu-tag-checked"><%=tag.name%></span><%})%>
             </div>
             <%}%>
             <!--<div class="article-a-footer__thumbs"></div>-->
             <div class="article-a-footer__share social-share">
-                <button class="thumbs__btn ivu-btn ivu-btn-circle ivu-btn-large ivu-btn-success">
-                    <color-icon class="mr-1 align-middle" size="18" type="icon-color-icon-"></color-icon>
-                    <span style="font-size: 1rem">赞一个&nbsp;&nbsp;|&nbsp;&nbsp;0</span>
+             <%
+                 var heartNum = metas.heart && metas.heart.meta_value || 0
+                 var heartEvent = `@click="heart($event,'${guid}', ${heartNum})"`
+                 var heartInnerText = ''
+                 if (cookies['heart_' + guid]) {
+                     heartInnerText = '已&nbsp;&nbsp;赞&nbsp;&nbsp;|&nbsp;&nbsp;'
+                 } else {
+                     heartInnerText = '<span ref="heartLabel">赞一个</span>&nbsp;&nbsp;|&nbsp;&nbsp;'
+                 }
+                 heartInnerText+=`<span ref='heartNum'>${heartNum}</span>`
+             %>
+                <button class="thumbs__btn ivu-btn ivu-btn-circle ivu-btn-large ivu-btn-success" <%-heartEvent%>>
+                    <color-icon class="mr-1 align-middle" size="18" type="icon-color-icon-" ref="heartIcon"></color-icon>
+                    <span style="font-size: 1rem"><%-heartInnerText%></span>
                 </button>
             </div>
             <hr>

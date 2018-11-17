@@ -72,10 +72,9 @@
                 </div>
             </li>
         </ul>
-        <div class="comment-page">
+        <div class="comment-page" v-if="commentList.length">
             <Page :total="total" show-elevator @on-change="handlePageChange" :current.sync="commentDate.page"></Page>
         </div>
-
         <comment-input v-model="content" v-if="commentList.length >= 10" @auth="infoModal = true" @comment-success="handleCommentSuccess"/>
         <Modal v-model="infoModal" title="一个必须填写的表单" scrollable="true">
             <div class="user-info-wrap">
@@ -355,6 +354,9 @@ export default {
                 this.commentDate.placeholder = ''
                 // 添加到对应才child
                 let comment = this.commentList.find(item => item.id === commentParent)
+                if (!comment.child) {
+                    comment.child = []
+                }
                 comment.child.splice(0, 0, result)
             } else {
                 if (this.commentDate.sort === 'desc') {

@@ -23,7 +23,7 @@
             list = groupData[key]
         %>
         <div class="j-archives-item">
-            <div id="<%= key.replace(' ', '') %>" class="j-start-date"
+            <div id="<%= moment(key, 'MMM YY').format('YYYYMM') %>" class="j-start-date"
                  title="<%= moment(key, 'MMM YY').format('YYYY年MM月') %>">
                 <%= key %>
             </div>

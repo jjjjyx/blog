@@ -4,14 +4,15 @@ const Bluebird = require('bluebird')
 const moment = require('moment')
 const redis = require("redis")
 const isString = require('lodash/isString')
+const isArray = require('lodash/isArray')
 const shortid = require('shortid')
 const http = require('http')
 
-const {validationResult} = require('express-validator/check')
+
 const ExpressRedisCache = require('express-redis-cache')
 
 const log = require('log4js').getLogger('utils')
-const Result = require('./common/resultUtils')
+
 const marked = require('marked')
 
 const client = redis.createClient()
@@ -53,21 +54,7 @@ Bluebird.promisifyAll(client)
     // }
     // return tmp
 // }
-/**
- * 统一的表达验证结果函数
- * @param req
- * @param res
- * @param next
- * @returns {*}
- */
-function validation (req, res, next) {
-    const errors = validationResult(req)
-    if (!errors.isEmpty()) {
-        log.debug('api = %s 参数错误 %s', req.originalUrl, JSON.stringify(errors.mapped()))
-        return res.status(200).json(Result.info('参数错误', errors.mapped()))
-    }
-    return next()
-}
+
 
 /**
  * 格式化时间
@@ -264,8 +251,41 @@ function getURLJSONData (url) {
     })
 }
 
+
+/**
+ *  转换meta数组形式为对象
+ * @param metas 待转换的meta
+ * @param key 对象中key
+ */
+function transformMetasToObject (metas = [], key) {
+    // let metas = this.getDataValue('metas')
+    return isArray(metas) &&
+        metas.reduce(
+            (accumulator, currentValue) => (accumulator[currentValue[key]] = currentValue, accumulator),
+            {}
+        )
+    // let obj = {}
+    // if (isArray(metas)) {
+    //     metas.forEach((item) => {
+    //         obj[item.meta_key] = item
+    //     })
+    // }
+    // return obj
+}
+
+const UNDERLINE_REG = /_(\w)/g
+/**
+ * 下划线命名转驼峰
+ * @param str
+ * @returns {void | string | *}
+ */
+function transformStr3 (str) {
+    return str.replace(UNDERLINE_REG, function ($0, $1) {
+        return $1.toUpperCase()
+    })
+}
+
 module.exports.getURLJSONData = getURLJSONData
-module.exports.validationResult = validation
 module.exports.formatDate = formatDate
 module.exports.clearCache = clearCache
 module.exports.getClientIp = getClientIp
@@ -273,5 +293,5 @@ module.exports.randomChar = shortid.generate
 module.exports.renderer = renderer
 module.exports.cache = cache
 module.exports.redisClient = client
-
-clearCache()
+module.exports.transformStr3 = transformStr3
+module.exports.transformMetasToObject = transformMetasToObject

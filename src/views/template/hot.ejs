@@ -6,11 +6,11 @@
     <div class="j-sidebar__body">
         <!--posts-->
         <%
-        var post, category, categoryName, postDate, title, url,commentNum,readNum = 0, likeNum = 0;
+        var post, categoryName, postDate, title, url,commentNum,readNum = 0, likeNum = 0;
         for (var i=0; i< posts.length;i++){
             post = posts[i]
-            category = _.groupBy(post.terms, 'taxonomy')
-            categoryName = category[0].name
+            let {category, postTag} = post.getCategoryOrTags()
+            categoryName = category.name
             postDate = formatDate(post.post_date, 'YYYY/M/D hh:mm')
             commentNum = post.comment_count || 0
             title = post.post_title

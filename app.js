@@ -13,7 +13,7 @@ const clientIp = require('./src/express-middleware/clientIp')
 const logger = require('./src/express-middleware/logger')
 
 const UnauthorizedError = require('./src/errors/UnauthorizedError')
-const Result = require('./src/common/resultUtils')
+const Result = require('./src/common/result')
 
 debug('Starting application')
 const log = log4js.getLogger('app')

@@ -11,8 +11,8 @@ const {query} = require('express-validator/check')
 const {commentDao, userDao} = require('../../models/index')
 const jwt = require('../../express-middleware/auth/jwt')
 const utils = require('../../utils')
-const Result = require('../../common/resultUtils')
-const common = require('../common')
+const Result = require('../../common/result')
+const common = require('../../common/common')
 const imgList = require('./avatar.json')
 
 const router = express.Router()
@@ -27,7 +27,7 @@ const getCommentById = [
     sanitizeQuery('page').toInt(),
     query('page').isInt(),
     query('sort').isIn(['desc', 'asc']),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         let {parent, page, sort = 'desc'} = req.query
         try {
@@ -147,7 +147,7 @@ const writeUser = [
 
         next()
     },
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         // req.validate()
         // console.log('req.user', req.user)

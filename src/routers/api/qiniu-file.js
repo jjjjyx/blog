@@ -15,8 +15,9 @@ const {check} = require('express-validator/check')
 const {sanitizeQuery} = require('express-validator/filter')
 
 const {resourceDao, sequelize} = require('../../models/index')
-const Result = require('../../common/resultUtils')
+const Result = require('../../common/result')
 const {Enum} = require('../../common/enum')
+const common = require('../../common/common')
 const utils = require('../../utils')
 const qiniuApi = require('../../qiniuApi')
 
@@ -103,7 +104,7 @@ const list = [
     // check('hash').isString(),
     sanitizeSpace,
     // check('space').isInt(),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res) {
         let {page, space, hash, color} = req.query
         log.info('查询获取图片列表： query = ', JSON.stringify(req.query))
@@ -150,7 +151,7 @@ const move = [
     // sanitizeBody('key').trim(),
     checkSpace,
     check('key').exists(),
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         let {space} = req.body
         let {keys} = req.body
@@ -176,7 +177,7 @@ const move = [
  */
 const del = [
     // check('key').exists().isString().withMessage('请提交 key !'),
-    // utils.validationResult,
+    // common.validationResult,
     async function (req, res) {
         // let key = req.body.key
         let {keys} = req.body
@@ -305,7 +306,7 @@ const syncQiniu = async function (req, res, next) {
 const sisyphus = [
     check('url').isURL().withMessage('请提交正确url'),
     checkSpace,
-    utils.validationResult,
+    common.validationResult,
     async function (req, res, next) {
         let {url, copyright, space} = req.body
         try{

@@ -3,17 +3,19 @@
 const express = require('express')
 const debug = require('debug')('app:routers:home')
 const log = require('log4js').getLogger('routers:home')
-const _ = require('lodash')
-const router = express.Router()
-const Result = require('../common/resultUtils')
-const {body, query} = require('express-validator/check')
+const isFunction = require('lodash/isFunction')
 const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
+const {body, query} = require('express-validator/check')
+
+const Result = require('../common/result')
 const {Enum} = require('../common/enum')
+const utils = require('../utils')
+const common = require('../common/common')
 const {termDao, userDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
 
+const router = express.Router()
 const Op = sequelize.Op
-const utils = require('../utils')
-const common = require('./common')
+
 const loadPostPageSize = 10
 const cacheTimeOut = config.cacheTimeOut
 log.debug('loadPostPageSize = %d', loadPostPageSize)
@@ -53,7 +55,7 @@ const index = [
             let sidebarModule = ['about', 'hot', 'chosen', 'category', 'tags', 'newest', 'archives', 'search']
             let sidebar = ''
             try {
-                sidebar = await Promise.all(sidebarModule.filter((key) => _.isFunction(common.sidebarModule[key])).map((key) => common.sidebarModule[key]()))
+                sidebar = await Promise.all(sidebarModule.filter((key) => isFunction(common.sidebarModule[key])).map((key) => common.sidebarModule[key]()))
                 sidebar = sidebar.join('')
             } catch (e) {
                 sidebar = '侧边栏加载失败'
@@ -71,7 +73,7 @@ const index = [
 const more = [
     sanitizeQuery('page').toInt(),
     query('page').isInt(),
-    utils.validationResult,
+    common.validationResult,
     async function(req, res, next) {
         let {page} = req.query
 
