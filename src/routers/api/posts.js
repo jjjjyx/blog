@@ -884,7 +884,7 @@ router.route('/trash/del').post(del)
 router.route('/trash').get(getTrash).post(moverTrash)
 router.route('/:id').get(postInfo)
 
-router.route('/reset-guid').post(resetPostGuid)
+// router.route('/reset-guid').post(resetPostGuid)
 // router.route('/test').post(test)
 
 module.exports = router

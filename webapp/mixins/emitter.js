@@ -13,7 +13,7 @@ function broadcast (componentName, eventName, params) {
 
 export default {
 	methods: {
-		dispatch (componentName, eventName, params) {
+		dispatch (componentName, eventName, ...params) {
 			let parent = this.$parent || this.$root
 			let name = parent.$options.name
 

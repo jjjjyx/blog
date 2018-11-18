@@ -1,6 +1,5 @@
 'use strict'
 
-const isArray = require('lodash/isArray')
 const isString = require('lodash/isString')
 const difference = require('lodash/difference')
 const differenceBy = require('lodash/differenceBy')
@@ -153,11 +152,8 @@ const move = [
     check('key').exists(),
     common.validationResult,
     async function (req, res, next) {
-        let {space} = req.body
-        let {keys} = req.body
-        if (!isArray(keys)) {
-            keys = [keys]
-        }
+        req.sanitizeBody('keys').toArray()
+        let {space, keys} = req.body
         debug(`移动空间文件 key = %s， space = %s`, keys, space)
         try {
             await resourceDao.update({space}, {
@@ -180,10 +176,8 @@ const del = [
     // common.validationResult,
     async function (req, res) {
         // let key = req.body.key
+        req.sanitizeBody('keys').toArray()
         let {keys} = req.body
-        if (!isArray(keys)) {
-            keys = [keys]
-        }
         debug(`删除空间文件 key = `, keys)
         try {
             let failKey = await qiniuApi.syncDelete(keys)

@@ -58,7 +58,7 @@ const readerPost = [
 const maxAge = 365 * 5 * 60000 * 60 * 24 // 5年
 const httpOnly = true
 const HEART_KEY = 'heart'
-const incrementPostHeart = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ?) AND meta_key = '${HEART_KEY}'`
+const incrementPostHeart = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ? and post_status = 'publish') AND meta_key = '${HEART_KEY}'`
 // const incrementPostHeart = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ?) AND meta_key = 'heart'`
 const heart = [
     body('guid').custom(validGuid),
@@ -92,7 +92,7 @@ const heart = [
 ]
 
 const READ_KEY = 'read'
-const incrementPostRead = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ?) AND meta_key = '${READ_KEY}'`
+const incrementPostRead = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ? and post_status = 'publish') AND meta_key = '${READ_KEY}'`
 const read = [
     body('guid').custom(validGuid),
     common.validationResult,

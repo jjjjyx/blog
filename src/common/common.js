@@ -12,7 +12,7 @@ const {validationResult} = require('express-validator/check')
 const utils = require('../utils')
 const {Enum} = require('./enum')
 const Result = require('./result')
-const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../models/index')
+const {termDao, userDao, postDao, postMetaDao, commentMetaDao, sequelize} = require('../models/index')
 
 const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
@@ -369,6 +369,9 @@ function _createMetaByMetaDao (dao, where = {}, value) {
 function updateOrCreatePostMeta (id, key, value) {
     return _createMetaByMetaDao(postMetaDao, {post_id: id, meta_key: key}, value)
 }
+function updateOrCreateCommentMeta (id, key, value) {
+    return _createMetaByMetaDao(commentMetaDao, {comment_id: id, meta_key: key}, value)
+}
 
 module.exports.sidebarModuleKey = sidebarListEnum
 module.exports.sidebarModule = sidebarModule
@@ -386,3 +389,4 @@ module.exports.loadTags = loadTags
 module.exports.loadCategory = loadCategory
 module.exports.validationResult = validation
 module.exports.updateOrCreatePostMeta = updateOrCreatePostMeta
+module.exports.updateOrCreateCommentMeta = updateOrCreateCommentMeta

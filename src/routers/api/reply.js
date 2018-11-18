@@ -41,7 +41,9 @@ const getCommentById = [
                         model: commentDao,
                         as: 'child',
                         order: [['createdAt', 'DESC']],
-                        include: [{model: userDao, attributes: {exclude: ['user_pass']}}]
+                        include: [{model: userDao, attributes: {exclude: ['user_pass']}}],
+                        // offset: 0,
+                        // limit: 10
                     },
                     {model: userDao, attributes: {exclude: ['user_pass']}}
                 ],
@@ -49,18 +51,11 @@ const getCommentById = [
                 offset: (page - 1) * commentPageSize,
                 limit: commentPageSize
             })
+            // 总共评论数， 不包含回复个数
             let total = await commentDao.count({where: {comment_id: parent, comment_parent: null}})
+            // 总共评论数， 包含回复
             let total2 = await commentDao.count({where: {comment_id: parent}})
-            // 获取result 下的文章
-            // let commentParentIds = result.map((c) => c.id)
-            // let childResult = await commentDao.findAll({
-            //     where: {
-            //         comment_id: parent,
-            //         comment_parent: commentParentIds
-            //     },
-            //     order: [['createdAt', 'DESC']],
-            // })
-            // let total = commentDao
+            // todo 回复的分页
             log.debug('加载对象 = %s 评论列表 共计 %d 条评论', parent, total)
 
             return res.status(200).json(Result.success({

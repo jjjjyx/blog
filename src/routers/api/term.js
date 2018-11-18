@@ -1,7 +1,6 @@
 'use strict'
 
 const express = require('express')
-const isArray = require('lodash/isArray')
 const groupBy = require('lodash/groupBy')
 const debug = require('debug')('app:routers:api.term')
 const log = require('log4js').getLogger('api.term')
@@ -196,10 +195,8 @@ const del = [
     // sanitizeId,
     // checkId,
     async function (req, res) {
+        req.sanitizeBody('ids').toArray()
         let {ids} = req.body
-        if (!isArray(ids)) {
-            ids = [ids]
-        }
         // 删除掉文章的引用
         try {
             let terms = await termDao.findAll({

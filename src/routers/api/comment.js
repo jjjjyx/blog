@@ -1,24 +1,25 @@
 'use strict'
 
-const _ = require('lodash')
 const express = require('express')
 const useragent = require('useragent')
 const url = require('url')
-const rateLimiter = require('redis-rate-limiter');
+const rateLimiter = require('redis-rate-limiter')
+const find = require('lodash/find')
 const {sanitizeBody} = require('express-validator/filter')
 const {body} = require('express-validator/check')
 const debug = require('debug')('app:routers:api.comment')
 const log = require('log4js').getLogger('api.comment')
 
-const {commentDao, postDao, sequelize} = require('../../models/index')
+const {commentDao, postDao, userDao, sequelize} = require('../../models/index')
 const Result = require('../../common/result')
 const common = require('../../common/common')
 const utils = require('../../utils')
 
 
 const router = express.Router()
+const MEMBERS_REG = /([%|@])(\d+)/
 const COMMENT_KEY = 'comment'
-const incrementPostComment = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ?) AND meta_key = '${COMMENT_KEY}'`
+const incrementPostComment = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ? and post_status = 'publish') AND meta_key = '${COMMENT_KEY}'`
 const comment = [
     // 如果频率次数过多给出验证码
     // 限制访问频率为 每分钟8
@@ -30,13 +31,13 @@ const comment = [
         let {pathname} = url.parse(referer)
         let {parent} = req.body
         if (!(pathname && pathname.endsWith(parent))) {
-            log.info('未提交正确的referer， 评论失败！', )
+            log.info('未提交正确的referer， 评论失败！')
             return res.status(200).json(Result.info('评论失败'))
         }
         next()
     },
     body('parent').not().isEmpty().withMessage('评论对象不可为空'),
-    body('content').isLength({min:2, max: 1000}),
+    body('content').isLength({min: 2, max: 1000}),
     sanitizeBody('comment_parent').toInt(),
     body('comment_parent').custom((value, {req}) => {
         if (!value) return true
@@ -46,10 +47,8 @@ const comment = [
     }),
     common.validationResult,
     async function (req, res, next) {
-
-        // console.log('req.body', req.body)
-        // 创建
-        let {parent, content, comment_parent} = req.body
+        req.sanitizeBody('members').toArray()
+        let {parent, content, comment_parent, members} = req.body
         let {user_nickname, user_email, user_url, id, user_avatar} = req.user
         let ip = req.clientIp
 
@@ -57,13 +56,41 @@ const comment = [
         let agentObj = useragent.parse(agent)
         let osAgent = agentObj.os.family
 
+        let members_users = []
+        if (members.length) {
+            // 解析 members
+            members = [...new Set(members)]
+            let isReply = 0
+            let userIds = members.map(item => {
+                let [, prefix, userId] = MEMBERS_REG.exec(item)
+                if (prefix === '%') isReply = userId
+                return userId
+            })
+            members_users = await userDao.findAll({
+                where: {
+                    id: userIds
+                },
+                attributes: {
+                    exclude: ['user_pass']
+                }
+            })
+
+            if (isReply) {
+                let u = find(members_users, ['id', parseInt(isReply)])
+                debug('回复 用户id = %s, user does it exist = %s', isReply, !!u)
+                if (u) {
+                    content = `回复 @${u.user_nickname} : ` + content
+                }
+            }
+        }
+
         log.debug('用户 %s#%s 发表评论', req.user.id, req.user.user_login)
         log.debug('comment ip = %s, agent = %s, osAgent = %s', ip, agentObj, osAgent)
 
         let comment = {
             comment_id: parent,
             comment_content: content,
-            comment_parent: comment_parent ? comment_parent: null,
+            comment_parent: comment_parent ? comment_parent : null,
             comment_author: user_nickname,
             comment_author_email: user_email,
             comment_author_url: user_url,
@@ -74,13 +101,17 @@ const comment = [
         }
         try {
             // let [{max = 0}] = await sequelize.query(queryCommentKarma, {type: sequelize.QueryTypes.SELECT, replacements: [parent]})
-            let max = await commentDao.max('comment_karma',{where: {comment_id: parent}})
+            let max = await commentDao.max('comment_karma', {where: {comment_id: parent}})
             max = (max || 0) + 1
             comment.comment_karma = max
             let result = await commentDao.create(comment)
             log.info('创建评论，ID = ', result.id)
             result.dataValues.user = req.user
+            result.dataValues.members = members_users
+            // 创建result meta
+            common.updateOrCreateCommentMeta(result.id, 'members', JSON.stringify(members))
             // 更新文章评论数  以后有别评论对象这里需要进行拆分
+
 
             let [, metadata] = await sequelize.query(incrementPostComment, {replacements: [parent]})
             if (metadata.changedRows === 0) {
