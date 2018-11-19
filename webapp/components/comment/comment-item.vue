@@ -7,7 +7,8 @@
             <comment-username class="comment-content__header" :user="item.user">
                 <span class="float-right"># {{item.comment_karma}}</span>
             </comment-username>
-            <div class="comment-content__body" v-html="renderCommentContent(item)"></div>
+            <comment-content :item="item"></comment-content>
+            <!--<div class="comment-content__body" v-html="renderCommentContent(item)"></div>-->
             <footer class="comment-content__footer">
                 <font-icon type="icon-color-phone"></font-icon>
                 <span class="">来自{{item.comment_agent}}设备</span>
@@ -44,12 +45,16 @@
     import CommentInput from './comment-input'
     import CommentUsername from './comment-username'
     import CommentReplyItem from './comment-reply-item'
+    import CommentContent from './comment-content'
+    import emojiData from './emoji.json'
 
-    const EMOJI_REG = /:([\w\\+-]+):/g
-    const USER_NICKNAME_REG = /@[\u4e00-\u9fa5a-zA-Z0-9_-]{1,18}/
+    const emojiList = emojiData.reduce((a, b) => a.concat(b.list), [])
+    const EMOJI_REG = /:([\w\\+-]+){1,20}:/g
+    const USER_NICKNAME_REG = /@([\u4e00-\u9fa5a-zA-Z0-9_-]{1,18})/
     export default {
         name: 'comment-item',
         components: {
+            CommentContent,
             CommentReplyItem,
             CollapseTransition,
             CommentInput,
@@ -74,13 +79,25 @@
         },
         methods: {
             renderCommentContent (item) {
-                let {comment_content: content} = item
+                let {comment_content: content, members} = item
                 content = content.split('\n').join('<br>')
-                content = content.replace(EMOJI_REG, ($1, $2)=> `<img src="${this.emojiPath}${$2}.png" title="${$2}" alt="${$2}" width="24" class="align-middle"/>`);
+                content = content.replace(EMOJI_REG, ($1, $2)=> {
+                    if (emojiList.indexOf($2) !== -1) {
+                        return `<img src="${this.emojiPath}${$2}.png" title="${$2}" alt="${$2}" width="24" class="align-middle"/>`
+                    } else {
+                        return $1
+                    }
+                });
                 content = content.replace(USER_NICKNAME_REG, ($1, $2) => {
                     // console.log($1,'=======')
+                    let user = _.find(members, ['user_nickname', $2])
+                    if (user) {
+                        return `<a href="javascript:void(0);">${$1}</a>`
+                    } else {
+                        return $1
+                    }
                     // 用户名在 item 中验证是否存在 在进行替换
-                    return `<a href="javascript:void(0);">${$1}</a>`
+
                 })
                 return content
             },

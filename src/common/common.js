@@ -16,6 +16,7 @@ const {termDao, userDao, postDao, postMetaDao, commentMetaDao, sequelize} = requ
 
 const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
+const COMMENT_MEMBERS_REG = /([%|@])(\d+)/
 
 /**
  * 渲染文章为html
@@ -378,6 +379,7 @@ module.exports.sidebarModule = sidebarModule
 module.exports.termCountSql = termCountSql
 module.exports.userRole = userRole
 module.exports.postInclude = postInclude
+module.exports.COMMENT_MEMBERS_REG = COMMENT_MEMBERS_REG
 module.exports.ipAndRoute = ipAndRoute
 module.exports.generatePostHtml = generatePostHtml
 module.exports.loadPost = loadPost
@@ -390,3 +392,4 @@ module.exports.loadCategory = loadCategory
 module.exports.validationResult = validation
 module.exports.updateOrCreatePostMeta = updateOrCreatePostMeta
 module.exports.updateOrCreateCommentMeta = updateOrCreateCommentMeta
+

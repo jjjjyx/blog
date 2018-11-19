@@ -1,14 +1,15 @@
 'use strict'
 
-const _ = require('lodash')
+const xss = require('xss')
 const express = require('express')
+const intersectionWith = require('lodash/intersectionWith')
 const rateLimiter = require('redis-rate-limiter')
 const debug = require('debug')('app:routers:api.comment')
 const log = require('log4js').getLogger('api.comment')
 const {sanitizeQuery} = require('express-validator/filter')
 const {query} = require('express-validator/check')
 
-const {commentDao, userDao} = require('../../models/index')
+const {commentDao, userDao, commentMetaDao} = require('../../models/index')
 const jwt = require('../../express-middleware/auth/jwt')
 const utils = require('../../utils')
 const Result = require('../../common/result')
@@ -19,8 +20,9 @@ const router = express.Router()
 const qqReg = /^[1-9][0-9]{4,}$/
 const commentPageSize = 15
 const defaultAvatar = config.defaultAvatar
-
 // const {secret} = config
+
+
 
 const getCommentById = [
     query('parent').not().isEmpty().withMessage('对象不可为空'),
@@ -41,10 +43,11 @@ const getCommentById = [
                         model: commentDao,
                         as: 'child',
                         order: [['createdAt', 'DESC']],
-                        include: [{model: userDao, attributes: {exclude: ['user_pass']}}],
+                        include: [{model: userDao, attributes: {exclude: ['user_pass']}}, {model: commentMetaDao, as: 'metas'},],
                         // offset: 0,
                         // limit: 10
                     },
+                    {model: commentMetaDao, as: 'metas'},
                     {model: userDao, attributes: {exclude: ['user_pass']}}
                 ],
                 order: [['createdAt', sort]],
@@ -57,6 +60,48 @@ const getCommentById = [
             let total2 = await commentDao.count({where: {comment_id: parent}})
             // todo 回复的分页
             log.debug('加载对象 = %s 评论列表 共计 %d 条评论', parent, total)
+
+            // 减少查询次数， 获取全部使用uid 在次遍历填充
+            let uids = []
+            const handleCommentItem = function (item) {
+                let {members} = item.metas
+                if (members) {
+                    let ids = JSON.parse(members.meta_value).map(item => {
+                        let [, , userId] = common.COMMENT_MEMBERS_REG.exec(item)
+                        return parseInt(userId)
+                    })
+                    item.uids = ids
+                    uids = uids.concat(ids)
+                }
+                item.comment_content = xss(item.comment_content)
+                if (item.child && item.child instanceof Array) {
+                    item.child.forEach(handleCommentItem)
+                }
+            }
+            result.forEach(handleCommentItem)
+
+            debug('加载对象 = %s 评论列表， 评论列表中使用到的用户有 uids = %s', parent, uids.length)
+            if (uids.length) {
+                let users = await userDao.findAll({
+                    where: {
+                        id: uids
+                    },
+                    attributes: {
+                        exclude: ['user_pass']
+                    }
+                })
+                const idInUsers = (user, id)=> user.id === id
+                const handleCommentItem2 = function (item) {
+                    // let ids = item.ids
+                    item.dataValues.members = intersectionWith(users, item.uids, idInUsers)
+                    // delete item.dataValues.metas
+                    if (item.child && item.child instanceof Array) {
+                        item.child.forEach(handleCommentItem2)
+                    }
+                }
+                result.forEach(handleCommentItem2)
+            }
+
 
             return res.status(200).json(Result.success({
                 result,

@@ -1,8 +1,9 @@
 'use strict'
 
+const url = require('url')
+const xss = require('xss')
 const express = require('express')
 const useragent = require('useragent')
-const url = require('url')
 const rateLimiter = require('redis-rate-limiter')
 const find = require('lodash/find')
 const {sanitizeBody} = require('express-validator/filter')
@@ -17,7 +18,7 @@ const utils = require('../../utils')
 
 
 const router = express.Router()
-const MEMBERS_REG = /([%|@])(\d+)/
+
 const COMMENT_KEY = 'comment'
 const incrementPostComment = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ? and post_status = 'publish') AND meta_key = '${COMMENT_KEY}'`
 const comment = [
@@ -62,7 +63,7 @@ const comment = [
             members = [...new Set(members)]
             let isReply = 0
             let userIds = members.map(item => {
-                let [, prefix, userId] = MEMBERS_REG.exec(item)
+                let [, prefix, userId] = common.COMMENT_MEMBERS_REG.exec(item)
                 if (prefix === '%') isReply = userId
                 return userId
             })
@@ -108,6 +109,7 @@ const comment = [
             log.info('创建评论，ID = ', result.id)
             result.dataValues.user = req.user
             result.dataValues.members = members_users
+            result.comment_content = xss(result.comment_content)
             // 创建result meta
             common.updateOrCreateCommentMeta(result.id, 'members', JSON.stringify(members))
             // 更新文章评论数  以后有别评论对象这里需要进行拆分

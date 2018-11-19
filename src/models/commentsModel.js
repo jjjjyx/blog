@@ -1,4 +1,5 @@
 /* jshint indent: 2 */
+const utils = require('../utils')
 // ALTER TABLE `blog`.`j_comments` CHANGE `comment_post_id` `comment_id` VARCHAR(25) CHARSET utf8 COLLATE utf8_bin NULL;
 // ALTER TABLE `blog`.`j_comments` CHANGE `comment_author` `comment_author` VARCHAR(50) CHARSET utf8 COLLATE utf8_bin NULL;
 // ALTER TABLE `blog`.`j_comments` DROP FOREIGN KEY `j_comments_ibfk_2`;
@@ -93,6 +94,9 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         tableName: 'j_comments',
         getterMethods : {
+            metas () {
+                return utils.transformMetasToObject(this.getDataValue('metas'), 'meta_key')
+            },
             time () {
                 // 这个时区有毒！！！！
                 //  时间超过当前时间 10分钟显示精确时间
@@ -104,6 +108,11 @@ module.exports = function (sequelize, DataTypes) {
                     return t.format('YYYY-M-D hh:mm')
                 } else
                     return t.startOf('minute').fromNow();
+            }
+        },
+        setterMethods: {
+            metas (value) {
+                this.setDataValue('metas', value)
             }
         }
     })
