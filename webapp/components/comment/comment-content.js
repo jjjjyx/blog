@@ -25,6 +25,7 @@ export default {
         let cap = null
 
         let tokens = []
+        // todo 如果起始匹配不在行首就会出现截断错误， 比如 asd ::kissing_smiling_eyes:
         while (content) {
             // newline
             if (cap = NEWLINE_REG.exec(content)) {
