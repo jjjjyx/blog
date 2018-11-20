@@ -46,11 +46,7 @@
     import CommentUsername from './comment-username'
     import CommentReplyItem from './comment-reply-item'
     import CommentContent from './comment-content'
-    import emojiData from './emoji.json'
 
-    const emojiList = emojiData.reduce((a, b) => a.concat(b.list), [])
-    const EMOJI_REG = /:([\w\\+-]+){1,20}:/g
-    const USER_NICKNAME_REG = /@([\u4e00-\u9fa5a-zA-Z0-9_-]{1,18})/
     export default {
         name: 'comment-item',
         components: {
@@ -78,29 +74,6 @@
             }
         },
         methods: {
-            renderCommentContent (item) {
-                let {comment_content: content, members} = item
-                content = content.split('\n').join('<br>')
-                content = content.replace(EMOJI_REG, ($1, $2)=> {
-                    if (emojiList.indexOf($2) !== -1) {
-                        return `<img src="${this.emojiPath}${$2}.png" title="${$2}" alt="${$2}" width="24" class="align-middle"/>`
-                    } else {
-                        return $1
-                    }
-                });
-                content = content.replace(USER_NICKNAME_REG, ($1, $2) => {
-                    // console.log($1,'=======')
-                    let user = _.find(members, ['user_nickname', $2])
-                    if (user) {
-                        return `<a href="javascript:void(0);">${$1}</a>`
-                    } else {
-                        return $1
-                    }
-                    // 用户名在 item 中验证是否存在 在进行替换
-
-                })
-                return content
-            },
             // /**
             //  * 回复
             //  * @param id 回复的对象
@@ -121,24 +94,6 @@
                     this.$emit('update:commentParentId', this.item.id)
                     this.placeholder = p
                 }
-                // this.$emit('reply', this.item.id, parent)
-            //     this.replyContent = ''
-            //     let p = ''
-            //     if (replyTarget) {
-            //         p = `回复 ${replyTarget.comment_author} `
-            //         this.commentParentId = replyTarget.id
-            //         // this.placeholder
-            //     }
-            //     // if (this.commentParentId === id) {
-            //     //
-            //     // }
-            //     // if (this.commentDate.comment_parent === id && p === this.commentDate.placeholder) {
-            //     //     this.commentDate.comment_parent = null
-            //     //     this.commentDate.placeholder = ''
-            //     // } else {
-            //     //     this.commentDate.comment_parent = id
-            //     //     this.commentDate.placeholder = p
-            //     // }
             },
         },
         mounted () {

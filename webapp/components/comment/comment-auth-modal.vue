@@ -10,7 +10,7 @@
             <Form :model="formData" :label-width="80" :rules="ruleValidate" class="wrapper-base-info"
                   ref="userinfoform">
                 <FormItem label="qq" prop="user_login">
-                    <Input v-model="formData.user_login" placeholder="输入qq 号 快速评论" @on-change="inputQQ"/>
+                    <Input v-model="formData.user_login" placeholder="输入qq 号 快速评论" @on-blur="inputQQ"/>
                 </FormItem>
                 <FormItem label="昵称" prop="user_nickname">
                     <Input v-model="formData.user_nickname" placeholder="nickname" @on-change="lockNickName"/>

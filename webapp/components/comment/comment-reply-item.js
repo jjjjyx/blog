@@ -12,14 +12,14 @@ export default {
         // v-html="parent.renderCommentContent(item.comment_content)"
         // onClick="reply(comment.id, item2)"
         let {item} = ctx.props
-        let content = ctx.parent.renderCommentContent(item)
         return <li class="reply-list__item">
             <div class="comment-user-avatar float-left">
                 <img src={item.comment_author_avatar} alt="user-avatar"/>
             </div>
              <div class="reply-content">
                  <comment-username class="reply-content__body" user={item.user}>
-                     <span class="text" domPropsInnerHTML={content}/>
+                     {/*<span class="text" domPropsInnerHTML={content}/>*/}
+                     <comment-content item={item}/>
                  </comment-username>
                  <div class="reply-content__footer">
                      <time dateTime={item.createdAt}>{item.time}</time>

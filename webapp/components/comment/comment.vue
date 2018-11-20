@@ -195,7 +195,7 @@
                     if (!comment.child) {
                         comment.child = []
                     }
-                    comment.child.splice(0, 0, result)
+                    comment.child.push(result)
                     this.commentParentId = null
                 } else {
                     if (this.filterCondition.sort === 'desc') {
