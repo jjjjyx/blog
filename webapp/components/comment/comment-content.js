@@ -1,13 +1,70 @@
 /* eslint-disable no-undef, no-cond-assign */
 import emojiData from './emoji.json'
 
-const NEWLINE_REG = /^\n+/
-const EMOJI_REG = /:([\w\\+-]+){1,20}:/
-const USER_NICKNAME_REG = /@([\u4e00-\u9fa5a-zA-Z0-9_-]{1,18})/
-const TEXT_REG = /^[^\n]+/
-const EMOJI_PATH = 'http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/'
+const NEWLINE_REG = /\n+/
+const EMOJI_REG = /^:([\w\\+-]+){1,20}:/
+const USER_NICKNAME_REG = /^@([\u4e00-\u9fa5a-zA-Z0-9_-]{1,18})/
+const INLINE_TEXT_REG = /^(`+|[^`])[\s\S]*?(?=[\\@\\:]|\b_| {2,}\n|$)/
 
+const EMOJI_PATH = 'http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/'
 const emojiList = emojiData.reduce((a, b) => a.concat(b.list), [])
+
+// const block = {
+//     newline: /^\n+/,
+//     paragraph: /^([^\n]+(?:\n[^\n]+)*)/,
+//     text: /^[^\n]+/
+// }
+function parseLine (line) {
+    let cap = null
+    let tokens = []
+
+    while (line) {
+        // EMOJI
+        if (cap = EMOJI_REG.exec(line)) {
+            // if (emojiList.indexOf(cap[1]) !== -1) {content
+            line = line.substring(cap[0].length)
+            tokens.push({
+                type: 'emoji',
+                text: cap[1],
+                origin: cap[0]
+            })
+            continue
+            // }
+        }
+        // at
+        if (cap = USER_NICKNAME_REG.exec(line)) {
+            // let user = _.find(members, ['user_nickname', cap[1]])
+            // if (user) {
+            line = line.substring(cap[0].length)
+            tokens.push({
+                type: 'at',
+                text: cap[1],
+                origin: cap[0]
+            })
+            continue
+            // }
+        }
+
+        if (cap = INLINE_TEXT_REG.exec(line)) {
+            line = line.substring(cap[0].length)
+            tokens.push({
+                type: 'text',
+                text: cap[0]
+            })
+            continue
+        }
+
+        if (line) {
+            throw new Error('Infinite loop on byte: ' + line.charCodeAt(0))
+        }
+    }
+    tokens.push({
+        type: 'newLine'
+    })
+    return tokens
+}
+
+
 export default {
     name: 'comment-content',
     props: {
@@ -22,64 +79,12 @@ export default {
         // onClick="reply(comment.id, item2)"
         let {item} = ctx.props
         let {comment_content: content, members} = item
-        let cap = null
 
-        let tokens = []
-        // todo 如果起始匹配不在行首就会出现截断错误， 比如 asd ::kissing_smiling_eyes:
-        while (content) {
-            // newline
-            if (cap = NEWLINE_REG.exec(content)) {
-                content = content.substring(cap[0].length)
-                if (cap[0].length > 1) {
-                    tokens.push({
-                        type: 'space'
-                    })
-                }
-            }
-            // EMOJI
-            if (cap = EMOJI_REG.exec(content)) {
-                // if (emojiList.indexOf(cap[1]) !== -1) {
-                content = content.substring(cap[0].length)
-                tokens.push({
-                    type: 'emoji',
-                    text: cap[1],
-                    origin: cap[0]
-                })
-                continue
-                // }
-            }
-            // at
-            if (cap = USER_NICKNAME_REG.exec(content)) {
-                // let user = _.find(members, ['user_nickname', cap[1]])
-                // if (user) {
-                content = content.substring(cap[0].length)
-                tokens.push({
-                    type: 'at',
-                    text: cap[1],
-                    origin: cap[0]
-                })
-                continue
-                // }
-            }
-            // text
-            if (cap = TEXT_REG.exec(content)) {
-                // Top-level should never reach here.
-                content = content.substring(cap[0].length)
-                tokens.push({
-                    type: 'text',
-                    text: cap[0]
-                })
-                continue
-            }
-
-            if (content) {
-                throw new Error('Infinite loop on byte: ' + content.charCodeAt(0))
-            }
-        }
+        let linesTokens = content.split(NEWLINE_REG).reduce((a, b) => a.concat(parseLine(b)), [])
         let tok = function (token) {
             let text = token.text
             switch (token.type) {
-            case 'space':
+            case 'newLine':
                 return <br/>
             case 'emoji':
                 if (emojiList.indexOf(text) !== -1) {
@@ -98,6 +103,6 @@ export default {
                 return text
             }
         }
-        return tokens.map(tok)
+        return linesTokens.map(tok)
     }
 }

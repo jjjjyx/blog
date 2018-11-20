@@ -109,7 +109,7 @@ const comment = [
             log.info('创建评论，ID = ', result.id)
             result.dataValues.user = req.user
             result.dataValues.members = members_users
-            result.comment_content = xss(result.comment_content)
+            // result.comment_content = xss(result.comment_content)
             // 创建result meta
             common.updateOrCreateCommentMeta(result.id, 'members', JSON.stringify(members))
             // 更新文章评论数  以后有别评论对象这里需要进行拆分

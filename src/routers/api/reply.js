@@ -73,7 +73,7 @@ const getCommentById = [
                     item.uids = ids
                     uids = uids.concat(ids)
                 }
-                item.comment_content = xss(item.comment_content)
+                // item.comment_content = xss(item.comment_content)
                 if (item.child && item.child instanceof Array) {
                     item.child.forEach(handleCommentItem)
                 }
