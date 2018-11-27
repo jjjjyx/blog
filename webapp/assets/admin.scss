@@ -43,9 +43,9 @@ $badge-colors: map_merge($colors, (
 @import "sass/admin/admin-login";
 @import "sass/admin/admin-alert";
 @import "sass/admin/admin-curd";
-
-
+@import "sass/admin/admin-upload";
 @import "sass/admin/icon-select";
+
 @import "sass/admin/post-writer";
 @import "sass/admin/media-management";
 @import "sass/admin/site";

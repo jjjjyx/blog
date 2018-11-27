@@ -93,12 +93,19 @@ function initDropDom () {
 //     document.body.removeChild(ifa);
 // }
 
-function init (options) {
-    options = options || {}
+function init (options = {}) {
+    // options = options || {}
     instance = new UploadConstructor({
-        data: options
+        data: options.data
     })
     instance.$mount()
+    // 使用起来好奇怪啊
+    let {handleRemoveFileList, handleFileStartUpload, handleCancelUpload, handleFailRefresh} = options
+
+    handleRemoveFileList && instance.$on('file-item-remove', handleRemoveFileList)
+    handleFileStartUpload && instance.$on('file-item-start-upload', handleFileStartUpload)
+    handleCancelUpload && instance.$on('file-item-cancel-upload', handleCancelUpload)
+    handleFailRefresh && instance.$on('file-item-refresh-upload', handleFailRefresh)
 
     document.body.appendChild(instance.$el)
 

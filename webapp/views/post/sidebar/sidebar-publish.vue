@@ -3,7 +3,7 @@
         <div class="j-collapse ">
             <div class="j-collapse-item">
                 <div class="j-collapse-header">
-                    <Icon type="flag"></Icon>
+                    <Icon type="md-flag"></Icon>
                     <span>状态:</span>
                     <template v-if="publishValue.status !== 'private'">
                     <b>{{ postStatusDict[postStatus] }}</b>
@@ -26,7 +26,7 @@
 
             <div class="j-collapse-item">
                 <div class="j-collapse-header">
-                    <Icon type="eye"></Icon>
+                    <Icon type="md-eye"></Icon>
                     <span>公开度:</span>
                     <b v-text="publicText"></b>
                     <a href="javascript:void(0);" @click.prevent="collapseStatus2 = !collapseStatus2">编辑</a>

@@ -10,8 +10,7 @@ const utils = require('./utils')
 
 // const domain = config.qiUpload.Domain
 const BUCKET_NAME = config.qiUpload.BUCKET_NAME
-const returnBody = `
-{
+const returnBody = `{
     "key":$(key),
     "hash":$(etag),
     "size":$(fsize),
@@ -24,9 +23,8 @@ const returnBody = `
     "ext": $(ext),
     "uuid": $(uuid),
     "space": $(x:space),
-    "remark": $(x:remark),
-}
-`
+    "remark": $(x:remark)
+}`
 const qiniuOption = {
     scope: BUCKET_NAME,
     expires: 600, // 10 分钟

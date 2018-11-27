@@ -229,9 +229,10 @@
 
                         let token = await media.token()
                         // Q2xpcGJvYXJk = 'Clipboard'
+                        file.isBase64 = true
                         this.$uploadFiles(file, {
                             space: 'post',
-                            action: 'http://up-z2.qiniu.com/putb64/-1/x:space/cG9zdA==/x:remark/Q2xpcGJvYXJk', // post = 'cG9zdA=='  固定上传到文件空间
+                            action: 'https://up-z2.qiniup.com/putb64/-1/x:space/cG9zdA==/x:remark/Q2xpcGJvYXJk', // post = 'cG9zdA=='  固定上传到文件空间
                             headers: {
                                 'Authorization': `UpToken ${token}`,
                                 'Content-Type': 'application/octet-stream'

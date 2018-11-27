@@ -22,9 +22,9 @@ Vue.use(iView, {
     i18n: (key, value) => i18n.t(key, value)
 })
 Vue.use(Icon)
-Vue.use(upload)
 Vue.use(directives)
 Vue.use(PhotoSwipe)
+Vue.use(upload)
 Vue.config.productionTip = false
 
 // function appInit () {

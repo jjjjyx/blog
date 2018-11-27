@@ -10,9 +10,9 @@
     var data = {name: 'article'}
     %>
     <%-include('base/head', data)%>
-    <link href="https://cdn.bootcss.com/github-markdown-css/2.10.0/github-markdown.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcss.com/highlight.js/9.12.0/styles/atom-one-dark.min.css" rel="stylesheet">
-    <link href="https://cdn.bootcss.com/social-share.js/1.0.16/css/share.min.css" rel="stylesheet">
+    <link href="<%=locals.cdn('github-markdown-css/2.10.0/github-markdown.min.css')%>" rel="stylesheet">
+    <link href="<%=locals.cdn('highlight.js/9.12.0/styles/atom-one-dark.min.css')%>" rel="stylesheet">
+    <link href="<%=locals.cdn('social-share.js/1.0.16/css/share.min.css')%>" rel="stylesheet">
     <style>
         .markdown-body .highlight pre, .markdown-body pre {
             /* 针对 atom-one-dark*/
@@ -27,7 +27,7 @@
             border-radius: 0;
         }
     </style>
-    <script src="https://cdn.bootcss.com/social-share.js/1.0.16/js/social-share.min.js"></script>
+    <script src="<%=locals.cdn('social-share.js/1.0.16/js/social-share.min.js')%>"></script>
 </head>
 <body>
 <%-include('loading', data); %>

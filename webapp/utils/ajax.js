@@ -68,15 +68,24 @@ const ajax = function (option) {
             xhr.setRequestHeader(item, headers[item])
         }
     }
-    if (option.isBase64) {
+    if (option.isBase64) { // base64 的文件上传不带data 参数
         let base64 = option.file
         let dIndex = base64.indexOf(',') + 1
         let fileBase64 = base64.substring(dIndex)
+        // 需要把参数添加在url 后面
+        // let _action = action
+        // if (option.data) {
+        //     let url = new URL(action)
+        //     Object.keys(option.data).map(key => {
+        //         url.searchParams.append(key, option.data[key])
+        //     })
+        //     _action = url.toString()
+        // }
 
         xhr.send(fileBase64)
     } else {
+        xhr.open('post', action, true)
         const formData = new FormData()
-
         if (option.data) {
             Object.keys(option.data).map(key => {
                 formData.append(key, option.data[key])

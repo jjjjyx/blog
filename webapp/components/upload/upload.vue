@@ -14,7 +14,7 @@
                 </div>
                 <collapse-transition>
                     <div class="ivu-alert ivu-alert-success" v-if="alertVisible"><!---->
-                        <span class="ivu-alert-message">上传成功！</span>
+                        <span class="ivu-alert-message">{{alertVisible}}</span>
                         <span class="ivu-alert-desc"></span>
                         <a class="ivu-alert-close" @click="alertVisible = false">
                             <i class="ivu-icon ivu-icon-ios-close"></i>
@@ -37,27 +37,43 @@
 </template>
 
 <script>
-    import CollapseTransition from '@/utils/collapse-transition'
-    import ajax from '@/utils/ajax'
-    import store from '@/store'
+
     import orderBy from 'lodash/orderBy'
-    import isString from 'lodash/isString'
     import cloneDeep from 'lodash/cloneDeep'
     import differenceBy from 'lodash/differenceBy'
     import isArray from 'lodash/isArray'
     import isFunction from 'lodash/isFunction'
+
+    import store from '@/store'
+    import ajax from '@/utils/ajax'
+    import CollapseTransition from '@/utils/collapse-transition'
+    import { randomChar, formatFileSize } from '@/utils/common'
+    import * as media from '../../api/media'
     import { Queue, Task } from './task-queue'
 
-    import { randomChar, formatFileSize } from '@/utils/common'
-
+    const extClass = {
+        // 图片
+        'bmp': 'pic',
+        'gif': 'pic',
+        'jpg': 'pic',
+        'png': 'pic',
+        'tiff': 'pic',
+        'pcx': 'pic',
+        'tga': 'pic',
+        'exif': 'pic',
+        'svg': 'pic',
+        'psd': 'pic',
+        'cdr': 'pic'
+    }
     function transformExtToClass (ext) {
-        return ext
+        return extClass[ext] ? extClass[ext] : ext
     }
 
     const renderFileName = function (h, param) {
         let iconClass = ''
         let fileType
         let {row} = param
+        let name =  row.name && row.name !== 'null' ? row.name : row.key
         if (row.file) {
             iconClass = `file-icon-small-${transformExtToClass(row.ext)} default-small`
             fileType = 'file'
@@ -65,103 +81,51 @@
             iconClass = 'dir-small'
             fileType = 'folder'
         }
-        let icon = h('span', {
-            class: ['table-file-icon', iconClass]
-        })
-        let name
-        if (row._rename) {
-            name = h('input', {
-                class: ['table-file-name'],
-                domProps: {
-                    title: row.name,
-                    value: row.name
-                }
-            })
-        } else {
-            name = h('a', {
-                class: ['table-file-name'],
-                domProps: {
-                    title: row.name
-                },
-                on: {
-                    click: (e) => {
-                        this.$emit('on-click-' + fileType, row, e)
-                    }
-                }
-            }, row.name && row.name !== 'null' ? row.name : '剪切板') // 没有name 是剪切板
-        }
-        return h('div', [
-            icon, name
-        ])
+        let imgSrc = row.raw.miniurl
+        let $image = <img slot="content" src={imgSrc} class="table-file-poptip-img"/>
+
+
+        let $icon = <span class={['table-file-icon', iconClass]}/>
+        let $name = <a class="table-file-name" title={name} onClick={(e) => this.$emit('on-click-' + fileType, row, e)}>{name}</a>
+
+        return <poptip placement="left-start" trigger="hover" transfer>
+            {$icon}
+            {$name}
+            {$image}
+        </poptip>
     }
 
     const renderAction = function (h, params) {
         let {row} = params
         let {status} = row
         // 准备状态为2 个按钮 开始，删除
-        let remove = h('i-button', {
-            props: {type: 'text', size: 'small', icon: 'close'},
-            style: {marginRight: '5px'},
-            domProps: {title: '删除'},
-            on: {
-                click: () => {
-                    this.$emit('file-remove', params)
-                }
-            }
-        })
+        let $remove = <i-button type="text" size="small" icon="md-close" class="mr-2" title="删除图片" onClick={()=>this.$handleRemoveFileList(params)}/>
         let dom
         switch (status) {
-            case 'ready':{
-
-                let play = h('i-button', {
-                    props: {type: 'text', size: 'small', icon: 'play'},
-                    style: {marginRight: '5px'},
-                    domProps: {title: '开始'},
-                    on: {
-                        click: () => {
-                            this.$emit('file-start-upload', params)
-                        }
-                    }
-                })
-                dom = h('div', [play, remove])
+            case FileStatus.READY:{
+                let $play = <i-button type="text" size="small" icon="md-play" class="mr-2" title="开始上传" onClick={()=> this.$handleFileStartUpload(params)}/> //()=>this.$emit('file-start-upload', params)
+                dom = [$play, $remove]
                 break
             }
-            case 'success':{
-
-                dom = h('div', [])
+            case FileStatus.SUCCESS:{
+                dom = [$remove]
                 break
             }
-            case 'uploading':{ // 上传中 显示进度 以及取消上传 暂时不支持暂停上传（断点续传）
+            case FileStatus.UPLOADING:{ // 上传中 显示进度 以及取消上传 暂时不支持暂停上传（断点续传）
                 // percentage
-                let cancel = h('i-button', {
-                    props: {type: 'text', size: 'small', icon: 'refresh'},
-                    style: {marginRight: '5px'},
-                    domProps: {title: '终止'},
-                    on: {
-                        click: () => {
-                            this.$emit('file-uploading-cancel', params)
-                        }
-                    }
-                })
-                dom = h('div', [cancel])
+                // let $cancel =
+                dom = [<i-button type="text" size="small" icon="md-pause" class="mr-2" title="终止上传"
+                                 onClick={()=> this.$handleCancelUpload(params)}/>] //() => this.$emit('file-uploading-cancel', params)
                 break
             }
-            case 'fail':{ // 上传失败 显示 重试与删除
-                let retry = h('i-button', {
-                    props: {type: 'text', size: 'small', icon: 'refresh'},
-                    style: {marginRight: '5px'},
-                    domProps: {title: '重试'},
-                    on: {
-                        click: () => {
-                            this.$emit('file-fail-refresh', params)
-                        }
-                    }
-                })
-                dom = h('div', [retry, remove])
+            case FileStatus.FAIL:{ // 上传失败 显示 重试与删除
+                let $retry = <i-button type="text" size="small" icon="md-refresh" class="mr-2" title="重试"
+                                      onClick={()=> this.$handleFailRefresh(params)}/>
+                dom = [$retry, $remove]
                 break
             }
             default :
-                dom = h('span')
+                dom = null
         }
         return dom
     }
@@ -169,28 +133,32 @@
     const renderStatus = function (h, params) {
         let {row} = params
         let {status} = row
-        let statusDom = h('span', FileStatusText[status])
-        return h('span', {
-            domProps: {
-                className: 'file-status'
-            }
-        }, [statusDom])
+        // let statusDom = h('span', FileStatusText[status])
+        return <span class="file-status">{FileStatusText[status]}</span>
     }
 
     const renderSpace = function (h, {row}) {
         let {space} = row
-        return h('span', {
-            domProps: {
-                className: 'file-space'
-            }
-        }, store.getters.imgSpaces[space])
+        // console.log(store.getters.imgSpaces)
+        // console.log(row)  onOn-change={()=>}
+        if (row._editSpace) {
+                // <Option v-for="(v, k) in " value={k} key={k}>{{ v }}</Option>
+
+            return [<i-select style="width:60px" placeholder="选择图片空间" value={space} size="small" onInput={(v)=> this.$handleChangeFileSpace(row, v)}>
+                {Object.keys(store.getters.imgSpaces).map((k)=> <i-option value={k}>{store.getters.imgSpaces[k]}</i-option>)}
+            </i-select>]
+        } else {
+            let editSpaceBtn = <font-icon type="ios-create-outline" size="20" onClick={()=> row._editSpace = true}/>
+            return [<span class="table-file-space">{store.getters.imgSpaces[space]}</span>, editSpaceBtn]
+        }
+
     }
 
     const renderFileSize = function (h, {row}) {
         if (!row.file) {
-            return h('span', '-')
+            return <span>-</span>
         }
-        return h('span', {domProps: {className: 'table-file-size'}}, formatFileSize(row.size))
+        return <span class="table-file-size">{ formatFileSize(row.size)}</span>
     }
 
     const UploadComponentsStatus = {
@@ -232,7 +200,7 @@
                 format: [], // 支持的文件类型，与 accept 不同的是，format 是识别文件的后缀名，accept 为 input 标签原生的 accept 属性，会在选择文件时过滤，可以两者结合使用
                 options: {
                     headers: {},
-                    action: 'http://up-z2.qiniu.com',
+                    action: 'https://up-z2.qiniup.com',
                     token: '', // api or token
                     inputName: 'file',
                     data: {}, // 上传时附带的额外参数,
@@ -354,7 +322,7 @@
                             this.$emit('upload-fulfil')
                             this.contentVisible = false
                             // let length = this.fileList.length
-                            this.alertVisible = true
+                            this.alertVisible = '上传成功！'
                         // this.$Notice.close('upload-notice')
                         // this.$Notice.success({
                         //     title: `上传完成`,
@@ -389,7 +357,7 @@
                 let index1 = rawFile.name.lastIndexOf('.')
                 let index2 = rawFile.name.length
                 let ext = rawFile.name.substring(index1 + 1, index2) // 后缀名
-
+                // console.log(rawFile)
                 let _file = {
                     status: FileStatus.READY,
                     space,
@@ -401,7 +369,8 @@
                     ext: ext,
                     uid: rawFile.uid,
                     showProgress: true,
-                    raw: rawFile
+                    raw: rawFile,
+                    _editSpace: false
                 }
                 this.fileList.push(_file)
             },
@@ -409,34 +378,42 @@
             uploadFiles: function (files, opts = {}) {
                 let {space} = opts
                 // 队列的最大值不限制， 但是限制同上上传的格式
-                if (isArray(files)) {
 
+
+                if (!isArray(files)) {
+                    files = [files]
                     // let postFiles = Array.prototype.slice.call(files)
-
-                    if (files.length === 0) return
-                    // 如果上传的是数组，清空当前列表
-                    // 并且数量将超出最大限制的时候，清空列表中成功的文件
-                    // this.fileList
-                    if (this.fileList.length + files.length > this.bigQueueLimit) {
-                        let successFiles = this.fileList.filter(item => item.status === FileStatus.SUCCESS)
-                        this.fileList = differenceBy(this.fileList, successFiles, 'uid')
-                    }
-                    // 提交一个数组 作为一个批次
-                    // 生成随机key
-                    let key = randomChar(16)
-                    files.forEach(rawFile => {
-                        rawFile.serial_id = key
+                }
+                if (files.length === 0) return
+                // 如果上传的是数组，清空当前列表
+                // 并且数量将超出最大限制的时候，清空列表中成功的文件
+                // this.fileList
+                if (this.fileList.length + files.length > this.bigQueueLimit) {
+                    let successFiles = this.fileList.filter(item => item.status === FileStatus.SUCCESS)
+                    this.fileList = differenceBy(this.fileList, successFiles, 'uid')
+                }
+                // 提交一个数组 作为一个批次
+                // 生成随机key
+                const handleFileItem = (rawFile) =>{
+                    rawFile.serial_id = randomChar(16)
+                    if (!rawFile.miniurl) {
+                        let fr = new FileReader();
+                        fr.onload = (oFREvent) => {
+                            rawFile.miniurl = oFREvent.target.result;
+                            this.handleStart(rawFile, space)
+                            if (this.autoUpload) {
+                                this.upload(rawFile, opts)
+                            }
+                        }
+                        fr.readAsDataURL(rawFile)
+                    } else {
                         this.handleStart(rawFile, space)
                         if (this.autoUpload) {
                             this.upload(rawFile, opts)
                         }
-                    })
-                } else {
-                    this.handleStart(files, space)
-                    if (this.autoUpload) {
-                        this.upload(files, opts)
                     }
                 }
+                files.forEach(handleFileItem)
             },
             // 取消上传， 如果不传参数则取消全部
             abort (file) {
@@ -531,7 +508,7 @@
                     }
                 }
 
-                let isBase64 = isString(rawFile.miniurl)
+                let isBase64 = rawFile.isBase64
                 if (!isBase64) {
                     data.token = token
                     data['x:name'] = rawFile.name
@@ -618,6 +595,41 @@
                     return !target
                 })
                 return target
+            },
+            async $handleRemoveFileList ({row, index}) {
+                try {
+                    await media.deleteImg(row.key)
+                    this.fileList.splice(index, 1)
+                    this.alertVisible = '删除成功！'
+                } catch (e) {
+                    this.alertVisible = '删除失败！'
+                }
+
+                this.$emit('file-item-remove', row, index)
+            },
+            $handleFileStartUpload ({row, index}) {
+                console.log('方法未实现')
+                this.$emit('file-item-start-upload', row, index)
+            },
+            $handleCancelUpload ({row, index}) {
+                console.log('方法未实现')
+                this.$emit('file-item-cancel-upload', row, index)
+
+            },
+            $handleFailRefresh ({row, index}) {
+                console.log('方法未实现')
+                this.$emit('file-item-refresh-upload', row, index)
+            },
+            async $handleChangeFileSpace (row, space) {
+                try {
+                    await media.move(row.key, space)
+                    this.alertVisible = '移动成功！'
+                    row.space = space
+                } catch (e) {
+                    this.alertVisible = '移动失败！'
+                } finally {
+                    row._editSpace = false
+                }
             }
         },
         mounted () {

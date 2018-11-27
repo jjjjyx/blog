@@ -1,0 +1,164 @@
+.upload-modal {
+    width: 633px;
+    top: auto;
+    bottom: -1px;
+    left: auto;
+    right: 35px;
+    display: block;
+    visibility: visible;
+    z-index: 1080;// 比poptip 低一级
+    position: absolute;
+    overflow: hidden;
+    box-shadow: 0 0 10px #ccc;
+    border-top-left-radius: 7px;
+    border-top-right-radius: 7px;
+    border: 1px solid #e2e2e2;
+    .ivu-modal-content {
+        border-radius: 0;
+    }
+    .ivu-modal-size {
+        font-size: 12px;
+        position: absolute;
+        right: 38px;
+        top: 8px;
+        overflow: hidden;
+        cursor: pointer;
+        i {
+            font-size: 22px;
+            color: #999;
+            -webkit-transition: color .2s ease;
+            transition: color .2s ease;
+            position: relative;
+            top: 6px;
+        }
+    }
+    .ivu-alert {
+        border-radius: 0;
+        margin-bottom: 0;
+    }
+    .upload-list {
+        border: none;
+        margin: -16px -16px 0;
+        .ivu-table:after {
+            content: none;
+        }
+        .ivu-table th {
+            //background-color: transparent;
+        }
+    }
+    .upload-list-footer-tip {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .table-file-space + i{
+        display: none;
+        cursor: pointer;
+    }
+    .ivu-table-row-hover {
+        .table-file-space + i{
+            display: inline-block;
+        }
+    }
+
+}
+
+.el-message-fade-enter,
+.el-message-fade-leave-active {
+    opacity: 0;
+    transform: translate(-50%, -100%)
+}
+
+.upload-notice-list {
+    list-style: none;
+    li {
+        line-height: 1.5;
+    }
+}
+.table-file-name {
+    width: 200px;
+    display: inline-block;
+    vertical-align: middle;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+.table-file-poptip-img {
+    width: 200px;
+}
+
+//
+//// 默认图标
+//.default-large {
+//    background: url(img/Misc_54_f86ddc2.png) center no-repeat
+//}
+//// 文件夹
+//.dir-large {
+//    background: url(img/Folder_54_fe544cc.png) center no-repeat
+//}
+//// 分享
+//.dir-share-large {
+//    background: url(img/Share_54_142956d.png) center no-repeat
+//}
+//// 收藏
+//.dir-cang-large {
+//    background: url(img/Collection_54_7849a8d.png) center no-repeat
+//}
+//
+//.file-icon-large-bt {
+//    background: url(img/BT_54_6238b9c.png) center no-repeat
+//}
+//.file-icon-large-zip {
+//    background: url(img/ZIP_54_667d9c9.png) center no-repeat
+//}
+//
+//.file-icon-large-txt {
+//    background: url(img/Text_54_6d41969.png) center no-repeat
+//}
+//.file-icon-large-video {
+//    background: url(img/Video_54_7880c8d.png) center no-repeat
+//}
+
+//.file-icon-sys-l-dmg, .file-icon-sys-l-exe {
+//    background: url(/box-static/file-widget-1/sysIcon/img/EXE_54_a0ff130.png) center no-repeat;
+//}
+
+
+//.dir-app-large, .dir-apps-large {
+//    background: url(img/MyData_54_cb4dfe9.png) center no-repeat
+//}
+//
+//.dir-backup-large {
+//    background: url(img/PC_54_e2efc5f.png) center no-repeat
+//}
+
+.table-file-icon {
+    vertical-align: middle;
+    cursor: default;
+    display: inline-block;
+    height: 26px;
+    width: 26px;
+    margin-right: 5px;
+    background: url('http://image.cdn.mbdoge.cn/FmLtnOI3YFHbbYDsMlxO5V7i-d8I') center no-repeat
+}
+
+
+.dir-small {
+    background-position: -594px -862px;
+}
+.default-small {
+    background-position: -596px -566px;
+}
+
+//.file-icon-small-zip {
+//    background-position: -596px -1698px;
+//}
+
+.file-icon-small-rar, .file-icon-small-zip {
+    background-position: -596px -1664px;
+}
+.file-icon-small-pic {
+    background-position: -596px -306px;
+}
+.file-icon-small-video {
+    background-position: -596px -1630px;
+}

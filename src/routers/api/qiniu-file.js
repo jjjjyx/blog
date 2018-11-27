@@ -149,7 +149,7 @@ const list = [
 const move = [
     // sanitizeBody('key').trim(),
     checkSpace,
-    check('key').exists(),
+    // check('key').exists(),
     common.validationResult,
     async function (req, res, next) {
         req.sanitizeBody('keys').toArray()

@@ -19,8 +19,9 @@ const router = express.Router()
 
 const validGuid = (value) => shortid.isValid(value)
 const md = new MarkdownIt({
-    langPrefix: 'hljs language-',
+    langPrefix: 'hljs lang-',
     highlight: function (str, lang) {
+        console.log(lang)
         if (lang && hljs.getLanguage(lang)) {
             try {
                 return hljs.highlight(lang, str).value

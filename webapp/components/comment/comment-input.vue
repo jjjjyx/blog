@@ -4,7 +4,13 @@
             <img :src="currentAvatar" alt="user-avatar">
         </div>
         <div class="comment-input__body">
-            <div class="no-login-modal" v-if="!isLogin">
+            <div class="no-login-modal" v-if="true">
+                <!--文章很不错想要评论又没有账号的点这里哦-->
+                暂时关闭了游客评论，等待我实现下游客系统，之前的游客系统有安全漏洞。反正也没人来，关了也没人知道~
+                <!--<Icon type="ios-megaphone"/>-->
+                <!--<a href="javascript:void(0);" @click="handleRegister">游客指南评论指南</a>-->
+            </div>
+            <div class="no-login-modal" v-else-if="!isLogin">
                 文章很不错想要评论又没有账号的点这里哦
                 <Icon type="ios-megaphone"/>
                 <a href="javascript:void(0);" @click="handleRegister">游客指南评论指南</a>
