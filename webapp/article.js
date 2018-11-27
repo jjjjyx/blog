@@ -75,6 +75,27 @@ function appInit () {
                 once($el, animationName, () => {
                     document.body.removeChild($el)
                 })
+            },
+            copy (e) {
+                let target = e.target
+                let content = target.nextSibling.innerText
+                this._copy(content)
+
+                // target.s
+            },
+            _copy (text) {
+                this.$refs.copyrelay.value = text
+                // this.$refs.copyrelay.focus()
+                // this.$refs.copyrelay.select()
+                try {
+                    if (document.execCommand('copy', false, null)) {
+                        this.$Message.success('复制成功')
+                    } else {
+                        this.$Message.success('复制失败')
+                    }
+                } catch (err) {
+                    this.$Message.success('复制失败')
+                }
             }
         },
         mounted () {

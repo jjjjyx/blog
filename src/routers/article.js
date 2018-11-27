@@ -18,13 +18,17 @@ const {termDao, userDao, postDao, postMetaDao, readDao, sequelize} = require('..
 const router = express.Router()
 
 const validGuid = (value) => shortid.isValid(value)
+const copyElement = `<span class="code-copy" @click="copy">复制</span>`
 const md = new MarkdownIt({
-    langPrefix: 'hljs lang-',
+    langPrefix: 'hljs hljs-lines lang-',
     highlight: function (str, lang) {
-        console.log(lang)
         if (lang && hljs.getLanguage(lang)) {
             try {
-                return hljs.highlight(lang, str).value
+                let code = hljs.highlight(lang, str)
+                let value = code.value.replace(/\n/g,"</li><li>")
+
+                // console.log('=====', code.value)
+                return `${copyElement}<ul><li>${value}</li></ul>`
             } catch (e) {
                 debug('highlight error by', e.message)
             }
