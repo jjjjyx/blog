@@ -97,7 +97,6 @@ function appInit () {
                 let content = target.nextSibling.innerText
                 this._setCopyElPosition(e)
                 this._copy(content)
-
                 // target.s
             },
             _setCopyElPosition (e) {
