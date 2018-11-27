@@ -3,6 +3,7 @@
 const express = require('express')
 const shortid = require('shortid')
 const useragent = require('useragent')
+const xss = require('xss')
 const MarkdownIt = require('markdown-it')
 const groupBy = require('lodash/groupBy')
 
@@ -26,8 +27,6 @@ const md = new MarkdownIt({
             try {
                 let code = hljs.highlight(lang, str)
                 let value = code.value.replace(/\n/g,"</li><li>")
-
-                // console.log('=====', code.value)
                 return `${copyElement}<ul><li>${value}</li></ul>`
             } catch (e) {
                 debug('highlight error by', e.message)
@@ -37,6 +36,18 @@ const md = new MarkdownIt({
         return '' // use external default escaping
     }
 })
+// add target="_blank" to all link
+md.renderer.rules.link_open  = function (tokens, idx, options, env, self) {
+    let aIndex = tokens[idx].attrIndex('target');
+
+    if (aIndex < 0) {
+        tokens[idx].attrPush(['target', '_blank']); // add new attribute
+    } else {
+        tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
+    }
+
+    return self.renderToken(tokens, idx, options, env, self)
+}
 
 const readerPost = [
     // param('p').exists().custom(validGuid),  //.isLength({min: 9, max: 16}),

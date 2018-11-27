@@ -45,6 +45,15 @@ function appInit () {
         components: {
             BlogComment
         },
+        computed: {
+            // inputStyle () {
+            //     return {
+            //
+            //         top: this.y + 'px',
+            //         left: this.x + 'px'
+            //     }
+            // }
+        },
         methods: {
             async heart (event, guid, n) {
 
@@ -79,14 +88,20 @@ function appInit () {
             copy (e) {
                 let target = e.target
                 let content = target.nextSibling.innerText
+                this._setCopyElPosition(e)
                 this._copy(content)
 
                 // target.s
             },
+            _setCopyElPosition (e) {
+                let {clientX, clientY} = e
+                this.$refs.copyrelay.style.left = `${clientX}px`
+                this.$refs.copyrelay.style.top = `${clientY}px`
+            },
             _copy (text) {
                 this.$refs.copyrelay.value = text
-                // this.$refs.copyrelay.focus()
-                // this.$refs.copyrelay.select()
+                this.$refs.copyrelay.focus()
+                this.$refs.copyrelay.select()
                 try {
                     if (document.execCommand('copy', false, null)) {
                         this.$Message.success('复制成功')

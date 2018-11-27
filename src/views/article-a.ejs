@@ -66,6 +66,9 @@
             /*background-color: #fcfcfc;*/
             /*color: inherit;*/
         }
+        .hljs-lines ul li:last-child:empty {
+            display: none;
+        }
         .code-copy {
             position: absolute;
             right: 0;
@@ -174,7 +177,7 @@
                 <!-- 文章分类 相关推荐 -->
             </div>
         </section>
-        <input style="position: absolute;left: -999px;opacity: 0" ref="copyrelay"/>
+        <input style="position: fixed;left: -999px;opacity: 0;pointer-events: none" ref="copyrelay"/>
         <%- include('template/comment', commentDate); %>
     </div>
     <%- include('base/bottom', data); %>
