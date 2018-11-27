@@ -7,10 +7,13 @@ import './assets/article.scss'
 import './assets/comment.scss'
 import Icon from './components/icon'
 import BlogComment from './components/comment/comment.vue'
+import PhotoSwipe from './components/photo-swipe'
+
 import {on, once, addClass, removeClass} from './utils/dom'
 import * as articleApi from '@/api/article'
 /* eslint-disable no-unused-vars,no-undef  */
 Vue.use(Icon)
+Vue.use(PhotoSwipe)
 Vue.config.productionTip = false
 
 const animationName = window.getAnimation() || 'animationend'
@@ -33,6 +36,10 @@ function getClientHeight () {
     }
     return clientHeight
 }
+
+
+
+
 
 function appInit () {
     /* eslint-disable no-unused-vars  */
@@ -124,8 +131,25 @@ function appInit () {
                     articleApi.read(this.guid)
                 }
             })
+            let galleryElements = document.querySelectorAll('.markdown-body img.j-image-photo-swipe')
+
+            let imageData = Array.prototype.slice.call(galleryElements).map((image) => {
+                // console.log(image.width, image.height, image.src)
+                return {w: image.width, h: image.height, src: image.src}
+            })
+
+            for (let i = 0, l = galleryElements.length; i < l; i++) {
+                // galleryElements[i].setAttribute('data-pswp-uid', i + 1)
+                galleryElements[i].onclick = (e) => {
+                    // console.log(imageData)
+                    this.$photoswipe.open(parseInt(i, 10), imageData)
+                }
+            }
         }
     })
+
+
+
     window.fulfilLoading && window.fulfilLoading()
 }
 

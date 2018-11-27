@@ -12,13 +12,14 @@
     line-height: $header-height;
     right: -7px; // 针对导航边上的滚动
 
-    &.top {
-        background-color: transparent;
-        box-shadow: none;
-    }
-    &.top .ivu-menu-item:not(.ivu-menu-item-active) a{
-        color: $app-body-background-color;
-    }
+    //
+    //&.top {
+    //    background-color: transparent;
+    //    box-shadow: none;
+    //}
+    //&.top .ivu-menu-item:not(.ivu-menu-item-active) a{
+    //    color: $app-body-background-color;
+    //}
     //&.top .ivu-menu-item-active a,
     //&.top .ivu-menu-item:hover a{
     //    //&.top .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu-active,
@@ -26,6 +27,21 @@
     //    color: $logo-color;
     //}
 }
+.wrapper-header__top {
+    background-color: transparent;
+    box-shadow: none;
+    .ivu-menu-item:not(.ivu-menu-item-active) a{
+        color: $app-body-background-color;
+    }
+}
+//.wrapper-header__hide {
+//    top: -66px;
+//}
+//.wrapper-header__bit {
+//    box-shadow: 0 0 15px 0 rgba(0,0,0,.2);
+//    top: 0;
+//    z-index: 1010;
+//}
 
 .wrapper-header-nav {
     background-color: transparent;

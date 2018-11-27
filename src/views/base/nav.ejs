@@ -56,37 +56,30 @@ let activeName = name;
 <% /*
 'use strict';
 
-+function () {
-var h1 = 0;
-var h2 = 25;
-var ss = window.pageYOffset;
+        var d = window.pageYOffset // 页面初始，距离顶部的高度
+        window.onload = function (c) {
+            var b = document.querySelector('.wrapper-header')
+            c = function (a) {
+               console.log('0 === a', 0 === a, a)
+                console.log('0 < a', 0 < a )
+                console.log('25 < a', 25 < a)
+                console.log('25 < a', 25 < a)
+                console.log('a > d', a > d, a, d)
+                a = window.pageYOffset
+                // 滚动到顶部
+                0 === a && b.classList.add('top')
 
-window.onload = function (e) {
-var $bootsnav = document.querySelector('.wrapper-header');
-var e_scroll = function (e) {
-var s = window.pageYOffset;
-if (s == h1) {
-$bootsnav.classList.add('top');
-}
-if (s > h1) {
-$bootsnav.classList.remove('top');
-}
-if (s > h2) {
-$bootsnav.classList.add('gizle');
-if (s > ss) {
-$bootsnav.classList.remove('sabit');
-// this.$emit("sabit",true);
-} else {
-$bootsnav.classList.add('sabit');
-// this.$emit("sabit",false);
-}
-ss = s;
-}
-};
-e_scroll();
-window.onscroll = e_scroll
-};
-}();
+                0 < a && b.classList.remove('top') // 有滚动
+
+                25 < a && (
+                    b.classList.add('gizle'),  // // 有滚动 距离页面高度以及超过了25 隐藏导航
+                    a > d ? b.classList.remove('sabit') : b.classList.add('sabit'), d = a)
+                    //sabit 在半中间显示
+            }
+            c()
+            window.onscroll = c
+        }
+
 */ %>
 <script>
     +function () {
@@ -95,8 +88,9 @@ window.onscroll = e_scroll
             var b = document.querySelector('.wrapper-header')
             c = function (a) {
                 a = window.pageYOffset
-                0 === a && b.classList.add('top')
-                0 < a && b.classList.remove('top')
+
+                0 === a && b.classList.add('wrapper-header__top')
+                0 < a && b.classList.remove('wrapper-header__top')
                 25 < a && (b.classList.add('gizle'), a > d ? b.classList.remove('sabit') : b.classList.add('sabit'), d = a)
             }
             c()

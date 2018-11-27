@@ -22,6 +22,8 @@ const validGuid = (value) => shortid.isValid(value)
 const copyElement = `<span class="code-copy" @click="copy">复制</span>`
 const md = new MarkdownIt({
     langPrefix: 'hljs hljs-lines lang-',
+    breaks: true,
+    xhtmlOut: true,
     highlight: function (str, lang) {
         if (lang && hljs.getLanguage(lang)) {
             try {
@@ -46,6 +48,15 @@ md.renderer.rules.link_open  = function (tokens, idx, options, env, self) {
         tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
     }
 
+    return self.renderToken(tokens, idx, options, env, self)
+}
+md.renderer.rules.image = function (tokens, idx, options, env, self) {
+    let imageClass = tokens[idx].attrIndex('class');
+    if (imageClass < 0) { // 不存在
+        tokens[idx].attrPush(['class', 'j-image-photo-swipe']); // add new attribute
+    } else {
+        tokens[idx].attrs[imageClass][1] = + ' j-image-photo-swipe';    // add value
+    }
     return self.renderToken(tokens, idx, options, env, self)
 }
 

@@ -2,10 +2,10 @@
 @import "./sass/tabs-style";
  //覆盖
 .article-a {
-    .wrapper-header.top {
+    .wrapper-header__top {
         box-shadow: 0 0 0 1px rgba(0,0,0,.1);
     }
-    .wrapper-header.top .ivu-menu-item:not(.ivu-menu-item-active) a{
+    .wrapper-header__top .ivu-menu-item:not(.ivu-menu-item-active) a{
         color: inherit;
     }
     .ivu-breadcrumb>span {
@@ -87,27 +87,54 @@
     //background-color: $logo-color;
     //color: white;
 }
-//
-//@media (max-width: 768px) {
-//    .article__container {
-//        padding: 0 4rem;
-//    }
-//}
-//
-//@media (min-width: 768px) {
-//    .article__container {
-//        width: 750px;
-//    }
-//}
-//
-//@media (min-width: 992px) {
-//    .article__container {
-//        width: 870px;
-//    }
-//}
-//
-//@media (min-width: 1200px){
-//    .article__container {
-//        width: 970px;
-//    }
-//}
+
+/*
+         * @see https://www.jiangfei.net/jianzhan/1098.html
+         这里我去掉了颜色设置 ，为了兼容多种皮肤
+        */
+.hljs-lines {
+    position: relative;
+    border: 0;
+    display: block !important;
+    padding: 1px;
+    margin: 0;
+    width: 100%;
+    font-weight: 200;
+    /*color: #333;*/
+    white-space: pre-wrap
+}
+
+.hljs-lines ul {
+    list-style: decimal;
+    /*background-color: #fff;*/
+    margin: 0 0 0 40px !important;
+    padding: 0;
+}
+
+.hljs-lines ul li {
+    list-style: decimal-leading-zero;
+    border-left: 1px solid #101010 !important;
+    padding: 5px !important;
+    margin: 0 !important;
+    line-height: 14px;
+    word-break: break-all;
+    word-wrap: break-word;
+}
+
+.hljs-lines ul li:nth-of-type(even) {
+    /*background-color: #fcfcfc;*/
+    /*color: inherit;*/
+}
+.hljs-lines ul li:last-child:empty {
+    display: none;
+}
+.code-copy {
+    position: absolute;
+    right: 0;
+    display: inline-block;
+    cursor: pointer;
+}
+.j-image-photo-swipe {
+    display: block;
+    margin: 0 auto;
+}

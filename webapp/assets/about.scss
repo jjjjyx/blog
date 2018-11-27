@@ -1,1 +1,13 @@
 @import "./sass/public";
+
+.wrapper-header__top {
+    background-color: white;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.1);
+}
+.wrapper-header__top .ivu-menu-item:not(.ivu-menu-item-active) a{
+    color: inherit;
+}
+.about-container {
+    min-height: 50vh;
+    margin-top: 10rem;
+}

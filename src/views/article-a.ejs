@@ -28,53 +28,6 @@
             padding: 3px 5px;
             border-radius: 0;
         }
-
-        /*
-          * @see https://www.jiangfei.net/jianzhan/1098.html
-          这里我去掉了颜色设置 ，为了兼容多种皮肤
-         */
-        .hljs-lines {
-            position: relative;
-            border: 0;
-            display: block !important;
-            padding: 1px;
-            margin: 0;
-            width: 100%;
-            font-weight: 200;
-            /*color: #333;*/
-            white-space: pre-wrap
-        }
-
-        .hljs-lines ul {
-            list-style: decimal;
-            /*background-color: #fff;*/
-            margin: 0 0 0 40px !important;
-            padding: 0;
-        }
-
-        .hljs-lines ul li {
-            list-style: decimal-leading-zero;
-            border-left: 1px solid #101010 !important;
-            padding: 5px !important;
-            margin: 0 !important;
-            line-height: 14px;
-            word-break: break-all;
-            word-wrap: break-word;
-        }
-
-        .hljs-lines ul li:nth-of-type(even) {
-            /*background-color: #fcfcfc;*/
-            /*color: inherit;*/
-        }
-        .hljs-lines ul li:last-child:empty {
-            display: none;
-        }
-        .code-copy {
-            position: absolute;
-            right: 0;
-            display: inline-block;
-            cursor: pointer;
-        }
     </style>
     <script src="<%= locals.cdn('social-share.js/1.0.16/js/social-share.min.js') %>"></script>
 </head>
