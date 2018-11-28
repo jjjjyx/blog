@@ -38,13 +38,13 @@ const sanitizeSlug = sanitizeBody('slug').trim().customSanitizer((value) => {
 const checkId = body('id').isInt().withMessage('请提交正确的ID')
 const checkName = body('name').isString().withMessage('请提交正确的名称').custom((value) => {
     debug('checkName name = ', value)
-    return /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,30}$/.test(value)
+    return common.REGS.TERM_NAME_REG.test(value)
 }).withMessage('请提交正确的名称，名称只能包含中文英文，下划线，数字,且在长度不超过30！')
 
 const slugMsg = '且名称只能包含英文，连字符（-），数字,且在长度不超过30！'
 const slugV = (value) => {
     debug('checkSlug slug = ', value)
-    return /^[a-zA-Z0-9\-_]{1,30}$/.test(value)
+    return common.REGS.TERM_SLUG_REG.test(value)
 }
 const checkCreateSlug = body('slug').exists().withMessage('必须').custom(slugV).withMessage(slugMsg)
 const checkUpdateSlug = body('slug').isLength({min: 0, max: 30}).custom(slugV).withMessage(slugMsg)

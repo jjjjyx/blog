@@ -8,7 +8,7 @@
             <!--<tabs class="main__tabs"/>-->
             <transition name="fade-transform" mode="out-in">
                 <!--<keep-alive :include="cachedViews">-->
-                <router-view :key="key" class="main__content"/>
+                <router-view  class="main__content"/>
                 <!--</keep-alive>-->
             </transition>
             <main-footer/>
@@ -38,9 +38,9 @@
 			cachedViews() {
 				return this.$store.state.tagsView.cachedViews
 			},
-			key() {
-				return this.$route.fullPath
-			}
+			// key() {
+			// 	return this.$route.fullPath
+			// }
 		}
 	}
 </script>

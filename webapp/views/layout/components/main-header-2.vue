@@ -9,7 +9,7 @@
             <BreadcrumbItem v-for="(item,index) in breadCrumbList" :key="item.name"
                             @click.native="handleSelectRouter(item, index)">
                 <font-icon :type="item.icon" v-if="item.icon"></font-icon>
-                {{$t('router.'+ item.title)}}
+                {{item.title || breadRouterName(item)}}
             </BreadcrumbItem>
         </transition-group>
         <div class="main-header--right">

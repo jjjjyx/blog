@@ -63,7 +63,7 @@ const comment = [
             members = [...new Set(members)]
             let isReply = 0
             let userIds = members.map(item => {
-                let [, prefix, userId] = common.COMMENT_MEMBERS_REG.exec(item)
+                let [, prefix, userId] = common.REGS.COMMENT_MEMBERS_REG.exec(item)
                 if (prefix === '%') isReply = userId
                 return userId
             })

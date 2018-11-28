@@ -122,20 +122,13 @@
 
 <script>
     import difference from 'lodash/difference'
-
     import { mapGetters } from 'vuex'
-    // import 'photoswipe/dist/photoswipe.css'
-    // import 'photoswipe/dist/default-skin/default-skin.css'
-    // import PhotoSwipe from 'photoswipe/dist/photoswipe'
-    // import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
-
-    // import pswp from '@/components/pswp/pswp.vue'
+    import * as media from '@/api/media'
     import { getMetaKeyCode } from '@/utils/common'
     import { on, off } from '@/utils/dom'
 
-    import ImgGrid from './img-grid'
-    import * as media from '../../api/media'
-    import InvalidImage from './invalid-image'
+    import ImgGrid from './components/img-grid'
+    import InvalidImage from './components/invalid-image'
 
     const sizeLabels = {
         '9': '特大尺寸',

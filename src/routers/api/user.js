@@ -17,6 +17,14 @@ const jwt = require('../../express-middleware/auth/jwt')
 
 const router = express.Router()
 
+/**
+ * 创建用户操作日志
+ * @param req
+ * @param action 操作
+ * @param type 类型
+ * @returns {*}
+ * @private
+ */
 const _createUserLog = function (req, action, type) {
     let user = req.user
     let agent = req.headers['user-agent']
@@ -29,6 +37,14 @@ const _createUserLog = function (req, action, type) {
         agent: agentObj.toString()
     })
 }
+/**
+ * 保存用户，meta 信息
+ * @param id
+ * @param key
+ * @param value
+ * @returns {Function}
+ * @private
+ */
 const _saveUserMeta = function (id, key, value) {
     log.info('创建用户Meta，id = %d, key = %s, value = %s', id, key, value)
     return userMetaDao.findOrCreate({
@@ -48,7 +64,8 @@ const _saveUserMeta = function (id, key, value) {
         return true
     })
 }
-let USER_LAST_LOGIN_TIME_SQL = 'SELECT createdAt FROM j_userlogs WHERE user_id = ? AND TYPE = \'login\' ORDER BY createdAt DESC LIMIT 0, 1'
+// 查询用户最后登陆时间
+const USER_LAST_LOGIN_TIME_SQL = 'SELECT createdAt FROM j_userlogs WHERE user_id = ? AND TYPE = \'login\' ORDER BY createdAt DESC LIMIT 0, 1'
 const _saveUserLastOnlineTime  = function (userId) {
     return sequelize.query(USER_LAST_LOGIN_TIME_SQL, {
         type: sequelize.QueryTypes.SELECT,
@@ -157,6 +174,7 @@ const update_info = [
     check('user_url').isURL().withMessage('请提交正确主页'),
     check('user_nickname').isLength({min: 1, max: 18}).withMessage('昵称请控制在18个长度以内'),
     check('display_name').isLength({min: 1, max: 18}).withMessage('显示名称请控制在18个长度以内'),
+    common.validationResult,
     async function (req, res, next) {
         let {user_nickname, display_name, user_email, user_url} = req.body
 

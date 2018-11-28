@@ -36,9 +36,9 @@
 
 <script>
     import differenceBy from 'lodash/differenceBy'
-	import Curd from '../../components/curd/curd'
-    import {dateFormat} from '../../utils/common'
-    import * as media from '../../api/media'
+	import Curd from '@/components/curd/curd'
+    import {dateFormat} from '@/utils/common'
+    import * as media from '@/api/media'
     const renderDate = function (h, {row}) {
         return [dateFormat(row.createdAt)]
     }

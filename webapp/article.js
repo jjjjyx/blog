@@ -132,10 +132,7 @@ function appInit () {
             })
             let galleryElements = document.querySelectorAll('.markdown-body img.j-image-photo-swipe')
 
-            let imageData = Array.prototype.slice.call(galleryElements).map((image) => {
-                // console.log(image.width, image.height, image.src)
-                return {w: image.width, h: image.height, src: image.src}
-            })
+            let imageData = Array.prototype.slice.call(galleryElements).map((image) => ({w: image.width, h: image.height, src: image.src}))
 
             for (let i = 0, l = galleryElements.length; i < l; i++) {
                 // galleryElements[i].setAttribute('data-pswp-uid', i + 1)

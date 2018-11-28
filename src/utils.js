@@ -62,7 +62,7 @@ Bluebird.promisifyAll(client)
  * @param pattern
  * @returns {string}
  */
-function formatDate (time, pattern = 'YYYY-M-D hh:mm') {
+function formatDate (time, pattern = 'YYYY-M-D HH:mm') {
     return moment(time).format(pattern)
 }
 

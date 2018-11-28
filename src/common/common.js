@@ -2,7 +2,6 @@ const path = require('path')
 const ejs = require('ejs')
 const xss = require('xss')
 const marked = require('marked')
-const isArray = require('lodash/isArray')
 const groupBy = require('lodash/groupBy')
 const toNumber = require('lodash/toNumber')
 const debug = require('debug')('app:routers:common')
@@ -12,11 +11,11 @@ const {validationResult} = require('express-validator/check')
 const utils = require('../utils')
 const {Enum} = require('./enum')
 const Result = require('./result')
+const Regs = require('./regs')
 const {termDao, userDao, postDao, postMetaDao, commentMetaDao, sequelize} = require('../models/index')
 
 const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
-const COMMENT_MEMBERS_REG = /([%|@])(\d+)/
 
 /**
  * 渲染文章为html
@@ -42,7 +41,7 @@ function generatePostHtml (post) {
 
     // 用户
     let userName = post.user.user_nickname
-    let postDate = utils.formatDate(post.post_date, 'YYYY/M/D hh:mm')
+    let postDate = utils.formatDate(post.post_date, 'YYYY/M/D HH:mm A')
     // metas
     let readNum = read.meta_value
     let commentNum = comment.meta_value
@@ -379,7 +378,7 @@ module.exports.sidebarModule = sidebarModule
 module.exports.termCountSql = termCountSql
 module.exports.userRole = userRole
 module.exports.postInclude = postInclude
-module.exports.COMMENT_MEMBERS_REG = COMMENT_MEMBERS_REG
+module.exports.REGS = Regs
 module.exports.ipAndRoute = ipAndRoute
 module.exports.generatePostHtml = generatePostHtml
 module.exports.loadPost = loadPost

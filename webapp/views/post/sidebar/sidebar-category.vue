@@ -38,7 +38,7 @@
 import orderBy from 'lodash/orderBy'
 import {mapState} from 'vuex'
 import api from '@/api'
-import {verification} from '@/utils/common'
+import { validTermName } from '@/utils/validator'
 import CollapseTransition from '@/utils/collapse-transition'
 
 export default {
@@ -73,7 +73,7 @@ export default {
     },
     methods: {
         async add () {
-            if (!verification(this.value)) {
+            if (!validTermName(this.value)) {
                 this.$Message.info('请提交正确的分类名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！')
             } else {
                 // 检查是否存在

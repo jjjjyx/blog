@@ -3,7 +3,7 @@ export default {
         'home': '主页',
         'dashboard': '控制台',
         'post': '文章管理',
-        'post_all': '所有文章',
+        'post_management': '所有文章',
         'post_writer': '文章编辑',
         'tag_management': '标签管理',
         'category_management': '分类管理',

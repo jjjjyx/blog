@@ -23,8 +23,8 @@ const Op = sequelize.Op
 
 const trashSaveDay = 30
 // 文章别名 必须提交 但是不满足格式不会报错而是启用id
-const postNameReg = /^[_a-zA-Z0-9-]{1,60}$/
-const termNameReg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,10}$/
+const postNameReg = common.REGS.POST_NAME_REG
+const termNameReg = common.REGS.TERM_NAME_REG
 // 允许提交的文章状态
 const allowPostStatus = [
     Enum.PostStatusEnum.PENDING,
@@ -48,17 +48,6 @@ const sanitizeId = sanitizeBody('id').toInt()
 const checkId = body('id').exists().isInt().withMessage('请提交正确的文章ID')
 
 const sanitizeCategoryId = sanitizeBody('category_id').toInt()
-// const checkCategoryId = body('category_id')
-//     .exists()
-//     .isInt()
-//     .withMessage('请提交正确的分类ID')
-// todo 数组暂时无法使用express-validator 做检查， 单独提交一个值的时候会错误
-// const sanitizeTagsId = sanitizeBody('tags_id').toArray()
-// const checkTagsId = body('tags_id').exists().isArray().withMessage('请提交正确的标签ID')
-
-// 蛋疼提交为数组 这个不执行
-// const sanitizeNewTagsName = sanitizeBody('new_tag*').customSanitizer((value)=>{/* console.log(value)*/debug(`sanitizeNewTagsName v = ${value}`)return value})
-// const checkNewTagsName = body('new_tag').exists().withMessage('请提交新建的标签')
 
 // 标题
 const sanitizeTitle = sanitizeBody('post_title').trim()

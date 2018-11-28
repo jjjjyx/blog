@@ -64,7 +64,6 @@ function parseLine (line) {
     return tokens
 }
 
-
 export default {
     name: 'comment-content',
     props: {
@@ -84,23 +83,24 @@ export default {
         let tok = function (token) {
             let text = token.text
             switch (token.type) {
-            case 'newLine':
-                return <br/>
-            case 'emoji':
-                if (emojiList.indexOf(text) !== -1) {
-                    return <img src={`${EMOJI_PATH}${text}.png`} title={text} alt={text} width="24" class="align-middle"/>
-                } else {
-                    return token.origin
-                }
-            case 'at':
-                let user = _.find(members, ['user_nickname', text])
-                if (user) {
-                    return <a href="javascript:void(0);">{token.origin}</a>
-                } else {
-                    return token.origin
-                }
-            case 'text':
-                return text
+                case 'newLine':
+                    return <br/>
+                case 'emoji':
+                    if (emojiList.indexOf(text) !== -1) {
+                        return <img src={`${EMOJI_PATH}${text}.png`} title={text} alt={text} width="24"
+                                    class="align-middle"/>
+                    } else {
+                        return token.origin
+                    }
+                case 'at':
+                    let user = _.find(members, ['user_nickname', text])
+                    if (user) {
+                        return <a href="javascript:void(0);">{token.origin}</a>
+                    } else {
+                        return token.origin
+                    }
+                case 'text':
+                    return text
             }
         }
         return linesTokens.map(tok)

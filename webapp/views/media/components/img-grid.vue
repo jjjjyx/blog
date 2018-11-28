@@ -15,7 +15,7 @@
 <script>
     import debounce from 'lodash/debounce'
     import { on, off } from '@/utils/dom'
-    import { getMetaKeyCode } from '../../utils/common'
+    import { getMetaKeyCode } from '@/utils/common'
     import ImgItem from './img-item'
 
     // todo 媒体文件的多选， 翻译

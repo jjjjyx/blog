@@ -67,7 +67,7 @@ const getCommentById = [
                 let {members} = item.metas
                 if (members) {
                     let ids = JSON.parse(members.meta_value).map(item => {
-                        let [, , userId] = common.COMMENT_MEMBERS_REG.exec(item)
+                        let [, , userId] = common.REGS.COMMENT_MEMBERS_REG.exec(item)
                         return parseInt(userId)
                     })
                     item.uids = ids

@@ -18,7 +18,7 @@
     </div>
     <div class="container j-archives-times">
         <%
-            var list,item, category, dateTime, time, date, user
+            var list,item, category, dateTime, time, date, user, url
             for (var key in groupData) {
             list = groupData[key]
         %>
@@ -35,15 +35,18 @@
                     time = formatDate(item.post_date,'MMMM Do')
                     date = formatDate(item.post_date,'YYYY/MM/DD')
                     user = item.user
+                    url = '/article/' + item.guid
             %>
             <div class="j-activity">
                 <div class="j-timeline">
                     <time datetime="<%=dateTime%>"><%=time%></time>
                 </div>
                 <div class="j-content">
+                    <a href="<%=url%>">
                     <h2 class="j-article-title am-text-lg">
                         <%=item.post_title%>
                     </h2>
+                    </a>
                     <ul class="j-article-info list-inline">
                         <li class="j-article-author">
                             <img alt="<%=user.display_name%>"

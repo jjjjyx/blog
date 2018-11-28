@@ -64,6 +64,13 @@ export default {
     methods: {
         ...mapActions(['toggleSidebarMini', 'setLanguage']),
         ...mapMutations(['setBreadCrumb']),
+        breadRouterName (item) {
+            let {name} = item
+            let i18nKey = 'router.'+ name
+            let txt = this.$t(i18nKey)
+            return txt === i18nKey ? name : txt
+        },
+
         handleSelectRouter (item) {
             // console.log(item)
             // item.name

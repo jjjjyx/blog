@@ -113,7 +113,8 @@
     import * as media from '../../api/media'
     // import ajax from '@/utils/ajax'
     import { on, off } from '@/utils/dom'
-    import { verification, getMetaKeyCode, POST_WRITER_STATUS, dateFormat } from '@/utils/common'
+    import { getMetaKeyCode, POST_WRITER_STATUS, dateFormat } from '@/utils/common'
+    import { validTermName } from '@/utils/validator'
     import CollapseTransition from '@/utils/collapse-transition'
 
     import sidebars from './sidebar/index'
@@ -211,7 +212,7 @@
                 // 添加标签，添加的标签只是暂时存放，在未保存文章前不会保存到数据库
                 if (!this.checkTagLength()) {
                     this.$Message.info('标签太多啦')
-                } else if (!verification(this.newTagValue)) {
+                } else if (!validTermName(this.newTagValue)) {
                     this.$Message.info('请提交正确的标签名称，且名称只能包含中文英文，下划线，数字,且在长度不超过10！')
                 } else if (this.selectedTag.indexOf(this.newTagValue) >= 0) { // 是否重复
                     console.log('重复的标签')

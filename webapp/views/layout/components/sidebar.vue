@@ -35,13 +35,14 @@
 // import PerfectScrollbar from 'perfect-scrollbar'
 import Emitter from '@/mixins/emitter.js'
 import { mapState, mapActions } from 'vuex'
+import TextIcon from './text-icon'
 import SidebarItem from './sideba-menu-item.js'
 import Logo from './logo'
 
 export default {
 	mixins:[Emitter],
     name: 'sidebar',
-    components: {Logo, SidebarItem},
+    components: {Logo, SidebarItem, TextIcon},
     data () {
         return {
 			accordion: false,
@@ -102,12 +103,20 @@ export default {
 		},
 		handleOpenSubmenu () {
 			// this.ps.update()
+        },
+        setActiveName () {
+            let {name, matched} = this.$route
+            // 防止有的多级菜单有子菜单项 但是不在侧边栏显示，让侧边的菜单最终选中到不展开的这一级
+            for (let item of matched) {
+                let {expand = true, name:_name} = item.meta
+                if (!expand) name = _name
+            }
+            this.activeName = name
         }
     },
 	watch: {
 		'$route': function () {
-			let {name} = this.$route
-			this.activeName = name
+            this.setActiveName()
 			// if (this.accordion) {
 			// this.openedNames = this.getOpenedNamesByActiveName(name)
         },
@@ -125,13 +134,12 @@ export default {
     // },
     mounted () {
         // console.log(this.menus)
-		let {name} = this.$route
-		this.activeName = name
-		// if (this.accordion) {
+        this.setActiveName()
+        // if (this.accordion) {
         this.openedNames = this.getOpenedNamesByActiveName(name)
-		// this.ps = new PerfectScrollbar(this.$refs.sidebar.$el)
+        // this.ps = new PerfectScrollbar(this.$refs.sidebar.$el)
         // this.handleOpenChange()
-		// }
+        // }
     }
 }
 </script>

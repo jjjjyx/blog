@@ -2,12 +2,10 @@
 
 const express = require('express')
 const shortid = require('shortid')
-const useragent = require('useragent')
-const xss = require('xss')
 const MarkdownIt = require('markdown-it')
 const groupBy = require('lodash/groupBy')
 
-const {body, param} = require('express-validator/check')
+const {body} = require('express-validator/check')
 const debug = require('debug')('app:routers:article')
 const log = require('log4js').getLogger('app:routers:article')
 const hljs = require('highlight.js')
@@ -38,6 +36,8 @@ const md = new MarkdownIt({
         return '' // use external default escaping
     }
 })
+md.use(require('markdown-it-anchor')) // Optional, but makes sense as you really want to link to something
+md.use(require('markdown-it-table-of-contents'))
 // add target="_blank" to all link
 md.renderer.rules.link_open  = function (tokens, idx, options, env, self) {
     let aIndex = tokens[idx].attrIndex('target');
@@ -55,7 +55,7 @@ md.renderer.rules.image = function (tokens, idx, options, env, self) {
     if (imageClass < 0) { // 不存在
         tokens[idx].attrPush(['class', 'j-image-photo-swipe']); // add new attribute
     } else {
-        tokens[idx].attrs[imageClass][1] = + ' j-image-photo-swipe';    // add value
+        tokens[idx].attrs[imageClass][1] +=' j-image-photo-swipe';    // add value
     }
     return self.renderToken(tokens, idx, options, env, self)
 }

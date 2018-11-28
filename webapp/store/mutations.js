@@ -21,6 +21,13 @@ export const mutations = {
             if (item.name === state.homeRouter.name) continue
             // if (item.meta.hide) continue
             if (!item.name) continue
+            let {expand = true} = item.meta
+
+            // 面包屑导航 过滤掉不在侧边显示的导航
+            if (!expand) {
+                state.breadCrumbList.push(item.meta)
+                break
+            }
             // let parent = item.meta.parent
             // parent && state.breadCrumbList.push(parent)
             state.breadCrumbList.push(item.meta)

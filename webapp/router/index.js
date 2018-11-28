@@ -7,25 +7,16 @@ import isString from 'lodash/isString'
 import Layout from '@/views/layout/layout-2'
 import menus from './menus'
 import store from '../store'
-import * as user from '../api/user'
+import * as user from '@/api/user'
 
 Vue.use(Router)
 
-// 将菜单转换成路由
-function menuToRouter (menu, parent) {
-    let componentPath = parent + '/' + menu.path
-    let name = menu.name
-    let meta = {title: menu.title, icon: menu.icon, hide: menu.hide, name: menu.name}
-    let path = menu.path
-    let result = {
-        path, meta, name,
-        component: () => import('@/views' + componentPath)
+function getMeta (item) {
+    let meta = {
+        ...item
     }
-    if (menu.child) {
-        result.children = menu.child.map((item) => menuToRouter(item, componentPath))
-        result.redirect = menu.redirect // || result.children[0].path
-    }
-    return result
+    delete meta.child
+    return meta
 }
 
 function getComponent (c) {
@@ -39,13 +30,33 @@ function getComponent (c) {
     }
 }
 
+// 将菜单转换成路由
+function menuToRouter (menu, parent) {
+    let path = menu.path === undefined ? menu.name : menu.path
+    let componentPath = parent + '/' + menu.name
+    let name = menu.name
+    let meta = getMeta(menu)
+    // let path = _path
+    let result = {
+        path, meta, name,
+        component: () => import('@/views' + componentPath)
+    }
+    if (menu.child) {
+        result.children = menu.child.map((item) => menuToRouter(item, componentPath))
+        result.redirect = menu.redirect // || result.children[0].path
+    }
+    return result
+}
+
+
 let menusRouters = menus.map(function t (menu) {
     // 处理路径，定义的路径都是不带 / 的
-    let routerPath = menu.path ? '/' + menu.path : ''
+    let _path = menu.path === undefined ? menu.name : menu.path
+    let routerPath = _path ? '/' + _path : ''
     // 一级菜单需要重定向，填充默认重定向路径
     let redirect = menu.redirect || (routerPath + '/')
     let {layout, name} = menu
-    let meta = {title: menu.title, icon: menu.icon, hide: menu.hide, name: menu.name}
+    let meta = getMeta(menu)
 
     let component = getComponent(menu.component) || (() => import('@/views' + redirect))
     let result = {
