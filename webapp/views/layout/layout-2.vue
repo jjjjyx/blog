@@ -6,10 +6,11 @@
             <main-header class="main__header"/>
             <!--<main-alert class="main__alert"/>-->
             <!--<tabs class="main__tabs"/>-->
+            <!--<main-tabs class="main__tabs" />-->
             <transition name="fade-transform" mode="out-in">
-                <!--<keep-alive :include="cachedViews">-->
-                <router-view  class="main__content"/>
-                <!--</keep-alive>-->
+                <keep-alive>
+                    <router-view  class="main__content"></router-view>
+                </keep-alive>
             </transition>
             <main-footer/>
             <main-plugin class="main__plugin"></main-plugin>
@@ -21,6 +22,7 @@
 
 	import Sidebar from './components/sidebar'
 	import MainHeader from './components/main-header-2'
+    import MainTabs from './components/main-tabs'
 	import MainPlugin from './components/main-plugin'
 	import MainFooter from './components/main-footer'
 	import MainAlert from './components/main-alert'
@@ -30,17 +32,20 @@
 		components: {
 			MainAlert,
 			MainFooter,
+            MainTabs,
             MainHeader,
             MainPlugin,
 			Sidebar
 		},
 		computed: {
 			cachedViews() {
-				return this.$store.state.tagsView.cachedViews
+				return this.$store.state.tabs.cachedViews
 			},
 			// key() {
 			// 	return this.$route.fullPath
 			// }
-		}
+		},
+        mounted () {
+        }
 	}
 </script>

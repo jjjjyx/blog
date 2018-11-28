@@ -39,8 +39,7 @@ const renderName = function (h, {row}) {
         props: {category: row},
         on: {
             del: () => {
-                this.$refs['curd'].del([row])
-                // this.remove([row])
+                this.deleteTermCategory([row])
             },
             edit: this.edit
         }

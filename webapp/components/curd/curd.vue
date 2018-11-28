@@ -3,13 +3,13 @@
         <div class="curd-toolbar ivu-row">
             <div class="ivu-col ivu-col-span-18">
                 <Form :model="formItem" :label-width="50" inline class="curd-toolbar__filter-form"
-                      @submit.native.prevent="search">
+                      @submit.native.prevent="$$search">
                     <FormItem :label="$t('curd.search_label')">
-                        <i-input v-model="formItem.key" :placeholder="$t('curd.search_placeholder')" clearable/>
+                        <i-input v-model="formItem.key" :placeholder="$t('curd.search_placeholder')" clearable></i-input>
                     </FormItem>
                     <slot name="form-items"></slot>
                     <FormItem>
-                        <Button type="primary" shape="circle" icon="ios-search" @click="search"></Button>
+                        <Button type="primary" shape="circle" icon="ios-search" @click="$$search"></Button>
                     </FormItem>
                 </Form>
                 <slot name="form-buttons" v-bind:selectedNum="selectedNum" v-bind:selectedList="selectedList"></slot>
@@ -44,53 +44,20 @@
             <Page :total="total" :page-size="pageSize" size="small" class="float-right"
                   show-total
                   @on-change="_handleOnPageChange">
-                {{$t('curd.page', [(currPage - 1) * pageSize + 1 , currPage * pageSize > total ? total : currPage *
-                pageSize, total])}}
+                {{$t('curd.page', [(currPage - 1) * pageSize + 1 , currPage * pageSize > total ? total : currPage * pageSize, total])}}
             </Page>
         </div>
-        <!--<curd-update :columns="tableColumns" :name="name" :id-key="idKey" :label-name="labelName"  v-model="updateModalFormItem" :visible.sync="updateModalVisible"/>-->
         <slot></slot>
     </div>
 </template>
 
 <script>
-    /*
-        需要重新思考下这个curd 组件的作用
-
-        首选curd 需要管理数据，传进的数据需要使用table ，而如果这个data 是vuex 的数据，那么有修改的地方就会不严格
-        如果拷贝一份，而table组件也是拷贝一份，这样带来的消耗有点不值当
-
-        如果只是当做一些常用的模块封装倒是可以
-
-        比如 表格高度自动， 可以封装成指令
-
-        整体结构就算了
-
-        基础的增删改查方法可以单独封装
-
-        f5 刷新模块可以使用混合
-
-        选取：
-           支持表格方式的选取，有表格的方法可以提供获取到已选择的部分
-           想要支持自定义内容展示方式 给data 数据项加字段，或者复制一份数据与表格一样的实现
-
-        另一种设想
-            目前表格的使用仅仅使用了固定表头，而这个特性手动实现也不是多难 ，而利用css 特性实现的固定表头就不需要计算高度了
-            从而不需要复制数据，可以在本组件中copy 数据，而不影响vuex
-            但是如果对表格的要求增加，就会麻烦了
-     */
 
     import debounce from 'lodash/debounce'
     import cloneDeep from 'lodash/cloneDeep'
-    // import intersectionBy from 'lodash/intersectionBy'
-    // import differenceBy from 'lodash/differenceBy'
-
     import { on, off } from '@/utils/dom'
     import { getMetaKeyCode } from '@/utils/common'
-
-    // import CurdAdd from './components/curd-add'
     import renderAction from './components/curd-render-action'
-    // import CurdUpdate from './components/curd-update'
 
     // const RESTFUL_ALIAS = {
     // 	// query: 'list',
@@ -201,46 +168,14 @@
                 //     value[0]._checked = true
                 this.selectedList = value
                 this.$emit('on-select-change', value)
-                // this._updateDataSelectedStatus(this.data)
             },
 
-            // async _defaultFetchData () {
-            // 	try {
-            // 		let result = (await api.nget(this.fetchUrl)) || []
-            // 		result.forEach(i => (i._checked = false))
-            // 		this._updateDataSelectedStatus(result)
-            // 		// this.data = result
-            // 		this.$emit('update:data', result)
-            // 	} catch (e) {
-            // 		this.$Message.error(this.$t('messages.curd.fetch_fail', {name: this.labelName, message: e.message}))
-            // 	}
-            //
-            // },
-            _updateDataSelectedStatus () {
-                // 所以在这里更新数据的默认选中情况
-                // console.log(tmp[0], this.selectedList[0], tmp[0]===this.selectedList[0])
-                // differenceBy(tmp, )
-                // let selected = intersectionBy(tmp, this.selectedList, this.idKey)
-                // selected.forEach(item => item._checked = true)
-                // this.$emit('update:data', tmp)
-            },
             _handleOnPageChange (page) {
                 this.currPage = page
                 this.selectedList = []
-                // this._updateDataSelectedStatus(this.data)
             },
-            // async _updateToServer (obj) {
-            // 	try {
-            // 		await api.npost(this.editUrl, obj)
-            // 		// let result =
-            //         // console.log('update', result)
-            //         return true
-            // 	} catch (e) {
-            // 		this.$Message.info(this.$t('messages.curd.update_fail', e))
-            //
-            // 	}
-            // },
-            del (selected) {
+
+            $$delete (selected) {
                 if (!this.deleteAction) {
                     throw new Error('尚未指定删除实现')
                     // return
@@ -272,22 +207,18 @@
                 })
             },
 
-            search () {
+            $$search () {
+                if (this.searchAction) {
+                    this.searchAction(this.formItem)
+                } else {
+                    // 默认在data 中搜索
+                }
             },
 
-            update (row) {
+            $$update (row) {
                 if (this.updateAction) {
                     this.updateAction(row)
                 }
-                // console.log(obj)
-                // this.updateModalFormItem = obj
-                // this.updateModalVisible = true
-                // this.$Modal.info({
-                //     title: '修改',
-                // 	render: (h) => {
-                // 		return h('span', 222)
-                // 	}
-                // })
             },
             // 获取数据
             async fetchData (force) {

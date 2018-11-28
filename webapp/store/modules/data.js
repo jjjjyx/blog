@@ -9,7 +9,6 @@ import * as termApi from '../../api/terms'
 import * as globalSettingApi from '../../api/global-setting'
 
 const state = {
-
     posts: [],
     trashPosts: [],
 
@@ -25,6 +24,9 @@ const state = {
 const getters = {
     selectedPost: state => state.posts.filter((item) => item._checked),
     publishPost: state => state.posts.filter((item) => item.post_status === 'publish'),
+    filterPosts: state => {
+        return state.posts
+    }
     // publishPostNum: (state,getter) => getter.publishPost.length,
     // tagNum: state => state.tagList.length
 }
@@ -58,6 +60,7 @@ const actions = {
         }
         try {
             let result = await postApi.fetchAll()
+            // , i.post_date = new Date(i.post_date), i.updatedAt = new Date(i.updatedAt), i.createdAt = new Date(i.createdAt), i.deleteAt = new Date(i.deleteAt)
             result.forEach(i => (i._checked = false))
             commit('SET_POST', result)
         } catch (e) {

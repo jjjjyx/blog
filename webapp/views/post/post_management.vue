@@ -76,6 +76,7 @@ const renderDate = function (h, {row}) {
         flag = h('span', {domProps: {className: 'd-block'}}, '最后修改时间')
         date = h('span', dateFormat(row.updatedAt))
     }
+
     return [flag, date]
 }
 
@@ -93,7 +94,7 @@ export default {
                 {title: '类别', key: 'category', width: 100, render: renderCategory.bind(this)},
                 {title: '标签', key: 'tags', width: 210, render: renderTags.bind(this)},
                 {title: '评论', key: 'comment', width: 80, sortable: true},
-                {title: '日期', key: 'date', width: 220, render: renderDate.bind(this)}
+                {title: '日期', key: 'updatedAt', width: 220, render: renderDate.bind(this), sortable: true}
             ],
             formItem: {key: '', term: 'any', status: 'all'},
             // selectedList: [],

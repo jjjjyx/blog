@@ -138,7 +138,7 @@ router.beforeEach(async function (to, from, next) {
         if (firstMatched.name === 'sign') { // 访问的是登录相关的页面，直接继续
             next()
         } else {
-            next({path: `/sign/in`, query: {redirect: to.path}})
+            next({name: 'sign_in', query: {redirect: to.path}})
             iView.LoadingBar.finish()
         }
         // 没有登录

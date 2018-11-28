@@ -10,7 +10,7 @@
         </div>
         <div class="category-name-wrap">
             <div class="category-name">
-                <a href="javascript:;">{{category.name}}</a>
+                <a href="javascript:void(0);">{{category.name}}</a>
                 <!--<span> &#45;&#45; 文章个数 ( <a href="javascript:;" class="u">{{category.count||0}}</a> )</span>-->
             </div>
             <button-group size="small" class="curd-table-options2">
@@ -40,9 +40,6 @@ export default {
         }
     },
     methods: {
-        // del () {
-        //
-        // }
     }
 }
 </script>

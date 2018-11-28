@@ -156,7 +156,7 @@ export default {
             category: '类别',
             tags: '标签',
             comment: '评论',
-            date: '@:curd.columns.date',
+            updatedAt: '@:curd.columns.date',
             action: '@:curd.columns.action'
         }
     },
