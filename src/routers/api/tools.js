@@ -9,7 +9,7 @@ const {query} = require('express-validator/check')
 
 const utils = require('../../utils')
 const Result = require('../../common/result')
-const common = require('../../common/common')
+const common = require('../../common')
 
 const router = express.Router()
 const redisClient = utils.redisClient

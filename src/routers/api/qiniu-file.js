@@ -15,23 +15,22 @@ const {sanitizeQuery} = require('express-validator/filter')
 
 const {resourceDao, sequelize} = require('../../models/index')
 const Result = require('../../common/result')
-const {Enum} = require('../../common/enum')
-const common = require('../../common/common')
+const common = require('../../common')
 const utils = require('../../utils')
 const qiniuApi = require('../../qiniuApi')
 
 const router = express.Router()
-const imgSpaces = Object.values(Enum.ImgEnum)
+const imgSpaces = Object.values(common.ENUMERATE.ImgEnum)
 const Op = sequelize.Op
 const domain = config.qiUpload.Domain
 const BUCKET_NAME = config.qiUpload.BUCKET_NAME
 const size = 100
-const allowSpace = Object.values(Enum.ImgEnum)
+const allowSpace = Object.values(common.ENUMERATE.ImgEnum)
 const sanitizeSpace = sanitizeQuery('space')
     .customSanitizer((value) => {
         debug(`sanitizeSpace v = ${value}`)
         if (allowSpace.indexOf(value) === -1) {
-            return Enum.ImgEnum.ALL
+            return common.ENUMERATE.ImgEnum.ALL
         } else {
             return value
         }
@@ -40,7 +39,7 @@ let checkAllowSpace = ['public', 'cover', 'post', 'avatar']
 const checkSpace = check('space').isIn(allowSpace)
 
 async function handleImage (image) {
-    let {key, hash, fsize, mimeType, putTime, type, status, remark, space = Enum.ImgEnum.ALL} = image
+    let {key, hash, fsize, mimeType, putTime, type, status, remark, space = common.ENUMERATE.ImgEnum.ALL} = image
     let url = domain + key
     let color = await qiniuApi.getImageAveByUrl(url)
     color = color.replace('0x', '#')
@@ -109,7 +108,7 @@ const list = [
         log.info('查询获取图片列表： query = ', JSON.stringify(req.query))
         page = page || 1
         let where = {}
-        if (space !== Enum.ImgEnum.ALL) {
+        if (space !== common.ENUMERATE.ImgEnum.ALL) {
             where.space = space
         }
 
@@ -221,9 +220,9 @@ const callback =  async function (req, res) {
     let {height, width} = info
     let url = domain + key
 
-    // space = space || Enum.ImgEnum.ALL
+    // space = space || common.ENUMERATE.ImgEnum.ALL
     if (imgSpaces.indexOf(space) === -1) {
-        space = Enum.ImgEnum.ALL
+        space = common.ENUMERATE.ImgEnum.ALL
     }
     let values = {
         key, hash, size, bucket, name, height, width, color, mimeType, ext, uuid, url, space, remark

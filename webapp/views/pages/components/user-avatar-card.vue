@@ -1,7 +1,7 @@
 <template>
     <div class="card-user-avatar-warp card">
         <div class="image card-header">
-            <img src="http://image.cdn.mbdoge.cn/FnHqrCMNHlUprEQ_b-Z0TJuo394i" alt="">
+            <img src="https://image.cdn.mbdoge.cn/FnHqrCMNHlUprEQ_b-Z0TJuo394i" alt="">
             <!-- 设置背景图片 -->
             <!--<div class="toobar">-->
             <!---->
@@ -45,7 +45,7 @@
                         <!--<color-icon type="icon-color-weixin" :size="22"></color-icon>-->
                     <!--</a>-->
                     <!--<div slot="content">-->
-                        <!--<img src="http://image.cdn.mbdoge.cn/64807460-27ea-11e7-a8e7-a53b0973c884.png?imageView2/2/w/150/format/jpg" alt="">-->
+                        <!--<img src="https://image.cdn.mbdoge.cn/64807460-27ea-11e7-a8e7-a53b0973c884.png?imageView2/2/w/150/format/jpg" alt="">-->
                     <!--</div>-->
                 <!--</Poptip>-->
             <!--</li>-->

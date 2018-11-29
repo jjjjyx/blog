@@ -7,7 +7,7 @@ const _ = require('lodash')
 const moment = require("moment")
 const router = express.Router()
 const debug = require('debug')('app:routers:archives')
-const common = require('../common/common')
+const common = require('../common')
 const log = require('log4js').getLogger('routers:tags')
 const {formatDate} = require('../utils')
 router.get('/', async function(req, res, next) {

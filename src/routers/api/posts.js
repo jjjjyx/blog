@@ -13,8 +13,7 @@ const log = require('log4js').getLogger('api.posts')
 
 const utils = require('../../utils')
 const Result = require('../../common/result')
-const {Enum} = require('../../common/enum')
-const common = require('../../common/common')
+const common = require('../../common')
 
 const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../../models/index')
 const {term_relationships: termRelationshipsDao} = sequelize.models
@@ -27,15 +26,15 @@ const postNameReg = common.REGS.POST_NAME_REG
 const termNameReg = common.REGS.TERM_NAME_REG
 // 允许提交的文章状态
 const allowPostStatus = [
-    Enum.PostStatusEnum.PENDING,
-    // Enum.PostStatusEnum.PRIVATE, // 禁用私密
-    Enum.PostStatusEnum.PUBLISH,
-    Enum.PostStatusEnum.DRAFT
+    common.ENUMERATE.PostStatusEnum.PENDING,
+    // common.ENUMERATE.PostStatusEnum.PRIVATE, // 禁用私密
+    common.ENUMERATE.PostStatusEnum.PUBLISH,
+    common.ENUMERATE.PostStatusEnum.DRAFT
 ]
 // 允许提交的评论状态
 const allowStatus = [
-    Enum.StatusEnum.OPEN,
-    Enum.StatusEnum.CLOSE
+    common.ENUMERATE.StatusEnum.OPEN,
+    common.ENUMERATE.StatusEnum.CLOSE
 ]
 const TagsLength = 16
 log.debug('文章最大标签数', TagsLength)
@@ -87,7 +86,7 @@ const sanitizeReleasePostStatus = sanitizeBody('post_status')
     .customSanitizer((value) => {
         debug(`sanitizeReleasePostStatus v = ${value}`)
         if (allowPostStatus.indexOf(value) === -1) {
-            return Enum.PostStatusEnum.PUBLISH
+            return common.ENUMERATE.PostStatusEnum.PUBLISH
         } else {
             return value
         }
@@ -120,7 +119,7 @@ const sanitizeCommentStatus = sanitizeBody('comment_status')
     .customSanitizer((value) => {
         debug(`sanitizeCommentStatus v = ${value}`)
         if (allowStatus.indexOf(value) === -1) {
-            return Enum.PostStatusEnum.OPEN
+            return common.ENUMERATE.PostStatusEnum.OPEN
         } else {
             return value
         }
@@ -155,7 +154,7 @@ const _createTerms = async function ({new_tag, tags_id}) {
     // 如果tags_id 不存在则忽略
     let tags = await termDao.findAll({
         where: {
-            taxonomy: Enum.TaxonomyEnum.POST_TAG,
+            taxonomy: common.ENUMERATE.TaxonomyEnum.POST_TAG,
             id: {[Op.in]: tags_id}
         }
     })
@@ -171,7 +170,7 @@ const _createTerms = async function ({new_tag, tags_id}) {
     // 做法查询这些new_tag 是否存在, 存在的删除掉
     let newTags = await termDao.findAll({
         where: {
-            taxonomy: Enum.TaxonomyEnum.POST_TAG,
+            taxonomy: common.ENUMERATE.TaxonomyEnum.POST_TAG,
             name: {[Op.in]: new_tag}
         }
     })
@@ -183,7 +182,7 @@ const _createTerms = async function ({new_tag, tags_id}) {
     let _newTags = newTags.map((item) => item.name)
     let new_tagsValue = difference(new_tag, _newTags).map((name) => ({
         name,
-        taxonomy: Enum.TaxonomyEnum.POST_TAG,
+        taxonomy: common.ENUMERATE.TaxonomyEnum.POST_TAG,
         description: '',
         count: 0,
         slug: utils.randomChar(6)
@@ -197,8 +196,18 @@ const _createTerms = async function ({new_tag, tags_id}) {
     // tags.push(category)
     return tags
 }
-
-const createTags = async function (req, res, post) {
+/**
+ * 更新文章的Terms
+ * new_tag 新增的标签
+ * tags_id 标签id
+ * category_id 分类id
+ * @param req
+ * @param res
+ * @param post
+ * @returns {Promise<void>}
+ * @private
+ */
+const _updatePostTerms = async function (req, res, post) {
     req.sanitizeBody('new_tag').toArray()
     req.sanitizeBody('tags_id').toArray()
 
@@ -285,18 +294,18 @@ const save = [
             // 提交id 只会有3种状态 auto-draft publish draft
             debug('保存文章，当前文章#%d post_status = %s', post.id, post.post_status)
             switch (post.post_status) {
-            case Enum.PostStatusEnum.AUTO_DRAFT:
+            case common.ENUMERATE.PostStatusEnum.AUTO_DRAFT:
 
-                post.post_status = Enum.PostStatusEnum.DRAFT
+                post.post_status = common.ENUMERATE.PostStatusEnum.DRAFT
                 post.post_name = id
                 post.guid = utils.randomChar(16)
-                debug(`修改文章 #%d 状态为：%s , guid = %s`, id, Enum.PostStatusEnum.DRAFT, post.guid)
+                debug(`修改文章 #%d 状态为：%s , guid = %s`, id, common.ENUMERATE.PostStatusEnum.DRAFT, post.guid)
                 // await post.setTerms([SITE.defaultTerm])
             // eslint-disable-next-line no-fallthrough
-            case Enum.PostStatusEnum.DRAFT:
+            case common.ENUMERATE.PostStatusEnum.DRAFT:
                 // 保存文章的标签信息
                 try {
-                    await createTags(req, res, post, false)
+                    await _updatePostTerms(req, res, post, false)
                 } catch (e) {
                     log.error('save post err by', e)
                     return res.status(200).json(Result.info(e.message))
@@ -304,7 +313,7 @@ const save = [
                 // let values = {post_title, post_content, post_excerpt, post_status: post.post_status}
                 debug('文章 = %d 更新草稿内容！', post.id)
                 return res.status(200).json(Result.success(await _save_update(post, req.body)))
-            case Enum.PostStatusEnum.PRIVATE:
+            case common.ENUMERATE.PostStatusEnum.PRIVATE:
                 // 私密的文章需要验证是否是本人创建的
                 // 禁用私密功能
                 // let user = req.user
@@ -312,15 +321,15 @@ const save = [
                 //     return res.status(200).json(Result.info('保存失败，文章私密，您无权修改'))
                 // }
             // eslint-disable-next-line no-fallthrough
-            case Enum.PostStatusEnum.PUBLISH:
-            case Enum.PostStatusEnum.PENDING:
+            case common.ENUMERATE.PostStatusEnum.PUBLISH:
+            case common.ENUMERATE.PostStatusEnum.PENDING:
                 // 如果是发布状态
                 // 则去获取发布状态文章的自动草稿
                 // 如果获取为空，则创建一个: ${id}--autosave-v1
                 let autoSavePost = await postDao.findOne({
                     where: {
                         post_name: `${id}-autosave-v1`,
-                        post_status: Enum.PostStatusEnum.INHERIT,
+                        post_status: common.ENUMERATE.PostStatusEnum.INHERIT,
                         post_type: 'revision'
                     }
                 })
@@ -330,7 +339,7 @@ const save = [
                     values.id = undefined
                     values.post_name = `${id}-autosave-v1`
                     values.post_type = 'revision'
-                    values.post_status = Enum.PostStatusEnum.INHERIT
+                    values.post_status = common.ENUMERATE.PostStatusEnum.INHERIT
                     values.post_title = post_title
                     values.post_content = post_content
                     values.post_excerpt = post_excerpt
@@ -375,6 +384,58 @@ const save = [
     }
 ]
 
+const updateCategory = [
+    sanitizeId,
+    checkId,
+    common.validationResult,
+    async function (req, res) {
+        let {category_id, id} = req.body
+        try {
+            let post = await postDao.findById(id, {
+                include: [
+                    {
+                        model: termDao,
+                        attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id']
+                    }
+                ]
+            })
+
+            if (post === null) {
+                log.debug('更新文章分类失败 未提交正确的文章id')
+                return res.status(200).json(Result.info('更新失败，未提交正确的文章id'))
+            }
+
+            let {category: originCategory} = post.getCategoryOrTags()
+
+            if (originCategory.id === category_id) {
+                log.info('修改的分类与当前文章分类一致')
+                return res.status(200).json(Result.success())
+            }
+
+            let category = await termDao.findById(category_id)
+            if (category === null) {
+                log.debug(`save 自动存档保存分类时收到一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
+                category = SITE.defaultTerm
+            }
+
+            await termRelationshipsDao.update({
+                term_id: category.id
+            },{
+                where: {
+                    object_id: id,
+                    term_id: originCategory.id
+                },
+                individualHooks: true
+            })
+            log.info('修改文章分类成功 %s#%s => %s#%s', originCategory.id, originCategory.name , category.id, category.name )
+            return res.status(200).json(Result.success(category))
+        } catch (e) {
+            log.error('updateCategory error by:', e)
+            return res.status(200).json(Result.error())
+        }
+    }
+]
+
 const newPost = [
     sanitizeTitle,
     checkTitle,
@@ -388,7 +449,7 @@ const newPost = [
                 post_content: '',
                 post_title,
                 post_excerpt: '',
-                post_status: Enum.PostStatusEnum.AUTO_DRAFT,
+                post_status: common.ENUMERATE.PostStatusEnum.AUTO_DRAFT,
                 post_name: '',
                 guid: ''
             })
@@ -415,16 +476,16 @@ const moverTrash = [
                 where: {
                     id: ids,
                     post_status: [
-                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                        common.ENUMERATE.PostStatusEnum.PUBLISH, common.ENUMERATE.PostStatusEnum.DRAFT
                     ]
                     // [Op.or]: [ // 禁用私密功能
                     //     {
-                    //         post_status: Enum.PostStatusEnum.PRIVATE,
+                    //         post_status: common.ENUMERATE.PostStatusEnum.PRIVATE,
                     //         post_author: req.user.id
                     //     },
                     //     {
                     //         post_status: [
-                    //             Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    //             common.ENUMERATE.PostStatusEnum.PUBLISH, common.ENUMERATE.PostStatusEnum.DRAFT
                     //         ]
                     //     }
                     // ]
@@ -487,16 +548,16 @@ const getAllPost = [
             let posts = await postDao.findAll({
                 where: {
                     post_status: [
-                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                        common.ENUMERATE.PostStatusEnum.PUBLISH, common.ENUMERATE.PostStatusEnum.DRAFT
                     ]
                     // [Op.or]: [ // 禁用私密功能
                     //     {
-                    //         post_status: Enum.PostStatusEnum.PRIVATE,
+                    //         post_status: common.ENUMERATE.PostStatusEnum.PRIVATE,
                     //         post_author: req.user.id
                     //     },
                     //     {
                     //         post_status: [
-                    //             Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    //             common.ENUMERATE.PostStatusEnum.PUBLISH, common.ENUMERATE.PostStatusEnum.DRAFT
                     //         ]
                     //     }
                     // ]
@@ -543,7 +604,7 @@ const getTrash = [
                 paranoid: false,
                 where: {
                     post_status: [
-                        Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                        common.ENUMERATE.PostStatusEnum.PUBLISH, common.ENUMERATE.PostStatusEnum.DRAFT
                     ],
                     deleteAt: {
                         [Op.ne]: null,
@@ -552,12 +613,12 @@ const getTrash = [
                     // [Op.and] :{ // 禁用私密功能
                     //     [Op.or]: [
                     //         {
-                    //             post_status: Enum.PostStatusEnum.PRIVATE,
+                    //             post_status: common.ENUMERATE.PostStatusEnum.PRIVATE,
                     //             post_author: req.user.id
                     //         },
                     //         {
                     //             post_status: [
-                    //                 Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT
+                    //                 common.ENUMERATE.PostStatusEnum.PUBLISH, common.ENUMERATE.PostStatusEnum.DRAFT
                     //             ]
                     //         }
                     //     ]
@@ -607,16 +668,16 @@ const _getPostInfo = async function (req, res) {
             where: {
                 id,
                 post_status: [
-                    Enum.PostStatusEnum.PUBLISH,
-                    Enum.PostStatusEnum.DRAFT,
-                    Enum.PostStatusEnum.AUTO_DRAFT]
+                    common.ENUMERATE.PostStatusEnum.PUBLISH,
+                    common.ENUMERATE.PostStatusEnum.DRAFT,
+                    common.ENUMERATE.PostStatusEnum.AUTO_DRAFT]
                 // [Op.or]: [ // 禁用私密功能
                 //     {
-                //         post_status: Enum.PostStatusEnum.PRIVATE,
+                //         post_status: common.ENUMERATE.PostStatusEnum.PRIVATE,
                 //         post_author: req.user.id
                 //     },
                 //     {
-                //         post_status: [Enum.PostStatusEnum.PUBLISH, Enum.PostStatusEnum.DRAFT, Enum.PostStatusEnum.AUTO_DRAFT]
+                //         post_status: [common.ENUMERATE.PostStatusEnum.PUBLISH, common.ENUMERATE.PostStatusEnum.DRAFT, common.ENUMERATE.PostStatusEnum.AUTO_DRAFT]
                 //     }
                 // ]
             },
@@ -630,7 +691,7 @@ const _getPostInfo = async function (req, res) {
         if (result !== null) {
             // 调取文章的历史版本
             // 草稿类型调取不检查
-            // if (result.post_status !== Enum.PostStatusEnum.DRAFT) {
+            // if (result.post_status !== common.ENUMERATE.PostStatusEnum.DRAFT) {
             log.info('获取文章历史版本， post = %d', id)
             let revision = await postDao.findAll({
                 attributes: [
@@ -643,7 +704,7 @@ const _getPostInfo = async function (req, res) {
                     'post_excerpt'],
                 where: {
                     post_type: 'revision',
-                    post_status: Enum.PostStatusEnum.INHERIT,
+                    post_status: common.ENUMERATE.PostStatusEnum.INHERIT,
                     post_name: [`${id}-autosave-v1`, `${id}-revision-v1`]
                 },
                 include: [
@@ -735,7 +796,7 @@ const release = [
             // 只能对自己的文章进行转私密, 加密码 在这里进行判断下
             // 禁用私密功能
             // let user = req.user
-            // if (post_author !== user.id && (post_status === Enum.PostStatusEnum.PRIVATE || post_password)) {
+            // if (post_author !== user.id && (post_status === common.ENUMERATE.PostStatusEnum.PRIVATE || post_password)) {
             //     return res.status(200).json(Result.info('您不可以对别人的文章加密'))
             // }
 
@@ -743,7 +804,7 @@ const release = [
             // return res.status(200).json('null')
 
             try {
-                await createTags(req, res, post, true)
+                await _updatePostTerms(req, res, post, true)
             } catch (e) {
                 return res.status(200).json(Result.info(e.message))
             }
@@ -781,7 +842,7 @@ const release = [
             await post.save()
             // 点击发布，不论是更新还是发布，都会判断内容记录版本
             // 相当于 主分支，而自动保存的版本则相当于是分支，有且只有一个分支
-            // if (post.post_status === Enum.PostStatusEnum.PUBLISH) {
+            // if (post.post_status === common.ENUMERATE.PostStatusEnum.PUBLISH) {
             let newValues = post.toJSON()
             delete newValues.post_status
             delete newValues.post_date
@@ -799,7 +860,7 @@ const release = [
                 // 创建版本
                 let values = newValues
                 values.post_name = `${id}-revision-v1`
-                values.post_status = Enum.PostStatusEnum.INHERIT
+                values.post_status = common.ENUMERATE.PostStatusEnum.INHERIT
                 values.post_type = 'revision'
                 values.post_date = post.post_date
                 values.id = undefined
@@ -826,7 +887,7 @@ const resetPostGuid = [
         try {
             let posts = await postDao.findAll({
                 where: {
-                    post_status: Enum.PostStatusEnum.PUBLISH
+                    post_status: common.ENUMERATE.PostStatusEnum.PUBLISH
                 }
             })
             // posts.forEach(()=>{
@@ -867,6 +928,7 @@ router.route('/').get(getAllPost)
 router.route('/new_post').post(newPost)
 // 更新文章
 router.route('/save').post(save)
+router.route('/update-category').post(updateCategory)
 router.route('/release').post(release)
 router.route('/trash/revert').post(revert)
 router.route('/trash/del').post(del)

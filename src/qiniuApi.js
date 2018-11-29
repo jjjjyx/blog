@@ -159,7 +159,7 @@ function sisyphusFetch (url, name, copyright) {
             } else {
                 if (respInfo.statusCode === 200) {
                     respBody.remark = copyright
-                    // respBody.space = Enum.ImgEnum.COVER
+                    // respBody.space = common.ENUMERATE.ImgEnum.COVER
                     respBody.putTime = (+new Date()) / 1000
                     resolve(respBody)
                     // console.log(respBody.key);

@@ -95,6 +95,9 @@
 .ivu-page.mini .ivu-page-item {
     border-width: 1px;
 }
+.ivu-page.mini .ivu-page-item.ivu-page-item-active a {
+    color: $primary;
+}
 
 .ivu-card-extra .ivu-icon-md-close {
     opacity: .66;

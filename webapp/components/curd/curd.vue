@@ -5,7 +5,8 @@
                 <Form :model="formItem" :label-width="50" inline class="curd-toolbar__filter-form"
                       @submit.native.prevent="$$search">
                     <FormItem :label="$t('curd.search_label')">
-                        <i-input v-model="formItem.key" :placeholder="$t('curd.search_placeholder')" clearable></i-input>
+                        <i-input v-model="formItem.key" :placeholder="$t('curd.search_placeholder')"
+                                 clearable></i-input>
                     </FormItem>
                     <slot name="form-items"></slot>
                     <FormItem>
@@ -36,6 +37,7 @@
         <div class="curd-body" ref="table-wrapper">
             <i-table :columns="tableColumns" :data="pageData" stripe class="curd-body--table" ref="table"
                      @on-selection-change="_handleSelectChange" :no-data-text="$t('curd.empty_text')"
+                     @on-sort-change="_handleSort"
                      :height="tableHeight" :loading="tableStatus"></i-table>
         </div>
         <div class="curd-footer">
@@ -44,7 +46,8 @@
             <Page :total="total" :page-size="pageSize" size="small" class="float-right"
                   show-total
                   @on-change="_handleOnPageChange">
-                {{$t('curd.page', [(currPage - 1) * pageSize + 1 , currPage * pageSize > total ? total : currPage * pageSize, total])}}
+                {{$t('curd.page', [(currPage - 1) * pageSize + 1 , currPage * pageSize > total ? total : currPage *
+                pageSize, total])}}
             </Page>
         </div>
         <slot></slot>
@@ -55,6 +58,7 @@
 
     import debounce from 'lodash/debounce'
     import cloneDeep from 'lodash/cloneDeep'
+    import orderBy from 'lodash/orderBy'
     import { on, off } from '@/utils/dom'
     import { getMetaKeyCode } from '@/utils/common'
     import renderAction from './components/curd-render-action'
@@ -104,12 +108,17 @@
                 type: Array,
                 default: () => ([])
             },
-            // 获取数据的方式
             fetch: {
                 type: Function,
                 // default: this._fetchServerData
                 required: true
             },
+            sortMethod: {
+                type: Function
+            },
+            // filterAction: {
+            //     type: Function
+            // },
             // 点击确认删除后的操作
             deleteAction: {
                 type: Function
@@ -130,6 +139,11 @@
             selectedNum: function () {
                 return this.selectedList.length
             },
+            // // 过滤列表
+            // filterTableData: function () {
+            //     return this.filterAction && this.filterAction(this.tableData) || this.tableData
+            // },
+            // 过滤后的列表分页
             pageData: function () {
                 let start = (this.currPage - 1) * this.pageSize
                 let end = start + this.pageSize
@@ -174,6 +188,21 @@
                 this.currPage = page
                 this.selectedList = []
             },
+            _handleSort ({column, key, order}) {
+                // 虽然在这里可以实现公共的排序，但是内部的data 是副本，改变顺畅可能会影响外部取序号的操作所以只能调用外部方法
+                // 坚持了发现 好像并没有做对序号的操作，修改删除方法都是返回的当前选择对象的副本，不会返回序号
+                if (this.sortMethod) {
+                    this.sortMethod(column, key, order)
+                } else {
+                    if (order === 'normal') {
+                        this.tableData = cloneDeep(this.data)
+                    } else {
+                        this.tableData = orderBy(this.tableData, [key], [order])
+                    }
+
+                }
+
+            },
 
             $$delete (selected) {
                 if (!this.deleteAction) {
@@ -190,7 +219,7 @@
 
                 // 删除提示
                 return new Promise((resolve, reject) => {
-                    this.$Modal.confirm ({
+                    this.$Modal.confirm({
                         title: this.$t('messages.curd.del_warning_title'),
                         content: this.delTip ? this.delTip : this.$t('messages.curd.del_warning_content'),
                         onOk: async () => {
@@ -208,10 +237,8 @@
             },
 
             $$search () {
-                if (this.searchAction) {
-                    this.searchAction(this.formItem)
-                } else {
-                    // 默认在data 中搜索
+                if (this.filterAction) {
+                    this.filterAction(this.formItem)
                 }
             },
 
@@ -231,9 +258,6 @@
                 this.tableStatus = false
                 msg()
             }
-            // test () {
-            // 	console.log(this.data[0])
-            // }
         },
         created: function () {
             this.tableColumns = cloneDeep(this.columns)
@@ -242,6 +266,9 @@
                     item.renderHeader = (h, {column}) => {
                         return [this.$t(`${this.name}.columns.${column.key}`)]
                     }
+                }
+                if (item.sortable) { // 转换排序为自定义
+                    item.sortable = 'custom'
                 }
                 if (item.type === 'action') {
                     // let render

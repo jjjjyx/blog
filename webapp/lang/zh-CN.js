@@ -151,8 +151,8 @@ export default {
     post: {
         columns: {
             id: '@:curd.columns.id',
-            title: '标题',
-            auth: '作者',
+            post_title: '标题',
+            post_author: '作者',
             category: '类别',
             tags: '标签',
             comment: '评论',

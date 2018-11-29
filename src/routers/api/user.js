@@ -11,8 +11,7 @@ const {check} = require('express-validator/check')
 const {userDao, userLogDao, userMetaDao, sequelize} = require('../../models/index')
 
 const Result = require('../../common/result')
-const {Enum} = require('../../common/enum')
-const common = require('../../common/common')
+const common = require('../../common')
 const jwt = require('../../express-middleware/auth/jwt')
 
 const router = express.Router()
@@ -115,7 +114,7 @@ const login = [
                 // 获取上次登录时间，
 
                 // 记录本次登录
-                _createUserLog(req, '用户登陆', Enum.LogType.LOGIN)
+                _createUserLog(req, '用户登陆', common.ENUMERATE.LogType.LOGIN)
                 // Token generated
                 return res.status(200).json(Result.success(result))
                 // 获得token
@@ -147,7 +146,7 @@ const logout = async function (req, res, next) {
     // 清除 token
     let token =  req.token
     try {
-        _createUserLog(req, '退出登录', Enum.LogType.LOGOUT)
+        _createUserLog(req, '退出登录', common.enum.LogType.LOGOUT)
         await jwt.destroyToken(token)
         // let {iat, id} = req.user // 签发时间
         // _saveUserMeta(id, 'last_online_time', iat)
@@ -198,7 +197,7 @@ const update_info = [
             delete user.user_pass
             user.permissions = common.userRole[user.role]
             let result = await jwt.createToken(user)
-            _createUserLog(req, '修改用户信息', Enum.LogType.UPDATE)
+            _createUserLog(req, '修改用户信息', common.ENUMERATE.LogType.UPDATE)
             // 更新用户需要更新 token
             return res.status(200).json(Result.success(result))
         } catch (e) {
@@ -248,7 +247,7 @@ const update_pass = [
                 user.user_pass = bcrypt.hashSync(new_pass)
                 await user.save()
 
-                _createUserLog(req, '修改密码', Enum.LogType.UPDATE)
+                _createUserLog(req, '修改密码', common.ENUMERATE.LogType.UPDATE)
                 map = Result.success()
             } else {
                 debug('用户 = %s, 修改密码失败， 密码错误', user_login)

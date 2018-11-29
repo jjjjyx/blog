@@ -9,7 +9,7 @@ const state = {
     // user: null
     collapsed: false,
     backgroundColor: 'black',
-    backgroundImage: 'http://image.cdn.mbdoge.cn/sidebar-1.jpg',
+    backgroundImage: 'https://image.cdn.mbdoge.cn/sidebar-1.jpg',
     image: true,
     color: 'red',
 

@@ -3,6 +3,8 @@
 import differenceBy from 'lodash/differenceBy'
 import groupBy from 'lodash/groupBy'
 import merge from 'lodash/merge'
+import find from 'lodash/find'
+import findIndex from 'lodash/findIndex'
 
 import * as postApi from '../../api/posts'
 import * as termApi from '../../api/terms'
@@ -61,7 +63,7 @@ const actions = {
         try {
             let result = await postApi.fetchAll()
             // , i.post_date = new Date(i.post_date), i.updatedAt = new Date(i.updatedAt), i.createdAt = new Date(i.createdAt), i.deleteAt = new Date(i.deleteAt)
-            result.forEach(i => (i._checked = false))
+            result.forEach(i => (i._checked = false,i._editCategory=false, i._editTag = false))
             commit('SET_POST', result)
         } catch (e) {
             this._vm.$Message.error('获取文章数据失败')
@@ -160,6 +162,10 @@ const actions = {
     clearTrashPost ({commit}, item) {
         // 清除回收站也是调用相同的 mutations
         return postApi.deleteTrash(item.id).then(() => commit('REMOVE_TRASH_POST', item))
+    },
+    async updatePostsCategoryByPostId ({commit}, {postId, category}) {
+        let result = await postApi.changePostCategory(postId, category)
+        commit('UPDATE_POSTS_CATEGORY_BY_POSTID', {postId, category: result})
     }
 }
 const mutations = {
@@ -197,6 +203,15 @@ const mutations = {
     REMOVE_TRASH_POST (state, value) {
         let index = state.trashPosts.indexOf(value)
         state.trashPosts.splice(index, 1)
+    },
+    UPDATE_POSTS_CATEGORY_BY_POSTID (state, {postId, category}) {
+        let posts = find(state.posts, ['id', postId])
+        let index = findIndex(posts.terms, ['taxonomy', 'category'])
+        if (index > -1) {
+            posts.terms.splice(index, 1, category) // 这种方式才会监视到改动
+            // posts.terms[index] = category
+        }
+
     }
 }
 

@@ -10,8 +10,8 @@ const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
 const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../models')
 
 const {term_relationships: termRelationshipsDao} = sequelize.models
-const {Enum} = require('../common/enum')
-const common = require('../common/common')
+const {Enum} = require('../common/enumerate')
+const common = require('../common')
 const utils = require('../utils')
 
 const Op = sequelize.Op

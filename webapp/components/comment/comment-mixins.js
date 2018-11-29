@@ -3,7 +3,7 @@
 export default {
     data () {
         return {
-            defaultAvatar: 'http://image.cdn.mbdoge.cn/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
+            defaultAvatar: 'https://image.cdn.mbdoge.cn/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
         }
     },
     props: {

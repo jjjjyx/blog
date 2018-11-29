@@ -6,11 +6,27 @@ const path = require('path')
 const Sequelize = require('sequelize')
 const env = process.env.NODE_ENV || 'development'
 const config = require('../../config')
+// const hooks = require('./hooks')
 // const db_config = require(__dirname + '/../db_config.js')[env];
 const db_config = config.db[env]
 const db = {}
-// const {db_config: db} = config
-// db_config.logging = false
+
+// const hooks = {
+//     // beforeCreate: (...a) => {
+//     //     // Do other stuff
+//     //     console.log('beforeCreate', ...a)
+//     // },
+//     // afterCreate: (...b) => {
+//     //     console.log('afterCreate', ...b)
+//     // }
+// }
+//
+// if (db_config.define) {
+//     db_config.define = Object.assign(db_config.define, {hooks})
+// } else {
+//     db_config.define = {hooks}
+// }
+
 const sequelize = new Sequelize(db_config.database, db_config.username,
     db_config.password, db_config)
 // model 是有关联关系的 不能这样加载
@@ -27,7 +43,8 @@ let models = [
     'readsModel.js',
     'visitorsModel.js',
     'siteModel.js',
-    'resourceModel.js'
+    'resourceModel.js',
+    // 'logModel.js'
 ]
 models.forEach(file => {
     let model = sequelize['import'](path.join(__dirname, file))
@@ -39,4 +56,5 @@ models.forEach(file => {
 db.sequelize = sequelize
 db.Sequelize = Sequelize
 
+// let {}
 module.exports = db

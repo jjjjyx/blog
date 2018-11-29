@@ -41,7 +41,7 @@
 
 const qiniu = require('qiniu')
 const http = require('http')
-const {Enum} = require('../common/enum')
+const {Enum} = require('../common/enumerate')
 const config = require('../../config')
 const uuidv1 = require('uuid/v1')
 // const redisClient = utils.redisClient;
@@ -81,7 +81,7 @@ function getURLJSONData (url) {
     })
 }
 
-// getURLJSONData('http://image.cdn.mbdoge.cn/17-1-11/75763093-file_1484140871299_166f3.png').then((data)=>{
+// getURLJSONData('https://image.cdn.mbdoge.cn/17-1-11/75763093-file_1484140871299_166f3.png').then((data)=>{
 //     console.log(data)
 // }).catch((e)=>{
 //     console.log(e)

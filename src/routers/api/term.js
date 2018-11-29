@@ -11,8 +11,7 @@ const {sanitizeBody} = require('express-validator/filter')
 const {termDao, sequelize} = require('../../models/index')
 const utils = require('../../utils')
 const Result = require('../../common/result')
-const {Enum} = require('../../common/enum')
-const common = require('../../common/common')
+const common = require('../../common')
 
 const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
@@ -124,7 +123,7 @@ const addCategory = [
     checkDescription,
     common.validationResult,
     async function (req, res, next) {
-        req.body.taxonomy = Enum.TaxonomyEnum.CATEGORY
+        req.body.taxonomy = common.ENUMERATE.TaxonomyEnum.CATEGORY
         createTerm(req.body).then((result) => {
             res.status(200).json(result)
         })
@@ -143,7 +142,7 @@ const addTag = [
     checkDescription,
     common.validationResult,
     async function (req, res, next) {
-        req.body.taxonomy = Enum.TaxonomyEnum.POST_TAG
+        req.body.taxonomy = common.ENUMERATE.TaxonomyEnum.POST_TAG
         createTerm(req.body).then((result) => {
             res.status(200).json(result)
         })

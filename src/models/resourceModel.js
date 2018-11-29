@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-// const {Enum} = require('../common/enum')
+// const Enum =require('../common/enum')
 
 // ALTER TABLE `blog`.`j_resource` CHANGE `space` `space` VARCHAR(80) CHARSET utf8 COLLATE utf8_bin DEFAULT 'all' NOT NULL;
 module.exports = function (sequelize, DataTypes) {

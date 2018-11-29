@@ -8,9 +8,9 @@ const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
 const {body, query} = require('express-validator/check')
 
 const Result = require('../common/result')
-const {Enum} = require('../common/enum')
+const {Enum} = require('../common/enumerate')
 const utils = require('../utils')
-const common = require('../common/common')
+const common = require('../common')
 const {termDao, userDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
 
 const router = express.Router()

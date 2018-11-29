@@ -13,7 +13,7 @@ const CONFIG = {
     tokenPrefix: 'Bearer',
     tokenHeaderKey: 'authorization',
     tokenExpiration: '1 days',
-    defaultAvatar: 'http://image.cdn.mbdoge.cn/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
+    defaultAvatar: 'https://image.cdn.mbdoge.cn/FuNJUwEY1vEWt5ncFeVXhVG4-R6S',
     db: {
         development: {
             username: 'blog',
@@ -71,7 +71,7 @@ module.exports = CONFIG
 //     'ACCESS_KEY': 'yON2TZBHksg2FxJdZzrZcm5hDLzEB-YG7I1iyw6I',
 //     'SECRET_KEY': 'lAkKzNLxsNs9eQXJ6DTyjJAxf6A0A_wsTGYxZDGH',
 //     'Bucket_Name': 'jyximg',
-//     'Domain': 'http://image.cdn.mbdoge.cn/',
+//     'Domain': 'https://image.cdn.mbdoge.cn/',
 //     UP_HOST : 'http://upload.qiniu.com',
 //     UC_HOST :'http://uc.qbox.me',
 //     RS_HOST : 'http://rs.qbox.me',

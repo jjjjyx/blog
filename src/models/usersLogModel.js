@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-const {Enum} = require('../common/enum')
+const Enum =require('../common/enumerate')
 // ALTER TABLE `blog`.`j_userlogs` CHANGE `type` `type` ENUM('login','update','logout') CHARSET utf8 COLLATE utf8_bin NULL;
 module.exports = function (sequelize, DataTypes) {
     const userMetaModel = sequelize.define('userLog', {

@@ -23,7 +23,7 @@
 //     "uuid": "a60bcf7d-973e-4282-9123-913f052268f2",
 //     "mimeType": "image/jpeg",
 //     "bucket": "jyximg",
-//     "url": "http://image.cdn.mbdoge.cn/Fg2ZZ0VmdYVnj8CsFy1-BGgmcsml",
+//     "url": "https://image.cdn.mbdoge.cn/Fg2ZZ0VmdYVnj8CsFy1-BGgmcsml",
 //     "width": 740,
 //     "height": 462,
 //     "space": "public",

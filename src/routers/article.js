@@ -9,7 +9,7 @@ const {body} = require('express-validator/check')
 const debug = require('debug')('app:routers:article')
 const log = require('log4js').getLogger('app:routers:article')
 const hljs = require('highlight.js')
-const common = require('../common/common')
+const common = require('../common')
 const Result = require('../common/result')
 
 // const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
@@ -82,8 +82,8 @@ const readerPost = [
         res.render('article-a', {post, groupBy, md, cookies: req.cookies})
     }
 ]
-const maxAge = 365 * 5 * 60000 * 60 * 24 // 5年
-const httpOnly = true
+const maxAge = common.CONSTANT.COOKIE_MAX_AGE
+const httpOnly = common.CONSTANT.COOKIE_MAX_AGE
 const HEART_KEY = 'heart'
 const incrementPostHeart = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ? and post_status = 'publish') AND meta_key = '${HEART_KEY}'`
 // const incrementPostHeart = `UPDATE j_postmeta SET meta_value = meta_value + 1 WHERE post_id = (SELECT id FROM j_posts WHERE guid = ?) AND meta_key = 'heart'`

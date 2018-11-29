@@ -1,5 +1,5 @@
 const {termDao, postDao, postMetaDao, commentDao, sequelize} = require('./index')
-const {Enum} = require('../common/enum')
+const Enum =require('../common/enumerate')
 const Op = sequelize.Op;
 // termDao.findAll({
 //     attributes: ['name'],

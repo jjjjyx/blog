@@ -9,14 +9,17 @@ const debug = require('debug')('app:routers:common')
 const {validationResult} = require('express-validator/check')
 
 const utils = require('../utils')
-const {Enum} = require('./enum')
 const Result = require('./result')
 const Regs = require('./regs')
+const Enumerate = require('./enumerate')
+const Constant = require('./constant')
 const {termDao, userDao, postDao, postMetaDao, commentMetaDao, sequelize} = require('../models/index')
 
 const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
-
+// const COOKIE_MAX_AGE = 365 * 5 * 60000 * 60 * 24 // 5年
+// const COOKIE_HTTP_ONLY = true
+// const VISITOR_KEY = 'jv'
 /**
  * 渲染文章为html
  * @param post 文章实例， 需包含meta user term 属性
@@ -107,7 +110,7 @@ async function loadPost ({page = 1, pageSize = 10}, term, excludeIds = []) {
     let where
     if (!term) {
         where = {
-            post_status: Enum.PostStatusEnum.PUBLISH,
+            post_status: Enumerate.PostStatusEnum.PUBLISH,
             id: {
                 [Op.notIn]: excludeIds
             }
@@ -120,7 +123,7 @@ async function loadPost ({page = 1, pageSize = 10}, term, excludeIds = []) {
         })
         let postIds = tp.map((item) => item.object_id)
         where = {
-            post_status: Enum.PostStatusEnum.PUBLISH,
+            post_status: Enumerate.PostStatusEnum.PUBLISH,
             id: {
                 [Op.in]: postIds,
                 [Op.notIn]: excludeIds
@@ -156,7 +159,7 @@ function loadNewestPost (size = 10) {
     date.setDate(date.getDate() - 30)
     return postDao.findAll({
         where: {
-            post_status: Enum.PostStatusEnum.PUBLISH,
+            post_status: Enumerate.PostStatusEnum.PUBLISH,
             post_date: {[Op.gte]: date}
         },
         include: postInclude,
@@ -186,7 +189,7 @@ const termCountSql = [sequelize.literal('(SELECT COUNT(`term_relationships`.`obj
 function loadTags () {
     return termDao.findAll({
         where: {
-            taxonomy: Enum.TaxonomyEnum.POST_TAG
+            taxonomy: Enumerate.TaxonomyEnum.POST_TAG
         },
         attributes: {
             include: [
@@ -201,7 +204,7 @@ function loadCategory (size = 10) {
     size = toNumber(size)
     return termDao.findAll({
         where: {
-            taxonomy: Enum.TaxonomyEnum.CATEGORY,
+            taxonomy: Enumerate.TaxonomyEnum.CATEGORY,
             id: {
                 [Op.ne]: SITE.defaultCategoryId
             },
@@ -373,12 +376,16 @@ function updateOrCreateCommentMeta (id, key, value) {
     return _createMetaByMetaDao(commentMetaDao, {comment_id: id, meta_key: key}, value)
 }
 
-module.exports.sidebarModuleKey = sidebarListEnum
+// module.exports.sidebarModuleKey = enumerate.SidebarListEnum
+module.exports.ENUMERATE = Enumerate
+module.exports.REGS = Regs
+module.exports.CONSTANT = Constant
+module.exports.Result = Result
+
 module.exports.sidebarModule = sidebarModule
 module.exports.termCountSql = termCountSql
 module.exports.userRole = userRole
 module.exports.postInclude = postInclude
-module.exports.REGS = Regs
 module.exports.ipAndRoute = ipAndRoute
 module.exports.generatePostHtml = generatePostHtml
 module.exports.loadPost = loadPost

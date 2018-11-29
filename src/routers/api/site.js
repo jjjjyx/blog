@@ -6,15 +6,9 @@ const express = require('express')
 
 const debug = require('debug')('app:routers:api.site')
 const log = require('log4js').getLogger('api.site')
-const {body} = require('express-validator/check')
-const {sanitizeBody} = require('express-validator/filter')
-
 const {siteDao, termDao, postDao, resourceDao} = require('../../models/index');
-
-const common = require('../../common/common')
-const {Enum} = require('../../common/enum')
+const common = require('../../common')
 const Result = require('../../common/result')
-const utils = require('../../utils')
 
 const router = express.Router()
 
@@ -89,8 +83,8 @@ const getStatistics = function (req, res) {
     // 查询一些数据
     // 文章个数， 标签数， 图片数
     Promise.all([
-        postDao.count({where: {post_status: Enum.PostStatusEnum.PUBLISH}}),
-        termDao.count({where: {taxonomy: Enum.TaxonomyEnum.POST_TAG}}),
+        postDao.count({where: {post_status: common.ENUMERATE.PostStatusEnum.PUBLISH}}),
+        termDao.count({where: {taxonomy: common.ENUMERATE.TaxonomyEnum.POST_TAG}}),
         resourceDao.count()
     ]).then(([publishPostNum, tagNum, mediaNum]) => {
         return res.status(200).json(Result.success({publishPostNum, tagNum, mediaNum}))

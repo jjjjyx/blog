@@ -55,10 +55,10 @@ export default {
                 'red'
             ],
             sidebarBackgroundImages: [
-                'http://image.cdn.mbdoge.cn/sidebar-1.jpg',
-                'http://image.cdn.mbdoge.cn/sidebar-2.jpg',
-                'http://image.cdn.mbdoge.cn/sidebar-3.jpg',
-                'http://image.cdn.mbdoge.cn/sidebar-4.jpg'
+                'https://image.cdn.mbdoge.cn/sidebar-1.jpg',
+                'https://image.cdn.mbdoge.cn/sidebar-2.jpg',
+                'https://image.cdn.mbdoge.cn/sidebar-3.jpg',
+                'https://image.cdn.mbdoge.cn/sidebar-4.jpg'
             ]
         }
     },

@@ -13,7 +13,7 @@ const {commentDao, userDao, commentMetaDao} = require('../../models/index')
 const jwt = require('../../express-middleware/auth/jwt')
 const utils = require('../../utils')
 const Result = require('../../common/result')
-const common = require('../../common/common')
+const common = require('../../common')
 const imgList = require('./avatar.json')
 
 const router = express.Router()

@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-const {Enum} = require('../common/enum')
+const Enum =require('../common/enumerate')
 /*
 分类使用平级
 
@@ -58,7 +58,27 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         tableName: 'j_term_relationships',
         timestamps: false,
+        hooks: {
+            beforeUpdate (...b)  {
+                console.log('beforeUpdate', ...b)
+            },
+            afterUpdate (instance, options)  {
+                console.log('afterUpdate', instance, '\n=====',options)
+                // dataValues
+                // _previousDataValues
+            }
+        }
     })
+
+    // termModel.beforeBulkUpdate((user, options) => {
+    //     console.log('beforeBulkUpdate', user, options)
+    // });
+    // termModel.beforeUpdate((user, options) => {
+    //     console.log('beforeUpdate', user, options)
+    // });
+    // termModel.afterBulkUpdate((user, options) => {
+    //     console.log('++++++++++', user, options)
+    // });
 
     const {post: postModel} = sequelize.models
     postModel.belongsToMany(termModel, { through: termRelationships, foreignKey: 'object_id' })

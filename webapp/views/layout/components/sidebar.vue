@@ -2,7 +2,7 @@
 <aside :class="wrapperSidebarClasses" :style="wrapperSidebarStyles">
     <router-link to="/" active-class='active' exact
                  class="sidebar-header__item header-brands wrapper__sidebar--divided" tag="header">
-        <!--http://image.cdn.mbdoge.cn/797d3a20-0016-11e7-8ec4-c526ba0271a0.png-->
+        <!--https://image.cdn.mbdoge.cn/797d3a20-0016-11e7-8ec4-c526ba0271a0.png-->
         <div class="header-brands__logo" title="返回首页">
             <logo/>
         </div>

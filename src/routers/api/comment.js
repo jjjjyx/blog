@@ -13,7 +13,7 @@ const log = require('log4js').getLogger('api.comment')
 
 const {commentDao, postDao, userDao, sequelize} = require('../../models/index')
 const Result = require('../../common/result')
-const common = require('../../common/common')
+const common = require('../../common')
 const utils = require('../../utils')
 
 

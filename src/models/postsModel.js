@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-const {Enum} = require('../common/enum')
+const Enum =require('../common/enumerate')
 const utils = require('../utils')
 const groupBy = require('lodash/groupBy')
 

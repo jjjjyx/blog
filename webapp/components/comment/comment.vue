@@ -14,7 +14,7 @@
         <div class="j-comment-empty" v-if="status===COMMENT_STATUS.loading">加载中评论中...</div>
         <div class="j-comment-empty" v-else-if="status===COMMENT_STATUS.error">评论加载失败..</div>
         <div class="j-comment-empty" v-else-if="status===COMMENT_STATUS.success && !commentList.length">
-            <img src="http://image.cdn.mbdoge.cn/FuwU_vvhI2bw4fRq8MO1AKax0RpF" alt="[doge]">
+            <img src="https://image.cdn.mbdoge.cn/FuwU_vvhI2bw4fRq8MO1AKax0RpF" alt="[doge]">
             <div class="am-inline-block">智慧如你，不想<span @click="toComment">发表一点想法</span>咩~</div>
         </div>
         <transition-group class="comment-list-warp" tag="ul" name="comment-list-transition" :appear="true"
