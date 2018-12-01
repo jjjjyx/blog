@@ -1,26 +1,27 @@
 'use strict'
 
-const Bluebird = require('bluebird')
+const http = require('http')
+const marked = require('marked')
 const moment = require('moment')
-const redis = require("redis")
+const redis = require('redis')
+const shortid = require('shortid')
+const Bluebird = require('bluebird')
 const isString = require('lodash/isString')
 const isArray = require('lodash/isArray')
-const shortid = require('shortid')
-const http = require('http')
-
-
+const transform = require('lodash/transform')
+const isEqual = require('lodash/isEqual')
+const isObject = require('lodash/isObject')
 const ExpressRedisCache = require('express-redis-cache')
-
 const log = require('log4js').getLogger('utils')
-
-const marked = require('marked')
+// const debug = require('debug')('utils')
 
 const client = redis.createClient()
-const renderer = new marked.Renderer()
-
+log.info('链接 redis 中')
 
 moment.locale('zh-cn')
+log.trace('设置 时间格式化语言项 = %s', moment.locale('zh-cn'))
 
+const renderer = new marked.Renderer()
 const textChar = (text) => text || ' '
 const emptyChar = () => ''
 for (let i in renderer) {
@@ -38,23 +39,23 @@ let cache = ExpressRedisCache({
     client: client
 })
 
-client.on("error", function (err) {
-    log.error("redis con Error " + err);
-});
+client.on('error', function (err) {
+    log.error('redis con Error ' + err)
+})
 
 // Bluebird.promisifyAll(jwtr)
 Bluebird.promisifyAll(client)
 
-
 // const x="0123456789qwertyuioplkjhgfdsazxcvbnm";
 // module.exports.randomChar = function (l) {
-    // var tmp="";
-    // for(var i=0;i<l;i++)  {
-    //     tmp += x.charAt(Math.ceil(Math.random()*100000000)%x.length);
-    // }
-    // return tmp
+// var tmp="";
+// for(var i=0;i<l;i++)  {
+//     tmp += x.charAt(Math.ceil(Math.random()*100000000)%x.length);
 // }
-
+// return tmp
+// }
+const DEFAULT_TIME_PATTERN = 'YYYY-M-D HH:mm'
+log.trace('默认的时间格式 = %s', DEFAULT_TIME_PATTERN)
 
 /**
  * 格式化时间
@@ -62,15 +63,14 @@ Bluebird.promisifyAll(client)
  * @param pattern
  * @returns {string}
  */
-function formatDate (time, pattern = 'YYYY-M-D HH:mm') {
+function formatDate (time, pattern = DEFAULT_TIME_PATTERN) {
     return moment(time).format(pattern)
 }
 
 /**
  * 清空路由缓存
  */
-function clearCache() {
-    log.debug('清空路由缓存')
+function clearCache () {
     cache.get((error, entries) => {
         if (error) {
             log.error('清除缓存发生错误', error)
@@ -82,8 +82,6 @@ function clearCache() {
         })
     })
 }
-
-
 
 const ipv4 = /^(?:(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}(?:\d|[1-9]\d|1\d{2}|2[0-4]\d|25[0-5])$/
 const ipv6 = /^((?=.*::)(?!.*::.+::)(::)?([\dA-F]{1,4}:(:|\b)|){5}|([\dA-F]{1,4}:){6})((([\dA-F]{1,4}((?!\3)::|:\b|$))|(?!\2\3)){2}|(((2[0-4]|1\d|[1-9])?\d|25[0-5])\.?\b){4})$/i
@@ -221,11 +219,10 @@ function getClientIp (req) {
     return ''
 }
 
-
 /**
  * 简单获取url 中json 数据, 方便使用外部调用api
  * @param url
- * @returns {Promise<any>}
+ * @returns {Promise <any>}
  */
 function getURLJSONData (url) {
     url = encodeURI(url) // 防止中文
@@ -251,7 +248,6 @@ function getURLJSONData (url) {
     })
 }
 
-
 /**
  *  转换meta数组形式为对象
  * @param metas 待转换的meta
@@ -274,6 +270,7 @@ function transformMetasToObject (metas = [], key) {
 }
 
 const UNDERLINE_REG = /_(\w)/g
+
 /**
  * 下划线命名转驼峰
  * @param str
@@ -285,6 +282,23 @@ function transformStr3 (str) {
     })
 }
 
+/**
+ * Deep diff between two object, using lodash
+ * @param  {Object} object Object compared
+ * @param  {Object} base   Object to compare with
+ * @return {Object}        Return a new object who represent the diff
+ */
+function changes (object, base) {
+    return transform(object, function (result, value, key) {
+        if (!isEqual(value, base[key])) {
+            result[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : [value, base[key]]
+        }
+    })
+}
+function difference (object, base) {
+    return changes(object, base)
+}
+
 module.exports.getURLJSONData = getURLJSONData
 module.exports.formatDate = formatDate
 module.exports.clearCache = clearCache
@@ -294,4 +308,5 @@ module.exports.renderer = renderer
 module.exports.cache = cache
 module.exports.redisClient = client
 module.exports.transformStr3 = transformStr3
+module.exports.difference = difference
 module.exports.transformMetasToObject = transformMetasToObject

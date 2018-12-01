@@ -42,7 +42,7 @@ SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`po
     // console.log(JSON.stringify({a: Op.in}))
 
 })()
-// postDao.findById(98).then(async (post)=>{
+// postDao.findByPk(98).then(async (post)=>{
 //     let o = await post.getMetas()
 //     let o1 = o[1]
 //     // let c = await post.hasMeta('1')

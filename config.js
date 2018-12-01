@@ -1,8 +1,9 @@
 'use strict'
 // module.exports
-const debug = require('debug')('app:config')
-const _ = require('lodash')
+// const debug = require('debug')('app:config')
+const merge = require('lodash/merge')
 const log = require('log4js').getLogger('config');
+const debug = require('debug')('app:config')
 // 启动参数，与site 无关
 const CONFIG = {
     appPort: 3878,
@@ -21,7 +22,8 @@ const CONFIG = {
             database: 'blog',
             host: '127.0.0.1',
             dialect: 'mysql',
-            timezone: '+08:00'
+            timezone: '+08:00',
+            operatorsAliases: false,
             // timestamps: false,
         },
         test: {
@@ -54,26 +56,15 @@ const CONFIG = {
 
 try {
     let pri = require('./private.js')
-    _.merge(CONFIG, pri)
-    log.debug('Loading private configuration:', JSON.stringify(pri))
+    merge(CONFIG, pri)
+    log.info('Loading private configuration')
 } catch (e) {
     log.info('Failed to load private configuration!')
 }
+// Object.keys(CONFIG).forEach((key)=> {
+//     if (typeof CONFIG[key] !== 'object') {
+//         debug(`${key} = ${CONFIG[key]}` )
+//     }
+// })
 
 module.exports = CONFIG
-
-// exports.APP_PORT = 3878;
-// exports.db = db;
-// exports.maxAge = 365*5*60000*60*24;
-// exports.secret = "$2a$10$5A/Wb/EnCwdS2Yxdk0ouGe4beJn7ZTpPD9ofzMdaLc45EgIZwURg6"
-// exports.allowOrigin = allowOrigin;
-// exports.qiUpload= {
-//     'ACCESS_KEY': 'yON2TZBHksg2FxJdZzrZcm5hDLzEB-YG7I1iyw6I',
-//     'SECRET_KEY': 'lAkKzNLxsNs9eQXJ6DTyjJAxf6A0A_wsTGYxZDGH',
-//     'Bucket_Name': 'jyximg',
-//     'Domain': 'https://image.cdn.mbdoge.cn/',
-//     UP_HOST : 'http://upload.qiniu.com',
-//     UC_HOST :'http://uc.qbox.me',
-//     RS_HOST : 'http://rs.qbox.me',
-//     RSF_HOST : 'http://rsf.qbox.me'
-// };

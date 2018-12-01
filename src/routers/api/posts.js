@@ -102,7 +102,7 @@ const checkAuthor = body('post_author')
         if (id === value) {
             return true
         } else {
-            return userDao.findById(value, {attributes: {exclude: ['user_pass']}})
+            return userDao.findByPk(value, {attributes: {exclude: ['user_pass']}})
                 .then((u) => {
                     // eslint-disable-next-line prefer-promise-reject-errors
                     if (u === null) {
@@ -213,7 +213,7 @@ const _updatePostTerms = async function (req, res, post) {
 
     let {category_id} = req.body
     // 验证分类是否存在
-    let category = await termDao.findById(category_id || SITE.defaultCategoryId)
+    let category = await termDao.findByPk(category_id || SITE.defaultCategoryId)
     if (category === null) {
         debug(`createTerms 提交了未定义的分类id = ${category_id}， 自动修正为默认分类 ${SITE.defaultCategoryId}`)
         category = SITE.defaultTerm
@@ -285,7 +285,7 @@ const save = [
         log.debug('before 保存文章，post_title = %s, id = %s', post_title, id)
         try {
             // 保存的时候 如果文章当前状态是 auto_draft 则更新状态为草稿
-            let post = await postDao.findById(id)
+            let post = await postDao.findByPk(id)
             if (post === null) {
                 log.debug('保存文章 失败 未提交正确的文章id')
                 return res.status(200).json(Result.info('保存失败，未提交正确的文章id'))
@@ -358,7 +358,7 @@ const save = [
                 req.sanitizeBody('tags_id').toArray()
                 let {category_id} = req.body
 
-                let category = await termDao.findById(category_id)
+                let category = await termDao.findByPk(category_id)
                 if (category === null) {
                     log.debug(`save 自动存档保存分类时收到一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
                     category = SITE.defaultTerm
@@ -391,7 +391,7 @@ const updateCategory = [
     async function (req, res) {
         let {category_id, id} = req.body
         try {
-            let post = await postDao.findById(id, {
+            let post = await postDao.findByPk(id, {
                 include: [
                     {
                         model: termDao,
@@ -412,7 +412,7 @@ const updateCategory = [
                 return res.status(200).json(Result.success())
             }
 
-            let category = await termDao.findById(category_id)
+            let category = await termDao.findByPk(category_id)
             if (category === null) {
                 log.debug(`save 自动存档保存分类时收到一个错误的id = ${category_id}，自动修正为默认分类 ${SITE.defaultCategoryId}`)
                 category = SITE.defaultTerm
@@ -788,7 +788,7 @@ const release = [
         } = req.body
         log.debug('release post id = %d post_title = %s', id, post_title)
         try {
-            let post = await postDao.findById(id)
+            let post = await postDao.findByPk(id)
             if (post === null) {
                 log.info('发布失败，未提交正确的文章id')
                 return res.status(200).json(Result.info('发布失败，未提交正确的文章id'))

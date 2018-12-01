@@ -31,7 +31,7 @@ module.exports = async function (app) {
     global.SITE = site
     // 查询到默认的文章分类
 
-    termDao.findById(SITE.defaultCategoryId).then(term => {
+    termDao.findByPk(SITE.defaultCategoryId).then(term => {
         debug('加载默认分类 [%s#%d]', term.name, SITE.defaultCategoryId)
         global.SITE.defaultTerm = term
     })

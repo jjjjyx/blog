@@ -1,4 +1,5 @@
 /* jshint indent: 2 */
+const utils = require('../utils')
 
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('user', {
@@ -48,6 +49,16 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: '0'
         }
     }, {
-        tableName: 'j_users'
+        tableName: 'j_users',
+        getterMethods: {
+            metas () {
+                return utils.transformMetasToObject(this.getDataValue('metas'), 'meta_key')
+            }
+        },
+        setterMethods: {
+            metas (value) {
+                this.setDataValue('metas', value)
+            }
+        }
     });
 };

@@ -5,7 +5,8 @@ module.exports = function (sequelize, DataTypes) {
         id: {
             type: DataTypes.BIGINT,
             allowNull: false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         meta_key: {
             type: DataTypes.STRING(255),
@@ -17,13 +18,13 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'j_usermeta',
-        timestamps: false,
-    });
+        timestamps: false
+    })
     const {user: userModel} = sequelize.models
     // const pk = {foreignKey: 'user_id', targetKey: 'id'}
     // userModel.hasMany(userMetaModel, pk)
     // userMetaModel.belongsTo(userModel,pk)
     userModel.hasMany(userMetaModel, {as: 'metas', foreignKey: 'user_id', sourceKey: 'id'})
     return userMetaModel
-};
+}
 // node ./src/init-db.js

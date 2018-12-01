@@ -1,44 +1,63 @@
 {
     "appenders": {
-      "access": {
-        "type": "dateFile",
-        "filename": "log/access.log",
-        "pattern": "-yyyy-MM-dd",
-        "category": "http",
-        "maxLogSize": 10485760,
-        "numBackups": 3,
-        "compress": true
-      },
-      "out": {
-        "type": "stdout"
-      },
-      "appFile": {
-        "type": "file",
-        "filename": "log/app.log",
-        "pattern": "yyyy-MM-dd-hh",
-        "maxLogSize": 10485760,
-        "numBackups": 3,
-        "compress": true
-      },
-      "errorFile": {
-        "type": "file",
-        "filename": "log/errors.log",
-        "maxLogSize": 10485760,
-        "compress": true
-      },
-      "errors": {
-        "type": "logLevelFilter",
-        "level": "ERROR",
-        "appender": "errorFile"
-      },
-      "console" : {
-        "type": "console"
-      }
+        "access": {
+            "type": "dateFile",
+            "filename": "log/http-access.log",
+            "pattern": ".yyyy-MM-dd",
+            "compress": true
+        },
+        "operation": {
+            "type": "dateFile",
+            "filename": "log/operation.log",
+            "pattern": ".yyyy-MM-dd",
+            "compress": true
+        },
+        "sql": {
+            "type": "dateFile",
+            "filename": "log/sql.log",
+            "pattern": ".yyyy-MM-dd",
+            "compress": true
+        },
+        "out": {
+            "type": "stdout"
+        },
+        "app": {
+            "type": "file",
+            "filename": "log/application.log",
+            "maxLogSize": 2097152,
+            "numBackups": 3,
+            "level": "debug"
+        }
     },
     "categories": {
-      "default": { "appenders": [ "out", "appFile", "errors" ], "level": "DEBUG" },
-      "http": { "appenders": [ "access"], "level": "DEBUG" }
+        "http": {
+            "appenders": [
+                "access"
+            ],
+            "level": "info"
+        },
+        "op": {
+            "appenders": [
+                "out",
+                "operation"
+            ],
+            "level": "debug"
+        },
+        "sql": {
+            "appenders": [
+                "out",
+                "sql"
+            ],
+            "level": "info"
+        },
+        "default": {
+            "appenders": [
+                "out",
+                "app"
+            ],
+            "level": "trace"
+        }
     },
     "pm2": true,
-    "replaceConsole": true
-  }
+    "pm2InstanceVar": "INSTANCE_ID"
+}

@@ -34,7 +34,7 @@ connection.query(
         // console.log(results); // results contains rows returned by server
         // console.log(postDao)
 
-        let defaultTerm = await termDao.findById(1)
+        let defaultTerm = await termDao.findByPk(1)
         results.forEach(async (item) => {
             if (item.post_status==='publish') {
                 // ${item.}

@@ -1,33 +1,18 @@
 'use strict'
 
 // const debug = require('debug')('app:routers')
-// const log = require('log4js').getLogger('routers')
+const log = require('log4js').getLogger('routers')
+
 const guard = require('express-jwt-permissions')()
 const authMiddleware = require('../express-middleware/auth')
-const common = require('../common')
-const utils = require('../utils')
-
+const visitorMiddleware = require('../express-middleware/visitor')
 
 const unless_path = {
     path: ['/api/user/login', '/api/img/callback', '/api/tools/qinfo', '/api/site/dict'],
     method: 'OPTIONS'
 }
-// 初次访问 为这个ip 添加一个游客身份，
-// 检查cookie 的值有没有游客标识
-// 登陆后游客身份被标识成__xx__ 这种形式，就会使用用户身份，废弃游客身份
 
-const maxAge = common.CONSTANT.COOKIE_MAX_AGE
-const httpOnly = common.CONSTANT.COOKIE_MAX_AGE
-const VISITOR_KEY = common.CONSTANT.COOKIE_MAX_AGE
-const visitorMiddleware = function (req, res, next) {
-    // let flag = true
-    let jv = req.cookies[VISITOR_KEY]
-    if (/^__.{6,12}__$/.test(jv)) {
-        res.cookie(VISITOR_KEY, utils.randomChar, {maxAge, httpOnly})
-    }
-    next()
-}
-
+log.trace('载入路由')
 module.exports = function (app) {
     app.use('/', visitorMiddleware)
     app.use('/', require('./home.js'))

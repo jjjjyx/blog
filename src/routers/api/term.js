@@ -261,13 +261,13 @@ const getAll = async function (req, res) {
 
 const test = [
     async function (req, res, next) {
-        let term = await termDao.findById(19)
+        let term = await termDao.findByPk(19)
         term.countPosts()
         // console.log(Object.getOwnPropertyDescriptors(term))
         // console.log(term.property)
         // let test = await term.countPosts()
         // console.log(test)
-        // let post = await postDao.findById(77)
+        // let post = await postDao.findByPk(77)
         // await term.addPosts(post)
         // test = await term.countPosts()
         // console.log(test)

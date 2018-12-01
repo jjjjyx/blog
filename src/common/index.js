@@ -13,7 +13,7 @@ const Result = require('./result')
 const Regs = require('./regs')
 const Enumerate = require('./enumerate')
 const Constant = require('./constant')
-const {termDao, userDao, postDao, postMetaDao, commentMetaDao, sequelize} = require('../models/index')
+const {termDao, userDao, postDao, postMetaDao, commentMetaDao, userMetaDao, sequelize} = require('../models/index')
 
 const {term_relationships: termRelationshipsDao} = sequelize.models
 const Op = sequelize.Op
@@ -375,6 +375,9 @@ function updateOrCreatePostMeta (id, key, value) {
 function updateOrCreateCommentMeta (id, key, value) {
     return _createMetaByMetaDao(commentMetaDao, {comment_id: id, meta_key: key}, value)
 }
+function updateOrCreateUserMeta (id, key, value) {
+    return _createMetaByMetaDao(userMetaDao, {user_id: id, meta_key: key}, value)
+}
 
 // module.exports.sidebarModuleKey = enumerate.SidebarListEnum
 module.exports.ENUMERATE = Enumerate
@@ -398,4 +401,5 @@ module.exports.loadCategory = loadCategory
 module.exports.validationResult = validation
 module.exports.updateOrCreatePostMeta = updateOrCreatePostMeta
 module.exports.updateOrCreateCommentMeta = updateOrCreateCommentMeta
+module.exports.updateOrCreateUserMeta = updateOrCreateUserMeta
 

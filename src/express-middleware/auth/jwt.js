@@ -1,15 +1,14 @@
-
 const isEmpty = require('lodash/isEmpty')
 const JWTR = require('jsonwebtoken-redis')
 const log = require('log4js').getLogger('express-middleware:jwt')
-
+// const debug = require('debug')('app:express-middleware:auth')
 const utils = require('../../utils')
 const config = require('../../../config')
 const UnauthorizedError = require('../../errors/UnauthorizedError')
 
-const {secret, tokenExpiration:TOKEN_EXPIRATION, tokenPrefix, tokenHeaderKey } = config
+const {secret, tokenExpiration: TOKEN_EXPIRATION, tokenPrefix, tokenHeaderKey} = config
 
-log.debug('TOKEN_EXPIRATION = %s', TOKEN_EXPIRATION)
+log.debug('tokenExpiration = %s', TOKEN_EXPIRATION)
 
 let jwtr = new JWTR(utils.redisClient, {
     prefix: 'jwt-session:',
@@ -20,12 +19,12 @@ let jwtr = new JWTR(utils.redisClient, {
 async function createToken (user, expiresKeyIn = TOKEN_EXPIRATION) {
     if (isEmpty(user)) throw new Error('Data cannot be empty.')
     let token = await jwtr.sign(user, secret, {expiresKeyIn})
-    log.debug('Token generated token: %s', user.user_login, token)
+    log.trace('Token generated token: %s', user.user_login, token)
     return token
 }
 
 function destroyToken (token) {
-    log.debug('destroy Token = %s', token)
+    log.trace('destroy Token = %s', token)
     return jwtr.destroy(token)
 }
 
@@ -44,16 +43,16 @@ function getToken (req) {
             if (tokenPrefix === scheme) {
                 token = credentials
             } else {
+                log.trace('credentials_bad_scheme: Format is Authorization: Bearer [token]')
                 throw new UnauthorizedError('credentials_bad_scheme', 'Format is Authorization: Bearer [token]')
             }
         } else {
+            log.trace('credentials_bad_format: Format is Authorization: Bearer [token]')
             throw new UnauthorizedError('credentials_bad_format', 'Format is Authorization: Bearer [token]')
         }
     }
     return token
 }
-
-
 
 module.exports.createToken = createToken
 module.exports.destroyToken = jwtr.destroy

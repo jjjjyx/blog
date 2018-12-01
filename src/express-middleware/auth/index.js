@@ -1,17 +1,15 @@
 const unless = require('express-unless')
 const set = require('lodash/set')
+// const debug = require('debug')('app:express-middleware:auth')
 const log = require('log4js').getLogger('express-middleware:auth')
 const jwt = require('./jwt')
 const UnauthorizedError = require('../../errors/UnauthorizedError')
 const config = require('../../../config')
+let {tokenHeaderKey} = config
 
-let {tokenHeaderKey, secret} = config
 const requestProperty = 'user'
-
-log.debug('创建身份验证中间件，并设置 req.%s', requestProperty)
-
+log.debug('创建身份验证中间件，并设置 req.%s, tokenHeaderKey = %s', requestProperty, tokenHeaderKey)
 const auth = function (req, res, next) {
-
     if (req.method === 'OPTIONS' && req.headers.hasOwnProperty('access-control-request-headers')) {
         let hasAuthInAccessControl = !!~req.headers['access-control-request-headers']
             .split(',').map(function (header) {
@@ -34,7 +32,7 @@ const auth = function (req, res, next) {
     }
 
     jwt.verifyToken(token).then((decoded) => {
-        log.trace('auth verify success decoded = %s', decoded)
+        log.trace('auth verify success decoded ')
         set(req, requestProperty, decoded)
         set(req, 'token', token)
         next()

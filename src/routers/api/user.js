@@ -4,7 +4,8 @@
 const express = require('express')
 const bcrypt = require('bcryptjs')
 const useragent = require('useragent')
-const log = require('log4js').getLogger('api.user')
+// const log = require('log4js').getLogger('api.user')
+
 const debug = require('debug')('app:routers:api.user')
 const {check} = require('express-validator/check')
 
@@ -12,6 +13,7 @@ const {userDao, userLogDao, userMetaDao, sequelize} = require('../../models/inde
 
 const Result = require('../../common/result')
 const common = require('../../common')
+const log = require('../../common/manageLog')('api.user')
 const jwt = require('../../express-middleware/auth/jwt')
 
 const router = express.Router()
@@ -36,43 +38,18 @@ const _createUserLog = function (req, action, type) {
         agent: agentObj.toString()
     })
 }
-/**
- * 保存用户，meta 信息
- * @param id
- * @param key
- * @param value
- * @returns {Function}
- * @private
- */
-const _saveUserMeta = function (id, key, value) {
-    log.info('创建用户Meta，id = %d, key = %s, value = %s', id, key, value)
-    return userMetaDao.findOrCreate({
-        where: {
-            user_id: id,
-            meta_key: key
-        },
-        defaults: {
-            meta_value: value
-        }
-    }).spread((meta, created) => {
-        if (!created) {
-            log.info('创建用户Meta，id = %d, meta key = %s 已存在, 更新', id, key)
-            meta.meta_value = value
-            return meta.save()
-        }
-        return true
-    })
-}
+
 // 查询用户最后登陆时间
 const USER_LAST_LOGIN_TIME_SQL = 'SELECT createdAt FROM j_userlogs WHERE user_id = ? AND TYPE = \'login\' ORDER BY createdAt DESC LIMIT 0, 1'
 const _saveUserLastOnlineTime  = function (userId) {
+    // 查询最后时间，然后在更新
     return sequelize.query(USER_LAST_LOGIN_TIME_SQL, {
-        type: sequelize.QueryTypes.SELECT,
+        model: userLogDao,
         replacements: [userId]
     }).then(([result]) => {
         if (result) {
             let time = (+result.createdAt) / 1000
-            _saveUserMeta(userId, 'last_online_time', time)
+            common.updateOrCreateUserMeta(userId, 'last_online_time', time)
             return time
         }
         return null
@@ -93,33 +70,51 @@ const login = [
         try {
             // 取数据验证
             let user = await userDao.findOne({
-                where: {user_login: username}
+                where: {user_login: username},
+                include: [
+                    {model: userMetaDao, as: 'metas'},
+                ]
             })
 
             if (null === user) {
-                debug('login username = %s, 失败，账号不存在', username)
+                log.trace('The login account = %s does not exist,', username)
                 return res.status(200).json(Result.info('账号或密码错误'))
             }
             let isMatch = bcrypt.compareSync(password, user.user_pass)
             if (isMatch) {
-                log.info('User authenticated, generating token')
+                log.trace('User authenticated, generating token')
+                let {login_time: currentLoginTime = {meta_value: 0}} = user.metas
                 user = user.toJSON()
 
-                delete user.user_pass
-                user.permissions = common.userRole[user.role]
+
                 // 新增上次登录时间
-                user.lastOnlineTime = await _saveUserLastOnlineTime(user.id)
+                // 将本次登陆时间记录到上次登陆时间
+                let lastLoginTime = parseInt(currentLoginTime.meta_value)
+                // 记录本次登陆时间
+                currentLoginTime = ~~(new Date() / 1000)
+                // 保存
+                Promise.all([
+                    common.updateOrCreateUserMeta(user.id, 'last_online_time', lastLoginTime),
+                    common.updateOrCreateUserMeta(user.id, 'login_time', currentLoginTime),
+                ]).then (()=> {
+                    log.trace('Record user [%s] login time', user.user_nickname)
+                })
+                delete user.user_pass
+                delete user.metas
+                user.permissions = common.userRole[user.role]
+                user.lastOnlineTime = lastLoginTime
+                user.onlineTime = currentLoginTime
+                // user.lastOnlineTime = await _saveUserLastOnlineTime(user.id)
                 let result = await jwt.createToken(user)
                 req.user = user
                 // 获取上次登录时间，
 
-                // 记录本次登录
-                _createUserLog(req, '用户登陆', common.ENUMERATE.LogType.LOGIN)
                 // Token generated
+                log.login(req)
                 return res.status(200).json(Result.success(result))
                 // 获得token
             } else {
-                debug('login fail username = %s, password = ***', username)
+                log.trace('login fail username = %s, password = ***', username)
                 return res.status(200).json(Result.info('账号或密码错误'))
             }
         } catch (e) {
@@ -146,12 +141,8 @@ const logout = async function (req, res, next) {
     // 清除 token
     let token =  req.token
     try {
-        _createUserLog(req, '退出登录', common.enum.LogType.LOGOUT)
         await jwt.destroyToken(token)
-        // let {iat, id} = req.user // 签发时间
-        // _saveUserMeta(id, 'last_online_time', iat)
-        // 访问这个api 成功进来 肯定是登录状态
-        // 设置用户退出登录时间，设置登录时间
+        log.logout(req)
         return res.status(200).json(Result.success())
     } catch (e) {
         log.error('logout error by', e)
@@ -164,7 +155,7 @@ const auth = function (req, res, next) {
     res.setHeader('Cache-Control', 'max-age=0, private, must-revalidate')
     res.header('Pragma', 'no-cache')
     res.header('Expires', 0)
-    log.debug('auth = ', JSON.stringify(req.user))
+    log.trace('auth = ', JSON.stringify(req.user))
     return res.status(200).json(Result.success(req.user))
 }
 
@@ -180,25 +171,34 @@ const update_info = [
         try {
             let u1 = req.user
             let user = await userDao.findOne({
-                where: {user_login: u1.user_login}
+                where: {user_login: u1.user_login},
+                include: [
+                    {model: userMetaDao, as: 'metas'}
+                ]
             })
             if (user === null) {
-                debug('login username = %s, 修改失败，账号不存在', u1.user_login)
+                log.trace('The login account = %s does not exist, the modification failed.', u1.user_login)
                 return res.status(200).json(Result.info('修改失败'))
             }
+            let {login_time: currentLoginTime = {meta_value: 0}, last_online_time: lastLoginTime = {meta_value: 0}} = user.metas
+            let oldUser = user.toJSON()
+            delete oldUser.user_pass
             user.user_nickname = user_nickname
             user.display_name = display_name
             user.user_email = user_email
             user.user_url = user_url
             await user.save()
-            log.info('User info update, generating token')
+            log.trace('User information was successfully modified, Regenerate token')
             user = user.toJSON()
 
             delete user.user_pass
+            delete user.metas
             user.permissions = common.userRole[user.role]
+            user.lastOnlineTime = parseInt(lastLoginTime.meta_value)
+            user.onlineTime = parseInt(currentLoginTime.meta_value)
             let result = await jwt.createToken(user)
-            _createUserLog(req, '修改用户信息', common.ENUMERATE.LogType.UPDATE)
-            // 更新用户需要更新 token
+
+            log.updateUserInfo(req, oldUser, user)
             return res.status(200).json(Result.success(result))
         } catch (e) {
             log.error('update_info error by:', e)

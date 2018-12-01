@@ -50,7 +50,7 @@ const update = [
             allowKey.forEach((key) => {
                 // 也许默认分类的这个东西就不该放在 全局设置
                 if (key === 'defaultCategoryId') {
-                    termDao.findById(req.body[key]).then(term => {
+                    termDao.findByPk(req.body[key]).then(term => {
                         global.SITE.defaultTerm = term
                         SITE.defaultCategoryId = req.body[key]
                     }).catch(() => {

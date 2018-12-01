@@ -1,25 +1,26 @@
 'use strict'
 
 const express = require('express')
-const debug = require('debug')('app:routers:home')
+// const debug = require('debug')('app:routers:home')
 const log = require('log4js').getLogger('routers:home')
+// const opLog = require('log4js').getLogger('op.routers:home')
 const isFunction = require('lodash/isFunction')
-const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
-const {body, query} = require('express-validator/check')
+const {sanitizeQuery} = require('express-validator/filter')
+const {query} = require('express-validator/check')
 
 const Result = require('../common/result')
-const {Enum} = require('../common/enumerate')
 const utils = require('../utils')
 const common = require('../common')
+const ManageLog = require('../common/manageLog')('routers:home')
+
 const {termDao, userDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
 
 const router = express.Router()
-const Op = sequelize.Op
-
-const loadPostPageSize = 10
+const loadPostPageSize = common.CONSTANT.LOAD_POST_PAGE_SIZE
 const cacheTimeOut = config.cacheTimeOut
-log.debug('loadPostPageSize = %d', loadPostPageSize)
-log.debug('cacheTimeOut = %d 秒', cacheTimeOut)
+
+log.trace('首页加载文章个数 loadPostPageSize = %d', loadPostPageSize)
+log.trace('动态页面内容缓存过期时间 cacheTimeOut = %d 秒', cacheTimeOut)
 
 const queryStickyPost = `
 SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`postMeta\` 
@@ -41,7 +42,7 @@ const index = [
             })
             let stickyPostIds = result.map((item) => item.id)
 
-            debug('加载置顶文章 stickyPostNum = %d 个' , stickyPostNum)
+            log.trace('加载置顶文章 stickyPostNum = %d 个' , stickyPostNum)
             let stickyPost = await postDao.findAll({
                 where:{id: stickyPostIds},
                 include: common.postInclude
@@ -61,7 +62,7 @@ const index = [
                 sidebar = '侧边栏加载失败'
                 log.error('侧边栏加载失败 by :', e)
             }
-
+            ManageLog.info('访问首页')
             res.render('home', {articleList, sidebar});
         } catch (e) {
             next(e)

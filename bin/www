@@ -22,7 +22,7 @@ sequelize.authenticate().then(() => {
     log.info('连接数据库成功！')
     return require('../src/before-listen.js')(app)
 }).then(listen).catch((e) => {
-    log.error('获取初始化信息失败， 请检查数据库链接', e)
+    log.error('连接数据库失败，请检查数据库链接， 程序已退出。', e)
     process.exit(1)
 })
 
