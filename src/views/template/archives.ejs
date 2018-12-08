@@ -4,11 +4,11 @@
     </div>
     <ul class="j-sidebar__body">
         <%
-        for (var i=0; i< data.length;i++) {
+        for (var i = 0; i < data.length;i++) {
         %>
         <li>
-            <a href="/archives#<%=data[i].post_date%>"><%=data[i].post_date2%> (<u><%=data[i].count%></u>)</a>
+            <a href="/archives#<%= data[i].post_date %>"><%= data[i].post_date2 %> (<u><%= data[i].count %></u>)</a>
         </li>
-        <%}%>
+        <% } %>
     </ul>
 </div>

@@ -4,13 +4,13 @@ const express = require('express')
 
 const debug = require('debug')('app:routers:category')
 const log = require('log4js').getLogger('routers:category')
-const {body, query} = require('express-validator/check')
-const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
+const { body, query } = require('express-validator/check')
+const { sanitizeBody, sanitizeQuery } = require('express-validator/filter')
 
-const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../models')
+const { termDao, userDao, postDao, postMetaDao, sequelize } = require('../models')
 
-const {term_relationships: termRelationshipsDao} = sequelize.models
-const {Enum} = require('../common/enumerate')
+const { term_relationships: termRelationshipsDao } = sequelize.models
+const { Enum } = require('../common/enumerate')
 const common = require('../common')
 const utils = require('../utils')
 
@@ -21,7 +21,7 @@ const renderCategoryList = [
     async function (req, res, next) {
         try {
             let list = await common.loadCategory(100)
-            res.render('category-list', {list})
+            res.render('category-list', { list })
         } catch (e) {
             next(e)
         }
@@ -59,14 +59,14 @@ const renderCategory = [
             let stickyPostIds = result.map((item) => item.id)
             debug('加载该置顶文章 stickyPostNum = %d 个', stickyPostNum)
             let stickyPost = await postDao.findAll({
-                where: {id: stickyPostIds},
+                where: { id: stickyPostIds },
                 include: common.postInclude
             })
             let articleList = stickyPost.map(common.generatePostHtml).join('')
-            let posts = await common.loadPost({page: 1, pageSize: loadCategoryLength}, term, stickyPostIds)
+            let posts = await common.loadPost({ page: 1, pageSize: loadCategoryLength }, term, stickyPostIds)
             articleList += posts.map(common.generatePostHtml).join('')
             //
-            res.render('category', {articleList, term, articleLength: posts.length, maxLength: loadCategoryLength})
+            res.render('category', { articleList, term, articleLength: posts.length, maxLength: loadCategoryLength })
         } catch (e) {
             log.error('renderCategory error by:', e)
             next()
@@ -90,7 +90,7 @@ const loadPostByTerm = [
             if (term === null) {
                 return res.send('')
             }
-            let result = await common.loadPostHtml({page, pageSize: 20}, term)
+            let result = await common.loadPostHtml({ page, pageSize: 20 }, term)
             res.send(result)
         } catch (e) {
             log.error('loadPostByTerm error by:', e)

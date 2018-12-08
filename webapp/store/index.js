@@ -70,11 +70,11 @@ const getters = {
 }
 const debug = process.env.NODE_ENV !== 'production'
 const plugins = []
-    // [createPersistedState({
-    //     filter: ({type}) => {
-    //         return type !== 'APPEND_MEDIA'
-    //     }
-    // })]
+// [createPersistedState({
+//     filter: ({type}) => {
+//         return type !== 'APPEND_MEDIA'
+//     }
+// })]
 
 if (debug) {
     plugins.push(createLogger())

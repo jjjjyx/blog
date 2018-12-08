@@ -89,10 +89,10 @@ app.use(function (req, res, next) {
 app.use('/api/', function (err, req, res, next) {
     res.status(err.status || 500)
     if (err instanceof UnauthorizedError) {
-        log.info(`访问 ${req.originalUrl} 失败，用户身份验证失败 `)
+        log.info(`Access to ${req.originalUrl} failed, user authentication failed `)
         return res.json(Result.error('invalid token...'))
     } else {
-        log.error('api 错误:', err)
+        log.error('Api internal error by:', err)
         return res.json(Result.error(IS_DEV ? err : {}))
     }
 })
@@ -101,12 +101,12 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500)
     if (err instanceof UnauthorizedError) {
         // 访问失败
-        accessLog.info(`访问 ${req.originalUrl} ${err.message}`)
+        accessLog.info(`Visit ${req.originalUrl} ${err.message}`)
         return res.send('invalid token...')
     }
     // 如果是的路由的错误
-    log.error('访问 %s 失败，服务器内部错误:', req.originalUrl,err)
-    accessLog.info(`访问 ${req.originalUrl} 失败，内部错误`, err)
+    log.error('Access to %s failed with internal server error:', req.originalUrl,err)
+    accessLog.info(`Access to ${req.originalUrl} failed with internal error by：`, err)
     res.render('error', {message: err.message, error: IS_DEV ? err : {}})
 })
 module.exports = app

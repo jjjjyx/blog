@@ -6,10 +6,12 @@
     border-top: 1px solid #373a3c;
     color: rgba(236, 235, 231, 0.5);
 }
+
 .widget {
     padding: 0px 3rem;
     margin-bottom: 3.5rem;
 }
+
 .widget__title {
     color: #ffffff;
     border-bottom: 1px solid $main-title-color;
@@ -27,6 +29,7 @@
         bottom: -1px;
     }
 }
+
 .widget__content {
     > li {
         margin-bottom: 4px;
@@ -40,9 +43,11 @@
         }
     }
 }
+
 .recent-post {
 
 }
+
 .footer--site-desc {
     ul {
         display: flex;
@@ -65,7 +70,7 @@
 
 .recent-post--item {
     //border-bottom: 1px dashed $border-color;
-    border-bottom: 1px dashed  $main-title-color;
+    border-bottom: 1px dashed $main-title-color;
     padding-bottom: 14px;
     margin-bottom: 14px;
     .post-title {
@@ -82,8 +87,6 @@
         font-size: 1rem;
     }
 }
-
-
 
 .copyright {
     text-align: center;

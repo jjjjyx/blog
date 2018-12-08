@@ -19,10 +19,10 @@ let {appPort: port} = config
 app.set('port', port)
 
 sequelize.authenticate().then(() => {
-    log.info('连接数据库成功！')
+    log.info('Connected to the database successfully!')
     return require('../src/before-listen.js')(app)
 }).then(listen).catch((e) => {
-    log.error('连接数据库失败，请检查数据库链接， 程序已退出。', e)
+    log.error('Failed to connect to the database, please check the database link', e)
     process.exit(1)
 })
 

@@ -21,7 +21,7 @@ export const mutations = {
             if (item.name === state.homeRouter.name) continue
             // if (item.meta.hide) continue
             if (!item.name) continue
-            let {expand = true} = item.meta
+            let { expand = true } = item.meta
 
             // 面包屑导航 过滤掉不在侧边显示的导航
             if (!expand) {
@@ -36,7 +36,7 @@ export const mutations = {
     SET_LANGUAGE: (state, language) => {
         state.language = language
         localStorage.setItem('local', language)
-    },
+    }
     // toggleSidebar(state,v){
     //     state.isSidebarShow = !!v;
     // },

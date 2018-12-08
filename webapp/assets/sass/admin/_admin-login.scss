@@ -1,106 +1,110 @@
 .login-container {
-  background-color: #edecec;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  &:before {
-    height: 50%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: #00bcd4;
-    content: "";
-    z-index: 0;
-  }
+    background-color: #edecec;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    &:before {
+        height: 50%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: #00bcd4;
+        content: "";
+        z-index: 0;
+    }
 }
 
 .login-form-warp {
-  padding: 25px 55px;
-  background: #fff;
-  box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
-  border-radius: 2px;
-  width: 500px;
-  display: inline-block;
-  vertical-align: middle;
-  position: relative;
-  min-height: 300px;
+    padding: 25px 55px;
+    background: #fff;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    border-radius: 2px;
+    width: 500px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    min-height: 300px;
 }
 
 .login__title {
-  //color: #7E7E7E;
-  text-align: center;
-  letter-spacing: -0.05em;
-  line-height: 20px;
-  margin: 2rem 0;
-  position: relative;
-  &:before, &:after {
-    content: "";
-    height: 1px;
-    position: absolute;
-    top: 50%;
-    width: 35%;
-    background: rgb(126, 126, 126);
-  }
-  &:after {
-    background: linear-gradient(to right, rgba(126, 126, 126, 1) 0%, rgba(255, 255, 255, 1) 100%);
-    right: 0;
-  }
+    //color: #7E7E7E;
+    text-align: center;
+    letter-spacing: -0.05em;
+    line-height: 20px;
+    margin: 2rem 0;
+    position: relative;
+    &:before, &:after {
+        content: "";
+        height: 1px;
+        position: absolute;
+        top: 50%;
+        width: 35%;
+        background: rgb(126, 126, 126);
+    }
+    &:after {
+        background: linear-gradient(to right, rgba(126, 126, 126, 1) 0%, rgba(255, 255, 255, 1) 100%);
+        right: 0;
+    }
 
-  &:before {
-    background: linear-gradient(to left, rgba(126, 126, 126, 1) 0%, rgba(255, 255, 255, 1) 100%);
-    left: 0;
-  }
+    &:before {
+        background: linear-gradient(to left, rgba(126, 126, 126, 1) 0%, rgba(255, 255, 255, 1) 100%);
+        left: 0;
+    }
 }
+
 .login__btn {
-  position: absolute !important;
-  right: -25px;
-  top: 50%;
-  transform: translateY(-50%);
-  line-height: 50px !important;
-  font-size: 2rem !important;
-  width: 50px !important;
-  height: 50px !important;
+    position: absolute !important;
+    right: -25px;
+    top: 50%;
+    transform: translateY(-50%);
+    line-height: 50px !important;
+    font-size: 2rem !important;
+    width: 50px !important;
+    height: 50px !important;
 
 }
+
 .login__navigation {
-  text-align: center;
-  margin-top: 2rem;
-  display: flex;
-  align-items: center;
-  order: 2;
+    text-align: center;
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    order: 2;
 }
-.login__navigation__item {
-  display: inline-block;
-  margin: 0 .5rem;
-  transition: all .15s ease-in-out;
 
-  cursor: pointer;
-  color: #fff;
-  line-height: 16px;
-  min-width: 16px;
-  min-height: 16px;
-  text-transform: uppercase;
-  backface-visibility: hidden;
-  border-radius: 10px;
-  padding: 0 5px;
-  font-size: 8px;
-  opacity: .66;
-  //font-size: 0;
-  //border-radius: 100%;
-  &:hover {
-    opacity: 1;
-  }
+.login__navigation__item {
+    display: inline-block;
+    margin: 0 .5rem;
+    transition: all .15s ease-in-out;
+
+    cursor: pointer;
+    color: #fff;
+    line-height: 16px;
+    min-width: 16px;
+    min-height: 16px;
+    text-transform: uppercase;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    padding: 0 5px;
+    font-size: 8px;
+    opacity: .66;
+    //font-size: 0;
+    //border-radius: 100%;
+    &:hover {
+        opacity: 1;
+    }
 }
+
 .login__navigation + .login-form-warp {
-  margin-top: 3rem;
+    margin-top: 3rem;
 }
 
 @each $color, $value in $colors {
-  .login__navigation__item--#{$color} {
-    background-color: $value ;
-  }
+    .login__navigation__item--#{$color} {
+        background-color: $value;
+    }
 }
 

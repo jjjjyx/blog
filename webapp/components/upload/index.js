@@ -100,7 +100,7 @@ function init (options = {}) {
     })
     instance.$mount()
     // 使用起来好奇怪啊
-    let {handleRemoveFileList, handleFileStartUpload, handleCancelUpload, handleFailRefresh} = options
+    let { handleRemoveFileList, handleFileStartUpload, handleCancelUpload, handleFailRefresh } = options
 
     handleRemoveFileList && instance.$on('file-item-remove', handleRemoveFileList)
     handleFileStartUpload && instance.$on('file-item-start-upload', handleFileStartUpload)

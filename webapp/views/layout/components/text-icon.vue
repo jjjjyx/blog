@@ -10,13 +10,14 @@ let $div = document.createElement('div')
 // let $i = document.createElement('span')
 // $div.appendChild($i)
 document.body.appendChild($div)
+
 function getTextWidth (el) {
-	let cloneEl = el.cloneNode(true)
+    let cloneEl = el.cloneNode(true)
     let $span = cloneEl.childNodes[0]
-	$div.appendChild(cloneEl)
+    $div.appendChild(cloneEl)
     let width = $span.offsetWidth
     let w1 = cloneEl.getBoundingClientRect().width
-	$div.removeChild(cloneEl)
+    $div.removeChild(cloneEl)
     return [w1, width]
 }
 
@@ -82,6 +83,7 @@ export default {
     .ivu-menu-submenu-title span > i {
         margin-right: 0 !important;
     }
+
     .text-icon {
         text-align: center;
         background: transparent;
@@ -95,6 +97,7 @@ export default {
         height: 2rem;
         line-height: 2rem;
     }
+
     .text-icon i {
         text-transform: capitalize;
     }

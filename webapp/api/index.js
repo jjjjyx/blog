@@ -43,13 +43,13 @@ function encode (obj, sep = '&', eq = '=', name) {
 }
 
 class HttpBaseError extends Error {
-    constructor(message, code, data) {
+    constructor (message, code, data) {
         super()
-        this.name = 'HttpBaseError';
+        this.name = 'HttpBaseError'
         this.code = code
         this.data = data
         this.message = message
-        Error.captureStackTrace(this, this.constructor);
+        Error.captureStackTrace(this, this.constructor)
     }
 }
 
@@ -58,7 +58,7 @@ const RespStatusMap = {
     403: '尚未登录',
     404: '(～￣▽￣)～ ，404 了呢',
     429: '(～￣▽￣)～ ，服务器繁忙，稍后重试',
-    500: '(～￣▽￣)～ ，服务器出错了',
+    500: '(～￣▽￣)～ ，服务器出错了'
 }
 
 export {
@@ -78,7 +78,7 @@ if (localStorage.getItem('authorization')) {
 function do_fetch (url, method, data, header = {}) {
     const headers = Object.assign({}, defaultHeaders, header)
     if (token) {
-        headers['Authorization'] = token;
+        headers['Authorization'] = token
     }
     let fetchParams = {
         method: method,
@@ -95,15 +95,17 @@ function do_fetch (url, method, data, header = {}) {
 }
 
 
-function get(url, data, header) {
-    return do_fetch(url, "GET", data, header);
+function get (url, data, header) {
+    return do_fetch(url, 'GET', data, header)
 }
-function post(url, data, header) {
-    return do_fetch(url, "POST", data, header);
+
+function post (url, data, header) {
+    return do_fetch(url, 'POST', data, header)
 }
+
 const handle = async function (resp) {
     if (resp.ok) {
-        let {code, data, msg} = await resp.json()
+        let { code, data, msg } = await resp.json()
         if (code === 0) {
             data = data || msg
             return data
@@ -142,16 +144,16 @@ export default {
     nget,
     get,
     post,
-    set token(value) {
+    set token (value) {
         console.log('更新用户token')
         if (value) {
-            token = 'Bearer ' + value;
+            token = 'Bearer ' + value
             localStorage.setItem('authorization', value)
         } else {
             localStorage.removeItem('authorization')
         }
     },
-    get token() {
+    get token () {
         return token
     }
 }

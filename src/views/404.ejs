@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html class="zh-CN">
 <head>
-    <% var data = {name: 'article'} %>
+    <% var data = { name: 'article' } %>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><% if(locals.title) {%> <%-locals.title%> | <%}%><%-SITE.title%></title>
+    <title>
+        <% if(locals.title) { %>
+        <%- locals.title %> |
+        <% } %>
+        <%- SITE.title %></title>
     <meta name="renderer" content="webkit">
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" rel="shortcut icon">
-    <link href="<%=locals.cdn('normalize/8.0.0/normalize.min.css')%>" rel="stylesheet">
-    <link href="<%=locals.cdn('animate.css/3.5.2/animate.min.css')%>" rel="stylesheet">
-    <link href="<%=locals.cdn('iview/2.14.0/styles/iview.css')%>" rel="stylesheet">
-    <link href="<%-SITE.iconUrl%>" rel="stylesheet">
-    <% if(!locals.dev) {%>
-    <link href="/static/css/common.css?_=<%=locals.hash%>" rel="stylesheet">
-    <link href="/static/css/<%=data.name%>.css?_=<%=locals.hash%>" rel="stylesheet">
-    <%}%>
+    <link href="<%= locals.cdn('normalize/8.0.0/normalize.min.css') %>" rel="stylesheet">
+    <link href="<%= locals.cdn('animate.css/3.5.2/animate.min.css') %>" rel="stylesheet">
+    <link href="<%= locals.cdn('iview/2.14.0/styles/iview.css') %>" rel="stylesheet">
+    <link href="<%- SITE.iconUrl %>" rel="stylesheet">
+    <% if(!locals.dev) { %>
+    <link href="/static/css/common.css?_=<%= locals.hash %>" rel="stylesheet">
+    <link href="/static/css/<%= data.name %>.css?_=<%= locals.hash %>" rel="stylesheet">
+    <% } %>
     <style>
-        html,body{
+        html, body {
             height: 100%;
         }
-        .block{
+
+        .block {
             height: 100%;
             text-align: center;
             padding-top: 80px;
             padding-bottom: 20px;
         }
+
         h5 {
             line-height: 30px;
             font-size: 21px;
@@ -34,28 +40,32 @@
             text-align: center;
             color: #dce2ec;
         }
+
         h5 ~ p {
             font-size: 1.2rem;
             margin: .75rem 0;
         }
-        .block .img-responsive{
+
+        .block .img-responsive {
 
             display: block;
             max-width: 100%;
             height: 253px;
-            margin:  0 auto;
+            margin: 0 auto;
         }
+
         /*.logo{*/
-            /*position: absolute;*/
-            /*left: 40px;*/
-            /*top: 0px;*/
-            /*width: 180px;*/
+        /*position: absolute;*/
+        /*left: 40px;*/
+        /*top: 0px;*/
+        /*width: 180px;*/
         /*}*/
         .main {
             height: 100%;
             display: flex;
             flex-direction: column;
         }
+
         .header-mark {
             height: 64px;
             flex-shrink: 0;
@@ -68,7 +78,7 @@
 <div class="main">
     <div class="header-mark"></div>
     <!--<a href="/">-->
-        <!--<img class="logo am-img-responsive" src="http://i1.piimg.com/567571/34a3b58fae955449.png"/>-->
+    <!--<img class="logo am-img-responsive" src="http://i1.piimg.com/567571/34a3b58fae955449.png"/>-->
     <!--</a>-->
     <div class="block">
         <img src="https://image.cdn.mbdoge.cn/404.png" class="img-responsive" alt="" height="150"/>
@@ -77,10 +87,10 @@
         <p>可能是URL正确, 文章已被作者转为私密。</p>
         <a class="ivu-btn ivu-btn-error ivu-btn-circle" href="/">Back Home</a>
     </div>
-    <%-include('base/bottom', data); %>
+    <%- include('base/bottom', data); %>
 </div>
 </body>
-<% if(locals.dev) {%>
-<%-include('base/footer', data); %>
-<%}%>
+<% if(locals.dev) { %>
+    <%- include('base/footer', data); %>
+<% } %>
 </html>

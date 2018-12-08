@@ -41,26 +41,33 @@ const LogType = {
 
 // 操作
 const manageOperationEnum = {
-    CREATE: '创建',  // 1
-    UPDATE: '修改',  // 2
-    DELETE: '修改',  // 3
-    LOGIN: '登陆',  // 4
-    LOGOUT: '退出',  // 5
-    UPLOAD: '上传',  // 6
-    ACCESS: '访问',  //10 0
-    COMMENT: '评论',  //10 1
-    REPLY: '回复'  //10 2
+    CREATE: '创建', // 1
+    UPDATE: '修改', // 2
+    DELETE: '删除', // 3
+    LOGIN: '登陆', // 4
+    TRASH: '丢弃', // 4
+    REVERT: '还原', // 4
+    PUBLISH: '发布', // 4
+    LOGOUT: '退出', // 5
+    UPLOAD: '上传', // 6
+    ACCESS: '访问', // 10 0
+    COMMENT: '评论', // 10 1
+    REPLY: '回复' // 10 2
 }
 // 操作对象
 const relatedTypeEnum = {
-    'PROFILE': '用户资料',
-    'PASS': '用户密码',
-    'POST': '文章',
-    'CATEGORY': '分类',
-    'TAG': '标签',
-    'SYSTEM': '系统',
-    'WEBSITE': '系统设置',
-    'IMAGE': '图片'
+    'profile': '用户资料',
+    'pass': '用户密码',
+    'post': '文章',
+    'revision': '文章自动存档',
+    'autoDraft': '文章草稿',
+    'category': '分类',
+    'post_tag': '标签',
+    'term': 'term',
+    'system': '系统',
+    'website': '系统设置',
+    'image': '图片',
+    'resource': '图片'
 }
 const fieldLabelEnum = {
     // 评论相关
@@ -78,10 +85,11 @@ const fieldLabelEnum = {
     post_name: '别名',
     guid: '短链接',
     post_type: '类型',
+    category: '分类',
+    post_tag: '标签',
 
     // 媒体相关
     space: '存放目录',
-
 
     icon: '图标',
     user_pass: '密码',

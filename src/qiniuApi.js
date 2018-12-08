@@ -1,4 +1,3 @@
-
 const qiniu = require('qiniu')
 const UrlParse = require('url')
 const path = require('path')
@@ -133,7 +132,7 @@ async function getImageAveByUrl (url) {
 async function getImageInfo (url) {
     let data = await utils.getURLJSONData(url + '?imageInfo')
     if (data.error) {
-        return {'size': 0, 'format': '', 'width': 0, 'height': 0, 'colorModel': ''}
+        return { 'size': 0, 'format': '', 'width': 0, 'height': 0, 'colorModel': '' }
     }
     return data
 }
@@ -146,13 +145,13 @@ async function getImageInfo (url) {
  * @returns {Promise<void>}
  */
 function sisyphusFetch (url, name, copyright) {
-    let {host, pathname} = UrlParse.parse(url)
+    let { host, pathname } = UrlParse.parse(url)
     // url 不正确
     if (!host) throw new Error('url 不正确，无法被解析')
     name = name || path.basename(pathname)
     copyright = copyright || `From the network: ${url}`
     return new Promise((resolve, reject) => {
-        bucketManager.fetch(url, BUCKET_NAME, name, function(err, respBody, respInfo) {
+        bucketManager.fetch(url, BUCKET_NAME, name, function (err, respBody, respInfo) {
             if (err) { //478
                 debug('抓取网络图片失败图片失败 url = %s, name', url, name)
                 reject(err)
@@ -177,7 +176,6 @@ function sisyphusFetch (url, name, copyright) {
 function uploadToken () {
     return putPolicy.uploadToken(mac)
 }
-
 
 module.exports.syncDelete = syncDelete
 module.exports.getAllBybucket = getAllBybucket

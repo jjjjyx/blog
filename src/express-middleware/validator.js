@@ -5,7 +5,7 @@ const compact = require('lodash/compact')
 const isArray = require('lodash/isArray')
 const shortid = require('shortid')
 
-log.trace('载入自定义验证器')
+log.trace('Load custom validator')
 
 const validator = {
     customSanitizers: {

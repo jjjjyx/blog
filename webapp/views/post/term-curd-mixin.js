@@ -1,7 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep'
 
-import {mapActions} from 'vuex'
-let modalForm = {name: '', slug: '', description: '', icon: ''}
+import { mapActions } from 'vuex'
+
+let modalForm = { name: '', slug: '', description: '', icon: '' }
 export default {
     data () {
         return {
@@ -11,7 +12,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions({'fetchTerms': 'fetchTerms'}),
+        ...mapActions({ 'fetchTerms': 'fetchTerms' }),
         insert () {
             this.modalFormItem = cloneDeep(this.cloneModalFormItem)
             this.action = 'insert'

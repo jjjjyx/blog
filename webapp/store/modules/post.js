@@ -2,15 +2,14 @@
 
 import cloneDeep from 'lodash/cloneDeep'
 import toNumber from 'lodash/toNumber'
-import isNumber  from 'lodash/isNumber'
+import orderBy from 'lodash/orderBy'
 import isObject from 'lodash/isObject'
 import isArray from 'lodash/isArray'
 import groupBy from 'lodash/groupBy'
+import find from 'lodash/find'
 
 import * as post from '../../api/posts'
-import {POST_WRITER_STATUS} from '../../utils/common'
-
-
+import { POST_WRITER_STATUS } from '../../utils/common'
 
 const state = {
     'id': 0,
@@ -42,12 +41,14 @@ const state = {
     // newTags: [], // 新增的标签
     category_id: null, // 分类
     revision: [], // 历史版本
-    status: POST_WRITER_STATUS.normal
-    // sidebarCategoryValue: 1
+    status: POST_WRITER_STATUS.normal,
+    versionModelVisible: false,
+    versionModelActive: null
 }
 // 可以merge的key
-let mergeKeys = ['comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'render_value', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'post_password', 'sticky', 'updatedAt', 'createdAt']
+const mergeKeys = ['comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'render_value', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'post_password', 'sticky', 'updatedAt', 'createdAt']
 
+const postKey = ['id', 'comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'render_value', 'post_password', 'sticky', 'new_tag', 'category_id']
 const copyPost = cloneDeep(state)
 let currCopy = cloneDeep(state)
 
@@ -56,18 +57,21 @@ const getters = {
     // 在离开的时候是否显示提示
     // 仅在保存中， 编辑 状态时提示
     showLeaveTip: state => state.status === POST_WRITER_STATUS.saving || state.status === POST_WRITER_STATUS.edited,
+    autoSaveVersion: state => find(state.revision, ['autosave', true]),
+    masterVersion: state => find(state.revision, ['master', true]),
+    versions: state => orderBy(state.revision, 'updatedAt', 'desc'),
     ajaxPostClone: state => {
-        let obj = cloneDeep(state)
-        delete obj.terms
-        delete obj.metas
-        delete obj.user
-        delete obj.revision
-        // obj.new_tag = obj.newTags.concat(obj.tags)
-        // delete obj.newTags
-        // delete obj.tags
-        delete obj.status
-        delete obj.updatedAt
-        delete obj.createdAt
+        let obj = {}
+        postKey.forEach((key) => {
+            obj[key] = state[key]
+        })
+        // delete obj.terms
+        // delete obj.metas
+        // delete obj.user
+        // delete obj.revision
+        // delete obj.status
+        // delete obj.updatedAt
+        // delete obj.createdAt
         return obj
     },
     isPublish: state => state.post_date !== null
@@ -76,40 +80,39 @@ const getters = {
 
 // actions
 const actions = {
-    async createNewPost ({commit, state}) {
+    async createNewPost ({ commit, state }) {
         try {
             // 创建前 如果有 id 并且状态是自动草稿 就不新建了
-            if (state.id && state.post_status === 'auto-draft') {
-                return 0
+            if (state.id && state.post_status === 'auto-draft' && !state.createdAt) {
+                return state
             }
 
             let result = await post.create()
             commit('SET_CURRENT_POST', result)
             commit('updateEditorStatus', POST_WRITER_STATUS.created)
+            return result
         } catch (e) {
             this.$Message.info('创建新文章失败，请重试')
+            throw e
         }
     },
-    async fetchPostInfo ({commit}, poi) {
-        poi = toNumber(poi)
-        if (poi && isNumber(poi)) {
-            try {
-                // console.log('poi', poi)
-                let result = await post.get(poi)
-                commit('SET_CURRENT_POST', result)
-                commit('updateEditorStatus', POST_WRITER_STATUS.created)
-                //     commit('updateEditorStatus', POST_WRITER_STATUS.posted)
-                // if (result.post_status === 'publish') {
-                // } else {
-                // }
-                return true
-            } catch (e) {
-                this._vm.$Message.error('获取文章信息失败')
-            }
+    async fetchPostInfo ({ commit }, poi) {
+        try {
+            // console.log('poi', poi)
+            let result = await post.get(poi)
+            commit('SET_CURRENT_POST', result)
+            commit('updateEditorStatus', POST_WRITER_STATUS.created)
+            //     commit('updateEditorStatus', POST_WRITER_STATUS.posted)
+            // if (result.post_status === 'publish') {
+            // } else {
+            // }
+            return result
+        } catch (e) {
+            this._vm.$Message.error('获取文章信息失败')
+            throw e
         }
-        return false
     },
-    afterRelease ({commit}, {revision, mergeObj}) {
+    afterRelease ({ commit }, { revision, mergeObj }) {
         // console.log('revision = ', revision)
         // console.log('mergeObj = ', mergeObj)
         commit('mergePost', mergeObj)
@@ -119,6 +122,16 @@ const actions = {
     },
     getOriginPost () {
         return currCopy
+    },
+    openVersionModel ({ commit, getters }, ver) {
+        // console.log('openVersionModel')
+        // this.versionModel = true
+        // if (ver) {
+        //     this.$refs.versionModal.active = ver
+        // }
+        ver = ver || getters.versions[0] || null
+        commit('SET_VERSION_MODEL_ACTIVE', ver)
+        commit('SET_VERSION_MODEL_STATUS', true)
     }
 }
 const mutations = {
@@ -144,7 +157,7 @@ const mutations = {
     updatePostTitle (state, value) {
         state.post_title = value
     },
-    updatePostContent (state, {value, render}) {
+    updatePostContent (state, { value, render }) {
         state.post_content = value
         state.render_value = render
     },
@@ -206,47 +219,63 @@ const mutations = {
             autoRevision.post_excerpt = obj.post_excerpt
             autoRevision.updatedAt = new Date()
             let metas = autoRevision.metas
-            metas.tags = metas.tags || {meta_value: ''}
-            metas.category = metas.category || {meta_value: ''}
+            metas.tags = metas.tags || { meta_value: '' }
+            metas.category = metas.category || { meta_value: '' }
 
             metas.tags.meta_value = JSON.stringify(obj.new_tag)
             metas.category.meta_value = JSON.stringify(obj.category_id)
         }
     },
     SET_CURRENT_POST (state, value) {
-        // 先重置， 在设置
         if (isObject(value)) {
+            // 先重置
             for (let key in copyPost) {
                 if (state.hasOwnProperty(key)) {
                     state[key] = copyPost[key]
                 }
             }
-            // 标记自动版本
+            // 标记版本
             if (value.revision && isArray(value.revision)) {
-                value.revision.forEach((item) => {
-                    item.autosave = item.type === `${value.id}-autosave-v1`
-                    item.curr = item.updatedAt === value.updatedAt
-                    // item.metas = transformMetas(item.metas)
-                    // item.post_content = false
+                value.revision.forEach(item => {
+                    item.updatedAt = new Date(item.updatedAt)
                 })
+                let autoSaveVersion = find(value.revision, ['type', `${value.id}-autosave-v1`])
+                if (autoSaveVersion) {
+                    autoSaveVersion.autosave = true
+                }
+                // 创建事件最近的版本就是主版本， 找到并标记
+                let master = value.revision[0]
+                if (master) {
+                    if (master === autoSaveVersion) {
+                        master = value.revision[1]
+                    }
+                    master.master = true
+                }
             }
             // 转换metas
             // value.metas = transformMetas(value.metas)
+            // 设置
             for (let key in value) {
                 if (state.hasOwnProperty(key)) {
                     state[key] = value[key]
                 }
             }
-            let {sticky} = value.metas
+            let { sticky } = value.metas
             if (sticky) {
                 state.sticky = toNumber(sticky.meta_value) ? 'sticky' : ''
             }
-            let {category, post_tag: postTag} = groupBy(value.terms, 'taxonomy')
+            let { category, post_tag: postTag } = groupBy(value.terms, 'taxonomy')
             if (postTag) state.new_tag = postTag.map((i) => i.name)
             if (category) state.category_id = category[0].id
 
             currCopy = cloneDeep(state)
         }
+    },
+    SET_VERSION_MODEL_ACTIVE (state, value) {
+        state.versionModelActive = value
+    },
+    SET_VERSION_MODEL_STATUS (state, value) {
+        state.versionModelVisible = !!value
     }
 }
 

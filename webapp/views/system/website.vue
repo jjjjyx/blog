@@ -6,7 +6,7 @@
         </div>
         <!--<div>-->
 
-                <!--{{layout}}-->
+        <!--{{layout}}-->
 
         <!--</div>-->
         <div>
@@ -52,7 +52,7 @@ import isEqual from 'lodash/isEqual'
 import isObject from 'lodash/isObject'
 import cloneDeep from 'lodash/cloneDeep'
 import api from '@/api'
-import {GridItem, GridLayout} from 'vue-grid-layout'
+import { GridItem, GridLayout } from 'vue-grid-layout'
 // ResponsiveGridLayout
 // mapState, mapActions,
 
@@ -100,7 +100,7 @@ const siteLayout = {
 
 export default {
     name: 'site',
-    components: {GridItem, GridLayout},
+    components: { GridItem, GridLayout },
     data () {
         //  'metaDescription', 'metaKey'
         // let layout =  []
@@ -120,11 +120,11 @@ export default {
             siteLayout,
             // layout: layout
             layout: [
-                {'x': 0, 'y': 0, 'w': 3, 'h': 3, 'i': 'index', 'moved': false},
-                {'x': 3, 'y': 0, 'w': 3, 'h': 9, 'i': 'siteKey', 'moved': false},
-                {'x': 6, 'y': 0, 'w': 3, 'h': 13, 'i': 'searchKey', 'moved': false},
-                {'x': 9, 'y': 0, 'w': 3, 'h': 15, 'i': 'other', 'moved': false},
-                {'x': 0, 'y': 3, 'w': 3, 'h': 13, 'i': 'sidebar', 'moved': false}
+                { 'x': 0, 'y': 0, 'w': 3, 'h': 3, 'i': 'index', 'moved': false },
+                { 'x': 3, 'y': 0, 'w': 3, 'h': 9, 'i': 'siteKey', 'moved': false },
+                { 'x': 6, 'y': 0, 'w': 3, 'h': 13, 'i': 'searchKey', 'moved': false },
+                { 'x': 9, 'y': 0, 'w': 3, 'h': 15, 'i': 'other', 'moved': false },
+                { 'x': 0, 'y': 3, 'w': 3, 'h': 13, 'i': 'sidebar', 'moved': false }
             ]
         }
     },
@@ -221,15 +221,15 @@ export default {
     }
 
     /*.vue-draggable-handle {*/
-        /*position: absolute;*/
-        /*width: 20px;*/
-        /*height: 20px;*/
-        /*top: 0;*/
-        /*left: 0;*/
-        /*padding: 0 8px 8px 0;*/
-        /*background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>") no-repeat bottom right;*/
-        /*background-origin: content-box;*/
-        /*box-sizing: border-box;*/
-        /*cursor: pointer;*/
+    /*position: absolute;*/
+    /*width: 20px;*/
+    /*height: 20px;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*padding: 0 8px 8px 0;*/
+    /*background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10'><circle cx='5' cy='5' r='5' fill='#999999'/></svg>") no-repeat bottom right;*/
+    /*background-origin: content-box;*/
+    /*box-sizing: border-box;*/
+    /*cursor: pointer;*/
     /*}*/
 </style>

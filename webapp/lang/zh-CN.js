@@ -69,7 +69,8 @@ export default {
 
             add_success: '添加成功',
             update_success: '修改成功',
-            del_success: '删除成功',
+            update_pass: '修改成功, 请重新登录',
+            del_success: '删除成功'
         },
         form: {
             username_empty: '请填写用户名',
@@ -169,7 +170,7 @@ export default {
             icon: '分类图标',
             icon_select_text: '选择图标',
             desc: '分类说明',
-            desc_placeholder: '分类备注',
+            desc_placeholder: '分类备注'
         },
         columns: {
             id: '@:curd.columns.id',
@@ -188,7 +189,7 @@ export default {
             name: '标签名称',
             name_placeholder: '请输入标签名称',
             desc: '标签说明',
-            desc_placeholder: '标签备注',
+            desc_placeholder: '标签备注'
         },
         columns: {
             id: '@:curd.columns.id',

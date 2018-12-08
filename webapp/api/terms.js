@@ -35,6 +35,7 @@ export function createCategory (category) {
 export function updateTag (tag) {
     return api.npost(`/api/term/tag/edit`, tag)
 }
+
 /**
  * 修改分类
  * @param tag
@@ -50,15 +51,16 @@ export function updateCategory (category) {
  * @returns {Promise<*>}
  */
 export function deleteTag (ids) {
-    return api.npost(`/api/term/tag/del`, {ids})
+    return api.npost(`/api/term/tag/del`, { ids })
 }
+
 /**
  * 删除分类
  * @param tag
  * @returns {Promise<*>}
  */
 export function deleteCategory (ids) {
-    return api.npost(`/api/term/category/del`, {ids})
+    return api.npost(`/api/term/category/del`, { ids })
 }
 
 

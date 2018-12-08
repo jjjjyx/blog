@@ -19,24 +19,24 @@ let lang = localStorage.getItem('local') || 'zh-CN'
 Vue.config.lang = lang
 
 const messages = {
-	'en-US': {
-		...enUS,
-		...eenUS
-	},
-	'zh-CN': {
-		...zhCN,
-		...ezhCN
-	},
-	'zh-TW': {
-		...zhTW,
-		...ezhTW
-	}
+    'en-US': {
+        ...enUS,
+        ...eenUS
+    },
+    'zh-CN': {
+        ...zhCN,
+        ...ezhCN
+    },
+    'zh-TW': {
+        ...zhTW,
+        ...ezhTW
+    }
 }
 
 const i18n = new VueI18n({
-	locale: lang,
-	fallbackLocale: 'zh-CN',
-	messages
+    locale: lang,
+    fallbackLocale: 'zh-CN',
+    messages
 })
 
 export default i18n

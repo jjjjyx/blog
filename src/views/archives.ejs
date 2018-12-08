@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% var data = {name: 'archives'} %>
+    <% var data = { name: 'archives' } %>
     <%- include('base/head', data) %>
 </head>
 <body>
@@ -18,7 +18,7 @@
     </div>
     <div class="container j-archives-times">
         <%
-            var list,item, category, dateTime, time, date, user, url
+        var list, item, category, dateTime, time, date, user, url
             for (var key in groupData) {
             list = groupData[key]
         %>
@@ -28,37 +28,39 @@
                 <%= key %>
             </div>
             <%
-                for (var i = 0, l = list.length; i < l; i++) {
-                    item = list[i]
-                    category = item.getCategoryOrTags().category
-                    dateTime = formatDate(item.post_date,'YYYY/MM/DD HH:mm')
-                    time = formatDate(item.post_date,'MMMM Do')
-                    date = formatDate(item.post_date,'YYYY/MM/DD')
-                    user = item.user
-                    url = '/article/' + item.guid
+            for (var i = 0, l = list.length; i < l; i++) {
+                item = list[i]
+                category = item.getCategoryOrTags().category
+                dateTime = formatDate(item.post_date, 'YYYY/MM/DD HH:mm')
+                time = formatDate(item.post_date, 'MMMM Do')
+                date = formatDate(item.post_date, 'YYYY/MM/DD')
+                user = item.user
+                url = '/article/' + item.guid
             %>
             <div class="j-activity">
                 <div class="j-timeline">
-                    <time datetime="<%=dateTime%>"><%=time%></time>
+                    <time datetime="<%= dateTime %>"><%= time %></time>
                 </div>
                 <div class="j-content">
-                    <a href="<%=url%>">
-                    <h2 class="j-article-title am-text-lg">
-                        <%=item.post_title%>
-                    </h2>
+                    <a href="<%= url %>">
+                        <h2 class="j-article-title am-text-lg">
+                            <%= item.post_title %>
+                        </h2>
                     </a>
                     <ul class="j-article-info list-inline">
                         <li class="j-article-author">
-                            <img alt="<%=user.display_name%>"
-                                 src="<%=user.user_avatar%>"
+                            <img alt="<%= user.display_name %>"
+                                 src="<%= user.user_avatar %>"
                                  class="article-avater" width="20" height="20">
-                            <a><%=user.user_nickname%></a>
+                            <a><%= user.user_nickname %></a>
                         </li>
                         <li class="j-article-author">
-                            <font-icon type="icon-color-ziyuan" size="14"></font-icon> <span><%=category.name%></span>
+                            <font-icon type="icon-color-ziyuan" size="14"></font-icon>
+                            <span><%= category.name %></span>
                         </li>
                         <li class="j-time">
-                            <font-icon type="icon-color-rili" size="14"></font-icon> <span><%=date%></span>
+                            <font-icon type="icon-color-rili" size="14"></font-icon>
+                            <span><%= date %></span>
                         </li>
                     </ul>
                 </div>

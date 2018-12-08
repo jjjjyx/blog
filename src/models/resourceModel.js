@@ -68,5 +68,5 @@ module.exports = function (sequelize, DataTypes) {
         updatedAt: false
         // 不想使用 createdAt
         // paranoid: true
-    });
-};
+    })
+}

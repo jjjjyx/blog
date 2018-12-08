@@ -44,7 +44,7 @@ const actions = {
     //         commit("USER_SIGNOUT");
     //     }
     // }
-    mergeUser ({commit}, obj) {
+    mergeUser ({ commit }, obj) {
         commit('USER_SET_INFO', obj)
     }
 }

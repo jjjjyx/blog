@@ -3,6 +3,7 @@
         margin: .5rem 0;
     }
 }
+
 .icon-select__tab {
     height: 300px;
     overflow-y: auto;
@@ -20,7 +21,7 @@
     i {
         display: block;
     }
-    i, .svg-icon{
+    i, .svg-icon {
         cursor: pointer;
         font-size: 25px;
         line-height: 25px;
@@ -33,7 +34,7 @@
     }
     .name, .fontclass {
         overflow: hidden;
-        text-overflow:ellipsis;
+        text-overflow: ellipsis;
         white-space: nowrap;
     }
 }

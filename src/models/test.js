@@ -1,6 +1,6 @@
-const {termDao, postDao, postMetaDao, commentDao, sequelize} = require('./index')
-const Enum =require('../common/enumerate')
-const Op = sequelize.Op;
+const { termDao, postDao, postMetaDao, commentDao, sequelize } = require('./index')
+const Enum = require('../common/enumerate')
+const Op = sequelize.Op
 // termDao.findAll({
 //     attributes: ['name'],
 //     where:{
@@ -35,9 +35,9 @@ SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`po
     // let o = result[0]
 
     // let result = await commentDao.count({where: {comment_id: 'c_LcBqdFg5'}})
-    let result = await commentDao.max('comment_karma',{where: {comment_id: 'aaa'}}) || 0
+    let result = await commentDao.max('comment_karma', { where: { comment_id: 'aaa' } }) || 0
 
-    console.log('result= ', result )
+    console.log('result= ', result)
     // console.log(o.user)
     // console.log(JSON.stringify({a: Op.in}))
 

@@ -26,7 +26,7 @@ const actions = {
     // userSetInfo ({ commit, state },user){
     //     commit("USER_SET_INFO",user);
     // },
-    toggleSidebarMini ({commit}) {
+    toggleSidebarMini ({ commit }) {
         commit('TOGGLE_SIDEBAR_MINI')
     }
 }

@@ -1,21 +1,21 @@
-
 @import "./sass/public";
 @import "./sass/article-list";
 @import "./sass/sidebar";
 @import "./sass/social";
 @import "./sass/card";
 
-.wrapper-header .container{
+.wrapper-header .container {
     height: inherit;
 }
-.jumbotron  {
+
+.jumbotron {
     position: relative;
     overflow: hidden;
     width: 100%;
     .center-bg {
         width: 100%;
         z-index: 0;
-        height:420px;
+        height: 420px;
         background: no-repeat fixed center center;
         background-size: cover;
         // background-image: url("https://image.cdn.mbdoge.cn/17-1-12/40769947-file_1484187390610_17ae7.png");
@@ -37,7 +37,7 @@
     .center-bg .avatar-p {
         text-align: center;
         width: 450px;
-        margin:30px auto 0;
+        margin: 30px auto 0;
         font-size: 14px;
         color: #EAEADF;
         background: rgba(0, 0, 0, 0.66);
@@ -50,6 +50,7 @@
     }
 
 }
+
 .slant {
     background-color: $app-body-background-color;
     width: 101%;

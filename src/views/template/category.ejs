@@ -1,7 +1,7 @@
 <div class="j-sidebar j-block j-sidebar--category">
     <div class="j-sidebar__header">
         <a href="/category" class="btn-area j-logo--a">
-            更多 &nbsp;&nbsp;<Icon type="ios-arrow-forward" />
+            更多 &nbsp;&nbsp;<Icon type="ios-arrow-forward"/>
         </a>
         <h3 class="title">分类</h3>
     </div>
@@ -12,7 +12,7 @@
         var count;
         var disable
         var href
-        for (var i=0; i< category.length;i++){
+        for (var i = 0; i < category.length;i++){
             item = category[i]
             type = item.icon
             count = item.dataValues.count
@@ -24,7 +24,11 @@
             }
         %>
         <li>
-            <font-icon type="<%=type%>" size="24" style="vertical-align: middle;margin-right: .5rem"></font-icon> <a href="<%=href%>"><%=item.name%></a> (<span><%=count%></span>)
+            <font-icon type="<%= type %>" size="24" style="vertical-align: middle;margin-right: .5rem"></font-icon>
+            <a href="<%= href %>"><%= item.name %></a>
+            (
+            <span><%= count %></span>
+            )
         </li>
         <% } %>
     </ul>

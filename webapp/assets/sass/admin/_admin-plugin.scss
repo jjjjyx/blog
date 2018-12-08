@@ -1,18 +1,18 @@
 
 .main__plugin {
-  background: rgba(0, 0, 0, .2);
-  border-radius: 8px 0 0 8px;
-  text-align: center;
-  transition: background-color .2s ease-in-out;
-  &:hover {
-    background: rgba(0, 0, 0, .9);
-  }
-  .plugin__btn {
-    color: #eaeaea;
-    font-size: 2rem;
-    margin: 1rem 1.76rem;
-    cursor: pointer
-  }
+    background: rgba(0, 0, 0, .2);
+    border-radius: 8px 0 0 8px;
+    text-align: center;
+    transition: background-color .2s ease-in-out;
+    &:hover {
+        background: rgba(0, 0, 0, .9);
+    }
+    .plugin__btn {
+        color: #eaeaea;
+        font-size: 2rem;
+        margin: 1rem 1.76rem;
+        cursor: pointer
+    }
 }
 
 .plugin-opts {
@@ -20,70 +20,70 @@
 }
 
 .plugin-opts__title {
-  padding: 5px 2px;
-  height: 30px;
-  line-height: 25px;
-  font-size: 12px;
-  font-weight: 600;
-  text-align: center;
-  text-transform: uppercase;
-  width: 100%;
+    padding: 5px 2px;
+    height: 30px;
+    line-height: 25px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+    text-transform: uppercase;
+    width: 100%;
 }
 
 .plugin-opts__item {
-  border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
 
-  .image-item {
-    width: 25%;
-    float: right;
-    padding: 5px;
-    font-size: 0;
-  }
-  .image-item a {
-    display: block;
-    border-radius: 5px;
-    overflow: hidden;
-    border: 2px solid rgb(255, 255, 255);
-    transition: border-color .3s ease-in;
-  }
-  .image-item a:hover, .image-item a.active {
-    border-color: $primary;
-  }
-  .image-item img {
-    width: 100%;
-    height: 100px;
-  }
-
-  .badge {
-    border: 3px solid #fff;
-    border-radius: 50%;
-    cursor: pointer;
-    display: inline-block;
-    height: 23px;
-    margin-right: 5px;
-    position: relative;
-    width: 23px;
-    padding: 8px;
-    transition: all .34s;
-  }
-
-  @each $color, $value in $badge-colors {
-    .badge-#{$color} {
-      background-color: $value;
+    .image-item {
+        width: 25%;
+        float: right;
+        padding: 5px;
+        font-size: 0;
     }
-  }
-  .badge:hover, .badge.active {
-    border-color: $primary;
-  }
+    .image-item a {
+        display: block;
+        border-radius: 5px;
+        overflow: hidden;
+        border: 2px solid rgb(255, 255, 255);
+        transition: border-color .3s ease-in;
+    }
+    .image-item a:hover, .image-item a.active {
+        border-color: $primary;
+    }
+    .image-item img {
+        width: 100%;
+        height: 100px;
+    }
+
+    .badge {
+        border: 3px solid #fff;
+        border-radius: 50%;
+        cursor: pointer;
+        display: inline-block;
+        height: 23px;
+        margin-right: 5px;
+        position: relative;
+        width: 23px;
+        padding: 8px;
+        transition: all .34s;
+    }
+
+    @each $color, $value in $badge-colors {
+        .badge-#{$color} {
+            background-color: $value;
+        }
+    }
+    .badge:hover, .badge.active {
+        border-color: $primary;
+    }
 
 }
 
 .plugin-opts__item--between {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  span {
-    text-transform: capitalize;
-  }
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    span {
+        text-transform: capitalize;
+    }
 }

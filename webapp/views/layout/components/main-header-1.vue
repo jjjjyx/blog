@@ -42,7 +42,9 @@
                 <Avatar shape="square" icon="ios-person" class="mr-2" :src="user.user_avatar"/>
                 <Icon type="ios-arrow-down"></Icon>
                 <DropdownMenu slot="list" style="width: 180px">
-                    <div class="ivu-dropdown__header">{{$t('navbar.welcome')}}<b>{{user.user_nickname}}</b></div>
+                    <div class="ivu-dropdown__header">{{$t('navbar.welcome')}}
+                        <b>{{user.user_nickname}}</b>
+                    </div>
                     <DropdownItem divided>{{$t('navbar.profile')}}</DropdownItem>
                     <!--<DropdownItem></DropdownItem>-->
                     <DropdownItem divided @click.native="logout">{{$t('navbar.logOut')}}</DropdownItem>
@@ -53,10 +55,10 @@
 </template>
 
 <script>
-    // import last from 'lodash/last'
-    import HeaderMixins from './main-hader-mixins'
+// import last from 'lodash/last'
+import HeaderMixins from './main-hader-mixins'
 
-    export default {
-        mixins: [HeaderMixins]
-    }
+export default {
+    mixins: [HeaderMixins]
+}
 </script>

@@ -37,6 +37,6 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         tableName: 'j_visitors',
         timestamps: true,
-        updatedAt:false
-    });
-};
+        updatedAt: false
+    })
+}

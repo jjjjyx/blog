@@ -7,20 +7,20 @@
 </template>
 
 <script>
-	export default {
-		name: 'main-alert',
-		data () {
-			return {
-				type: 'warning'
-			}
-		},
-		computed: {
-			warpStyles () {
-				return [
-					'ivu-alert',
-					'ivu-alert-' + this.type
-				]
-			}
-		}
-	}
+export default {
+    name: 'main-alert',
+    data () {
+        return {
+            type: 'warning'
+        }
+    },
+    computed: {
+        warpStyles () {
+            return [
+                'ivu-alert',
+                'ivu-alert-' + this.type
+            ]
+        }
+    }
+}
 </script>

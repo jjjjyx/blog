@@ -3,12 +3,12 @@
     padding: 0;
 }
 
-
 .cm-container--flex__left {
     padding-left: 0;
     padding-right: 0;
     padding-top: 0;
 }
+
 .medium__img {
     height: 100%;
     width: 100%;
@@ -16,7 +16,7 @@
     overflow-y: hidden;
     user-select: none;
 
-    .img__item img{
+    .img__item img {
         //width: 100%;
         height: 100%;
         box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.2);
@@ -86,8 +86,8 @@
         }
     }
 
-
 }
+
 .medium__img--not-more {
     padding: 4rem;
     text-align: center;
@@ -96,6 +96,7 @@
     clear: both;
     width: 100%;
 }
+
 .medium__opt {
     padding: 1rem;
     flex-shrink: 0;
@@ -110,7 +111,7 @@
         padding: 0;
     }
     .ivu-color-picker-picker-colors {
-        padding:0 1rem .5rem;
+        padding: 0 1rem .5rem;
     }
 }
 

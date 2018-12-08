@@ -8,7 +8,7 @@
         <h1 v-t="'error.404'"></h1>
         <p v-t="'error.404_desc'"></p>
 
-        <Button  class="mt-3 error-btn" to="/">返回首页</Button>
+        <Button class="mt-3 error-btn" to="/">返回首页</Button>
     </div>
 </template>
 

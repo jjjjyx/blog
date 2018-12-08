@@ -40,78 +40,75 @@
 </template>
 
 <script>
-	import api from '@/api'
-    import * as user from '@/api/user'
-	// import config from '@/config'
-	// const {token_key} = config
-	import { mapActions, mapState } from 'vuex'
-	import signMixins from './sign-mixins'
+import * as user from '@/api/user'
+import { mapActions, mapState } from 'vuex'
+import signMixins from './sign-mixins'
 
-	export default {
-		mixins: [signMixins],
-		name: 'view-login',
-		data () {
-			return {
-				langs: [
-					{name: 'zh-CN', label: '中文简体'},
-					{name: 'zh-TW', label: '中文繁体'},
-					{name: 'en-US', label: 'English'}
-				],
-				formItem: {
-					username: '',
-					password: ''
-				},
-			}
-		},
-		computed: {
-			...mapState({
-				'language': 'language'
-			}),
-			ruleInline () {
-				return {
-					username: [{required: true, message: this.$t('messages.form.username_empty'), trigger: 'blur'}, {
-						type: 'string',
-						min: 2,
-						message: this.$t('messages.form.username_length'),
-						trigger: 'blur'
-					}],
-					password: [{required: true, message: this.$t('messages.form.password_empty'), trigger: 'blur'}, {
-						type: 'string',
-						min: 6,
-						message: this.$t('messages.form.password_length'),
-						trigger: 'blur'
-					}]
-				}
+export default {
+    mixins: [signMixins],
+    name: 'view-login',
+    data () {
+        return {
+            langs: [
+                { name: 'zh-CN', label: '中文简体' },
+                { name: 'zh-TW', label: '中文繁体' },
+                { name: 'en-US', label: 'English' }
+            ],
+            formItem: {
+                username: '',
+                password: ''
             }
-		},
-		methods: {
-			...mapActions(['setLanguage', 'fetchDict']),
-			async handleSubmit (name) {
-				this.loading = true
-				let valid = await this.$refs[name].validate()
+        }
+    },
+    computed: {
+        ...mapState({
+            'language': 'language'
+        }),
+        ruleInline () {
+            return {
+                username: [{ required: true, message: this.$t('messages.form.username_empty'), trigger: 'blur' }, {
+                    type: 'string',
+                    min: 2,
+                    message: this.$t('messages.form.username_length'),
+                    trigger: 'blur'
+                }],
+                password: [{ required: true, message: this.$t('messages.form.password_empty'), trigger: 'blur' }, {
+                    type: 'string',
+                    min: 6,
+                    message: this.$t('messages.form.password_length'),
+                    trigger: 'blur'
+                }]
+            }
+        }
+    },
+    methods: {
+        ...mapActions(['setLanguage', 'fetchDict']),
+        async handleSubmit (name) {
+            this.loading = true
+            let valid = await this.$refs[name].validate()
 
-				if (!valid) {
-					this.loading = false
-					return this.$Message.error(this.$t('messages.signin_valid_error'))
-				}
-				try {
-                    api.token = await user.login(this.formItem.username, this.formItem.password)
-                    // this.fetchDict()
-					// // 没有勾选 清除掉 localStorage 这样仅
-					// localStorage.setItem(token_key, '')
-					this.$router.push({path: this.redirect || '/'})
-					this.$Message.success(this.$t('messages.signin_success'))
-				} catch (e) {
-					this.$Message.error(this.$t('messages.signin_error'))
-				} finally {
-					this.loading = false
-				}
-			},
-			handleChangeI18n (lang) {
-				this.$i18n.locale = lang
-				this.setLanguage(lang)
-				this.$Message.success(this.$t('messages.switch_language'))
-			}
-		}
-	}
+            if (!valid) {
+                this.loading = false
+                return this.$Message.error(this.$t('messages.signin_valid_error'))
+            }
+            try {
+                await user.login(this.formItem.username, this.formItem.password)
+                // this.fetchDict()
+                // // 没有勾选 清除掉 localStorage 这样仅
+                // localStorage.setItem(token_key, '')
+                this.$router.push({ path: this.redirect || '/' })
+                this.$Message.success(this.$t('messages.signin_success'))
+            } catch (e) {
+                this.$Message.error(this.$t('messages.signin_error'))
+            } finally {
+                this.loading = false
+            }
+        },
+        handleChangeI18n (lang) {
+            this.$i18n.locale = lang
+            this.setLanguage(lang)
+            this.$Message.success(this.$t('messages.switch_language'))
+        }
+    }
+}
 </script>

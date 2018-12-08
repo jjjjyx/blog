@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% var data = {name: 'category'} %>
-    <%-include('base/head', data)%>
+    <% var data = { name: 'category' } %>
+    <%- include('base/head', data) %>
 </head>
 <body>
-<%-include('loading', data); %>
+<%- include('loading', data); %>
 <div id="main">
     <!--<div class="wrapper">-->
     <%- include('base/nav', data); %>
     <div class="jumbotron" style="background-image:url('https://image.cdn.mbdoge.cn/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/1928/format/jpg');background-position: 0 -235px">
-        <div class="container j-vertical-center" >
+        <div class="container j-vertical-center">
             <h1>全部分类</h1>
             <p>好好挑，好好选，这里的分类很多 </p>
         </div>
@@ -22,7 +22,7 @@
         var count;
         var disable
         var href
-        for (var i=0; i< list.length;i++){
+        for (var i = 0; i < list.length;i++){
             item = list[i]
             type = item.icon
             count = item.dataValues.count
@@ -32,37 +32,42 @@
             } else {
                 href = `/category/${item.slug}`
             }
-
         %>
         <div class="ivu-col ivu-col-span-6 j-category--item">
             <div class="j-card__block">
-                <a class="card__header" href="<%=href%>">
-                    <%if (type.startsWith('icon-color-')) {%>
-                    <svg aria-hidden="true" class="svg-icon" style="font-size: 75px;"><use xlink:href="#<%=type%>"></use></svg>
-                    <%} else if (type.startsWith('icon-')) {%>
-                    <i class="iconfont <%=type%>" style="font-size: 60px;"></i>
-                    <%} else {%>
-                    <i class="ivu-icon ivu-icon-<%=type%>" style="font-size: 60px;"></i>
-                    <%}%>
+                <a class="card__header" href="<%= href %>">
+                    <% if (type.startsWith('icon-color-')) { %>
+                    <svg aria-hidden="true" class="svg-icon" style="font-size: 75px;">
+                        <use xlink:href="#<%= type %>"></use>
+                    </svg>
+                    <% } else if (type.startsWith('icon-')) { %>
+                    <i class="iconfont <%= type %>" style="font-size: 60px;"></i>
+                    <% } else { %>
+                    <i class="ivu-icon ivu-icon-<%= type %>" style="font-size: 60px;"></i>
+                    <% } %>
                     <!--<img src="https://image.cdn.mbdoge.cn/17-1-11/75763093-file_1484140871299_166f3.png" alt="">-->
                 </a>
                 <div class="card__content">
-                    <h4><a href="<%=href%>"><%=item.name%></a></h4>
+                    <h4>
+                        <a href="<%= href %>"><%= item.name %></a>
+                    </h4>
                     <p class="description">
-                        <%=item.description.substr(0, 60)%><%=item.description.length > 60 ? '...': ''%>
+                        <%= item.description.substr(0, 60) %><%= item.description.length > 60 ? '...': '' %>
                     </p>
                 </div>
                 <div class="card__footer">
-                    <a class="ivu-btn ivu-btn-success ivu-btn-circle" href="<%=href%>">
-                        <span>查看</span> | <span><u><%=count||0%></u> 篇</span>
+                    <a class="ivu-btn ivu-btn-success ivu-btn-circle" href="<%= href %>">
+                        <span>查看</span>
+                        |
+                        <span><u><%= count||0 %></u> 篇</span>
                     </a>
                 </div>
             </div>
         </div>
         <% } %>
     </div>
-    <%-include('base/bottom', data); %>
+    <%- include('base/bottom', data); %>
 </div>
-<%-include('base/footer', data); %>
+<%- include('base/footer', data); %>
 </body>
 </html>

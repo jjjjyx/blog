@@ -1,10 +1,13 @@
 'use strict'
 
+const url = require('url')
 const http = require('http')
+const https = require('https')
 const marked = require('marked')
 const moment = require('moment')
 const redis = require('redis')
 const shortid = require('shortid')
+const jsdiff = require('diff')
 const Bluebird = require('bluebird')
 const isString = require('lodash/isString')
 const isArray = require('lodash/isArray')
@@ -16,10 +19,10 @@ const log = require('log4js').getLogger('utils')
 // const debug = require('debug')('utils')
 
 const client = redis.createClient()
-log.info('链接 redis 中')
+log.info('Successful connection to redis')
 
 moment.locale('zh-cn')
-log.trace('设置 时间格式化语言项 = %s', moment.locale('zh-cn'))
+log.trace('Set time default language = %s', moment.locale('zh-cn'))
 
 const renderer = new marked.Renderer()
 const textChar = (text) => text || ' '
@@ -55,7 +58,7 @@ Bluebird.promisifyAll(client)
 // return tmp
 // }
 const DEFAULT_TIME_PATTERN = 'YYYY-M-D HH:mm'
-log.trace('默认的时间格式 = %s', DEFAULT_TIME_PATTERN)
+log.trace('Default time pattern = %s', DEFAULT_TIME_PATTERN)
 
 /**
  * 格式化时间
@@ -73,11 +76,11 @@ function formatDate (time, pattern = DEFAULT_TIME_PATTERN) {
 function clearCache () {
     cache.get((error, entries) => {
         if (error) {
-            log.error('清除缓存发生错误', error)
+            log.error('Clear cache error by', error)
         }
         entries.forEach((item) => {
             cache.del(item.name, () => {
-                log.info('清除 %s 缓存', item.name)
+                log.debug('Clear %s cache successfully', item.name)
             })
         })
     })
@@ -136,10 +139,8 @@ function getClientIpFromXForwardedFor (value) {
  * @returns {string} ip - The IP address if known, defaulting to empty string if unknown.
  */
 function getClientIp (req) {
-
     // Server is probably behind a proxy.
     if (req.headers) {
-
         // Standard headers used by Amazon EC2, Heroku, and others.
         if (isIp(req.headers['x-client-ip'])) {
             return req.headers['x-client-ip']
@@ -221,13 +222,16 @@ function getClientIp (req) {
 
 /**
  * 简单获取url 中json 数据, 方便使用外部调用api
- * @param url
+ * @param href
  * @returns {Promise <any>}
  */
-function getURLJSONData (url) {
-    url = encodeURI(url) // 防止中文
+function getURLJSONData (href) {
+    href = encodeURI(href) // 防止中文
+    let urlInfo = url.parse(href)
+    let protocol = urlInfo.protocol
     return new Promise((resolve, reject) => {
-        http.get(url, resp => {
+        let h = protocol === 'https:' ? https : http
+        h.get(href, resp => {
             let data = ''
             // A chunk of data has been recieved.
             resp.on('data', (chunk) => {
@@ -240,6 +244,7 @@ function getURLJSONData (url) {
                     data = JSON.parse(data)
                     resolve(data)
                 } catch (e) {
+                    log.error('get url = %s data error by', href, e)
                     reject(e)
                 }
                 // console.log(JSON.parse(data).explanation);
@@ -256,10 +261,10 @@ function getURLJSONData (url) {
 function transformMetasToObject (metas = [], key) {
     // let metas = this.getDataValue('metas')
     return isArray(metas) &&
-        metas.reduce(
-            (accumulator, currentValue) => (accumulator[currentValue[key]] = currentValue, accumulator),
-            {}
-        )
+        metas.reduce((accumulator, currentValue) => {
+            accumulator[currentValue[key]] = currentValue
+            return accumulator
+        }, {})
     // let obj = {}
     // if (isArray(metas)) {
     //     metas.forEach((item) => {
@@ -295,8 +300,26 @@ function changes (object, base) {
         }
     })
 }
+
 function difference (object, base) {
     return changes(object, base)
+}
+
+function createPatch (header, oldStr, newStr, { context = 1 } = {}) {
+    const diff = jsdiff.structuredPatch('', '', oldStr, newStr, '', '', { context: context })
+    let o = `old_${header}`
+    let n = `new_${header}`
+    let str = `diff: ${o} ${n}
+===================================================================
+--- ${o}
++++ ${n}
+`
+    for (let i = 0; i < diff.hunks.length; i++) {
+        const hunk = diff.hunks[i]
+        str += `@@ -${hunk.oldStart},${hunk.oldLines} +${hunk.newStart},${hunk.newLines} @@ ${hunk.lines.join('\n')}
+`
+    }
+    return str
 }
 
 module.exports.getURLJSONData = getURLJSONData
@@ -310,3 +333,4 @@ module.exports.redisClient = client
 module.exports.transformStr3 = transformStr3
 module.exports.difference = difference
 module.exports.transformMetasToObject = transformMetasToObject
+module.exports.createPatch = createPatch

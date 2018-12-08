@@ -13,7 +13,7 @@
             </BreadcrumbItem>
         </transition-group>
         <div class="main-header--right">
-            <Input suffix="ios-search" placeholder="" style="width: auto" />
+            <Input suffix="ios-search" placeholder="" style="width: auto"/>
             <template v-if="showDebug">
                 <tooltip :content="$t('navbar.bug')">
                     <Badge dot :count="logs.length">
@@ -43,7 +43,9 @@
                 <Avatar shape="square" icon="ios-person" class="mr-2" :src="user.user_avatar"/>
                 <Icon type="ios-arrow-down"></Icon>
                 <DropdownMenu slot="list" style="width: 180px">
-                    <div class="ivu-dropdown__header">{{$t('navbar.welcome')}}<b>{{user.user_nickname}}</b></div>
+                    <div class="ivu-dropdown__header">{{$t('navbar.welcome')}}
+                        <b>{{user.user_nickname}}</b>
+                    </div>
                     <DropdownItem divided @click.native="handleSelectRouter({name: 'profile'})">{{$t('navbar.profile')}}</DropdownItem>
                     <!--<DropdownItem></DropdownItem>-->
                     <DropdownItem divided @click.native="logout">{{$t('navbar.logOut')}}</DropdownItem>

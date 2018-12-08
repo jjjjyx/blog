@@ -23,48 +23,48 @@
 </template>
 
 <script>
-    import { mapState, mapActions } from 'vuex'
-    import curd from '@/components/curd/curd'
-    import { dateFormat } from '@/utils/common'
-    import term from './term-curd-mixin'
-    import RightModal from './modal/tag-right-modal'
+import { mapState, mapActions } from 'vuex'
+import curd from '@/components/curd/curd'
+import { dateFormat } from '@/utils/common'
+import term from './term-curd-mixin'
+import RightModal from './modal/tag-right-modal'
 
-    const renderDate = function (h, {row}) {
-        return [dateFormat(row.createdAt)]
-    }
+const renderDate = function (h, { row }) {
+    return [dateFormat(row.createdAt)]
+}
 
-    export default {
-        name: 'post-tag',
-        mixins: [term],
-        data () {
-            return {
-                name: 'tag',
-                columns: [
-                    {type: 'selection', width: 40, align: 'center'},
-                    // {title: 'ID', key: 'id', width: 90, sortable: true},
-                    {title: '标签名称', key: 'name', width: 150, sortable: true},
-                    {title: '计数', key: 'count', width: 90, sortable: true},
-                    {title: '标识', key: 'slug', width: 100},
-                    {title: '说明', key: 'description'},
-                    {title: '创建时间', key: 'createdAt', width: 150, render: renderDate.bind(this)},
-                    {title: 'action', key: 'action', width: 200, type: 'action'}
-                ],
-                formItem: {
-                    key: ''
-                }
+export default {
+    name: 'post-tag',
+    mixins: [term],
+    data () {
+        return {
+            name: 'tag',
+            columns: [
+                { type: 'selection', width: 40, align: 'center' },
+                // {title: 'ID', key: 'id', width: 90, sortable: true},
+                { title: '标签名称', key: 'name', width: 150, sortable: true },
+                { title: '计数', key: 'count', width: 90, sortable: true },
+                { title: '标识', key: 'slug', width: 100 },
+                { title: '说明', key: 'description' },
+                { title: '创建时间', key: 'createdAt', width: 150, render: renderDate.bind(this) },
+                { title: 'action', key: 'action', width: 200, type: 'action' }
+            ],
+            formItem: {
+                key: ''
             }
-        },
-        computed: {
-            ...mapState({
-                data: state => state.data.tagList
-            })
-        },
-        components: {
-            RightModal,
-            curd
-        },
-        methods: {
-            ...mapActions(['deleteTermTag'])
         }
+    },
+    computed: {
+        ...mapState({
+            data: state => state.data.tagList
+        })
+    },
+    components: {
+        RightModal,
+        curd
+    },
+    methods: {
+        ...mapActions(['deleteTermTag'])
     }
+}
 </script>

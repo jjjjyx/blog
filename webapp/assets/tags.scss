@@ -107,11 +107,11 @@
     background-color: $white;
     border-radius: .5rem;
     margin-bottom: 2rem;
-    box-shadow: 0 0 5px rgba(0,0,0,.1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .1);
     .j-divider {
         text-align: right;
     }
-    .j-divider span{
+    .j-divider span {
         margin-right: 30px;
     }
     .j-divider:last-child {
@@ -199,9 +199,11 @@
     }
 
 }
+
 .j-divider {
     position: relative;
 }
+
 .j-divider:before {
     content: "";
     display: block;
@@ -212,7 +214,8 @@
     top: 10px;
     left: 0;
 }
-.j-divider span{
+
+.j-divider span {
     display: inline-block;
     background: #fff;
     padding: 0 5px 0 18px;

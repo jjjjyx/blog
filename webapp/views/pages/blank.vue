@@ -5,8 +5,8 @@
 </template>
 
 <script>
-	export default {
-		name: 'blank'
-	}
+export default {
+    name: 'blank'
+}
 </script>
 

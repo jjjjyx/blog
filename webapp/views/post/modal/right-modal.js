@@ -7,7 +7,7 @@ export default {
         return {
             ruleValidate: {
                 name: [
-                    {required: true, message: 'The name cannot be empty', trigger: 'blur'},
+                    { required: true, message: 'The name cannot be empty', trigger: 'blur' },
                     {
                         type: 'string',
                         pattern: /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,30}$/,
@@ -16,7 +16,7 @@ export default {
                     }
                 ],
                 description: [
-                    {type: 'string', max: 140, trigger: 'blur', message: '备注请控制在140字内'}
+                    { type: 'string', max: 140, trigger: 'blur', message: '备注请控制在140字内' }
                 ]
             },
             prefix: '',
@@ -48,7 +48,7 @@ export default {
             return this.url.replace(/\/(\w)/g, '-$1')
         },
         title () {
-            return this.$t(`curd.fun_${this.action}_title`, {name: this.labelName, key: this.formItem.id})
+            return this.$t(`curd.fun_${this.action}_title`, { name: this.labelName, key: this.formItem.id })
         },
         confirmText () {
             return this.$t('curd.action.' + this.action)

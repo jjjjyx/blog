@@ -9,7 +9,7 @@ import Icon from './components/icon'
 import BlogComment from './components/comment/comment.vue'
 import PhotoSwipe from './components/photo-swipe'
 
-import {on, once, addClass, removeClass} from './utils/dom'
+import { on, once, addClass, removeClass } from './utils/dom'
 import * as articleApi from '@/api/article'
 /* eslint-disable no-unused-vars,no-undef  */
 Vue.use(Icon)
@@ -36,9 +36,6 @@ function getClientHeight () {
     }
     return clientHeight
 }
-
-
-
 
 
 function appInit () {
@@ -82,7 +79,7 @@ function appInit () {
                     this.heartClickEffect(getPartyCore(), event)
                 }
             },
-            heartClickEffect (txt, {pageY, pageX}) {
+            heartClickEffect (txt, { pageY, pageX }) {
                 let $el = document.createElement('span')
                 $el.innerText = txt
                 $el.className = 'increase-dom increase-out'
@@ -100,7 +97,7 @@ function appInit () {
                 // target.s
             },
             _setCopyElPosition (e) {
-                let {clientX, clientY} = e
+                let { clientX, clientY } = e
                 this.$refs.copyrelay.style.left = `${clientX}px`
                 this.$refs.copyrelay.style.top = `${clientY}px`
             },
@@ -120,7 +117,7 @@ function appInit () {
             }
         },
         mounted () {
-            let {pathname} = location
+            let { pathname } = location
             this.guid = _.last(pathname.split('/'))
             let falg = true
             on(window, 'scroll', () => {
@@ -132,7 +129,11 @@ function appInit () {
             })
             let galleryElements = document.querySelectorAll('.markdown-body img.j-image-photo-swipe')
 
-            let imageData = Array.prototype.slice.call(galleryElements).map((image) => ({w: image.width, h: image.height, src: image.src}))
+            let imageData = Array.prototype.slice.call(galleryElements).map((image) => ({
+                w: image.width,
+                h: image.height,
+                src: image.src
+            }))
 
             for (let i = 0, l = galleryElements.length; i < l; i++) {
                 // galleryElements[i].setAttribute('data-pswp-uid', i + 1)
@@ -143,7 +144,6 @@ function appInit () {
             }
         }
     })
-
 
 
     window.fulfilLoading && window.fulfilLoading()

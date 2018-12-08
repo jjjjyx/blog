@@ -6,7 +6,7 @@
     right: 35px;
     display: block;
     visibility: visible;
-    z-index: 1080;// 比poptip 低一级
+    z-index: 1080; // 比poptip 低一级
     position: absolute;
     overflow: hidden;
     box-shadow: 0 0 10px #ccc;
@@ -51,12 +51,12 @@
         justify-content: center;
         align-items: center;
     }
-    .table-file-space + i{
+    .table-file-space + i {
         display: none;
         cursor: pointer;
     }
     .ivu-table-row-hover {
-        .table-file-space + i{
+        .table-file-space + i {
             display: inline-block;
         }
     }
@@ -75,13 +75,15 @@
         line-height: 1.5;
     }
 }
+
 .table-file-name {
     width: 200px;
     display: inline-block;
     vertical-align: middle;
-    text-overflow:ellipsis;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
+
 .table-file-poptip-img {
     width: 200px;
 }
@@ -122,7 +124,6 @@
 //    background: url(/box-static/file-widget-1/sysIcon/img/EXE_54_a0ff130.png) center no-repeat;
 //}
 
-
 //.dir-app-large, .dir-apps-large {
 //    background: url(img/MyData_54_cb4dfe9.png) center no-repeat
 //}
@@ -141,10 +142,10 @@
     background: url('https://image.cdn.mbdoge.cn/FmLtnOI3YFHbbYDsMlxO5V7i-d8I') center no-repeat
 }
 
-
 .dir-small {
     background-position: -594px -862px;
 }
+
 .default-small {
     background-position: -596px -566px;
 }
@@ -156,9 +157,11 @@
 .file-icon-small-rar, .file-icon-small-zip {
     background-position: -596px -1664px;
 }
+
 .file-icon-small-pic {
     background-position: -596px -306px;
 }
+
 .file-icon-small-video {
     background-position: -596px -1630px;
 }

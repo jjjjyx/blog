@@ -7,9 +7,9 @@ import api from './index'
  * @returns {Promise<*>}
  */
 export function heart (guid) {
-    return api.npost('/article/heart', {guid})
+    return api.npost('/article/heart', { guid })
 }
 
 export function read (guid) {
-    return api.npost('/article/read', {guid})
+    return api.npost('/article/read', { guid })
 }

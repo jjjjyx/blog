@@ -16,8 +16,7 @@ function appInit () {
         data: {
             value1: 0
         },
-        methods: {
-        }
+        methods: {}
     })
     window.fulfilLoading && window.fulfilLoading()
 }

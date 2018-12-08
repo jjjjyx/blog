@@ -1,13 +1,13 @@
 <%
 /*
-    布局一
+ 布局一
  */
 %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <%
-    var data = {name: 'article'}
+    var data = { name: 'article' }
     %>
     <%- include('base/head', data) %>
     <link href="<%= locals.cdn('github-markdown-css/2.10.0/github-markdown.min.css') %>" rel="stylesheet">
@@ -36,8 +36,8 @@
 <div id="app" class="article-a">
     <%
     var metas = post.metas
-    var navData = {name: 'category'}
-    var {category, postTag} = post.getCategoryOrTags()
+    var navData = { name: 'category' }
+    var { category, postTag } = post.getCategoryOrTags()
     var post_date = dateFormat(post.post_date, 'YYYY-M-D')
     var categoryLabel = category.name
     var breadcrumbLabel
@@ -94,12 +94,12 @@
         </article>
         <section class="article-a-footer">
             <% if (postTag.length) { %>
-            <div class="article-a-footer__tag">
-                <color-icon type="icon-color-tag" size="24" class="mr-2 align-middle"></color-icon>
-                <% postTag.forEach((tag) => { %>
-                <span class="ivu-tag ivu-tag-default ivu-tag-checked"><%= tag.name %></span>
-                <% }) %>
-            </div>
+                <div class="article-a-footer__tag">
+                    <color-icon type="icon-color-tag" size="24" class="mr-2 align-middle"></color-icon>
+                    <% postTag.forEach((tag) => { %>
+                        <span class="ivu-tag ivu-tag-default ivu-tag-checked"><%= tag.name %></span>
+                    <% }) %>
+                </div>
             <% } %>
             <!--<div class="article-a-footer__thumbs"></div>-->
             <div class="article-a-footer__share social-share">
@@ -123,9 +123,11 @@
             <hr>
             <div class="article-a-footer__author">
                 本文系作者
-                <a target="_blank" title="<%= author %>">@<%= author %></a>原创文章, 转载请注明出处。<br>
-                《<%= post.post_title %>》 <a href="/article/<%= guid %>" title="<%= post.post_title %>"
-                                            class="am-text-secondary">http://www.mbdoge.cn/article/<%= guid %></a>
+                <a target="_blank" title="<%= author %>">@<%= author %></a>
+                原创文章, 转载请注明出处。<br>
+                《<%= post.post_title %>》
+                <a href="/article/<%= guid %>" title="<%= post.post_title %>"
+                   class="am-text-secondary">http://www.mbdoge.cn/article/<%= guid %></a>
                 <!-- 、作者和<a href="/p/<%= guid %>" title="<%= post.post_title %>" class="am-text-secondary">本文链接</a> -->
                 <!-- 文章分类 相关推荐 -->
             </div>

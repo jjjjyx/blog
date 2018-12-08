@@ -5,30 +5,28 @@
 // import store from '../index'
 
 const state = {
-	showDebug: true, // process.env.NODE_ENV === 'production'
-	logs: []
+    showDebug: true, // process.env.NODE_ENV === 'production'
+    logs: []
 }
 
-const getters = {
-
-}
+const getters = {}
 
 // actions
 const actions = {
-	addErrorLog({ commit }, log) {
-		// console.log(log ,222)
-		commit('ADD_ERROR_LOG', log)
-	}
+    addErrorLog ({ commit }, log) {
+        // console.log(log ,222)
+        commit('ADD_ERROR_LOG', log)
+    }
 }
 const mutations = {
-	ADD_ERROR_LOG: (state, log) => {
-		state.logs.push(log)
-	}
+    ADD_ERROR_LOG: (state, log) => {
+        state.logs.push(log)
+    }
 }
 
 export default {
-	state,
-	getters,
-	actions,
-	mutations
+    state,
+    getters,
+    actions,
+    mutations
 }

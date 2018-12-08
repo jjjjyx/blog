@@ -3,12 +3,13 @@
 @import "./sass/sidebar";
 @import "./sass/social";
 @import "./sass/card";
-.jumbotron  {
+
+.jumbotron {
     position: relative;
     overflow: hidden;
     width: 100%;
     z-index: 0;
-    height:320px;
+    height: 320px;
     background: no-repeat fixed center center;
     background-size: cover;
     padding-top: $header-height;
@@ -25,8 +26,8 @@
         font-weight: 100;
     }
 
-
 }
+
 .category-info-warp {
     display: flex;
     .category-info {
@@ -58,12 +59,12 @@
 
 .j-card__block {
     transition: box-shadow 0.2s ease;
-    box-shadow: 0 0 5px rgba(0,0,0,.1);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .1);
     //margin-left: .5rem;
     margin-bottom: 6rem;
     min-height: 235px; // 至少有标题 有三行说明的情况
     &:hover {
-        box-shadow: 0 5px 20px rgba(0,0,0,.1);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, .1);
     }
     .card__header {
         display: flex;
@@ -75,6 +76,7 @@
         min-height: 85px;
     }
 }
+
 .j-category--item {
     padding: 0 .5rem 3rem;
 }

@@ -2,6 +2,7 @@ html {
     height: 100%;
     font-size: 12px;
 }
+
 // 主体
 body {
     background-color: $app-body-background-color;
@@ -13,7 +14,7 @@ a {
     text-decoration: none;
     outline: 0;
     cursor: pointer;
-    transition: color 0.2s ease-out,border 0.2s ease-out,opacity 0.2s ease-out;
+    transition: color 0.2s ease-out, border 0.2s ease-out, opacity 0.2s ease-out;
     background-color: transparent; // Remove the gray background on active links in IE 10.
     -webkit-text-decoration-skip: objects; // Remove gaps in links underline in iOS 8+ and Safari 8+.
 
@@ -46,13 +47,13 @@ hr {
     -moz-box-sizing: content-box;
     box-sizing: content-box
 }
+
 hr {
     margin-top: 20px;
     margin-bottom: 20px;
     border: 0;
     border-top: 1px solid $border-color
 }
-
 
 dl {
     margin-top: 0;
@@ -81,6 +82,7 @@ dd {
     text-overflow: ellipsis;
     white-space: nowrap
 }
+
 .dl-horizontal dd {
     margin-left: 180px
 }

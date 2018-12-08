@@ -1,99 +1,103 @@
 .wrapper {
-  //background: #eee;
-  height: 100%;
-  min-width: 1103px;
-  overflow-x: auto;
-  overflow-y: hidden;
+    //background: #eee;
+    height: 100%;
+    min-width: 1103px;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .main-container {
-  margin-left: $sider-width;
-  min-width: 1100px;
-  transition: margin-left .2s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  transition-property: top, bottom, margin-left, background-image;
-  transition-duration: .2s, .2s, .35s, .3s;
-  transition-timing-function: linear, linear, ease, linear;
+    margin-left: $sider-width;
+    min-width: 1100px;
+    transition: margin-left .2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition-property: top, bottom, margin-left, background-image;
+    transition-duration: .2s, .2s, .35s, .3s;
+    transition-timing-function: linear, linear, ease, linear;
 }
 
 .sidebar-container {
-  position: fixed;
-  width: $sider-width;
-  flex: 0 0 $sider-width;
-  height: 100vh;
-  left: 0;
-  overflow: hidden;
-  transition-property: top, bottom, width, background-image;
-  transition-duration: .2s, .2s, .4s, .3s;
-  transition-timing-function: linear, linear, ease, linear;
-  z-index: 1001;
-  box-shadow: 0 16px 38px -12px rgba(0, 0, 0, .56), 0 4px 25px 0 rgba(0, 0, 0, .12), 0 8px 10px -5px rgba(0, 0, 0, .2);
-  background: white 50%;
-  background-size: cover;
-  display: flex;
-  flex-direction: column;
-  &:after {
-    display: block;
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(27, 27, 27, 0.85);
-    top: 0;
+    position: fixed;
+    width: $sider-width;
+    flex: 0 0 $sider-width;
+    height: 100vh;
     left: 0;
-    z-index: 2;
-    transition-property: background-color;
-    transition-duration: .3s;
-    transition-timing-function: linear;
-  }
+    overflow: hidden;
+    transition-property: top, bottom, width, background-image;
+    transition-duration: .2s, .2s, .4s, .3s;
+    transition-timing-function: linear, linear, ease, linear;
+    z-index: 1001;
+    box-shadow: 0 16px 38px -12px rgba(0, 0, 0, .56), 0 4px 25px 0 rgba(0, 0, 0, .12), 0 8px 10px -5px rgba(0, 0, 0, .2);
+    background: white 50%;
+    background-size: cover;
+    display: flex;
+    flex-direction: column;
+    &:after {
+        display: block;
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(27, 27, 27, 0.85);
+        top: 0;
+        left: 0;
+        z-index: 2;
+        transition-property: background-color;
+        transition-duration: .3s;
+        transition-timing-function: linear;
+    }
 }
+
 .main__header {
-  width: 100%;
-  z-index: 1000;
-  //background-color: #ababab; // tmp
-  flex-shrink: 0;
+    width: 100%;
+    z-index: 1000;
+    //background-color: #ababab; // tmp
+    flex-shrink: 0;
 
 }
+
 .main__alert {
-  border-radius: 0;
-  border-color: transparent;
-  flex-shrink: 0;
+    border-radius: 0;
+    border-color: transparent;
+    flex-shrink: 0;
 }
+
 .main__tabs {
 
 }
+
 .main__plugin {
-  position: fixed;
-  right: 0;
-  width: 64px;
-  z-index: 1031;
-  top: 100px;
+    position: fixed;
+    right: 0;
+    width: 64px;
+    z-index: 1031;
+    top: 100px;
 }
 
 .main__content {
-  padding: 24px;
-  height: 100%;
+    padding: 24px;
+    height: 100%;
 }
 
 .main__footer {
-  padding: 24px 24px;
-  text-align: center;
-  flex-shrink: 0;
-  background-color: #f8f8f8;
+    padding: 24px 24px;
+    text-align: center;
+    flex-shrink: 0;
+    background-color: #f8f8f8;
 }
 
-.fade-transform-enter-active,.fade-transform-leave-active {
-  transition: all .5s
+.fade-transform-enter-active, .fade-transform-leave-active {
+    transition: all .5s
 }
 
 .fade-transform-enter {
-  opacity: 0;
-  transform: translateX(-30px)
+    opacity: 0;
+    transform: translateX(-30px)
 }
 
 .fade-transform-leave-to {
-  opacity: 0;
-  transform: translateX(30px)
+    opacity: 0;
+    transform: translateX(30px)
 }

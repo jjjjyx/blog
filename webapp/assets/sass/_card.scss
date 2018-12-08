@@ -15,7 +15,7 @@
         border: 1px solid $border-color;
         padding: 3px;
         background-color: white;
-        box-shadow: 0 10px 30px -12px rgba(0,0,0,.42), 0 4px 25px 0 rgba(0,0,0,.12), 0 8px 10px -5px rgba(0,0,0,.2);
+        box-shadow: 0 10px 30px -12px rgba(0, 0, 0, .42), 0 4px 25px 0 rgba(0, 0, 0, .12), 0 8px 10px -5px rgba(0, 0, 0, .2);
     }
     .card__header img {
         width: 100%;
@@ -43,11 +43,11 @@
         }
     }
 
-    h6, h4{
+    h6, h4 {
         text-align: center;
         font-weight: 300;
     }
-    .description{
+    .description {
         font-size: 1rem;
         margin: 0 0 10px;
         color: $main-title-sub-color;

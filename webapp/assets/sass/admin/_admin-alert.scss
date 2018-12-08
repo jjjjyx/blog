@@ -1,13 +1,14 @@
 
 .main-alert__text {
-  //text-underline: u;
-  //cursor: default;
-  &:hover {
-    text-decoration: underline;
-  }
+    //text-underline: u;
+    //cursor: default;
+    &:hover {
+        text-decoration: underline;
+    }
 }
+
 .main-alert__text--right {
-  float: right;
-  line-height: 2;
-  color: $main-title-sub-color;
+    float: right;
+    line-height: 2;
+    color: $main-title-sub-color;
 }

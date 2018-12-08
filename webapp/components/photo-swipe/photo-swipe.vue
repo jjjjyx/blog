@@ -68,42 +68,43 @@
 </template>
 
 <script>
-    import 'photoswipe/dist/photoswipe.css'
-    import 'photoswipe/dist/default-skin/default-skin.css'
-    import PhotoSwipe from 'photoswipe/dist/photoswipe'
-    import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
-    export default {
-        methods: {
-            open (index, items, options = {
-                // captionEl: false,
-                fullscreenEl: true,
-                history: false,
-                shareEl: false,
-                tapToClose: true
-            }) {
-                const opts = Object.assign({
-                    index: index,
-                    showHideOpacity:true,
-                    // getThumbBoundsFn (index) {
-                    //     // const thumbnail = document.querySelectorAll('.preview-img-item')[index]
-                    //     // const pageYScroll = window.pageYOffset
-                    //     //     || document.documentElement.scrollTop
-                    //     //     || document.body.scrollTop
-                    //     //     || 0
-                    //     // const rect = thumbnail.getBoundingClientRect()
-                    //     return {
-                    //         x: 0,//rect.left,
-                    //         y: 0,//rect.top + pageYScroll,
-                    //         w: 50,//rect.width
-                    //     }
-                    // }
-                }, options)
-                this.photoswipe = new PhotoSwipe(this.$el, PhotoSwipeDefaultUI, items, opts)
-                this.photoswipe.init()
-            },
-            close () {
-                this.photoswipe.close()
-            }
+import 'photoswipe/dist/photoswipe.css'
+import 'photoswipe/dist/default-skin/default-skin.css'
+import PhotoSwipe from 'photoswipe/dist/photoswipe'
+import PhotoSwipeDefaultUI from 'photoswipe/dist/photoswipe-ui-default'
+
+export default {
+    methods: {
+        open (index, items, options = {
+            // captionEl: false,
+            fullscreenEl: true,
+            history: false,
+            shareEl: false,
+            tapToClose: true
+        }) {
+            const opts = Object.assign({
+                index: index,
+                showHideOpacity: true
+                // getThumbBoundsFn (index) {
+                //     // const thumbnail = document.querySelectorAll('.preview-img-item')[index]
+                //     // const pageYScroll = window.pageYOffset
+                //     //     || document.documentElement.scrollTop
+                //     //     || document.body.scrollTop
+                //     //     || 0
+                //     // const rect = thumbnail.getBoundingClientRect()
+                //     return {
+                //         x: 0,//rect.left,
+                //         y: 0,//rect.top + pageYScroll,
+                //         w: 50,//rect.width
+                //     }
+                // }
+            }, options)
+            this.photoswipe = new PhotoSwipe(this.$el, PhotoSwipeDefaultUI, items, opts)
+            this.photoswipe.init()
+        },
+        close () {
+            this.photoswipe.close()
         }
     }
+}
 </script>

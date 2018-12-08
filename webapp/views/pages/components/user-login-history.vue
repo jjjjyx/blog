@@ -6,9 +6,9 @@
 </template>
 
 <script>
-	export default {
-		name: 'user-login-history'
-	}
+export default {
+    name: 'user-login-history'
+}
 </script>
 
 <style scoped>

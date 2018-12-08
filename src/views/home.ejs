@@ -1,22 +1,22 @@
 <!doctype html>
 <html lang="zh-CN">
-<% var data = {name: 'home', loading: true} %>
+<% var data = { name: 'home', loading: true } %>
 <head>
-<%-include('base/head', data)%>
-<%-SITE.statistical%>
+    <%- include('base/head', data) %>
+    <%- SITE.statistical %>
 </head>
 <body>
-<%-include('loading', data); %>
+<%- include('loading', data); %>
 <div id="app">
     <!--<div class="wrapper">-->
     <%- include('base/nav', data); %>
     <div class="jumbotron bounceInDown animated">
         <div class="center-bg j-vertical-center" style="background-image:url('https://image.cdn.mbdoge.cn/17-1-12/40769947-file_1484187390610_17ae7.png?imageView2/2/w/1928/format/jpg');background-position: 0 -235px">
             <a class="avatar am-animation-scale-up " href="javascript:;" style="animation-delay: .51s;">
-                <img src="https://image.cdn.mbdoge.cn/17-1-11/75763093-file_1484140871299_166f3.png" >
+                <img src="https://image.cdn.mbdoge.cn/17-1-11/75763093-file_1484140871299_166f3.png">
             </a>
             <p class="avatar-p ">
-                <%- SITE.sign%>
+                <%- SITE.sign %>
             </p>
         </div>
         <div class="slant slant__left"></div>
@@ -26,24 +26,24 @@
         <i-col :xs="24" :md="16" class="articles">
             <tabs size="small">
                 <tab-pane label="最新文章" class="j-article-list">
-                    <%-articleList%>
+                    <%- articleList %>
                     <div class="j-load-more" ref="insertEl" v-show="!loading">
-                        <span @click="loadMore" v-if="isNext">点击加载更多 <Icon type="ios-more-outline" /></span>
+                        <span @click="loadMore" v-if="isNext">点击加载更多 <Icon type="ios-more-outline"/></span>
                         <span v-else>没有更多了</span>
                     </div>
-                    <%-include('template/article-placeholder', data); %>
+                    <%- include('template/article-placeholder', data); %>
                 </tab-pane>
                 <!--<tab-pane label="上课大纲">标签二的内容</tab-pane>-->
                 <!--<tab-pane label="毕业论文">标签三的内容</tab-pane>-->
             </tabs>
         </i-col>
-        <i-col :xs="24" :md="{span:7, offset: 1}" >
-            <%-sidebar%>
+        <i-col :xs="24" :md="{span:7, offset: 1}">
+            <%- sidebar %>
         </i-col>
     </row>
     <!--</div>-->
-    <%-include('base/bottom', data); %>
+    <%- include('base/bottom', data); %>
 </div>
-<%-include('base/footer', data); %>
+<%- include('base/footer', data); %>
 </body>
 </html>

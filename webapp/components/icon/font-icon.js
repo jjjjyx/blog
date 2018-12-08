@@ -45,7 +45,7 @@ export default {
         }
     },
     render (h) {
-        let {type, size, color, custom} = this
+        let { type, size, color, custom } = this
         let i
         if (type.startsWith('icon-color-')) {
             i = h('color-icon', {

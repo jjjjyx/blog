@@ -1,5 +1,4 @@
-
-const {termDao, userDao, postDao, postMetaDao, sequelize} = require('../../../models/index')
+const { termDao, userDao, postDao, postMetaDao, sequelize } = require('../../../models/index')
 
 const useList = require('./use-detect')
 
@@ -7,6 +6,7 @@ class UrlDetectBase {
     constructor (name) {
         this.name = name
     }
+
     detectUrl (url) {
         throw new Error('Method not defined')
     }
@@ -52,7 +52,7 @@ class CodeDetect extends UrlDetectBase {
 }
 
 class Detect {
-    constructor (){
+    constructor () {
         // 每次使用最好重新创建对象， 因为这些探测对象 里的数据需要重新获取
         this.targetList = [
             new PostContentDetect(),
@@ -61,9 +61,10 @@ class Detect {
             new CodeDetect()
         ]
     }
+
     run (image) {
         let use = {}
-        this.targetList.forEach((d)=>{
+        this.targetList.forEach((d) => {
             use[d.name] = d.detectUrl(image.url)
         })
         return use

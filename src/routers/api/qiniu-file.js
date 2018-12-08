@@ -8,12 +8,13 @@ const express = require('express')
 const Color = require('color')
 const uuidv1 = require('uuid/v1')
 
-const debug = require('debug')('app:routers:api.qiniu-file')
-const log = require('log4js').getLogger('api.qiniu-file')
-const {check} = require('express-validator/check')
-const {sanitizeQuery} = require('express-validator/filter')
+// const debug = require('debug')('app:routers:api.qiniu-file')
 
-const {resourceDao, sequelize} = require('../../models/index')
+const { check } = require('express-validator/check')
+const { sanitizeQuery } = require('express-validator/filter')
+
+const { resourceDao, sequelize } = require('../../models/index')
+const log = require('../../common/manageLog')('api.qiniu-file')
 const Result = require('../../common/result')
 const common = require('../../common')
 const utils = require('../../utils')
@@ -24,33 +25,35 @@ const imgSpaces = Object.values(common.ENUMERATE.ImgEnum)
 const Op = sequelize.Op
 const domain = config.qiUpload.Domain
 const BUCKET_NAME = config.qiUpload.BUCKET_NAME
-const size = 100
 const allowSpace = Object.values(common.ENUMERATE.ImgEnum)
+
+const mediaPageSize = common.CONSTANT.LOAD_MEDIA_PAGE_SIZE
 const sanitizeSpace = sanitizeQuery('space')
     .customSanitizer((value) => {
-        debug(`sanitizeSpace v = ${value}`)
+        log.trace(`sanitizeSpace v = ${value}`)
         if (allowSpace.indexOf(value) === -1) {
             return common.ENUMERATE.ImgEnum.ALL
         } else {
             return value
         }
     })
-let checkAllowSpace = ['public', 'cover', 'post', 'avatar']
+// let checkAllowSpace = ['public', 'cover', 'post', 'avatar']
 const checkSpace = check('space').isIn(allowSpace)
 
-async function handleImage (image) {
-    let {key, hash, fsize, mimeType, putTime, type, status, remark, space = common.ENUMERATE.ImgEnum.ALL} = image
+async function handleImage (image, req) {
+    // putTime, type, status,
+    let { key, hash, fsize, mimeType, remark, space = common.ENUMERATE.ImgEnum.ALL } = image
     let url = domain + key
     let color = await qiniuApi.getImageAveByUrl(url)
     color = color.replace('0x', '#')
-    let {width, height, format: ext} = await qiniuApi.getImageInfo(url)
+    let { width, height, format: ext } = await qiniuApi.getImageInfo(url)
     let uuid = uuidv1()
     let values = {
         key,
         hash,
         size: fsize,
         bucket: BUCKET_NAME,
-        name :key, // 这里获取到都是没有文件名称了 使用key 做文件名
+        name: key, // 这里获取到都是没有文件名称了 使用key 做文件名
         height,
         width,
         color,
@@ -62,11 +65,10 @@ async function handleImage (image) {
         remark
     }
     return resourceDao.findOrCreate(
-        {where: {hash} , defaults: values}
+        { where: { hash }, defaults: values }
     ).spread((img, created) => {
         if (created) {
-            // 同步图片
-            log.info('同步图片 key = %s, url = %s', hash, url)
+            log.create(req, img, common.ENUMERATE.relatedTypeEnum.image)
         }
         return img
     })
@@ -85,10 +87,11 @@ const token = [
         res.header('Expires', 0)
         let token = qiniuApi.uploadToken()
 
+        log.trace('Generate an upload voucher')
         if (token) {
             return res.status(200).json(Result.success(token))
         } else {
-            return res.status(200).json(Result.info('获取token失败'))
+            return res.status(200).json(Result.error('获取token失败'))
         }
     }
 ]
@@ -104,8 +107,8 @@ const list = [
     // check('space').isInt(),
     common.validationResult,
     async function (req, res) {
-        let {page, space, hash, color} = req.query
-        log.info('查询获取图片列表： query = ', JSON.stringify(req.query))
+        let { page, space, hash, color } = req.query
+        log.trace('Query to get a list of pictures query = ', JSON.stringify(req.query))
         page = page || 1
         let where = {}
         if (space !== common.ENUMERATE.ImgEnum.ALL) {
@@ -114,14 +117,15 @@ const list = [
 
         if (hash && isString(hash)) {
             where[Op.or] = []
-            where[Op.or].push({hash: {[Op.like]: `%${hash}%`}})
-            where[Op.or].push({name: {[Op.like]: `%${hash}%`}})
+            where[Op.or].push({ hash: { [Op.like]: `%${hash}%` } })
+            where[Op.or].push({ name: { [Op.like]: `%${hash}%` } })
         }
+        log.trace('Query to get a list of pictures where =', JSON.stringify(where))
         try {
             let result = await resourceDao.findAll({
                 where,
-                limit: size,
-                offset: (page - 1) * size,
+                limit: mediaPageSize,
+                offset: (page - 1) * mediaPageSize,
                 order: ['hash']
             })
             // 筛选颜色
@@ -130,9 +134,8 @@ const list = [
                 let c1 = Color(color)
                 result = result.filter((item) => c1.contrast(Color(item.color)) < 3)
             } catch (e) {
-                debug('转换颜色失败 color = ', color)
+                log.trace('Conversion color = %s failed ', color)
             }
-
             return res.status(200).json(Result.success(result))
         } catch (e) {
             log.error('getMediaAll error by :', e)
@@ -152,18 +155,18 @@ const move = [
     common.validationResult,
     async function (req, res, next) {
         req.sanitizeBody('keys').toArray()
-        let {space, keys} = req.body
-        debug(`移动空间文件 key = %s， space = %s`, keys, space)
+        let { space, keys } = req.body
+        log.trace(`Moving space file key = %s， space = %s`, keys, space)
         try {
-            await resourceDao.update({space}, {
-                where: {hash: keys}
+            await resourceDao.update({ space }, {
+                where: { hash: keys }
             })
+            log.changeImageSpace(req, keys, space)
             return res.status(200).json(Result.success())
         } catch (e) {
             log.error(`移动空间文件 key = %s 失败 `, keys, e)
             return res.status(200).json(Result.info('移动空间文件'))
         }
-
     }
 ]
 /**
@@ -176,8 +179,8 @@ const del = [
     async function (req, res) {
         // let key = req.body.key
         req.sanitizeBody('keys').toArray()
-        let {keys} = req.body
-        debug(`删除空间文件 key = `, keys)
+        let { keys } = req.body
+        log.trace(`删除空间文件 key = `, keys)
         try {
             let failKey = await qiniuApi.syncDelete(keys)
             // 去掉失败的key
@@ -185,16 +188,16 @@ const del = [
             await resourceDao.destroy({
                 paranoid: false,
                 force: true,
-                where: {hash: successKey}
+                where: { hash: successKey }
             })
-            return res.status(200).json(Result.success({fail: failKey}))
+            log.delete(req, successKey, common.ENUMERATE.relatedTypeEnum.image)
+            return res.status(200).json(Result.success({ fail: failKey }))
         } catch (e) {
             log.error(`删除空间文件 key = %s 失败,原因`, keys, e)
             return res.status(200).json(Result.info('删除文件失败'))
         }
     }
 ]
-
 
 /**
 
@@ -214,10 +217,10 @@ const del = [
  * @param res
  * @returns {Promise<*>}
  */
-const callback =  async function (req, res) {
-    let {key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid, space, remark} = req.body
+const callback = async function (req, res) {
+    let { key, hash, size, bucket, name, info, imageAve, mimeType, ext, uuid, space, remark } = req.body
     let color = imageAve.RGB.replace('0x', '#')
-    let {height, width} = info
+    let { height, width } = info
     let url = domain + key
 
     // space = space || common.ENUMERATE.ImgEnum.ALL
@@ -229,10 +232,11 @@ const callback =  async function (req, res) {
     }
     try {
         values = await resourceDao.create(values)
+        log.create(req, values)
         return res.status(200).json(Result.success(values))
     } catch (e) {
         if (e.name === 'SequelizeUniqueConstraintError') { // 重复了，返回实例
-            let result = await resourceDao.findOne({where: {hash}})
+            let result = await resourceDao.findOne({ where: { hash } })
             return res.status(200).json(Result.success(result))
         }
         log.error('callback error by :', e)
@@ -240,11 +244,9 @@ const callback =  async function (req, res) {
     }
 }
 
-
-function detectImageUrl (url) {
-
-}
-
+// function detectImageUrl (url) {
+//
+// }
 
 const detect = async function (req, res, next) {
     try {
@@ -258,7 +260,7 @@ const detect = async function (req, res, next) {
                 j.type = '404'
                 failNotFound.push(j)
             } catch (e) { // 转换json 失败 说明文件正常
-                debug('图片 %s 访问正常', image.url)
+                log.trace('图片 %s 访问正常', image.url)
             }
         }
         // 引用计数统计
@@ -281,13 +283,13 @@ const syncQiniu = async function (req, res, next) {
     // 图片较多， 优化
     // SELECT HASH FROM j_resource
     // let result = await resourceDao.findAll()
-    let result = await sequelize.query('SELECT hash FROM j_resource', {type: sequelize.QueryTypes.SELECT})
-    debug('本地已有图片个数 %d, 服务器上获取图片数 %d', result.length, images.length)
+    let result = await sequelize.query('SELECT hash FROM j_resource', { type: sequelize.QueryTypes.SELECT })
+    log.trace('本地已有图片个数 %d, 服务器上获取图片数 %d', result.length, images.length)
     let notExistImages = differenceBy(images, result, 'hash')
-    debug('待同步个数 %d', notExistImages.length)
+    log.trace('待同步个数 %d', notExistImages.length)
     try {
         for (let i = 0; i < notExistImages.length; i++) {
-            await handleImage(notExistImages[i])
+            await handleImage(notExistImages[i], req)
         }
         return res.status(200).json(Result.success())
     } catch (e) {
@@ -301,13 +303,13 @@ const sisyphus = [
     checkSpace,
     common.validationResult,
     async function (req, res, next) {
-        let {url, copyright, space} = req.body
-        try{
+        let { url, copyright, space } = req.body
+        try {
             // 抓取
             let image = await qiniuApi.sisyphusFetch(url, null, copyright)
             image.space = space
             // 同步本地
-            let source = await handleImage(image)
+            let source = await handleImage(image, req)
             return res.status(200).json(Result.success(source))
         } catch (e) {
             log.error('sisyphus error by :', e)

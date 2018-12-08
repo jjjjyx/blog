@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-const Enum =require('../common/enumerate')
+const Enum = require('../common/enumerate')
 
 module.exports = function (sequelize, DataTypes) {
     return sequelize.define('site', {
@@ -32,7 +32,7 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: true,
 
         // 不想使用 createdAt
-        createdAt: false,
+        createdAt: false
         // paranoid: true
-    });
-};
+    })
+}

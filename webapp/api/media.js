@@ -16,8 +16,8 @@ export function token () {
  * @param page 页码
  * @returns {Promise<*>}
  */
-export function fetchAll ({hash, space, color}, page) {
-    return api.nget('/api/img/list', {page, hash, space, color})
+export function fetchAll ({ hash, space, color }, page) {
+    return api.nget('/api/img/list', { page, hash, space, color })
 }
 
 /**
@@ -28,12 +28,12 @@ export function fetchAll ({hash, space, color}, page) {
  * @returns {Promise<*>}
  */
 export function move (keys, space) {
-    return api.npost('/api/img/move', {keys, space})
+    return api.npost('/api/img/move', { keys, space })
 }
 
 
 export function deleteImg (keys) {
-    return api.npost('/api/img/del', {keys})
+    return api.npost('/api/img/del', { keys })
 }
 
 /**
@@ -42,7 +42,7 @@ export function deleteImg (keys) {
  * 没有被使用的图片
  * 访问失败的图片
  */
-export function detect (){
+export function detect () {
     return api.nget('/api/img/detect')
 }
 
@@ -50,6 +50,6 @@ export function detect (){
  * 同步本地与七牛服务器的图片
  * @returns {Promise<*>}
  */
-export function sync (){
+export function sync () {
     return api.nget('/api/img/sync')
 }

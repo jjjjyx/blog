@@ -60,5 +60,5 @@ module.exports = function (sequelize, DataTypes) {
                 this.setDataValue('metas', value)
             }
         }
-    });
-};
+    })
+}

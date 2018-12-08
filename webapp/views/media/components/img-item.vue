@@ -40,7 +40,7 @@ export default {
     },
     props: {
         item: {
-            type:Object,
+            type: Object
         },
         index: {
             type: Number

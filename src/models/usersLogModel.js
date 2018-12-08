@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-const Enum =require('../common/enumerate')
+const Enum = require('../common/enumerate')
 // ALTER TABLE `blog`.`j_userlogs` CHANGE `type` `type` ENUM('login','update','logout') CHARSET utf8 COLLATE utf8_bin NULL;
 module.exports = function (sequelize, DataTypes) {
     const userMetaModel = sequelize.define('userLog', {
@@ -23,19 +23,19 @@ module.exports = function (sequelize, DataTypes) {
         },
         type: {
             type: DataTypes.ENUM,
-            values: Object.values(Enum.LogType),
+            values: Object.values(Enum.LogType)
         }
     }, {
         tableName: 'j_userlogs',
         timestamps: true,
         // 不想使用 updatedAt
-        updatedAt: false,
-    });
-    const {user: userModel} = sequelize.models
+        updatedAt: false
+    })
+    const { user: userModel } = sequelize.models
     // const pk = {foreignKey: 'user_id', targetKey: 'id'}
     // userModel.hasMany(userMetaModel, pk)
     // userMetaModel.belongsTo(userModel,pk)
-    userModel.hasMany(userMetaModel, {as: 'logs', foreignKey: 'user_id', sourceKey: 'id'})
+    userModel.hasMany(userMetaModel, { as: 'logs', foreignKey: 'user_id', sourceKey: 'id' })
     return userMetaModel
-};
+}
 // node ./src/init-db.js

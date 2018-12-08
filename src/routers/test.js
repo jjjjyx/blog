@@ -1,4 +1,3 @@
-
 // const jwt = require('../express-middleware/auth/jwt')
 // const config = require('../../config')
 // const {sequelize} = require('../models')
@@ -41,7 +40,7 @@
 
 const qiniu = require('qiniu')
 const http = require('http')
-const {Enum} = require('../common/enumerate')
+const { Enum } = require('../common/enumerate')
 const config = require('../../config')
 const uuidv1 = require('uuid/v1')
 // const redisClient = utils.redisClient;
@@ -106,20 +105,20 @@ function getURLJSONData (url) {
     // let url = 'https://cn.bing.com/az/hprichbg/rb/ChiribiqueteNP_ZH-CN10719426351_1920x1080.jpg'
     let url = 'https://cn.bing.com/sa/simg/hpb/NorthMale_EN-US8782628354_1920x1080.jpg'
     let key = 'NorthMale_EN-US8782628354'
-    bucketManager.fetch(url, BUCKET_NAME, key, function(err, respBody, respInfo) {
+    bucketManager.fetch(url, BUCKET_NAME, key, function (err, respBody, respInfo) {
         if (err) {
-            console.log(err);
+            console.log(err)
             //throw err;
         } else {
             if (respInfo.statusCode === 200) {
                 console.log(respBody)
-                console.log(respBody.key);
-                console.log(respBody.hash);
-                console.log(respBody.fsize);
-                console.log(respBody.mimeType);
+                console.log(respBody.key)
+                console.log(respBody.hash)
+                console.log(respBody.fsize)
+                console.log(respBody.mimeType)
             } else {
-                console.log(respInfo.statusCode);
-                console.log(respBody);
+                console.log(respInfo.statusCode)
+                console.log(respBody)
             }
         }
     })
@@ -135,4 +134,4 @@ function getURLJSONData (url) {
     // // let o = await redisClient.hincrbyfloat('test', 'c', 1);
     // // let o = await redisClient.hgetallAsync('test');
     // console.log(o)
-})();
+})()

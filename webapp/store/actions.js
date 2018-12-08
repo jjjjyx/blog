@@ -1,4 +1,3 @@
-
 import api from '@/api'
 // export function setBreadCrumb ({commit, state}, routeMetched) {
 //     // commit('')
@@ -8,11 +7,11 @@ import api from '@/api'
 //     //
 //     // })
 // }
-export function setLanguage({ commit }, language) {
+export function setLanguage ({ commit }, language) {
     commit('SET_LANGUAGE', language)
 }
 
-export async function fetchDict({ commit }, language) {
+export async function fetchDict ({ commit }, language) {
     let dict = await api.nget('/api/site/dict')
     commit('SET_DICT', dict)
 }

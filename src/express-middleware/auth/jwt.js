@@ -6,7 +6,7 @@ const utils = require('../../utils')
 const config = require('../../../config')
 const UnauthorizedError = require('../../errors/UnauthorizedError')
 
-const {secret, tokenExpiration: TOKEN_EXPIRATION, tokenPrefix, tokenHeaderKey} = config
+const { secret, tokenExpiration: TOKEN_EXPIRATION, tokenPrefix, tokenHeaderKey } = config
 
 log.debug('tokenExpiration = %s', TOKEN_EXPIRATION)
 
@@ -18,7 +18,7 @@ let jwtr = new JWTR(utils.redisClient, {
 
 async function createToken (user, expiresKeyIn = TOKEN_EXPIRATION) {
     if (isEmpty(user)) throw new Error('Data cannot be empty.')
-    let token = await jwtr.sign(user, secret, {expiresKeyIn})
+    let token = await jwtr.sign(user, secret, { expiresKeyIn })
     log.trace('Token generated token: %s', user.user_login, token)
     return token
 }

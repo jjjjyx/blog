@@ -20,11 +20,11 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'j_usermeta',
         timestamps: false
     })
-    const {user: userModel} = sequelize.models
+    const { user: userModel } = sequelize.models
     // const pk = {foreignKey: 'user_id', targetKey: 'id'}
     // userModel.hasMany(userMetaModel, pk)
     // userMetaModel.belongsTo(userModel,pk)
-    userModel.hasMany(userMetaModel, {as: 'metas', foreignKey: 'user_id', sourceKey: 'id'})
+    userModel.hasMany(userMetaModel, { as: 'metas', foreignKey: 'user_id', sourceKey: 'id' })
     return userMetaModel
 }
 // node ./src/init-db.js

@@ -1,5 +1,5 @@
 <template>
-    <div class="ivu-card ivu-card-bordered" >
+    <div class="ivu-card ivu-card-bordered">
         <div class="ivu-card-head">
             <slot name="title"></slot>
         </div>

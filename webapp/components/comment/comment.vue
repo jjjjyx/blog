@@ -15,7 +15,10 @@
         <div class="j-comment-empty" v-else-if="status===COMMENT_STATUS.error">评论加载失败..</div>
         <div class="j-comment-empty" v-else-if="status===COMMENT_STATUS.success && !commentList.length">
             <img src="https://image.cdn.mbdoge.cn/FuwU_vvhI2bw4fRq8MO1AKax0RpF" alt="[doge]">
-            <div class="am-inline-block">智慧如你，不想<span @click="toComment">发表一点想法</span>咩~</div>
+            <div class="am-inline-block">智慧如你，不想
+                <span @click="toComment">发表一点想法</span>
+                咩~
+            </div>
         </div>
         <transition-group class="comment-list-warp" tag="ul" name="comment-list-transition" :appear="true"
                           :enter-active-class="commentListTransition.enter"
@@ -56,206 +59,208 @@
     http://q.qlogo.cn/headimg_dl?dst_uin=871839012&spec=100
  -->
 <script>
-    /* eslint-disable no-undef */
-    import CommentUsername from './comment-username'
-    import CommentInput from './comment-input'
-    import {on} from '../../utils/dom'
-    import * as commentApi from '@/api/comment'
+/* eslint-disable no-undef */
+import CommentUsername from './comment-username'
+import CommentInput from './comment-input'
+import { on } from '../../utils/dom'
+import * as commentApi from '@/api/comment'
 
-    import * as userApi from '@/api/user'
-    import CommentItem from './comment-item'
-    import CommentAuthModal from './comment-auth-modal'
+import * as userApi from '@/api/user'
+import CommentItem from './comment-item'
+import CommentAuthModal from './comment-auth-modal'
 
-    function scrollTop (el, from = 0, to, duration = 500) {
-        if (!window.requestAnimationFrame) {
-            window.requestAnimationFrame = (
-                window.webkitRequestAnimationFrame ||
-                window.mozRequestAnimationFrame ||
-                window.msRequestAnimationFrame ||
-                function (callback) {
-                    return window.setTimeout(callback, 1000 / 60)
-                }
-            )
-        }
-        const difference = Math.abs(from - to)
-        const step = Math.ceil(difference / duration * 50)
-
-        function scroll (start, end, step) {
-            if (start === end) return
-
-            let d = (start + step > end) ? end : start + step
-            if (start > end) {
-                d = (start - step < end) ? end : start - step
+function scrollTop (el, from = 0, to, duration = 500) {
+    if (!window.requestAnimationFrame) {
+        window.requestAnimationFrame = (
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function (callback) {
+                return window.setTimeout(callback, 1000 / 60)
             }
+        )
+    }
+    const difference = Math.abs(from - to)
+    const step = Math.ceil(difference / duration * 50)
 
-            if (el === window) {
-                window.scrollTo(d, d)
-            } else {
-                el.scrollTop = d
-            }
-            window.requestAnimationFrame(() => scroll(d, end, step))
+    function scroll (start, end, step) {
+        if (start === end) return
+
+        let d = (start + step > end) ? end : start + step
+        if (start > end) {
+            d = (start - step < end) ? end : start - step
         }
 
-        scroll(from, to, step)
+        if (el === window) {
+            window.scrollTo(d, d)
+        } else {
+            el.scrollTop = d
+        }
+        window.requestAnimationFrame(() => scroll(d, end, step))
     }
 
-    function scorllEl (el) {
-        const sTop = document.documentElement.scrollTop || document.body.scrollTop
-        const to = el.offsetTop - 300
-        scrollTop(window, sTop, to, 1000)
-    }
+    scroll(from, to, step)
+}
 
-    on(window, 'load', () => {
-        let hash = location.hash
-        if (!hash) {
-            return
+function scorllEl (el) {
+    const sTop = document.documentElement.scrollTop || document.body.scrollTop
+    const to = el.offsetTop - 300
+    scrollTop(window, sTop, to, 1000)
+}
+
+on(window, 'load', () => {
+    let hash = location.hash
+    if (!hash) {
+        return
+    }
+    let el = document.querySelector(hash)
+    if (el) {
+        scorllEl(el)
+    }
+})
+
+// import
+const COMMENT_STATUS = {
+    loading: 'loading',
+    error: 'error',
+    success: 'success'
+}
+
+export default {
+    name: 'comment',
+    data () {
+        let user = {
+            'id': 0,
+            'user_login': '',
+            'user_nickname': '',
+            'user_email': '',
+            'user_avatar': null,
+            'user_url': '',
+            'user_status': 0
         }
-        let el = document.querySelector(hash)
-        if (el) {
+        return {
+            // 評論數
+            total: 0,
+            // 全部评论，包括回复
+            totalDisplay: 0,
+            // 评论列表
+            commentList: [],
+            // 评论列表的进入动画， 由于初始化不需要动画，所以置为空，在获取到数据结束后在赋值
+            commentListTransition: {
+                enter: '',
+                leave: ''
+            },
+            // 当前状态
+            COMMENT_STATUS,
+            status: COMMENT_STATUS.success,
+            // 当前登录的用户
+            user,
+            // 获取评论的筛选条件
+            filterCondition: {
+                parent: this.commentTargetId,
+                page: 1,
+                sort: 'desc'
+            },
+            // 排序规则
+            sortList: [
+                { name: '按时间正序', d: 'desc' },
+                { name: '按时间倒序', d: 'asc' }
+            ],
+            // 用户表单
+            infoModal: false,
+            commentParentId: null
+        }
+    },
+    props: ['commentTargetId'],
+    components: {
+        CommentAuthModal,
+        CommentItem,
+        CommentInput,
+        CommentUsername
+    },
+    methods: {
+        /**
+         * 页面滚动到指定位置
+         */
+        toComment () {
+            let el = document.getElementById('comment')
             scorllEl(el)
-        }
-    })
-
-    // import
-    const COMMENT_STATUS = {
-        loading: 'loading',
-        error: 'error',
-        success: 'success'
-    }
-
-    export default {
-        name: 'comment',
-        data () {
-            let user = {
-                'id': 0,
-                'user_login': '',
-                'user_nickname': '',
-                'user_email': '',
-                'user_avatar': null,
-                'user_url': '',
-                'user_status': 0
-            }
-            return {
-                // 評論數
-                total: 0,
-                // 全部评论，包括回复
-                totalDisplay: 0,
-                // 评论列表
-                commentList: [],
-                // 评论列表的进入动画， 由于初始化不需要动画，所以置为空，在获取到数据结束后在赋值
-                commentListTransition: {
-                    enter: '',
-                    leave: ''
-                },
-                // 当前状态
-                COMMENT_STATUS,
-                status: COMMENT_STATUS.success,
-                // 当前登录的用户
-                user,
-                // 获取评论的筛选条件
-                filterCondition: {
-                    parent: this.commentTargetId,
-                    page: 1,
-                    sort: 'desc'
-                },
-                // 排序规则
-                sortList: [
-                    {name: '按时间正序', d: 'desc'},
-                    {name: '按时间倒序', d: 'asc'}
-                ],
-                // 用户表单
-                infoModal: false,
-                commentParentId: null
-            }
+            el.focus()
+            // 更换 url
+            let url = '#comment'
+            window.history.pushState({}, 0, url)
         },
-        props: ['commentTargetId'],
-        components: {
-            CommentAuthModal,
-            CommentItem,
-            CommentInput,
-            CommentUsername
-        },
-        methods: {
-            /**
-             * 页面滚动到指定位置
-             */
-            toComment () {
-                let el = document.getElementById('comment')
-                scorllEl(el)
-                el.focus()
-                // 更换 url
-                let url = '#comment'
-                window.history.pushState({}, 0, url)
-            },
 
-            handleCommentSuccess (result, {commentParentId}) {
-                if (commentParentId) {
-                    // 添加到对应才child
-                    let comment = this.commentList.find(item => item.id === commentParentId)
-                    if (!comment.child) {
-                        comment.child = []
-                    }
-                    comment.child.push(result)
-                    this.commentParentId = null
+        handleCommentSuccess (result, { commentParentId }) {
+            if (commentParentId) {
+                // 添加到对应才child
+                let comment = this.commentList.find(item => item.id === commentParentId)
+                if (!comment.child) {
+                    comment.child = []
+                }
+                comment.child.push(result)
+                this.commentParentId = null
+            } else {
+                if (this.filterCondition.sort === 'desc') {
+                    this.commentList.splice(0, 0, result)
                 } else {
-                    if (this.filterCondition.sort === 'desc') {
-                        this.commentList.splice(0, 0, result)
-                    } else {
-                        this.commentList.push(result)
-                    }
+                    this.commentList.push(result)
                 }
-            },
-            handlePageChange (page) {
-                // this.filterCondition.page = page
-                this.fetchComments()
-            },
-            async fetchComments () {
-                this.status = COMMENT_STATUS.loading
-                try {
-                    // 获取评论列表
-                    let {result, total, total_display: totalDisplay} = await commentApi.getComments(this.filterCondition)
-                    this.commentList = result
-                    this.total = total
-                    this.totalDisplay = totalDisplay
-                    this.status = COMMENT_STATUS.success
-                    // 获取成功后才添加动画效果
-                    // console.log('comment load')
-                    this.$nextTick(() => {
-                        this.commentListTransition.enter = 'animated fadeInDown'
-                        this.commentListTransition.leave = 'animated fadeOutRight'
-                    })
-                } catch (e) {
-                    console.error(e)
-                    this.status = COMMENT_STATUS.error
-                }
-            },
-            handleAtUser (e) {
-
             }
-            // handleReply (id, parent) {
-            //     if (this.commentParentId === id) {
-            //         this.commentParentId = null
-            //     } else {
-            //         this.commentParentId = id
-            //     }
-            // }
         },
-        async created () {
+        handlePageChange (page) {
+            // this.filterCondition.page = page
             this.fetchComments()
-
-            try {
-                let u = await userApi.auth()
-                for (let key in this.user) {
-                    this.user[key] = u[key]
-                }
-            } catch (e) {
-                console.log(e)
-            }
-            this.$on('on-register', () => {this.infoModal = true})
-            this.$on('comment-success', this.handleCommentSuccess)
-            this.$on('on-at-user', this.handleAtUser)
         },
-        mounted () {
+        async fetchComments () {
+            this.status = COMMENT_STATUS.loading
+            try {
+                // 获取评论列表
+                let { result, total, total_display: totalDisplay } = await commentApi.getComments(this.filterCondition)
+                this.commentList = result
+                this.total = total
+                this.totalDisplay = totalDisplay
+                this.status = COMMENT_STATUS.success
+                // 获取成功后才添加动画效果
+                // console.log('comment load')
+                this.$nextTick(() => {
+                    this.commentListTransition.enter = 'animated fadeInDown'
+                    this.commentListTransition.leave = 'animated fadeOutRight'
+                })
+            } catch (e) {
+                console.error(e)
+                this.status = COMMENT_STATUS.error
+            }
+        },
+        handleAtUser (e) {
+
         }
+        // handleReply (id, parent) {
+        //     if (this.commentParentId === id) {
+        //         this.commentParentId = null
+        //     } else {
+        //         this.commentParentId = id
+        //     }
+        // }
+    },
+    async created () {
+        this.fetchComments()
+
+        try {
+            let u = await userApi.auth()
+            for (let key in this.user) {
+                this.user[key] = u[key]
+            }
+        } catch (e) {
+            console.log(e)
+        }
+        this.$on('on-register', () => {
+            this.infoModal = true
+        })
+        this.$on('comment-success', this.handleCommentSuccess)
+        this.$on('on-at-user', this.handleAtUser)
+    },
+    mounted () {
     }
+}
 </script>

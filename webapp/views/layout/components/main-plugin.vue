@@ -5,11 +5,11 @@
         <div class="plugin-opts" slot="content">
             <h6 class="plugin-opts__title">{{$t('plugin.color')}}</h6>
             <div class="plugin-opts__item">
-                <span v-for="color2 in sidebarColors" :class="['badge', 'badge-'+ color2, {'active': color === color2}]" :key="color2"  @click="switchColor(color2)"></span>
+                <span v-for="color2 in sidebarColors" :class="['badge', 'badge-'+ color2, {'active': color === color2}]" :key="color2" @click="switchColor(color2)"></span>
             </div>
             <h6 class="plugin-opts__title">{{$t('plugin.background')}}</h6>
             <div class="plugin-opts__item">
-                <span v-for="color in sidebarBackgroundColors" :class="['badge', 'badge-'+ color, {'active': backgroundColor === color}]" :key="color"  @click="switchBackgroundColor(color)"></span>
+                <span v-for="color in sidebarBackgroundColors" :class="['badge', 'badge-'+ color, {'active': backgroundColor === color}]" :key="color" @click="switchBackgroundColor(color)"></span>
             </div>
             <div class="plugin-opts__item plugin-opts__item--between">
                 <span>{{$t('plugin.mini')}}</span>
@@ -35,7 +35,8 @@
 </template>
 
 <script>
-import {mapState, mapMutations} from 'vuex'
+import { mapState, mapMutations } from 'vuex'
+
 export default {
     name: 'main-plugin',
     data () {

@@ -22,36 +22,36 @@
 </template>
 
 <script>
-    export default {
-        name: 'info-row',
-        data ()  {
-            return {
-                editStatus: false,
-                tempValue: this.value
-            }
+export default {
+    name: 'info-row',
+    data () {
+        return {
+            editStatus: false,
+            tempValue: this.value
+        }
+    },
+    props: {
+        label: {
+            type: String
         },
-        props: {
-            label: {
-                type: String
-            },
-            value: {
-                type: String
-            },
-            edit: {
-                type: Boolean,
-                default: false
-            }
+        value: {
+            type: String
         },
-        methods: {
-            handle () {
-                this.editStatus = true
-            },
-            handleOk () {
-                this.$emit('input', this.tempValue)
-            },
-            handleCancel () {
-                this.editStatus = false
-            }
+        edit: {
+            type: Boolean,
+            default: false
+        }
+    },
+    methods: {
+        handle () {
+            this.editStatus = true
+        },
+        handleOk () {
+            this.$emit('input', this.tempValue)
+        },
+        handleCancel () {
+            this.editStatus = false
         }
     }
+}
 </script>

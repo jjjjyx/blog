@@ -1,28 +1,25 @@
 'use strict'
 
-const xss = require('xss')
 const express = require('express')
 const intersectionWith = require('lodash/intersectionWith')
 const rateLimiter = require('redis-rate-limiter')
 const debug = require('debug')('app:routers:api.comment')
-const log = require('log4js').getLogger('api.comment')
-const {sanitizeQuery} = require('express-validator/filter')
-const {query} = require('express-validator/check')
 
-const {commentDao, userDao, commentMetaDao} = require('../../models/index')
+const { sanitizeQuery } = require('express-validator/filter')
+const { query } = require('express-validator/check')
+
+const { commentDao, userDao, commentMetaDao } = require('../../models/index')
 const jwt = require('../../express-middleware/auth/jwt')
 const utils = require('../../utils')
+const log = require('../../common/manageLog')('api.comment')
 const Result = require('../../common/result')
 const common = require('../../common')
 const imgList = require('./avatar.json')
 
 const router = express.Router()
-const qqReg = /^[1-9][0-9]{4,}$/
-const commentPageSize = 15
+const qqReg = common.REGS.QQ_REG
+const commentPageSize = common.CONSTANT.LOAD_COMMENT_PAGE_SIZE
 const defaultAvatar = config.defaultAvatar
-// const {secret} = config
-
-
 
 const getCommentById = [
     query('parent').not().isEmpty().withMessage('对象不可为空'),
@@ -31,7 +28,7 @@ const getCommentById = [
     query('sort').isIn(['desc', 'asc']),
     common.validationResult,
     async function (req, res, next) {
-        let {parent, page, sort = 'desc'} = req.query
+        let { parent, page, sort = 'desc' } = req.query
         try {
             let result = await commentDao.findAll({
                 where: {
@@ -43,28 +40,31 @@ const getCommentById = [
                         model: commentDao,
                         as: 'child',
                         order: [['createdAt', 'DESC']],
-                        include: [{model: userDao, attributes: {exclude: ['user_pass']}}, {model: commentMetaDao, as: 'metas'},],
+                        include: [{ model: userDao, attributes: { exclude: ['user_pass'] } }, {
+                            model: commentMetaDao,
+                            as: 'metas'
+                        }]
                         // offset: 0,
                         // limit: 10
                     },
-                    {model: commentMetaDao, as: 'metas'},
-                    {model: userDao, attributes: {exclude: ['user_pass']}}
+                    { model: commentMetaDao, as: 'metas' },
+                    { model: userDao, attributes: { exclude: ['user_pass'] } }
                 ],
                 order: [['createdAt', sort]],
                 offset: (page - 1) * commentPageSize,
                 limit: commentPageSize
             })
             // 总共评论数， 不包含回复个数
-            let total = await commentDao.count({where: {comment_id: parent, comment_parent: null}})
+            let total = await commentDao.count({ where: { comment_id: parent, comment_parent: null } })
             // 总共评论数， 包含回复
-            let total2 = await commentDao.count({where: {comment_id: parent}})
+            let total2 = await commentDao.count({ where: { comment_id: parent } })
             // todo 回复的分页
-            log.debug('加载对象 = %s 评论列表 共计 %d 条评论', parent, total)
+            log.trace('Load parent object = %s comment list Total %d comments', parent, total)
 
             // 减少查询次数， 获取全部使用uid 在次遍历填充
             let uids = []
             const handleCommentItem = function (item) {
-                let {members} = item.metas
+                let { members } = item.metas
                 if (members) {
                     let ids = JSON.parse(members.meta_value).map(item => {
                         let [, , userId] = common.REGS.COMMENT_MEMBERS_REG.exec(item)
@@ -79,8 +79,7 @@ const getCommentById = [
                 }
             }
             result.forEach(handleCommentItem)
-
-            debug('加载对象 = %s 评论列表， 评论列表中使用到的用户有 uids = %s', parent, uids.length)
+            log.trace('Load parent object = %s comment list, users used in the comment list have = %s', parent, uids.length)
             if (uids.length) {
                 let users = await userDao.findAll({
                     where: {
@@ -90,7 +89,7 @@ const getCommentById = [
                         exclude: ['user_pass']
                     }
                 })
-                const idInUsers = (user, id)=> user.id === id
+                const idInUsers = (user, id) => user.id === id
                 const handleCommentItem2 = function (item) {
                     // let ids = item.ids
                     item.dataValues.members = intersectionWith(users, item.uids, idInUsers)
@@ -134,11 +133,12 @@ const getCommentById = [
  * 如果用户已经登录，则是修改用户信息
  * @type {Function[]}
  */
+// 废弃
 const writeUser = [
     // rateLimiter.
     // 3 位以上 18 位以下仅包含数字字母，下划线 短横线
     // ip 限制访问频率为1 小时 5
-    rateLimiter.middleware({redis: utils.redisClient, key: common.ipAndRoute, rate: '5/h'}),
+    rateLimiter.middleware({ redis: utils.redisClient, key: common.ipAndRoute, rate: '5/h' }),
     // 限制 每个ip + key 即使用一个key 进行修改用户操作 为 每分钟 3 次， 每小时一个ip 用5次这个api
     // rateLimiter.middleware({redis: client, key: ipAndRouteAndKey, rate: '3/m'}),
     async function (req, res, next) {
@@ -151,7 +151,7 @@ const writeUser = [
             debug('writeUser ,token error by', e.message)
         }
 
-        let {user_email, user_url, user_login, user_nickname, user_avatar} = req.body
+        let { user_email, user_url, user_login, user_nickname, user_avatar } = req.body
         if (user) { // 如果已经登录, 提交的账号与登录账号不符 则拒接
             if (user.user_login !== user_login) {
                 return res.status(200).json(Result.info('错误的账号'))
@@ -174,7 +174,7 @@ const writeUser = [
             req.checkBody('user_url').isURL().withMessage('请提交正确主页')
         }
         if (user_nickname) {
-            req.checkBody('user_nickname').isLength({min: 1, max: 18}).withMessage('昵称请控制在18个长度以内')
+            req.checkBody('user_nickname').isLength({ min: 1, max: 18 }).withMessage('昵称请控制在18个长度以内')
         }
         if (!(user_login || (user_email && user_nickname))) { // 有提交qq 或者有提交邮箱+ 昵称
             return res.status(200).json(Result.info('请至少提交一个qq号'))
@@ -204,7 +204,7 @@ const writeUser = [
         // if (req.user) {
         //     return res.status(200).json(Result.info('.'))
         // }
-        let {user_email, user_url, user_login, user_nickname, user_avatar} = req.body
+        let { user_email, user_url, user_login, user_nickname, user_avatar } = req.body
         let ip = req.clientIp
         try {
             let user = req.user
@@ -214,14 +214,14 @@ const writeUser = [
                 user.user_url = user_url
                 user.user_nickname = user_nickname
                 user.user_avatar = user_avatar
-                userDao.update({where: {id: user.id}}, {user_email, user_url, user_nickname, user_avatar})
+                userDao.update({ where: { id: user.id } }, { user_email, user_url, user_nickname, user_avatar })
             } else {
                 user = await userDao.findOrCreate({
                     where: {
                         user_login,
                         role: 0
                     },
-                    defaults: {user_email, user_url, user_nickname, user_avatar, role: 0}
+                    defaults: { user_email, user_url, user_nickname, user_avatar, role: 0 }
                 }).spread((user, created) => {
                     if (!created) {
                         log.info('创建用户，id = %d, meta key = %s 已存在, 更新', user.id, user_login)
@@ -264,8 +264,10 @@ const writeUser = [
 
 const changeAvatar = [
     function (req, res, next) {
-        // imgList
+
         let url = imgList[Math.floor(Math.random() * imgList.length)]
+        // todo 游客的日志
+        log.trace('游客修改头像 url', url)
         return res.status(200).json(Result.success(url))
     }
 ]

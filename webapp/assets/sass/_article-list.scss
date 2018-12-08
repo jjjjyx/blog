@@ -14,6 +14,7 @@
     border-radius: 2px;
     background-color: #fff;
 }
+
 .j-article__title {
     margin: 0 0 4px;
     display: inherit;
@@ -27,9 +28,11 @@
         }
     }
 }
+
 .j-article__sticky {
     margin-right: .25rem
 }
+
 .j-article__metas {
     padding-right: 0 !important;
     font-size: 1rem;
@@ -37,13 +40,13 @@
     line-height: 20px;
     i, .num {
         vertical-align: middle;
-        margin-right:.25rem
+        margin-right: .25rem
     }
 
     .username, .category {
         margin-right: 0;
     }
-    .username::after, .category::after{
+    .username::after, .category::after {
         content: '•';
         margin: 0 5px;
         color: $main-title-sub-color;
@@ -56,6 +59,7 @@
     }
 
 }
+
 .j-article__a {
     cursor: default;
     color: $main-title-sub-color;
@@ -93,6 +97,7 @@
         overflow: hidden;
     }
 }
+
 .j-right-img {
     .j-img-warp {
         height: 120px;
@@ -132,7 +137,6 @@
     }
 }
 
-
 .j-article-placeholder {
     position: relative;
     margin-bottom: 50px;
@@ -158,7 +162,7 @@
         margin-bottom: 10px;
     }
     .avatar {
-        cursor: default!important;
+        cursor: default !important;
         width: 34px;
         height: 34px;
         margin: 0 5px 0 0;
@@ -175,13 +179,13 @@
         vertical-align: middle;
     }
     .title {
-        float: none!important;
+        float: none !important;
         width: 50%;
         height: 20px;
-        margin: 0 0 15px!important;
+        margin: 0 0 15px !important;
         background-color: #eaeaea;
         &:before {
-            content: ""!important;
+            content: "" !important;
         }
     }
     .text {
@@ -214,7 +218,7 @@
             height: 16px;
             width: 30px;
         }
-        div{
+        div {
             display: inline-block;
             vertical-align: middle;
             background-color: #eaeaea;

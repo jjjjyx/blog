@@ -14,51 +14,51 @@ const getters = {}
 
 // actions
 const actions = {
-    addView ({dispatch}, view) {
+    addView ({ dispatch }, view) {
         dispatch('addVisitedView', view)
         dispatch('addCachedView', view)
     },
-    addVisitedView ({commit}, view) {
+    addVisitedView ({ commit }, view) {
         commit('ADD_VISITED_VIEW', view)
     },
-    addCachedView ({commit}, view) {
+    addCachedView ({ commit }, view) {
         commit('ADD_CACHED_VIEW', view)
     },
-    delView ({dispatch}, view) {
+    delView ({ dispatch }, view) {
         dispatch('delVisitedView', view)
         dispatch('delCachedView', view)
     },
-    delVisitedView ({commit}, view) {
+    delVisitedView ({ commit }, view) {
         commit('DEL_VISITED_VIEW', view)
     },
-    delCachedView ({commit}, view) {
+    delCachedView ({ commit }, view) {
         commit('DEL_CACHED_VIEW', view)
     },
-    delOthersViews ({dispatch}, view) {
+    delOthersViews ({ dispatch }, view) {
         dispatch('delOthersVisitedViews', view)
         dispatch('delOthersCachedViews', view)
 
     },
-    delOthersVisitedViews ({commit}, view) {
+    delOthersVisitedViews ({ commit }, view) {
         commit('DEL_OTHERS_VISITED_VIEWS', view)
     },
-    delOthersCachedViews ({commit}, view) {
+    delOthersCachedViews ({ commit }, view) {
         commit('DEL_OTHERS_CACHED_VIEWS', view)
     },
 
-    delAllViews ({dispatch}, view) {
+    delAllViews ({ dispatch }, view) {
         dispatch('delAllVisitedViews', view)
         dispatch('delAllCachedViews', view)
     },
-    delAllVisitedViews ({commit}) {
+    delAllVisitedViews ({ commit }) {
         commit('DEL_ALL_VISITED_VIEWS')
 
     },
-    delAllCachedViews ({commit}) {
+    delAllCachedViews ({ commit }) {
         commit('DEL_ALL_CACHED_VIEWS')
     },
 
-    updateVisitedView ({commit}, view) {
+    updateVisitedView ({ commit }, view) {
         commit('UPDATE_VISITED_VIEW', view)
     }
 }

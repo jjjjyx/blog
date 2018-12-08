@@ -5,12 +5,12 @@ module.exports = function (sequelize, DataTypes) {
         ip: {
             type: DataTypes.STRING(15),
             allowNull: false,
-            primaryKey: true,
+            primaryKey: true
         },
         guid: {
             type: DataTypes.STRING(25),
             allowNull: false,
-            primaryKey: true,
+            primaryKey: true
         },
         useragent: {
             type: DataTypes.STRING(255),
@@ -20,6 +20,6 @@ module.exports = function (sequelize, DataTypes) {
         tableName: 'j_reads',
         timestamps: true,
         // 不想使用 updatedAt
-        updatedAt: false,
-    });
-};
+        updatedAt: false
+    })
+}

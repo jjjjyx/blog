@@ -29,7 +29,7 @@ const app = new Vue({
         loadMore: async function () {
             try {
                 this.loading = true
-                let resp = await api.get('/more', {page: this.page, slug: ''})
+                let resp = await api.get('/more', { page: this.page, slug: '' })
                 let content = await resp.text()
                 if (!content) this.isNext = false
                 let el = this.$refs['insertEl']

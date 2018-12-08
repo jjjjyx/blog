@@ -93,21 +93,21 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'j_comments',
-        getterMethods : {
+        getterMethods: {
             metas () {
                 return utils.transformMetasToObject(this.getDataValue('metas'), 'meta_key')
             },
             time () {
                 // 这个时区有毒！！！！
                 //  时间超过当前时间 10分钟显示精确时间
-                let curr = moment().subtract(10, 'minutes');
+                let curr = moment().subtract(10, 'minutes')
                 // moment("2018-09-27T18:49:48.525") 2018-09-27T10:59:48.525Z
                 // console.log(curr, new Date(), moment())
                 let t = moment(this.getDataValue('createdAt'))
                 if (t.isBefore(curr)) {
                     return t.format('YYYY-M-D hh:mm')
                 } else
-                    return t.startOf('minute').fromNow();
+                    return t.startOf('minute').fromNow()
             }
         },
         setterMethods: {
@@ -117,13 +117,13 @@ module.exports = function (sequelize, DataTypes) {
         }
     })
 
-    const {user: userModel} = sequelize.models
+    const { user: userModel } = sequelize.models
 
-    userModel.hasMany(commentModel, {foreignKey: 'user_id', targetKey: 'id'})
-    commentModel.belongsTo(userModel, {foreignKey: 'user_id', targetKey: 'id'})
+    userModel.hasMany(commentModel, { foreignKey: 'user_id', targetKey: 'id' })
+    commentModel.belongsTo(userModel, { foreignKey: 'user_id', targetKey: 'id' })
 
-    commentModel.hasMany(commentModel, {as: 'child', foreignKey: 'comment_parent', sourceKey: 'id'})
+    commentModel.hasMany(commentModel, { as: 'child', foreignKey: 'comment_parent', sourceKey: 'id' })
     // commentModel.belongsTo(commentModel, {foreignKey: 'comment_parent', targetKey: 'id'})
 
     return commentModel
-};
+}

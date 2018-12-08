@@ -29,7 +29,7 @@ let models = [
     'readsModel.js',
     'visitorsModel.js',
     'siteModel.js',
-    'resourceModel.js',
+    'resourceModel.js'
     // 'logModel.js'
 ]
 models.forEach(file => {

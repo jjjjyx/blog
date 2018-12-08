@@ -5,7 +5,7 @@ const shortid = require('shortid')
 const MarkdownIt = require('markdown-it')
 const groupBy = require('lodash/groupBy')
 
-const {body} = require('express-validator/check')
+const { body } = require('express-validator/check')
 const debug = require('debug')('app:routers:article')
 const log = require('log4js').getLogger('app:routers:article')
 const hljs = require('highlight.js')
@@ -13,7 +13,7 @@ const common = require('../common')
 const Result = require('../common/result')
 
 // const {sanitizeBody, sanitizeQuery} = require('express-validator/filter')
-const {termDao, userDao, postDao, postMetaDao, readDao, sequelize} = require('../models')
+const { termDao, userDao, postDao, postMetaDao, readDao, sequelize } = require('../models')
 const router = express.Router()
 
 const validGuid = (value) => shortid.isValid(value)
@@ -26,7 +26,7 @@ const md = new MarkdownIt({
         if (lang && hljs.getLanguage(lang)) {
             try {
                 let code = hljs.highlight(lang, str)
-                let value = code.value.replace(/\n/g,"</li><li>")
+                let value = code.value.replace(/\n/g, '</li><li>')
                 return `${copyElement}<ul><li>${value}</li></ul>`
             } catch (e) {
                 debug('highlight error by', e.message)
@@ -39,23 +39,23 @@ const md = new MarkdownIt({
 md.use(require('markdown-it-anchor')) // Optional, but makes sense as you really want to link to something
 md.use(require('markdown-it-table-of-contents'))
 // add target="_blank" to all link
-md.renderer.rules.link_open  = function (tokens, idx, options, env, self) {
-    let aIndex = tokens[idx].attrIndex('target');
+md.renderer.rules.link_open = function (tokens, idx, options, env, self) {
+    let aIndex = tokens[idx].attrIndex('target')
 
     if (aIndex < 0) {
-        tokens[idx].attrPush(['target', '_blank']); // add new attribute
+        tokens[idx].attrPush(['target', '_blank']) // add new attribute
     } else {
-        tokens[idx].attrs[aIndex][1] = '_blank';    // replace value of existing attr
+        tokens[idx].attrs[aIndex][1] = '_blank'    // replace value of existing attr
     }
 
     return self.renderToken(tokens, idx, options, env, self)
 }
 md.renderer.rules.image = function (tokens, idx, options, env, self) {
-    let imageClass = tokens[idx].attrIndex('class');
+    let imageClass = tokens[idx].attrIndex('class')
     if (imageClass < 0) { // 不存在
-        tokens[idx].attrPush(['class', 'j-image-photo-swipe']); // add new attribute
+        tokens[idx].attrPush(['class', 'j-image-photo-swipe']) // add new attribute
     } else {
-        tokens[idx].attrs[imageClass][1] +=' j-image-photo-swipe';    // add value
+        tokens[idx].attrs[imageClass][1] += ' j-image-photo-swipe'    // add value
     }
     return self.renderToken(tokens, idx, options, env, self)
 }
@@ -71,15 +71,15 @@ const readerPost = [
                 guid
             },
             include: [
-                {model: postMetaDao, as: 'metas'},
-                {model: termDao},
-                {model: userDao, attributes: {exclude: ['user_pass']}}
+                { model: postMetaDao, as: 'metas' },
+                { model: termDao },
+                { model: userDao, attributes: { exclude: ['user_pass'] } }
             ]
         })
         if (post === null) {
             return next()
         }
-        res.render('article-a', {post, groupBy, md, cookies: req.cookies})
+        res.render('article-a', { post, groupBy, md, cookies: req.cookies })
     }
 ]
 const maxAge = common.CONSTANT.COOKIE_MAX_AGE
@@ -98,18 +98,18 @@ const heart = [
         }
         try {
             // postMetaDao.
-            let [, metadata] = await sequelize.query(incrementPostHeart, {replacements: [guid]})
+            let [, metadata] = await sequelize.query(incrementPostHeart, { replacements: [guid] })
             if (metadata.changedRows === 0) {
                 // common.createMetaByMetaDao(postMetaDao, {post_id: })
                 let post = await postDao.findOne({
-                    where: {guid}, attributes: ['id']
+                    where: { guid }, attributes: ['id']
                 })
                 if (post === null) {
                     return res.status(200).json(Result.info('刷赞可耻 ~ 拒绝刷赞'))
                 }
                 await common.updateOrCreatePostMeta(post.id, HEART_KEY, 1)
             }
-            res.cookie(cookiesKey, guid, {maxAge, httpOnly})
+            res.cookie(cookiesKey, guid, { maxAge, httpOnly })
             return res.status(200).json(Result.success())
         } catch (e) {
             log.error('heart error by:', e)
@@ -134,16 +134,16 @@ const read = [
         }
         try {
             let post = await postDao.findOne({
-                where: {guid: guid}, attributes: ['id']
+                where: { guid: guid }, attributes: ['id']
             })
             if (post != null) {
-                await readDao.create({guid, ip, useragent})
+                await readDao.create({ guid, ip, useragent })
                 debug('阅读成功， 虽然我也没办检查是不是真的读过了')
-                let [, metadata] = await sequelize.query(incrementPostRead, {replacements: [guid]})
+                let [, metadata] = await sequelize.query(incrementPostRead, { replacements: [guid] })
                 if (metadata.changedRows === 0) {
                     await common.updateOrCreatePostMeta(post.id, READ_KEY, 1)
                 }
-                res.cookie(cookiesKey, guid, {maxAge, httpOnly})
+                res.cookie(cookiesKey, guid, { maxAge, httpOnly })
             }
         } catch (e) {
             log.error('阅读文章失败 guid = %s, ip = %s', guid, ip, e)

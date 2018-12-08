@@ -121,335 +121,335 @@
 </template>
 
 <script>
-    import difference from 'lodash/difference'
-    import { mapGetters } from 'vuex'
-    import * as media from '@/api/media'
-    import { getMetaKeyCode } from '@/utils/common'
-    import { on, off } from '@/utils/dom'
+import difference from 'lodash/difference'
+import { mapGetters } from 'vuex'
+import * as media from '@/api/media'
+import { getMetaKeyCode } from '@/utils/common'
+import { on, off } from '@/utils/dom'
 
-    import ImgGrid from './components/img-grid'
-    import InvalidImage from './components/invalid-image'
+import ImgGrid from './components/img-grid'
+import InvalidImage from './components/invalid-image'
 
-    const sizeLabels = {
-        '9': '特大尺寸',
-        '8': '大尺寸',
-        '7': '中尺寸',
-        '6': '小尺寸'
-    }
-    const galleryOptions = {
-        shareEl: false,
-        history: false
-    }
+const sizeLabels = {
+    '9': '特大尺寸',
+    '8': '大尺寸',
+    '7': '中尺寸',
+    '6': '小尺寸'
+}
+const galleryOptions = {
+    shareEl: false,
+    history: false
+}
 
-    export default {
-        // mixins: [crud],
-        name: 'media-management',
-        data () {
-            let moveTarget = []
-            let imgSpaces = ['public', 'cover', 'post', 'avatar']
-            for (let k of imgSpaces) {
-                moveTarget.push({
-                    label: this.$store.getters.imgSpaces[k],
+export default {
+    // mixins: [crud],
+    name: 'media-management',
+    data () {
+        let moveTarget = []
+        let imgSpaces = ['public', 'cover', 'post', 'avatar']
+        for (let k of imgSpaces) {
+            moveTarget.push({
+                label: this.$store.getters.imgSpaces[k],
+                callback: (e, target) => {
+                    this.moveImg(target, k)
+                    // this.$emit('move-img', target, k)
+                }
+            })
+        }
+        return {
+            formItem: { space: 'all', hash: '', size: '', color: null },
+            ruleInline: {},
+            idKey: 'hash',
+            active: 'img',
+            sizeLabels,
+            presetSize: ['1920x1080', '1680x1050', '1440x900', '1366x768', '1280x1024', '1280x800', '1024x768'],
+            presetColors: [
+                { color: '#DE2020', text: '红色' },
+                { color: '#FE6C00', text: '橙色' },
+                { color: '#FEBF00', text: '黄色' },
+                { color: '#59A725', text: '绿色' },
+                { color: '#892BCF', text: '紫色' },
+                { color: '#D744BA', text: '粉色' },
+                { color: '#06B7C8', text: '青色' },
+                { color: '#0065FE', text: '蓝色' },
+                { color: '#733413', text: '棕色' },
+                { color: '#ffffff', text: '白色' },
+                { color: '#000000', text: '黑色' },
+                {
+                    color: 'url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOAgMAAABiJsVCAAAACVBMVEWAgIAxMDBPTk4kb9ZpAAAAJ0lEQVQI1xXEsREAMAwCMS8JR8kojJ68Ct3uK4VMGpVCJo1KIZNGfT5iC4W3w7w9AAAAAElFTkSuQmCC\') 1px 1px no-repeat',
+                    text: '黑白'
+                }
+            ],
+            activeColor: null,
+
+            colorPanelVisible: false,
+            // isBusy: false,
+            isNext: true,
+            data: [],
+            currPage: 1,
+            scrollHeight: 300,
+            syncLoading: false,
+            detectLoading: false,
+            invalidImageModalVisible: false,
+            invalidImageData: [],
+            contentItems: [
+                {
+                    label: '查看',
                     callback: (e, target) => {
-                        this.moveImg(target, k)
-                        // this.$emit('move-img', target, k)
+                        if (target) {
+                            let index = target.getAttribute('data-index')
+                            this.openGallery(index)
+                        } else {
+                            this.$Message.info('请选择图片查看')
+                        }
                     }
+                },
+                {
+                    label: '复制链接',
+                    callback: (e, target) => {
+                        if (target) {
+                            let url = target.getAttribute('data-originUrl')
+                            this.copy(url)
+                        } else {
+                            this.$Message.info('请选择图片')
+                        }
+                    }
+                },
+                {
+                    label: '复制 markdown 链接',
+                    callback: (e, target) => {
+                        if (target) {
+                            let url = target.getAttribute('data-originUrl')
+                            this.copy(`![image](${url})`)
+                        } else {
+                            this.$Message.info('请选择图片')
+                        }
+                    }
+                },
+                {
+                    label: '移动到其他目录',
+                    child: moveTarget
+                },
+                {
+                    divided: true,
+                    label: '删除',
+                    callback: (e, target) => {
+                        this.delImg(target)
+                    }
+                }
+            ]
+        }
+    },
+    components: {
+        InvalidImage,
+        ImgGrid
+        // Waterfall,
+        // WaterfallSlot
+    },
+    computed: {
+        ...mapGetters({
+            imgSpaces: 'imgSpaces'
+        }),
+        sizeText () {
+            if (this.formItem.size) {
+                return sizeLabels[this.formItem.size] ? sizeLabels[this.formItem.size] : this.formItem.size
+            } else {
+                return '选择尺寸'
+            }
+        },
+        selectedList: function () {
+            return this.data.filter(item => item._checked)
+        },
+        selectedNum: function () {
+            return this.selectedList.length
+        }
+    },
+    methods: {
+        async fetchMedia () {
+            if (!this.isNext) return false
+            try {
+                let result = await media.fetchAll({
+                    ...this.formItem,
+                    color: this.activeColor && this.activeColor.color
+                }, this.currPage)
+                result.forEach(i => {
+                    i._checked = false
+                    // // 图片查看查询所需要的属性
+                    // i.src = i.url
+                    // i.w = i.width
+                    // i.h = i.height
                 })
-            }
-            return {
-                formItem: {space: 'all', hash: '', size: '', color: null},
-                ruleInline: {},
-                idKey: 'hash',
-                active: 'img',
-                sizeLabels,
-                presetSize: ['1920x1080', '1680x1050', '1440x900', '1366x768', '1280x1024', '1280x800', '1024x768'],
-                presetColors: [
-                    {color: '#DE2020', text: '红色'},
-                    {color: '#FE6C00', text: '橙色'},
-                    {color: '#FEBF00', text: '黄色'},
-                    {color: '#59A725', text: '绿色'},
-                    {color: '#892BCF', text: '紫色'},
-                    {color: '#D744BA', text: '粉色'},
-                    {color: '#06B7C8', text: '青色'},
-                    {color: '#0065FE', text: '蓝色'},
-                    {color: '#733413', text: '棕色'},
-                    {color: '#ffffff', text: '白色'},
-                    {color: '#000000', text: '黑色'},
-                    {
-                        color: 'url(\'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOAgMAAABiJsVCAAAACVBMVEWAgIAxMDBPTk4kb9ZpAAAAJ0lEQVQI1xXEsREAMAwCMS8JR8kojJ68Ct3uK4VMGpVCJo1KIZNGfT5iC4W3w7w9AAAAAElFTkSuQmCC\') 1px 1px no-repeat',
-                        text: '黑白'
-                    }
-                ],
-                activeColor: null,
-
-                colorPanelVisible: false,
-                // isBusy: false,
-                isNext: true,
-                data: [],
-                currPage: 1,
-                scrollHeight: 300,
-                syncLoading: false,
-                detectLoading: false,
-                invalidImageModalVisible: false,
-                invalidImageData: [],
-                contentItems: [
-                    {
-                        label: '查看',
-                        callback: (e, target) => {
-                            if (target) {
-                                let index = target.getAttribute('data-index')
-                                this.openGallery(index)
-                            } else {
-                                this.$Message.info('请选择图片查看')
-                            }
-                        }
-                    },
-                    {
-                        label: '复制链接',
-                        callback: (e, target) => {
-                            if (target) {
-                                let url = target.getAttribute('data-originUrl')
-                                this.copy(url)
-                            } else {
-                                this.$Message.info('请选择图片')
-                            }
-                        }
-                    },
-                    {
-                        label: '复制 markdown 链接',
-                        callback: (e, target) => {
-                            if (target) {
-                                let url = target.getAttribute('data-originUrl')
-                                this.copy(`![image](${url})`)
-                            } else {
-                                this.$Message.info('请选择图片')
-                            }
-                        }
-                    },
-                    {
-                        label: '移动到其他目录',
-                        child: moveTarget
-                    },
-                    {
-                        divided: true,
-                        label: '删除',
-                        callback: (e, target) => {
-                            this.delImg(target)
-                        }
-                    }
-                ]
-            }
-        },
-        components: {
-            InvalidImage,
-            ImgGrid
-            // Waterfall,
-            // WaterfallSlot
-        },
-        computed: {
-            ...mapGetters({
-                imgSpaces: 'imgSpaces'
-            }),
-            sizeText () {
-                if (this.formItem.size) {
-                    return sizeLabels[this.formItem.size] ? sizeLabels[this.formItem.size] : this.formItem.size
+                if (result.length === 0) {
+                    this.isNext = false
+                    this.$Message.info('没有更多了呢')
                 } else {
-                    return '选择尺寸'
+                    this.currPage++
+                    this.data.push(...result)
                 }
-            },
-            selectedList: function () {
-                return this.data.filter(item => item._checked)
-            },
-            selectedNum: function () {
-                return this.selectedList.length
+            } catch (e) {
+                this.$Message.error('获取资源数据失败')
             }
         },
-        methods: {
-            async fetchMedia () {
-                if (!this.isNext) return false
-                try {
-                    let result = await media.fetchAll({
-                        ...this.formItem,
-                        color: this.activeColor && this.activeColor.color
-                    }, this.currPage)
-                    result.forEach(i => {
-                        i._checked = false
-                        // // 图片查看查询所需要的属性
-                        // i.src = i.url
-                        // i.w = i.width
-                        // i.h = i.height
-                    })
-                    if (result.length === 0) {
-                        this.isNext = false
-                        this.$Message.info('没有更多了呢')
-                    } else {
-                        this.currPage++
-                        this.data.push(...result)
-                    }
-                } catch (e) {
-                    this.$Message.error('获取资源数据失败')
-                }
-            },
-            // 提交搜索表单
-            handleSubmit () {
-                this.handleChangeImgSpace()
-            },
+        // 提交搜索表单
+        handleSubmit () {
+            this.handleChangeImgSpace()
+        },
 
-            // 切换图片空间
-            handleChangeImgSpace () {
-                this.isNext = true
-                this.currPage = 1
-                this.data = []
-                this.fetchMedia()
-            },
-            // 清除失效图片，包括缓存
-            async clearInvalidImg () {
-                this.detectLoading = true
+        // 切换图片空间
+        handleChangeImgSpace () {
+            this.isNext = true
+            this.currPage = 1
+            this.data = []
+            this.fetchMedia()
+        },
+        // 清除失效图片，包括缓存
+        async clearInvalidImg () {
+            this.detectLoading = true
+            this.$Notice.info({
+                title: '提示',
+                name: 'detect_notice',
+                desc: '正在探测图片状态，请稍后！'
+            })
+            try {
+                let data = await media.detect()
+                // console.log(data)
+                this.invalidImageModalVisible = true
+                this.invalidImageData = data
+            } catch (e) {
+                this.$Message.error('探测出现异常:' + e.message)
+            } finally {
+                this.detectLoading = false
+                this.$Notice.close('detect_notice')
+            }
+        },
+        async sync () {
+            this.syncLoading = true
+            try {
                 this.$Notice.info({
                     title: '提示',
-                    name: 'detect_notice',
-                    desc: '正在探测图片状态，请稍后！'
+                    name: 'sync_notice',
+                    desc: '正在同步，过程需要一些时间，请稍后！'
                 })
-                try {
-                    let data = await media.detect()
-                    // console.log(data)
-                    this.invalidImageModalVisible = true
-                    this.invalidImageData = data
-                } catch (e) {
-                    this.$Message.error('探测出现异常:' + e.message)
-                } finally {
-                    this.detectLoading = false
-                    this.$Notice.close('detect_notice')
-                }
-            },
-            async sync () {
-                this.syncLoading = true
-                try {
-                    this.$Notice.info({
-                        title: '提示',
-                        name: 'sync_notice',
-                        desc: '正在同步，过程需要一些时间，请稍后！'
-                    })
-                    await media.sync()
-                    this.$Message.success('同步完成')
-                    this.data = []
-                    this.isNext = true
-                    this.currPage = 1
-                    this.fetchMedia() // 刷新当前空间
-                } catch (e) {
-                    this.$Message.error('同步出现异常:' + e.message)
-                } finally {
-                    this.syncLoading = false
-                    this.$Notice.close('sync_notice')
-                }
+                await media.sync()
+                this.$Message.success('同步完成')
+                this.data = []
+                this.isNext = true
+                this.currPage = 1
+                this.fetchMedia() // 刷新当前空间
+            } catch (e) {
+                this.$Message.error('同步出现异常:' + e.message)
+            } finally {
+                this.syncLoading = false
+                this.$Notice.close('sync_notice')
+            }
 
-            },
-            handleUpload: function () { // name = 'file'
-                // upload.openSelectFile(name)
-                // if (name === 'folder') { // 选择文件夹
-                //     // this.$Notice.open({
-                //     //     title: '通知',
-                //     //     desc: '上传文件夹暂时不可用'
-                //     // })
-                //     this.$refs.h5Input0.setAttribute('webkitdirectory', true)
-                //     this.$refs.h5Input0.setAttribute('directory', true)
-                //     // return
-                // } else {
-                //     this.$refs.h5Input0.removeAttribute('webkitdirectory')
-                //     this.$refs.h5Input0.removeAttribute('directory')
+        },
+        handleUpload: function () { // name = 'file'
+            // upload.openSelectFile(name)
+            // if (name === 'folder') { // 选择文件夹
+            //     // this.$Notice.open({
+            //     //     title: '通知',
+            //     //     desc: '上传文件夹暂时不可用'
+            //     // })
+            //     this.$refs.h5Input0.setAttribute('webkitdirectory', true)
+            //     this.$refs.h5Input0.setAttribute('directory', true)
+            //     // return
+            // } else {
+            //     this.$refs.h5Input0.removeAttribute('webkitdirectory')
+            //     this.$refs.h5Input0.removeAttribute('directory')
+            // }
+            this.$refs.h5Input0.click()
+        },
+        handleUploadChange: async function (e) {
+            const files = e.target.files
+            if (!files) {
+                return
+            }
+            let postFiles = Array.prototype.slice.call(files)
+            // this.uploadFiles(files);
+            let data = { 'x:space': this.formItem.space, 'x:remark': 'Local Upload' }
+
+            let token = await media.token()
+
+            this.$uploadFiles(postFiles, {
+                space: this.formItem.space,
+                token,
+                data,
+                onSuccess: (res) => {
+                    console.log(res)
+                }
+            })
+            this.$refs.h5Input0.value = null
+            // console.log(files)
+        },
+        _getSelectImages (target) {
+            let key
+            let items = []
+            if (this.selectedList.length) {
+                items = this.selectedList
+            } else if (target) {
+                key = target.getAttribute('data-key')
+                // if (this.formItem.space !== 'all') {
+                let item = this.data.find(item => item.hash === key)
+                item && items.push(item)
+            }
+            return items
+        },
+        async delImg (target) {
+            let items = this._getSelectImages(target)
+            let keys = items.map(item => item.hash)
+            try {
+                await media.deleteImg(keys)
+                // if (this.formItem.space !== 'all') {
+                this.data = difference(this.data, items)
                 // }
-                this.$refs.h5Input0.click()
-            },
-            handleUploadChange: async function (e) {
-                const files = e.target.files
-                if (!files) {
-                    return
-                }
-                let postFiles = Array.prototype.slice.call(files)
-                // this.uploadFiles(files);
-                let data = {'x:space': this.formItem.space, 'x:remark': 'Local Upload'}
-
-                let token = await media.token()
-
-                this.$uploadFiles(postFiles, {
-                    space: this.formItem.space,
-                    token,
-                    data,
-                    onSuccess: (res) => {
-                        console.log(res)
-                    }
-                })
-                this.$refs.h5Input0.value = null
-                // console.log(files)
-            },
-            _getSelectImages (target) {
-                let key
-                let items = []
-                if (this.selectedList.length) {
-                    items = this.selectedList
-                } else if (target) {
-                    key = target.getAttribute('data-key')
-                    // if (this.formItem.space !== 'all') {
-                    let item = this.data.find(item => item.hash === key)
-                    item && items.push(item)
-                }
-                return items
-            },
-            async delImg (target) {
-                let items = this._getSelectImages(target)
-                let keys = items.map(item => item.hash)
-                try {
-                    await media.deleteImg(keys)
-                    // if (this.formItem.space !== 'all') {
-                    this.data = difference(this.data, items)
-                    // }
-                } catch (e) {
-                    this.$Message.info('删除失败')
-                }
-            },
-            async moveImg (target, space) {
-                let items = this._getSelectImages(target)
-                let keys = items.map(item => item.hash)
-                try {
-                    await media.move(keys, space)
-                    if (this.formItem.space !== 'all') {
-                        this.data = difference(this.data, items.filter(item => item.space !== space))
-                    }
-                    this.$Message.success('完成移动')
-                } catch (e) {
-                    this.$Message.info('移动失败')
-                }
-
-                // console.log('space', target , space)
-            },
-            openGallery (index) {
-                let data = this.data.map(item => ({
-                    src: item.url,
-                    w: item.width,
-                    h: item.height
-                }))
-
-                this.$photoswipe.open(parseInt(index, 10), data)
-            },
-            copy (text) {
-                this.$refs.copyrelay.value = text
-                this.$refs.copyrelay.focus()
-                this.$refs.copyrelay.select()
-                try {
-                    if (document.execCommand('copy', false, null)) {
-                        this.$Message.success('复制成功')
-                    } else {
-                        this.$Message.success('复制失败')
-                    }
-                } catch (err) {
-                    this.$Message.success('复制失败')
-                }
+            } catch (e) {
+                this.$Message.info('删除失败')
             }
         },
-        async created () {
-            await this.fetchMedia()
+        async moveImg (target, space) {
+            let items = this._getSelectImages(target)
+            let keys = items.map(item => item.hash)
+            try {
+                await media.move(keys, space)
+                if (this.formItem.space !== 'all') {
+                    this.data = difference(this.data, items.filter(item => item.space !== space))
+                }
+                this.$Message.success('完成移动')
+            } catch (e) {
+                this.$Message.info('移动失败')
+            }
+
+            // console.log('space', target , space)
         },
-        destroyed () {
+        openGallery (index) {
+            let data = this.data.map(item => ({
+                src: item.url,
+                w: item.width,
+                h: item.height
+            }))
+
+            this.$photoswipe.open(parseInt(index, 10), data)
+        },
+        copy (text) {
+            this.$refs.copyrelay.value = text
+            this.$refs.copyrelay.focus()
+            this.$refs.copyrelay.select()
+            try {
+                if (document.execCommand('copy', false, null)) {
+                    this.$Message.success('复制成功')
+                } else {
+                    this.$Message.success('复制失败')
+                }
+            } catch (err) {
+                this.$Message.success('复制失败')
+            }
         }
+    },
+    async created () {
+        await this.fetchMedia()
+    },
+    destroyed () {
     }
+}
 </script>

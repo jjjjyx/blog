@@ -5,15 +5,15 @@ const express = require('express')
 const log = require('log4js').getLogger('routers:home')
 // const opLog = require('log4js').getLogger('op.routers:home')
 const isFunction = require('lodash/isFunction')
-const {sanitizeQuery} = require('express-validator/filter')
-const {query} = require('express-validator/check')
+const { sanitizeQuery } = require('express-validator/filter')
+const { query } = require('express-validator/check')
 
 const Result = require('../common/result')
 const utils = require('../utils')
 const common = require('../common')
 const ManageLog = require('../common/manageLog')('routers:home')
 
-const {termDao, userDao, postDao, postMetaDao, sequelize, Sequelize} = require('../models')
+const { termDao, userDao, postDao, postMetaDao, sequelize, Sequelize } = require('../models')
 
 const router = express.Router()
 const loadPostPageSize = common.CONSTANT.LOAD_POST_PAGE_SIZE
@@ -32,7 +32,7 @@ SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`po
 
 const index = [
     utils.cache.route('index', config.cacheTimeOut),
-    async function(req, res, next) {
+    async function (req, res, next) {
         try {
             // 获取置顶文章
             let stickyPostNum = SITE.stickyPostNum
@@ -42,16 +42,16 @@ const index = [
             })
             let stickyPostIds = result.map((item) => item.id)
 
-            log.trace('加载置顶文章 stickyPostNum = %d 个' , stickyPostNum)
+            log.trace('加载置顶文章 stickyPostNum = %d 个', stickyPostNum)
             let stickyPost = await postDao.findAll({
-                where:{id: stickyPostIds},
+                where: { id: stickyPostIds },
                 include: common.postInclude
             })
 
             log.isDebugEnabled() && log.debug('获取置顶文章，共计 %d 篇, %s', result.length, result.map(post => '#' + post.id))
 
             let articleList = stickyPost.map(common.generatePostHtml).join('')
-            articleList += await common.loadPostHtml({page:1, pageSize: 10}, null, stickyPostIds)
+            articleList += await common.loadPostHtml({ page: 1, pageSize: 10 }, null, stickyPostIds)
 
             let sidebarModule = ['about', 'hot', 'chosen', 'category', 'tags', 'newest', 'archives', 'search']
             let sidebar = ''
@@ -63,7 +63,7 @@ const index = [
                 log.error('侧边栏加载失败 by :', e)
             }
             ManageLog.info('访问首页')
-            res.render('home', {articleList, sidebar});
+            res.render('home', { articleList, sidebar })
         } catch (e) {
             next(e)
         }
@@ -75,11 +75,11 @@ const more = [
     sanitizeQuery('page').toInt(),
     query('page').isInt(),
     common.validationResult,
-    async function(req, res, next) {
-        let {page} = req.query
+    async function (req, res, next) {
+        let { page } = req.query
 
         try {
-            let result =  await common.loadPostHtml({page, pageSize: 10})
+            let result = await common.loadPostHtml({ page, pageSize: 10 })
             res.send(result)
         } catch (e) {
             log.error('loadPost  error by:', e)
@@ -88,12 +88,12 @@ const more = [
     }
 ]
 
-router.route('/').get(index);
-router.route('/more').get(more);
-router.get('/test', function(req, res, next) {
-    res.render('test', {req});
+router.route('/').get(index)
+router.route('/more').get(more)
+router.get('/test', function (req, res, next) {
+    res.render('test', { req })
     // console.log("========== next ==========")
     // next()
-});
+})
 
 module.exports = router

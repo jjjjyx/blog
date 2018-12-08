@@ -2,9 +2,9 @@
     <div class="curd-table-title-wrap">
         <div class="category-name-icon">
             <Poptip placement="bottom" trigger="hover">
-                <font-icon  :type="category.icon" ></font-icon>
+                <font-icon :type="category.icon"></font-icon>
                 <div slot="content" style="text-align: center">
-                    <font-icon  :type="category.icon"  size="100"></font-icon>
+                    <font-icon :type="category.icon" size="100"></font-icon>
                 </div>
             </Poptip>
         </div>
@@ -39,8 +39,7 @@ export default {
             return this.category.id === this.$store.getters.defaultCategoryValue
         }
     },
-    methods: {
-    }
+    methods: {}
 }
 </script>
 <style scoped>
@@ -57,12 +56,15 @@ export default {
         align-items: center;
         font-size: 2rem;
     }
+
     .category-name {
         margin-bottom: .5rem;
     }
+
     .category-name span {
         font-size: 1rem;
     }
+
     .category-name .u {
         text-decoration: underline;
         color: initial;

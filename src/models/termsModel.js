@@ -1,10 +1,10 @@
 /* jshint indent: 2 */
-const Enum =require('../common/enumerate')
+const Enum = require('../common/enumerate')
 /*
-分类使用平级
+ 分类使用平级
 
-// 一个文章只有一个分类
-// 一个文章至多可以有 16 个标签
+ // 一个文章只有一个分类
+ // 一个文章至多可以有 16 个标签
  */
 module.exports = function (sequelize, DataTypes) {
     const termModel = sequelize.define('term', {
@@ -20,7 +20,7 @@ module.exports = function (sequelize, DataTypes) {
         },
         slug: { // 不能添加唯一约束， 分类的别名与标签可以相同
             type: DataTypes.STRING(200),
-            allowNull: true,
+            allowNull: true
         },
         term_group: {
             type: DataTypes.BIGINT,
@@ -43,13 +43,13 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'j_terms',
-        deletedAt: "deleteAt",
-        paranoid: true,
+        deletedAt: 'deleteAt',
+        paranoid: true
         // name: {
         //     singular: 'task',
         //     plural: 'tasks',
         // }
-    });
+    })
     const termRelationships = sequelize.define('term_relationships', {
         term_order: {
             type: DataTypes.INTEGER(11),
@@ -57,17 +57,7 @@ module.exports = function (sequelize, DataTypes) {
         }
     }, {
         tableName: 'j_term_relationships',
-        timestamps: false,
-        hooks: {
-            beforeUpdate (...b)  {
-                console.log('beforeUpdate', ...b)
-            },
-            afterUpdate (instance, options)  {
-                console.log('afterUpdate', instance, '\n=====',options)
-                // dataValues
-                // _previousDataValues
-            }
-        }
+        timestamps: false
     })
 
     // termModel.beforeBulkUpdate((user, options) => {
@@ -80,8 +70,8 @@ module.exports = function (sequelize, DataTypes) {
     //     console.log('++++++++++', user, options)
     // });
 
-    const {post: postModel} = sequelize.models
+    const { post: postModel } = sequelize.models
     postModel.belongsToMany(termModel, { through: termRelationships, foreignKey: 'object_id' })
     termModel.belongsToMany(postModel, { through: termRelationships, foreignKey: 'term_id' })
     return termModel
-};
+}

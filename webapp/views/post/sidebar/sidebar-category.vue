@@ -1,5 +1,5 @@
 <template>
-    <div  class="demo-tabs-style2">
+    <div class="demo-tabs-style2">
         <Tabs size="small" type="card" class="cm-tabs-style" value="">
             <TabPane label="常用" style="max-height: 300px; overflow-y: auto;">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
@@ -36,7 +36,7 @@
 
 <script>
 import orderBy from 'lodash/orderBy'
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 import api from '@/api'
 import { validTermName } from '@/utils/validator'
 import CollapseTransition from '@/utils/collapse-transition'
@@ -86,7 +86,7 @@ export default {
                     // 创建标签并且选中
                     this.createStatusLoading = true
                     try {
-                        let result = await api.npost('/api/term/category/add', {name: this.value, description: '来自文章编辑', icon: '', slug: ''})
+                        let result = await api.npost('/api/term/category/add', { name: this.value, description: '来自文章编辑', icon: '', slug: '' })
                         this.$store.commit('addCategoryList', result)
                         this.vertical = result.id
                         this.collapseStatus1 = false

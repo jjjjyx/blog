@@ -4,10 +4,11 @@
 @import "./sass/mixins";
 @import "./sass/utilities";
 @import "./sass/utilities/display";
+@import "./sass/utilities/text";
 
 $nav-height: 56px;
-$sider-bg-color : #282d2f;
-$sider-bg-deep-color : #1f2224;
+$sider-bg-color: #282d2f;
+$sider-bg-deep-color: #1f2224;
 $sider-width: 240px;
 $sider-collapsed-width: 78px;
 $sider-logo-bg-color: $sider-bg-color;
@@ -16,20 +17,18 @@ $app-body-background-color: $white;
 @import "./sass/icon";
 @import "./sass/reboot";
 
-
 body {
     overflow: hidden;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    font-family: "PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
     font-size: 1rem;
 }
 
-
 $badge-colors: map_merge($colors, (
     "rose": #e91e63,
-    "white": hsla(0,0%,78%,.2),
+    "white": hsla(0, 0%, 78%, .2),
     'black': $black
 ));
 
@@ -54,7 +53,6 @@ $badge-colors: map_merge($colors, (
 @import "sass/tabs-style";
 @import "sass/social";
 
-
 //@import "sass/location";
 //@import "sass/scrollbar";
 //@import "sass/error";
@@ -64,9 +62,6 @@ $badge-colors: map_merge($colors, (
     font-weight: 300;
     //line-height: 1.5em;
 }
-
-
-
 
 //@import "./sass/functions";
 //@import "./sass/var";

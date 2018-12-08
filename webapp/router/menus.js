@@ -1,12 +1,12 @@
 // import Layout from '@/views/layout/layout2'
 
 const homeRouter = {
-	path: '/',
-	name: 'home',
+    path: '/',
+    name: 'home',
     icon: 'ios-speedometer',
-	redirect: '/home',
-	component: '/dashboard/index',
-	hide: true
+    redirect: '/home',
+    component: '/dashboard/index',
+    hide: true
 }
 
 /**
@@ -27,9 +27,9 @@ const homeRouter = {
  * }
  */
 const menus = [
-	// {name: 'error-404', hide: true, layout: false, component: 'errorPage/404'},
+    // {name: 'error-404', hide: true, layout: false, component: 'errorPage/404'},
 
-	homeRouter,
+    homeRouter,
     {
         name: 'sign', hide: true, layout: '/sign/sign',
         redirect: '/sign/in',
@@ -45,34 +45,35 @@ const menus = [
             }
         ]
     },
-	// {name: 'ttt', layout: '/layout/test'}, // 使用其他布局示例，应用布局文件 @/views/layout/test
-	{
-		name: 'post', textIcon: 'post',
-		redirect: '/post/post_management',
-		child: [
-			{
-				name: 'post_management', icon: 'icon-fabuwenzhang'
-			},
+    // {name: 'ttt', layout: '/layout/test'}, // 使用其他布局示例，应用布局文件 @/views/layout/test
+    {
+        name: 'post',
+        textIcon: 'post',
+        redirect: '/post/post_management',
+        child: [
             {
-				name: 'post_writer', textIcon: '编辑',icon: 'icon-combinedshapecopy2'
-			},
+                name: 'post_management', icon: 'icon-fabuwenzhang'
+            },
             {
-				name: 'tag_management', textIcon: '标签',icon: 'md-pricetags'
-			},
+                name: 'post_writer', textIcon: '编辑', icon: 'icon-combinedshapecopy2'
+            },
             {
-				name: 'category_management', textIcon: '分类',icon: 'icon-ziyuan1'
-			},
+                name: 'tag_management', textIcon: '标签', icon: 'md-pricetags'
+            },
             {
-				name: 'trash', icon: 'ios-trash'
-			}
-		]
-	},
-    {name: 'media', icon: 'md-image'},
+                name: 'category_management', textIcon: '分类', icon: 'icon-ziyuan1'
+            },
+            {
+                name: 'trash', icon: 'ios-trash'
+            }
+        ]
+    },
+    { name: 'media', icon: 'md-image' },
 
     {
         name: 'pages', icon: 'ios-aperture',
         redirect: '/pages/blank',
-        child : [
+        child: [
             {
                 name: 'blank', icon: 'ios-document-outline'
             },
@@ -84,14 +85,14 @@ const menus = [
     {
         name: 'system', icon: 'md-globe',
         redirect: '/system/website',
-        child : [
+        child: [
             {
                 name: 'website', icon: 'ios-settings'
             }
         ]
-    },
-	// {name: 'domain', icon: 'md-globe'}
-	// {name: 'location'},
+    }
+    // {name: 'domain', icon: 'md-globe'}
+    // {name: 'location'},
 ]
 
 // for (let i = 4; i < 40; i++) {

@@ -56,7 +56,9 @@ export function getTimeText (timeInMs, pattern = 'yy/MM/dd') {
     // if (h > 24 * 30) return ``
     return dateFormat(timeInMs, pattern)
 }
+
 const defaultDatePattern = 'yyyy/MM/dd hh:mm'
+
 export function dateFormat (timeInMs, pattern = defaultDatePattern) {
     if (!isNaN(timeInMs)) {
         return new Date(timeInMs).format(pattern)
@@ -118,17 +120,7 @@ export function hyphenToHump (str) {
  *  see https://github.com/fy0/Icarus/blob/master/src/tools/user.js#L34-L56
  */
 const salt = '$2a$10$TGNVlss6zdAFpROsn2SX0exhg6N/gMlY.nI/kpDiMmoid.PFBvKVK'
-export async function passwordHash (password, iterations = 1e5) {
-    // let salt = state.misc.BACKEND_CONFIG.USER_SECURE_AUTH_FRONTEND_SALT
-    let crypto = window.crypto || window.msCrypto // for IE 11
-    let enc = new TextEncoder()
-    const pwUtf8 = enc.encode(password) // encode pw as UTF-8
-    const pwKey = await crypto.subtle.importKey('raw', pwUtf8, 'PBKDF2', false, ['deriveBits']) // create pw key
-    const saltUint8 = enc.encode(salt)
-
-    const params = { name: 'PBKDF2', hash: 'SHA-512', salt: saltUint8, iterations: iterations } // pbkdf2 params
-    const keyBuffer = await crypto.subtle.deriveBits(params, pwKey, 256) // derive key
-
+const _passwordResultToText = function (keyBuffer, saltUint8, iterations) {
     const keyArray = Array.from(new Uint8Array(keyBuffer)) // key as byte array
     const saltArray = Array.from(new Uint8Array(saltUint8)) // salt as byte array
 
@@ -140,5 +132,36 @@ export async function passwordHash (password, iterations = 1e5) {
     const compositeBase64 = btoa('v01' + compositeStr) // encode as base64
 
     return compositeBase64 // return composite key
-
 }
+// const passwordHashAsmCrypto =
+
+let passwordHashAsmCrypto = function (password, iterations = 1e5) {
+    return import('asmcrypto.js/dist_es8/pbkdf2/pbkdf2-hmac-sha512.js').then((module) => {
+        const Pbkdf2HmacSha512 = module.Pbkdf2HmacSha512
+        let enc = new TextEncoder()
+        const pwUtf8 = enc.encode(password) // encode pw as UTF-8
+        const saltUint8 = enc.encode(salt)
+        let keyBuffer = Pbkdf2HmacSha512(pwUtf8, saltUint8, iterations, 32)
+        return _passwordResultToText(keyBuffer, saltUint8, iterations)
+    })
+}
+
+async function passwordHashNative (password, iterations = 1e5) {
+    let crypto = window.crypto || window.msCrypto // for IE 11
+    let enc = new TextEncoder()
+    const pwUtf8 = enc.encode(password) // encode pw as UTF-8
+    const pwKey = await crypto.subtle.importKey('raw', pwUtf8, 'PBKDF2', false, ['deriveBits']) // create pw key
+    const saltUint8 = enc.encode(salt)
+
+    const params = { name: 'PBKDF2', hash: 'SHA-512', salt: saltUint8, iterations: iterations } // pbkdf2 params
+    const keyBuffer = await crypto.subtle.deriveBits(params, pwKey, 256) // derive key
+    return _passwordResultToText(keyBuffer, saltUint8, iterations)
+}
+
+export const passwordHash = (function passwordHash () {
+    if (crypto.subtle && crypto.subtle.importKey) {
+        return passwordHashNative
+    } else {
+        return passwordHashAsmCrypto
+    }
+})()

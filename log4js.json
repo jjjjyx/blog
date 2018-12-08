@@ -45,7 +45,6 @@
         },
         "sql": {
             "appenders": [
-                "out",
                 "sql"
             ],
             "level": "info"

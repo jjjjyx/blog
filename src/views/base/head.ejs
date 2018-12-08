@@ -1,23 +1,27 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<%/*关闭响应式--*/%>
+<% /*关闭响应式--*/ %>
 <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<%-SITE.metaKey%>
-<%-SITE.metaDescription%>
-<%-SITE.googleVerification%>
-<title><% if(locals.title) {%> <%-locals.title%> | <%}%><%-SITE.title%></title>
+<%- SITE.metaKey %>
+<%- SITE.metaDescription %>
+<%- SITE.googleVerification %>
+<title>
+    <% if(locals.title) { %>
+    <%- locals.title %> |
+    <% } %>
+    <%- SITE.title %></title>
 <meta name="renderer" content="webkit">
-<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-siteapp"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico" rel="shortcut icon">
-<link href="<%-SITE.iconUrl%>" rel="stylesheet">
-<link href="<%=locals.cdn('normalize/8.0.0/normalize.min.css')%>" rel="stylesheet">
-<link href="<%=locals.cdn('animate.css/3.5.2/animate.min.css')%>" rel="stylesheet">
-<link href="<%=locals.cdn('iview/3.1.5/styles/iview.css')%>" rel="stylesheet">
-<script src="<%=locals.cdn('vue/2.5.16/vue.min.js')%>"></script>
-<script src="<%=locals.cdn('iview/3.1.5/iview.min.js')%>"></script>
-<script src="<%=locals.cdn('lodash.js/4.17.10/lodash.min.js')%>"></script>
-<% if(!locals.dev) {%>
-<link href="/css/common.css?_=<%=locals.hash%>" rel="stylesheet">
-<link href="/css/<%=name%>.css?_=<%=locals.hash%>" rel="stylesheet">
+<link href="<%- SITE.iconUrl %>" rel="stylesheet">
+<link href="<%= locals.cdn('normalize/8.0.0/normalize.min.css') %>" rel="stylesheet">
+<link href="<%= locals.cdn('animate.css/3.5.2/animate.min.css') %>" rel="stylesheet">
+<link href="<%= locals.cdn('iview/3.1.5/styles/iview.css') %>" rel="stylesheet">
+<script src="<%= locals.cdn('vue/2.5.16/vue.min.js') %>"></script>
+<script src="<%= locals.cdn('iview/3.1.5/iview.min.js') %>"></script>
+<script src="<%= locals.cdn('lodash.js/4.17.10/lodash.min.js') %>"></script>
+<% if(!locals.dev) { %>
+<link href="/css/common.css?_=<%= locals.hash %>" rel="stylesheet">
+<link href="/css/<%= name %>.css?_=<%= locals.hash %>" rel="stylesheet">
 <!--<script src="/js/runtime.js"></script>-->
-<%}%>
+<% } %>

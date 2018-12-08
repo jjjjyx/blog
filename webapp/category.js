@@ -28,7 +28,7 @@ function appInit () {
             loadMore: async function () {
                 try {
                     this.loading = true
-                    let resp = await api.get(`./${this.slug}/more`, {page: this.page})
+                    let resp = await api.get(`./${this.slug}/more`, { page: this.page })
                     let content = await resp.text()
                     if (!content) this.isNext = false
                     let el = this.$refs['insertEl']

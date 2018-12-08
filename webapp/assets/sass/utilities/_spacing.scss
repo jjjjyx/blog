@@ -13,7 +13,9 @@ $infix: '';
 @each $prop, $abbrev in (margin: m, padding: p) {
     @each $size, $length in $spacers {
 
-        .#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
+        .#{$abbrev}#{$infix}-#{$size} {
+            #{$prop}: $length !important;
+        }
         .#{$abbrev}t#{$infix}-#{$size},
         .#{$abbrev}y#{$infix}-#{$size} {
             #{$prop}-top: $length !important;
@@ -34,19 +36,25 @@ $infix: '';
 }
 
 // Some special margin utils
-.m#{$infix}-auto { margin: auto !important; }
+.m#{$infix}-auto {
+    margin: auto !important;
+}
+
 .mt#{$infix}-auto,
 .my#{$infix}-auto {
     margin-top: auto !important;
 }
+
 .mr#{$infix}-auto,
 .mx#{$infix}-auto {
     margin-right: auto !important;
 }
+
 .mb#{$infix}-auto,
 .my#{$infix}-auto {
     margin-bottom: auto !important;
 }
+
 .ml#{$infix}-auto,
 .mx#{$infix}-auto {
     margin-left: auto !important;

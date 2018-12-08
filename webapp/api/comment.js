@@ -8,16 +8,18 @@ import api from './index'
  * @param members 提到的用户
  * @returns {Promise<*>}
  */
-export function comment ({content, parent, comment_parent, members = []}) {
-    return api.npost('/api/comment', {content, parent, comment_parent, members})
+export function comment ({ content, parent, comment_parent, members = [] }) {
+    return api.npost('/api/comment', { content, parent, comment_parent, members })
 }
 
 export function changeAvatar () {
     return api.nget('/api/reply/change-avatar')
 }
+
 export function writeUser (user) {
     return api.npost('/api/reply/write-user', user)
 }
+
 export function getComments (filter) {
     return api.nget('/api/reply', filter)
 }

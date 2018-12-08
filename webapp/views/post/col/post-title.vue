@@ -6,7 +6,8 @@
             <router-link :to="{name: 'post_writer', query: {poi: post.id}}">{{post.post_title || '（无标题）'}}</router-link>
             <!--已发布的不显示 -->
             <template v-if="post.post_status !== 'publish'">
-                -- <span>{{postStatusDict[post.post_status]}}</span>
+                --
+                <span>{{postStatusDict[post.post_status]}}</span>
             </template>
         </div>
         <div class="post-table-content">
@@ -15,13 +16,13 @@
         <button-group size="small" class="curd-table-options">
             <i-button :to="{name: 'post_writer', query: {poi: post.id}}">编辑</i-button>
             <i-button style="color: rgb(237, 63, 20);" @click="$emit('trash', [post])">移至回收站</i-button>
-            <i-button >预览</i-button>
+            <i-button>预览</i-button>
         </button-group>
     </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 // import {mavonEditor} from 'mavon-editor'
 // console.log(mavonEditor.getMarkdownIt())
 export default {
@@ -35,7 +36,6 @@ export default {
             required: true
         }
     },
-    methods: {
-    }
+    methods: {}
 }
 </script>

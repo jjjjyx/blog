@@ -1,11 +1,11 @@
 <template>
-    <div v-html="html" ></div>
+    <div v-html="html"></div>
     <!--v-highlight-->
 </template>
 
 <script>
-import {createPatch} from 'diff'
-import {Diff2Html} from 'diff2html'
+import { createPatch } from 'diff'
+import { Diff2Html } from 'diff2html'
 // import hljs from 'highlight.js'
 // import 'highlight.js/styles/googlecode.css'
 import 'diff2html/dist/diff2html.css'
@@ -48,7 +48,7 @@ export default {
     },
     methods: {
         createdHtml (oldString, newString, context, outputFormat) {
-            let args = [this.header, oldString, newString, '', '', {context: context}]
+            let args = [this.header, oldString, newString, '', '', { context: context }]
             let dd = createPatch(...args)
             let outStr = Diff2Html.getJsonFromDiff(dd, {
                 inputFormat: 'diff',

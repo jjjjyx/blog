@@ -4,18 +4,18 @@ const xss = require('xss')
 const marked = require('marked')
 const groupBy = require('lodash/groupBy')
 const toNumber = require('lodash/toNumber')
-const debug = require('debug')('app:routers:common')
-// const log = require('log4js').getLogger('routers:common')
-const {validationResult} = require('express-validator/check')
+// const debug = require('debug')('app:routers:common')
+const log = require('./manageLog')('routers:common')
+const { validationResult } = require('express-validator/check')
 
 const utils = require('../utils')
 const Result = require('./result')
 const Regs = require('./regs')
 const Enumerate = require('./enumerate')
 const Constant = require('./constant')
-const {termDao, userDao, postDao, postMetaDao, commentMetaDao, userMetaDao, sequelize} = require('../models/index')
+const { termDao, userDao, postDao, postMetaDao, commentMetaDao, userMetaDao, sequelize } = require('../models/index')
 
-const {term_relationships: termRelationshipsDao} = sequelize.models
+const { term_relationships: termRelationshipsDao } = sequelize.models
 const Op = sequelize.Op
 // const COOKIE_MAX_AGE = 365 * 5 * 60000 * 60 * 24 // 5年
 // const COOKIE_HTTP_ONLY = true
@@ -26,13 +26,14 @@ const Op = sequelize.Op
  * @returns {string}
  */
 function generatePostHtml (post) {
-    let {sticky, displayContent, heart = {meta_value: 0}, comment = {meta_value: 0}, read = {meta_value: 0}} = post.metas
+    let { sticky, displayContent, heart = { meta_value: 0 }, comment = { meta_value: 0 }, read = { meta_value: 0 } } = post.metas
     let stickyHtml = ''
     // if (sticky) {
     //     console.log('post.id = ', post.id, '  sticky.meta_value', sticky.meta_value, ' ====', sticky.meta_value === '1')
     // }
-    if (sticky && sticky.meta_value === '1')
+    if (sticky && sticky.meta_value === '1') {
         stickyHtml = '<color-icon class="j-article__sticky" type="icon-color-sticky" size="24" title="置顶"></color-icon>'
+    }
     let title = post.post_title
     let url = '/article/' + post.guid
 
@@ -53,17 +54,18 @@ function generatePostHtml (post) {
     // 评论关闭不显示
     let commentEl = post.comment_status ? `<a class="j-article__a comment mr-2" href="${url}#comment" target="_blank"> <i class="ivu-icon ivu-icon-ios-chatbubbles-outline" style="font-size: 18px;"></i><span class="num">${commentNum}</span> </a>` : ''
 
-    let {category, postTag} = post.getCategoryOrTags()
+    let { category, postTag } = post.getCategoryOrTags()
     let categoryName = category.name
     let postTagNamesEL = ''
-    if (postTag.length)
+    if (postTag.length) {
         postTagNamesEL = '<i class="ivu-icon ivu-icon-pricetag" style="font-size: 16px;"></i>' + postTag.map(tag => `<span class="tag">${tag.name}</span>`)
+    }
 
     let postContent // = marked(post.post_content, {renderer: utils.renderer})
     if (displayContent) {
         postContent = displayContent.meta_value
     } else {
-        postContent = marked(post.post_content, {renderer: utils.renderer})
+        postContent = marked(post.post_content, { renderer: utils.renderer })
     }
     // 获取图片位置进行截取
     // 没有图 显示200 个长度
@@ -99,14 +101,13 @@ function generatePostHtml (post) {
 </article>`
 }
 
-
 const postInclude = [
-    {model: postMetaDao, as: 'metas'},
-    {model: userDao, attributes: {exclude: ['user_pass']}},
-    {model: termDao, attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id']}
+    { model: postMetaDao, as: 'metas' },
+    { model: userDao, attributes: { exclude: ['user_pass'] } },
+    { model: termDao, attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id'] }
 ]
 
-async function loadPost ({page = 1, pageSize = 10}, term, excludeIds = []) {
+async function loadPost ({ page = 1, pageSize = 10 }, term, excludeIds = []) {
     let where
     if (!term) {
         where = {
@@ -140,7 +141,7 @@ async function loadPost ({page = 1, pageSize = 10}, term, excludeIds = []) {
             ['post_date', 'DESC']
         ]
     })
-    debug('获取文章，共计 %d 篇, %s', posts.length, posts.map(post => '#' + post.id))
+    log.trace('获取文章，共计 %d 篇, %s', posts.length, posts.map(post => '#' + post.id))
     //
     return posts
 }
@@ -160,7 +161,7 @@ function loadNewestPost (size = 10) {
     return postDao.findAll({
         where: {
             post_status: Enumerate.PostStatusEnum.PUBLISH,
-            post_date: {[Op.gte]: date}
+            post_date: { [Op.gte]: date }
         },
         include: postInclude,
         offset: 0,
@@ -225,7 +226,6 @@ function loadCategory (size = 10) {
     })
 }
 
-
 const renderFile = function (name, data = {}, options = {}) {
     return ejs.renderFile(path.join(__dirname, `../views/template/${name}.ejs`), data, options)
 }
@@ -249,7 +249,7 @@ const sidebarModule = {
     // 热门
     hot: async function () {
         // 评论与阅读的综合排序
-        return '' //renderFile('hot')
+        return '' // renderFile('hot')
     },
     // 精选
     chosen: function () {
@@ -260,16 +260,16 @@ const sidebarModule = {
         // 获取除未分类的分类，按照个数排序，取前20个
         // .filter(item => item.defaultValues.count)
         let category = (await exports.loadCategory(SITE.categoryNum))
-        debug('category ： 获取分类 共计 %d 个 %s', 20, category.map((tag) => `#${tag.id}:${tag.name}`))
-        return renderFile('category', {category})
+        log.trace('category ： 获取分类 共计 %d 个 %s', 20, category.map((tag) => `#${tag.id}:${tag.name}`))
+        return renderFile('category', { category })
     },
     // 标签
     tags: async function () {
         let tags = await exports.loadTags()
         tags = tags.filter(item => item.dataValues.count)
-        debug('tags ： 获取全部有文章引用的标签 共计 %d 个 %s', tags.length, tags.map((tag) => `#${tag.id}:${tag.name}`))
+        log.trace('tags ： 获取全部有文章引用的标签 共计 %d 个 %s', tags.length, tags.map((tag) => `#${tag.id}:${tag.name}`))
         if (tags.length) {
-            return renderFile('tags', {tags})
+            return renderFile('tags', { tags })
         } else {
             return ''
         }
@@ -279,7 +279,7 @@ const sidebarModule = {
         let newestLength = SITE.lastPostNum // 最近 = 最新
         let posts = await loadNewestPost(newestLength)
         if (posts.length) {
-            return renderFile('newest', {posts, formatDate: utils.formatDate, newestLength, groupBy})
+            return renderFile('newest', { posts, formatDate: utils.formatDate, newestLength, groupBy })
         } else { // 没有最新文章 返回空
             return ''
         }
@@ -287,8 +287,8 @@ const sidebarModule = {
     // 归档
     archives: async function () {
         // 查询最近5个月
-        let result = await sequelize.query(archiveSql, {type: sequelize.QueryTypes.SELECT})
-        return renderFile('archives', {data: result})
+        let result = await sequelize.query(archiveSql, { type: sequelize.QueryTypes.SELECT })
+        return renderFile('archives', { data: result })
     },
     // 搜索
     search: function () {
@@ -297,17 +297,16 @@ const sidebarModule = {
     }
 }
 
-const sidebarListEnum = [
-    {name: '关于博主', key: 'about'},
-    {name: '热门文章', key: 'hot'},
-    {name: '精选文章', key: 'chosen'},
-    {name: '分类', key: 'category'},
-    {name: '标签', key: 'tags'},
-    {name: '最新文章', key: 'newest'},
-    {name: '归档', key: 'archives'},
-    {name: '搜索', key: 'search'}
-]
-
+// const sidebarListEnum = [
+//     { name: '关于博主', key: 'about' },
+//     { name: '热门文章', key: 'hot' },
+//     { name: '精选文章', key: 'chosen' },
+//     { name: '分类', key: 'category' },
+//     { name: '标签', key: 'tags' },
+//     { name: '最新文章', key: 'newest' },
+//     { name: '归档', key: 'archives' },
+//     { name: '搜索', key: 'search' }
+// ]
 
 /**
  * 写死的用户权限
@@ -326,7 +325,7 @@ const userRole = {
  */
 function ipAndRoute (req) {
     let key = req.clientIp + ':' + req.baseUrl + req.path
-    debug('ipAndRoute key = %s', key)
+    log.trace('ipAndRoute key = %s', key)
     return key
 }
 
@@ -340,7 +339,7 @@ function ipAndRoute (req) {
 function validation (req, res, next) {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-        debug('api = %s 参数错误 %s', req.originalUrl, JSON.stringify(errors.mapped()))
+        log.trace('api = %s 参数错误 %s', req.originalUrl, JSON.stringify(errors.mapped()))
         return res.status(200).json(Result.info('参数错误', errors.mapped()))
     }
     return next()
@@ -364,19 +363,22 @@ function _createMetaByMetaDao (dao, where = {}, value) {
         if (!created) {
             // debug('创建Meta，id = %d, meta key = %s 已存在, 更新', id, key)
             meta.meta_value = value
-            return meta.save()
+            meta.save()
         }
-        return true
+        return [meta, created]
     })
 }
+
 function updateOrCreatePostMeta (id, key, value) {
-    return _createMetaByMetaDao(postMetaDao, {post_id: id, meta_key: key}, value)
+    return _createMetaByMetaDao(postMetaDao, { post_id: id, meta_key: key }, value)
 }
+
 function updateOrCreateCommentMeta (id, key, value) {
-    return _createMetaByMetaDao(commentMetaDao, {comment_id: id, meta_key: key}, value)
+    return _createMetaByMetaDao(commentMetaDao, { comment_id: id, meta_key: key }, value)
 }
+
 function updateOrCreateUserMeta (id, key, value) {
-    return _createMetaByMetaDao(userMetaDao, {user_id: id, meta_key: key}, value)
+    return _createMetaByMetaDao(userMetaDao, { user_id: id, meta_key: key }, value)
 }
 
 // module.exports.sidebarModuleKey = enumerate.SidebarListEnum
@@ -402,4 +404,3 @@ module.exports.validationResult = validation
 module.exports.updateOrCreatePostMeta = updateOrCreatePostMeta
 module.exports.updateOrCreateCommentMeta = updateOrCreateCommentMeta
 module.exports.updateOrCreateUserMeta = updateOrCreateUserMeta
-

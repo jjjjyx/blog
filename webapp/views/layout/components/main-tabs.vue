@@ -25,112 +25,112 @@
 </template>
 
 <script>
-	import last from 'lodash/last'
-    import {homeRouter} from '@/router/menus'
-	import { mapActions } from 'vuex'
+import last from 'lodash/last'
+import { homeRouter } from '@/router/menus'
+import { mapActions } from 'vuex'
 
-	export default {
-		name: 'tabs',
-		data () {
-			return {
-				tabsScroll: false,
-				menus: [
-					{
-						key: 'contextmenu.close',
-						callback: (e, t) => {
-							let view = {
-								path: t.getAttribute('data-path'),
-								name: t.getAttribute('data-name')
-							}
-							this.closeSelectedTab(view)
-						}
-					},
-					{
-						key: 'contextmenu.close_other',
-						callback: (e, t) => {
-							let view = {
-								path: t.getAttribute('data-path'),
-								name: t.getAttribute('data-name')
-							}
-							this.closeOthersTabs(view)
-						}
-					},
-					{
-						key: 'contextmenu.close_all',
-						callback: () => {
-							this.closeAllTabs()
-						}
-					}
-					// {
-					// 	key: '刷新',
-                    //     divided: true,
-					// 	callback: (e, t) => {
-					// 		let view = {
-					// 			path: t.getAttribute('data-path'),
-					// 			name: t.getAttribute('data-name')
-					// 		}
-					// 		this.refreshTab(view)
-					// 	}
-                    // }
-				]
-			}
-		},
-		computed: {
-			visitedViews () {
-				return this.$store.state.tabs.visitedViews
-			}
-		},
-		methods: {
-			...mapActions(['addView', 'delView', 'delAllViews', 'delOthersViews']),
-			addViewTabs () {
-				const {name, meta, path, fullPath, query} = this.$route
-				if (name) {
-					this.addView({
-						name, path, fullPath, query, ...meta
-					})
-				}
-			},
-			async closeSelectedTab (tab) {
-				if (this.visitedViews.length === 1 && tab.name === homeRouter.name) {
-					this.$Message.warning(this.$t('messages.close_selected_tab'))
-                    return
+export default {
+    name: 'tabs',
+    data () {
+        return {
+            tabsScroll: false,
+            menus: [
+                {
+                    key: 'contextmenu.close',
+                    callback: (e, t) => {
+                        let view = {
+                            path: t.getAttribute('data-path'),
+                            name: t.getAttribute('data-name')
+                        }
+                        this.closeSelectedTab(view)
+                    }
+                },
+                {
+                    key: 'contextmenu.close_other',
+                    callback: (e, t) => {
+                        let view = {
+                            path: t.getAttribute('data-path'),
+                            name: t.getAttribute('data-name')
+                        }
+                        this.closeOthersTabs(view)
+                    }
+                },
+                {
+                    key: 'contextmenu.close_all',
+                    callback: () => {
+                        this.closeAllTabs()
+                    }
                 }
-				await this.delView(tab)
-                // console.log(this.visitedViews.length)
-				if (tab.name === this.$route.name) { // 关闭当前标签页
-					let lastTab = last(this.visitedViews)
-                    // console.log(lastTab)
-					if (lastTab) {
-						this.$router.push(lastTab)
-					} else {
-						this.$router.push('/')
-						// this.$nextTick(this.addViewTabs)
-					}
-				}
-				// let visitedViews
-			},
-			async closeOthersTabs (view) {
-				this.$router.push(view)
-				await this.delOthersViews(view)
-				// this.moveToCurrentTag()
-			},
-			closeAllTabs () {
-				this.delAllViews()
-				this.$router.push('/')
-			},
-			refreshTab () {
-
+                // {
+                // 	key: '刷新',
+                //     divided: true,
+                // 	callback: (e, t) => {
+                // 		let view = {
+                // 			path: t.getAttribute('data-path'),
+                // 			name: t.getAttribute('data-name')
+                // 		}
+                // 		this.refreshTab(view)
+                // 	}
+                // }
+            ]
+        }
+    },
+    computed: {
+        visitedViews () {
+            return this.$store.state.tabs.visitedViews
+        }
+    },
+    methods: {
+        ...mapActions(['addView', 'delView', 'delAllViews', 'delOthersViews']),
+        addViewTabs () {
+            const { name, meta, path, fullPath, query } = this.$route
+            if (name) {
+                this.addView({
+                    name, path, fullPath, query, ...meta
+                })
             }
-		},
-		watch: {
-			'$route' () {
-				this.addViewTabs()
-				// this.moveToCurrentTag()
-			}
-		},
-		mounted () {
-			// console.log(this.$route)
-			this.addViewTabs()
-		}
-	}
+        },
+        async closeSelectedTab (tab) {
+            if (this.visitedViews.length === 1 && tab.name === homeRouter.name) {
+                this.$Message.warning(this.$t('messages.close_selected_tab'))
+                return
+            }
+            await this.delView(tab)
+            // console.log(this.visitedViews.length)
+            if (tab.name === this.$route.name) { // 关闭当前标签页
+                let lastTab = last(this.visitedViews)
+                // console.log(lastTab)
+                if (lastTab) {
+                    this.$router.push(lastTab)
+                } else {
+                    this.$router.push('/')
+                    // this.$nextTick(this.addViewTabs)
+                }
+            }
+            // let visitedViews
+        },
+        async closeOthersTabs (view) {
+            this.$router.push(view)
+            await this.delOthersViews(view)
+            // this.moveToCurrentTag()
+        },
+        closeAllTabs () {
+            this.delAllViews()
+            this.$router.push('/')
+        },
+        refreshTab () {
+
+        }
+    },
+    watch: {
+        '$route' () {
+            this.addViewTabs()
+            // this.moveToCurrentTag()
+        }
+    },
+    mounted () {
+        // console.log(this.$route)
+        this.addViewTabs()
+    }
+}
 </script>

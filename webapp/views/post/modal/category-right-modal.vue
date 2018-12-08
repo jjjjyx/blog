@@ -36,28 +36,28 @@
 </template>
 
 <script>
-    import rightModal from './right-modal'
-    import { mapActions } from 'vuex'
+import rightModal from './right-modal'
+import { mapActions } from 'vuex'
 
-    export default {
-        mixins: [rightModal],
-        name: 'right-modal',
-        components: {
-            IconSelect: () => import('@/components/icon/icon-select')
-        },
-        data () {
-            return {
-                prefix: 'category'
-            }
-        },
-        methods: {
-            ...mapActions({
-                insertAction: 'addTermCategory',
-                updateAction: 'updateTermCategory'
-            }),
-            handleSelectIcon (icon) {
-                this.formItem.icon = icon
-            }
+export default {
+    mixins: [rightModal],
+    name: 'right-modal',
+    components: {
+        IconSelect: () => import('@/components/icon/icon-select')
+    },
+    data () {
+        return {
+            prefix: 'category'
+        }
+    },
+    methods: {
+        ...mapActions({
+            insertAction: 'addTermCategory',
+            updateAction: 'updateTermCategory'
+        }),
+        handleSelectIcon (icon) {
+            this.formItem.icon = icon
         }
     }
+}
 </script>

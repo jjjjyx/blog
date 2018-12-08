@@ -20,57 +20,58 @@
 </template>
 
 <script>
-    import api from '@/api'
-	const noAllowTypes = ['index', 'selection', 'expand', 'html', 'PK']
-	export default {
-		name: 'curd-add',
-		props: {
-			columns: {
-				type: Array,
-				required: true
-			}
-		},
-		data () {
-			return {
-				formData: {},
-				formItems: []
-			}
-		},
-		created () {
-			this.formItems = this.columns.filter((item) => {
-				if (item.type) {
-					return noAllowTypes.indexOf(item.type) === -1
-				} else {
-					return false
-				}
-			})
-		},
-		mounted () {
-			// console.log('123123')
-		},
-		methods: {
-			async addData (data) {
-				try {
-					await api.npost(this.$parent.addUrl, data)
-					return true
-				} catch (e) {
-					this.$Message.error(this.$t('messages.curd.add_fail', e))
-				}
-			},
-			async handleSubmit () {
-				// console.log(this)
-				let result = await this.addData(this.formData)
-				if (result) {
-					this.formData = {}
-					this.$refs.addPoptip.cancel()
-                    this.$parent.fetchData()
-					// this.$emit('save-success')
-				}
-			},
-			handleReset () {
-				// this.$refs['form'].resetFields()
+import api from '@/api'
+
+const noAllowTypes = ['index', 'selection', 'expand', 'html', 'PK']
+export default {
+    name: 'curd-add',
+    props: {
+        columns: {
+            type: Array,
+            required: true
+        }
+    },
+    data () {
+        return {
+            formData: {},
+            formItems: []
+        }
+    },
+    created () {
+        this.formItems = this.columns.filter((item) => {
+            if (item.type) {
+                return noAllowTypes.indexOf(item.type) === -1
+            } else {
+                return false
+            }
+        })
+    },
+    mounted () {
+        // console.log('123123')
+    },
+    methods: {
+        async addData (data) {
+            try {
+                await api.npost(this.$parent.addUrl, data)
+                return true
+            } catch (e) {
+                this.$Message.error(this.$t('messages.curd.add_fail', e))
+            }
+        },
+        async handleSubmit () {
+            // console.log(this)
+            let result = await this.addData(this.formData)
+            if (result) {
                 this.formData = {}
-			}
-		}
-	}
+                this.$refs.addPoptip.cancel()
+                this.$parent.fetchData()
+                // this.$emit('save-success')
+            }
+        },
+        handleReset () {
+            // this.$refs['form'].resetFields()
+            this.formData = {}
+        }
+    }
+}
 </script>

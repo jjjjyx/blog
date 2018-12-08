@@ -45,7 +45,7 @@ function checkItems (items) {
 
 // actions
 const actions = {
-    async fetchStatistics ({commit, state}) {
+    async fetchStatistics ({ commit, state }) {
         try {
             let result = await globalSettingApi.fetchAll()
             // result.forEach(i => (i._checked = false))
@@ -55,7 +55,7 @@ const actions = {
             // this._vm.$Message.error('获取文章数据失败')
         }
     },
-    async fetchPosts ({commit, state}, force = true) {
+    async fetchPosts ({ commit, state }, force = true) {
         if (!force) {
             // 不是强制的则判断当期是否有值，
             if (state.posts.length !== 0) return
@@ -63,23 +63,23 @@ const actions = {
         try {
             let result = await postApi.fetchAll()
             // , i.post_date = new Date(i.post_date), i.updatedAt = new Date(i.updatedAt), i.createdAt = new Date(i.createdAt), i.deleteAt = new Date(i.deleteAt)
-            result.forEach(i => (i._checked = false,i._editCategory=false, i._editTag = false))
+            result.forEach(i => (i._checked = false, i._editCategory = false, i._editTag = false))
             commit('SET_POST', result)
         } catch (e) {
             this._vm.$Message.error('获取文章数据失败')
         }
     },
     // 文章的创建，修改，都在 store/modules/post.js 中
-    async deletePost ({commit, dispatch}, items) {
+    async deletePost ({ commit, dispatch }, items) {
         items = checkItems(items)
         let ids = items.map((item) => item.id)
         await postApi.moveTrash(ids)
-        commit({type: 'removeData', key: 'posts', arr: items})
+        commit({ type: 'removeData', key: 'posts', arr: items })
         // 更新回收站
         dispatch('fetchTrash')
     },
 
-    async fetchTerms ({commit, state}, force = true) {
+    async fetchTerms ({ commit, state }, force = true) {
         if (!force) {
             // 不是强制的则判断当期是否有值，
             if (state.categoryList.length !== 0 || state.tagList.length !== 0) return
@@ -92,7 +92,7 @@ const actions = {
             this._vm.$Message.error('获取数据失败')
         }
     },
-    async fetchTrash ({commit, state}, force = true) {
+    async fetchTrash ({ commit, state }, force = true) {
         if (!force) {
             // 不是强制的则判断当期是否有值，
             if (state.trashPosts.length !== 0) return
@@ -106,7 +106,7 @@ const actions = {
         }
     },
 
-    async deleteTermTag ({commit}, items) {
+    async deleteTermTag ({ commit }, items) {
         items = checkItems(items)
         let ids = items.map((item) => item.id)
         await termApi.deleteTag(ids)
@@ -116,7 +116,7 @@ const actions = {
             arr: items
         })
     },
-    async deleteTermCategory ({commit, getters}, items) {
+    async deleteTermCategory ({ commit, getters }, items) {
         items = checkItems(items)
 
         let index = items.findIndex(item => item.id === getters.defaultCategoryValue) // 检查默认分类
@@ -128,11 +128,11 @@ const actions = {
         } else {
             let ids = items.map((item) => item.id)
             await termApi.deleteCategory(ids)
-            commit({type: 'removeData', key: 'categoryList', arr: items})
+            commit({ type: 'removeData', key: 'categoryList', arr: items })
         }
     },
 
-    async deleteTrash ({commit}, items) {
+    async deleteTrash ({ commit }, items) {
         // commit({type: 'removeData', key: 'trashPosts', arr: item})
         items = checkItems(items)
         let ids = items.map((item) => item.id)
@@ -144,28 +144,28 @@ const actions = {
         })
     },
 
-    addTermTag ({commit}, tag) {
-        return termApi.createTag(tag).then((item) => commit({type: 'addData', key: 'tagList', item}))
+    addTermTag ({ commit }, tag) {
+        return termApi.createTag(tag).then((item) => commit({ type: 'addData', key: 'tagList', item }))
     },
-    updateTermTag ({commit}, tag) {
-        return termApi.updateTag(tag).then((item) => commit({type: 'editData', key: 'tagList', item}))
+    updateTermTag ({ commit }, tag) {
+        return termApi.updateTag(tag).then((item) => commit({ type: 'editData', key: 'tagList', item }))
     },
-    addTermCategory ({commit}, category) {
-        return termApi.createCategory(category).then((item) => commit({type: 'addData', key: 'categoryList', item}))
+    addTermCategory ({ commit }, category) {
+        return termApi.createCategory(category).then((item) => commit({ type: 'addData', key: 'categoryList', item }))
     },
-    updateTermCategory ({commit}, category) {
-        return termApi.updateCategory(category).then((item) => commit({type: 'editData', key: 'categoryList', item}))
+    updateTermCategory ({ commit }, category) {
+        return termApi.updateCategory(category).then((item) => commit({ type: 'editData', key: 'categoryList', item }))
     },
-    revertPost ({commit}, item) {
+    revertPost ({ commit }, item) {
         return postApi.trashRevert(item.id).then(() => commit('REMOVE_TRASH_POST', item))
     },
-    clearTrashPost ({commit}, item) {
+    clearTrashPost ({ commit }, item) {
         // 清除回收站也是调用相同的 mutations
         return postApi.deleteTrash(item.id).then(() => commit('REMOVE_TRASH_POST', item))
     },
-    async updatePostsCategoryByPostId ({commit}, {postId, category}) {
+    async updatePostsCategoryByPostId ({ commit }, { postId, category }) {
         let result = await postApi.changePostCategory(postId, category)
-        commit('UPDATE_POSTS_CATEGORY_BY_POSTID', {postId, category: result})
+        commit('UPDATE_POSTS_CATEGORY_BY_POSTID', { postId, category: result })
     }
 }
 const mutations = {
@@ -181,19 +181,19 @@ const mutations = {
     // APPEND_MEDIA (state, data) {
     //     state.imgList.push(...data)
     // },
-    removeData (state, {key, arr, idKey = 'id'}) {
+    removeData (state, { key, arr, idKey = 'id' }) {
         state[key] = differenceBy(state[key], arr, idKey)
     },
-    addData (state, {key, item}) {
+    addData (state, { key, item }) {
         state[key].push(item)
     },
-    editData (state, {key, item}) {
+    editData (state, { key, item }) {
         let index = state[key].find((i) => i.id === item.id)
         merge(index, item)
         // state[key].push(item)
     },
     SET_TERMS (state, data) {
-        let {category: categoryList, post_tag: tagList} = groupBy(data, 'taxonomy')
+        let { category: categoryList, post_tag: tagList } = groupBy(data, 'taxonomy')
         state.categoryList = categoryList || []
         state.tagList = tagList || []
     },
@@ -204,7 +204,7 @@ const mutations = {
         let index = state.trashPosts.indexOf(value)
         state.trashPosts.splice(index, 1)
     },
-    UPDATE_POSTS_CATEGORY_BY_POSTID (state, {postId, category}) {
+    UPDATE_POSTS_CATEGORY_BY_POSTID (state, { postId, category }) {
         let posts = find(state.posts, ['id', postId])
         let index = findIndex(posts.terms, ['taxonomy', 'category'])
         if (index > -1) {

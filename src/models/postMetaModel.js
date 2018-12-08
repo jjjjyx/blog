@@ -22,13 +22,13 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         tableName: 'j_postmeta',
         timestamps: false
-    });
-    const {post: postModel} = sequelize.models
+    })
+    const { post: postModel } = sequelize.models
 
     // postModel.hasMany(postMetaModel, {foreignKey: 'post_id', sourceKey: 'post_id'})
-    postModel.hasMany(postMetaModel, {as: 'metas', foreignKey: 'post_id', sourceKey: 'id'})
+    postModel.hasMany(postMetaModel, { as: 'metas', foreignKey: 'post_id', sourceKey: 'id' })
     // postMetaModel.belongsTo(postModel, {foreignKey: 'post_id', targetKey: 'post_id'})
 
     // postModel.prototype.getMetasObj = getMetasObj
     return postMetaModel
-};
+}

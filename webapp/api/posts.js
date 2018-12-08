@@ -13,7 +13,7 @@ export function fetchAll () {
  * @param post
  * @returns {Promise<*>}
  */
-export function create (post = {post_title: ''}) {
+export function create (post = { post_title: '' }) {
     return api.npost('/api/post/new_post', post)
 }
 
@@ -59,7 +59,7 @@ export function fetchTrashAll () {
  * @returns {Promise<*>}
  */
 export function moveTrash (ids) {
-    return api.npost(`/api/post/trash`, {ids})
+    return api.npost(`/api/post/trash`, { ids })
 }
 
 /**
@@ -68,7 +68,7 @@ export function moveTrash (ids) {
  * @returns {Promise<*>}
  */
 export function deleteTrash (ids) {
-    return api.npost(`/api/post/trash/del`, {ids})
+    return api.npost(`/api/post/trash/del`, { ids })
 }
 
 /**
@@ -76,10 +76,10 @@ export function deleteTrash (ids) {
  * @param ids
  * @returns {Promise<*>}
  */
-export function trashRevert(ids) {
-    return api.npost(`/api/post/trash/revert`, {ids})
+export function trashRevert (ids) {
+    return api.npost(`/api/post/trash/revert`, { ids })
 }
 
 export function changePostCategory (id, category_id) {
-    return api.npost(`/api/post/update-category`, {id, category_id})
+    return api.npost(`/api/post/update-category`, { id, category_id })
 }

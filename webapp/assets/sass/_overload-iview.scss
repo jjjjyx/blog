@@ -61,6 +61,7 @@
     font-size: 1rem;
     background-color: transparent;
 }
+
 .ivu-table:before {
     content: none;
 }
@@ -95,6 +96,7 @@
 .ivu-page.mini .ivu-page-item {
     border-width: 1px;
 }
+
 .ivu-page.mini .ivu-page-item.ivu-page-item-active a {
     color: $primary;
 }

@@ -41,62 +41,62 @@
 </template>
 
 <script>
-    import CollapseTransition from '@/utils/collapse-transition'
-    import CommentInput from './comment-input'
-    import CommentUsername from './comment-username'
-    import CommentReplyItem from './comment-reply-item'
-    import CommentContent from './comment-content'
+import CollapseTransition from '@/utils/collapse-transition'
+import CommentInput from './comment-input'
+import CommentUsername from './comment-username'
+import CommentReplyItem from './comment-reply-item'
+import CommentContent from './comment-content'
 
-    export default {
-        name: 'comment-item',
-        components: {
-            CommentContent,
-            CommentReplyItem,
-            CollapseTransition,
-            CommentInput,
-            CommentUsername
-        },
-        data () {
-            return {
-                emojiPath: 'http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/',
-                placeholder: '',
-                members: []
-            }
-        },
-        props: {
-            item: {
-                type: Object,
-                required: true
-            },
-            commentParentId: {
-                type: Number,
-                default: 0
-            }
-        },
-        methods: {
-            // /**
-            //  * 回复
-            //  * @param id 回复的对象
-            //  * @param at @ 对象
-            //  */
-            reply (parent) {
-                let p = ''
-                if (parent) {
-                    p = `回复 ${parent.comment_author} `
-                    this.members.push('%' + parent.user_id)
-                }
-                // 也有可能是关闭
-                if (this.commentParentId === this.item.id && p === this.placeholder) {
-                    // this.commentParentId = null
-                    this.$emit('update:commentParentId', null)
-                    this.placeholder = ''
-                } else {
-                    this.$emit('update:commentParentId', this.item.id)
-                    this.placeholder = p
-                }
-            },
-        },
-        mounted () {
+export default {
+    name: 'comment-item',
+    components: {
+        CommentContent,
+        CommentReplyItem,
+        CollapseTransition,
+        CommentInput,
+        CommentUsername
+    },
+    data () {
+        return {
+            emojiPath: 'http://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/',
+            placeholder: '',
+            members: []
         }
+    },
+    props: {
+        item: {
+            type: Object,
+            required: true
+        },
+        commentParentId: {
+            type: Number,
+            default: 0
+        }
+    },
+    methods: {
+        // /**
+        //  * 回复
+        //  * @param id 回复的对象
+        //  * @param at @ 对象
+        //  */
+        reply (parent) {
+            let p = ''
+            if (parent) {
+                p = `回复 ${parent.comment_author} `
+                this.members.push('%' + parent.user_id)
+            }
+            // 也有可能是关闭
+            if (this.commentParentId === this.item.id && p === this.placeholder) {
+                // this.commentParentId = null
+                this.$emit('update:commentParentId', null)
+                this.placeholder = ''
+            } else {
+                this.$emit('update:commentParentId', this.item.id)
+                this.placeholder = p
+            }
+        }
+    },
+    mounted () {
     }
+}
 </script>

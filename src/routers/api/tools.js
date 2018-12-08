@@ -3,25 +3,25 @@
 const http = require('http')
 const iconv = require('iconv-lite')
 const express = require('express')
-const debug = require('debug')('app:routers:api.tools')
-const log = require('log4js').getLogger('api.tools')
-const {query} = require('express-validator/check')
+// const log = require('log4js').getLogger('api.tools')
+const { query } = require('express-validator/check')
 
-const utils = require('../../utils')
+const log = require('../../common/manageLog')('api.tools')
 const Result = require('../../common/result')
 const common = require('../../common')
 
 const router = express.Router()
-const redisClient = utils.redisClient
-const qqReg = /^[1-9][0-9]{4,}$/
+// const redisClient = utils.redisClient
+const qqReg = common.REGS.QQ_REG
 const qqAvater = 'http://q.qlogo.cn/headimg_dl?spec=140&dst_uin='  // 大小 140
 const key_suffix = ':ip_for_qq_info'
-const ipUpdateCountkey = 'update_count' // 修改次数
+// const ipUpdateCountkey = 'update_count' // 修改次数
 // const ipInfoskeys = 'infos' // ip 查询qq信息的历史
 
-log.debug('qq reg = ', qqReg)
-log.debug('qq AvatarUrl = ', qqAvater)
-log.debug('qq key_suffix = ', key_suffix)
+log.trace('qq reg = ', qqReg)
+log.trace('qq AvatarUrl = ', qqAvater)
+
+// log.trace('qq key_suffix = ', key_suffix)
 
 function getQinfoByqq (qq) {
     return new Promise((resolve, reject) => {
@@ -49,26 +49,27 @@ function getQinfoByqq (qq) {
 
 const qinfo = [
     query('key').custom((value) => {
-        debug('qinfo qq = ', value)
+        log.trace('check qinfo qq = ', value)
         return qqReg.test(value)
     }).withMessage('请提交正确的qq'),
     common.validationResult,
     async function (req, res, next) {
         let qq = req.query.key
-        log.debug('获取 qq = %s 信息', qq)
+        log.trace('Get qq = %s information', qq)
         try {
-            let ip = req.clientIp
-            let uipKey = ip + key_suffix
-            let count = await redisClient.hgetAsync(uipKey, ipUpdateCountkey)
-            let info
+            // let ip = req.clientIp
+            // let uipKey = ip + key_suffix
+            // let count = await redisClient.hgetAsync(uipKey, ipUpdateCountkey)
+            let info = await getQinfoByqq(qq)
+            log.access(req, 'getqqinfo')
             // 获取成功后，绑定这个ip ，并允许更改5次，并记录
-            if (count >= 5) {
-                info = JSON.parse(await redisClient.hgetAsync(uipKey, qq))
-            } else {
-                info = await getQinfoByqq(qq)
-                redisClient.hsetAsync(uipKey, qq, JSON.stringify(info))
-                redisClient.hincrbyAsync(uipKey, ipUpdateCountkey, 1)
-            }
+            // if (count >= 5) {
+            //     info = JSON.parse(await redisClient.hgetAsync(uipKey, qq))
+            // } else {
+            //     info = await getQinfoByqq(qq)
+            //     redisClient.hsetAsync(uipKey, qq, JSON.stringify(info))
+            //     redisClient.hincrbyAsync(uipKey, ipUpdateCountkey, 1)
+            // }
             return res.status(200).json(Result.success(info))
         } catch (e) {
             log.error('qinfo Error:', e)

@@ -6,21 +6,21 @@
                     <Icon type="md-flag"></Icon>
                     <span>状态:</span>
                     <template v-if="publishValue.status !== 'private'">
-                    <b>{{ postStatusDict[postStatus] }}</b>
-                    <a href="javascript:void(0);" @click.prevent="collapseStatus1 = !collapseStatus1">编辑</a>
+                        <b>{{ postStatusDict[postStatus] }}</b>
+                        <a href="javascript:void(0);" @click.prevent="collapseStatus1 = !collapseStatus1">编辑</a>
                     </template>
                     <template v-else>
                         <b>私密、已发布</b>
                     </template>
                 </div>
                 <collapse-transition>
-                <div class="j-collapse-body" v-show="collapseStatus1">
-                    <Select size="small" style="width:100px" v-model="publishValue.postStatus">
-                        <Option v-for="item in allowPostStatus" :value="item" :key="item">{{ postStatusDict[item] }}</Option>
-                    </Select>
-                    <Button size="small"  @click="savePostStatus(), collapseStatus1 = false">确定</Button>
-                    <Button size="small" type="text" @click="resetPostStatus(), collapseStatus1 = false">取消</Button>
-                </div>
+                    <div class="j-collapse-body" v-show="collapseStatus1">
+                        <Select size="small" style="width:100px" v-model="publishValue.postStatus">
+                            <Option v-for="item in allowPostStatus" :value="item" :key="item">{{ postStatusDict[item] }}</Option>
+                        </Select>
+                        <Button size="small" @click="savePostStatus(), collapseStatus1 = false">确定</Button>
+                        <Button size="small" type="text" @click="resetPostStatus(), collapseStatus1 = false">取消</Button>
+                    </div>
                 </collapse-transition>
             </div>
 
@@ -53,7 +53,7 @@
                             </radio>
                         </radio-group>
                         <br>
-                        <Button size="small"  @click="saveStatus(), collapseStatus2 = false">确定</Button>
+                        <Button size="small" @click="saveStatus(), collapseStatus2 = false">确定</Button>
                         <Button size="small" type="text" @click="resetStatus(), collapseStatus2 = false">取消</Button>
                     </div>
                 </collapse-transition>
@@ -73,10 +73,12 @@
                     <Icon type="ios-calendar-outline"></Icon>
                     <!--保存的副本变量会使用当前时间，故这里取值必须取真实-->
                     <template v-if="publishDate">
-                        <span>发布于:</span><span>{{dateFormat(publishValue.postDate, 'yyyy-MM-dd hh:mm:ss')}}</span>
+                        <span>发布于:</span>
+                        <span>{{dateFormat(publishValue.postDate, 'yyyy-MM-dd hh:mm:ss')}}</span>
                     </template>
                     <template v-else>
-                        <b>立即</b><span>发布:</span>
+                        <b>立即</b>
+                        <span>发布:</span>
                     </template>
                     <a href="javascript:void(0);" @click.prevent="collapseStatus3 = !collapseStatus3">编辑</a>
                 </div>
@@ -85,13 +87,14 @@
                         <DatePicker type="date" ref="date"
                                     :clearable="false"
                                     :value="publishValue.postDate"
-                                    class="mb-2" placeholder="发布时间" style="width: 110px"></DatePicker>@
-                        <TimePicker type="time"  ref="time"
+                                    class="mb-2" placeholder="发布时间" style="width: 110px"></DatePicker>
+                        @
+                        <TimePicker type="time" ref="time"
                                     :clearable="false"
                                     :value="publishValue.postDate"
                                     placeholder="发布时间" style="width: 90px"></TimePicker>
                         <br>
-                        <Button size="small"  @click="savePostDate(), collapseStatus3 = false">确定</Button>
+                        <Button size="small" @click="savePostDate(), collapseStatus3 = false">确定</Button>
                         <Button size="small" type="text" @click="resetPostDate()">取消</Button>
                     </div>
                 </collapse-transition>
@@ -111,9 +114,9 @@
 <script>
 
 import merge from 'lodash/merge'
-import {mapGetters, mapState} from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import CollapseTransition from '@/utils/collapse-transition'
-import {dateFormat} from '@/utils/common'
+import { dateFormat } from '@/utils/common'
 import * as post from '../../../api/posts'
 
 export default {
@@ -137,9 +140,7 @@ export default {
                 sticky: '',
                 postDate: null
             },
-            originValue: {
-
-            },
+            originValue: {},
             originDate: null,
             originPostStatus: null // 用于记录原始的文章状态
         }
@@ -175,7 +176,7 @@ export default {
             // 如果修改当前状态 为私密，则不可以预选
             if (this.publishValue.status === 'private') {
                 return []
-            // } else if (this.postStatus === 'publish') {
+                // } else if (this.postStatus === 'publish') {
             } else {
                 return ['publish', 'pending', 'draft']
                 // return ['pending', 'draft']
@@ -299,7 +300,7 @@ export default {
                     }
                 })
                 // 成功发布后的回调
-                this.$store.dispatch('afterRelease', {mergeObj, revision})
+                this.$store.dispatch('afterRelease', { mergeObj, revision })
             } catch (e) {
                 this.$Message.info('发布文章失败:', e.message)
             }

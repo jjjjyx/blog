@@ -27,22 +27,34 @@ export default {
     data () {
         return {
             langs: [
-                {name: 'zh-CN', label: '中文简体'},
-                {name: 'zh-TW', label: '中文繁体'},
-                {name: 'en-US', label: 'English'}
+                { name: 'zh-CN', label: '中文简体' },
+                { name: 'zh-TW', label: '中文繁体' },
+                { name: 'en-US', label: 'English' }
             ],
             errorModalVisible: false,
             errorColumns: [
-                {type: 'expand', width: 50, render: (h, {row}) => {return h('pre', row.err.stack)}},
                 {
-                    title: 'type', key: 'name', width: 100, render: (h) => {/* <tag color="error">Error</tag>*/
-                        return h('tag', {props: {color: 'error'}}, 'Error')
+                    type: 'expand', width: 50, render: (h, { row }) => {
+                        return h('pre', row.err.stack)
                     }
                 },
-                {title: 'msg', key: 'msg', maxWidth: 260, render: (h, {row}) => {return [row.err.message]}},
-                {title: 'info', key: 'info'},
-                {title: 'url', key: 'url'},
-                {title: 'time', key: 'time', render: (h, {row}) => {return [dateFormat(row.time)]}}
+                {
+                    title: 'type', key: 'name', width: 100, render: (h) => {/* <tag color="error">Error</tag>*/
+                        return h('tag', { props: { color: 'error' } }, 'Error')
+                    }
+                },
+                {
+                    title: 'msg', key: 'msg', maxWidth: 260, render: (h, { row }) => {
+                        return [row.err.message]
+                    }
+                },
+                { title: 'info', key: 'info' },
+                { title: 'url', key: 'url' },
+                {
+                    title: 'time', key: 'time', render: (h, { row }) => {
+                        return [dateFormat(row.time)]
+                    }
+                }
             ]
         }
     },
@@ -65,8 +77,8 @@ export default {
         ...mapActions(['toggleSidebarMini', 'setLanguage']),
         ...mapMutations(['setBreadCrumb']),
         breadRouterName (item) {
-            let {name} = item
-            let i18nKey = 'router.'+ name
+            let { name } = item
+            let i18nKey = 'router.' + name
             let txt = this.$t(i18nKey)
             return txt === i18nKey ? name : txt
         },
@@ -81,10 +93,10 @@ export default {
             // let menu = deepQuery(this.menus, item.name)
             //
 
-            this.$router.push({name: item.name})
+            this.$router.push({ name: item.name })
         },
         handleRouteChange () {
-            let {matched} = this.$route
+            let { matched } = this.$route
             this.setBreadCrumb(matched)
         },
         openErrorLog () {

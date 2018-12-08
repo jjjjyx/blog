@@ -1,5 +1,5 @@
 <template>
-    <Card >
+    <Card>
         <p slot="title" v-text="title"></p>
         <Form :model="formItem" :label-width="100" ref="form" :rules="ruleValidate">
             <FormItem :label="$t('tag.modal.name')" prop="name">
@@ -23,23 +23,23 @@
 </template>
 
 <script>
-    import rightModal from './right-modal'
-    import { mapActions } from 'vuex'
+import rightModal from './right-modal'
+import { mapActions } from 'vuex'
 
-    export default {
-        mixins: [rightModal],
-        name: 'right-modal',
-        data () {
-            return {
-                prefix: 'tag'
-            }
-        },
-        methods: {
-            ...mapActions({
-                insertAction: 'addTermTag',
-                updateAction: 'updateTermTag'
-            })
+export default {
+    mixins: [rightModal],
+    name: 'right-modal',
+    data () {
+        return {
+            prefix: 'tag'
         }
-
+    },
+    methods: {
+        ...mapActions({
+            insertAction: 'addTermTag',
+            updateAction: 'updateTermTag'
+        })
     }
+
+}
 </script>

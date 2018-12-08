@@ -7,9 +7,9 @@
 </template>
 
 <script>
-	export default {
-		name: 'user-subscribe'
-	}
+export default {
+    name: 'user-subscribe'
+}
 </script>
 
 <style scoped>

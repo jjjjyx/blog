@@ -28,11 +28,11 @@ module.exports = function (sequelize, DataTypes) {
     }, {
         tableName: 'j_commentmeta',
         timestamps: false
-    });
+    })
     // const {j_users} = sequelize.models
-    const {comment: commentModel} = sequelize.models
+    const { comment: commentModel } = sequelize.models
     // const pk = {foreignKey: 'id', targetKey: 'id'}
-    commentModel.hasMany(commentMetaModel, {as: 'metas', foreignKey: 'comment_id', sourceKey: 'id'})
+    commentModel.hasMany(commentMetaModel, { as: 'metas', foreignKey: 'comment_id', sourceKey: 'id' })
     // commentMetaModel.belongsTo(commentModel, pk)
     return commentMetaModel
-};
+}

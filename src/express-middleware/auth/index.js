@@ -5,10 +5,10 @@ const log = require('log4js').getLogger('express-middleware:auth')
 const jwt = require('./jwt')
 const UnauthorizedError = require('../../errors/UnauthorizedError')
 const config = require('../../../config')
-let {tokenHeaderKey} = config
+let { tokenHeaderKey } = config
 
 const requestProperty = 'user'
-log.debug('创建身份验证中间件，并设置 req.%s, tokenHeaderKey = %s', requestProperty, tokenHeaderKey)
+log.debug('Create an authentication middleware and set req.%s, tokenHeaderKey = %s', requestProperty, tokenHeaderKey)
 const auth = function (req, res, next) {
     if (req.method === 'OPTIONS' && req.headers.hasOwnProperty('access-control-request-headers')) {
         let hasAuthInAccessControl = !!~req.headers['access-control-request-headers']

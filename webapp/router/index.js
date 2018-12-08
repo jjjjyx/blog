@@ -55,7 +55,7 @@ let menusRouters = menus.map(function t (menu) {
     let routerPath = _path ? '/' + _path : ''
     // 一级菜单需要重定向，填充默认重定向路径
     let redirect = menu.redirect || (routerPath + '/')
-    let {layout, name} = menu
+    let { layout, name } = menu
     let meta = getMeta(menu)
 
     let component = getComponent(menu.component) || (() => import('@/views' + redirect))
@@ -78,7 +78,7 @@ let menusRouters = menus.map(function t (menu) {
     result.component = getComponent(layout) || Layout
     result.redirect = redirect
     result.children = result.children || [
-        {path: redirect, name, meta, component}
+        { path: redirect, name, meta, component }
     ]
     return result
 })
@@ -94,7 +94,7 @@ let routes = [
         hidden: true
     },
     ...menusRouters,
-    {path: '*', redirect: '/404', hidden: true}
+    { path: '*', redirect: '/404', hidden: true }
 ]
 
 // eslint-disable-next-line
@@ -118,7 +118,7 @@ async function isLogIn () {
 const router = new Router({
     // mode: 'history',
     mode: 'hash',
-    scrollBehavior: () => ({y: 0}),
+    scrollBehavior: () => ({ y: 0 }),
     routes: routes
 })
 router.beforeEach(async function (to, from, next) {
@@ -138,7 +138,7 @@ router.beforeEach(async function (to, from, next) {
         if (firstMatched.name === 'sign') { // 访问的是登录相关的页面，直接继续
             next()
         } else {
-            next({name: 'sign_in', query: {redirect: to.path}})
+            next({ name: 'sign_in', query: { redirect: to.path } })
             iView.LoadingBar.finish()
         }
         // 没有登录

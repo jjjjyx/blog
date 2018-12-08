@@ -45,3 +45,4 @@ sql.sql
 sql/
 package-lock.json
 yarn.lock
+test/

@@ -1,23 +1,23 @@
 /* jshint indent: 2 */
-const Enum =require('../common/enumerate')
+const Enum = require('../common/enumerate')
 const utils = require('../utils')
 const groupBy = require('lodash/groupBy')
 
 /*
-关于
-此表用户记录与维护文章，以及文章的历史版本信息
+ 关于
+ 此表用户记录与维护文章，以及文章的历史版本信息
 
-创建文章            -> 自动草稿
-编辑进行保存        -> 草稿
-发布
-    重新创建一个    -> publish
-    原文章          -> inherit // 记录
-编辑文章执行保存
-    如果不存在自动保存记录
-    在次创建一个    -> inherit
-编辑文章更新
-    修改publish状态的内容
-    重新创建一个    -> inherit
+ 创建文章            -> 自动草稿
+ 编辑进行保存        -> 草稿
+ 发布
+ 重新创建一个    -> publish
+ 原文章          -> inherit // 记录
+ 编辑文章执行保存
+ 如果不存在自动保存记录
+ 在次创建一个    -> inherit
+ 编辑文章更新
+ 修改publish状态的内容
+ 重新创建一个    -> inherit
  */
 
 
@@ -25,12 +25,13 @@ function getCategoryOrTags () {
     if (!this.terms) {
         throw new Error('未获取到文章terms 信息')
     }
-    let {category = [{name: ''}], post_tag: postTag = []} = groupBy(this.terms, 'taxonomy')
+    let { category = [{ name: '' }], post_tag: postTag = [] } = groupBy(this.terms, 'taxonomy')
     return {
         category: category[0],
         postTag
     }
 }
+
 function updateOrCreateMeta (key, value) {
 
 }
@@ -184,9 +185,9 @@ module.exports = function (sequelize, DataTypes) {
         //     fields: ['post_name','post_title']
         // },]
     })
-    const {user: userModel} = sequelize.models
-    userModel.hasMany(postModel, {foreignKey: 'post_author', targetKey: 'id'})
-    postModel.belongsTo(userModel, {foreignKey: 'post_author', targetKey: 'id'})
+    const { user: userModel } = sequelize.models
+    userModel.hasMany(postModel, { foreignKey: 'post_author', targetKey: 'id' })
+    postModel.belongsTo(userModel, { foreignKey: 'post_author', targetKey: 'id' })
 
     postModel.prototype.getCategoryOrTags = getCategoryOrTags
     return postModel

@@ -1,12 +1,12 @@
 <div class="j-sidebar j-block">
     <div class="j-sidebar__header">
-        <span class="btn-area">Top <%=newestLength%></span>
+        <span class="btn-area">Top <%= newestLength %></span>
         <h3 class="title">最新文章</h3>
     </div>
     <div class="j-sidebar__body">
         <%
-        var post, category, categoryName, postDate, title, url,commentNum,readNum = 0, likeNum = 0;
-        for (var i=0; i< posts.length;i++){
+        var post, category, categoryName, postDate, title, url, commentNum, readNum = 0, likeNum = 0;
+        for (var i = 0; i < posts.length;i++){
             post = posts[i]
             category = groupBy(post.terms, 'taxonomy').category
             categoryName = category[0].name
@@ -20,12 +20,12 @@
         %>
         <div class="j-article--sidebar">
             <!-- 标题长度最大支持21-->
-            <h3 class="j-article__title" title="<%=title%>">
-                <a href="<%=url%>" target="_blank"><%=title%></a>
+            <h3 class="j-article__title" title="<%= title %>">
+                <a href="<%= url %>" target="_blank"><%= title %></a>
             </h3>
             <div class="j-article__metas">
-                <a href="javascript:void(0);" class="category"><%=categoryName%></a>
-                <time datetime="<%=postDate%>" class="time"><%=postDate%></time>
+                <a href="javascript:void(0);" class="category"><%= categoryName %></a>
+                <time datetime="<%= postDate %>" class="time"><%= postDate %></time>
             </div>
         </div>
         <% } %>

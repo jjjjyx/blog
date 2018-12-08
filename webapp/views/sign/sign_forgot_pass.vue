@@ -5,9 +5,10 @@
 </template>
 
 <script>
-	import signMixins from './sign-mixins'
-	export default {
-		mixins: [signMixins],
-		name: 'view-forgot-pass'
-	}
+import signMixins from './sign-mixins'
+
+export default {
+    mixins: [signMixins],
+    name: 'view-forgot-pass'
+}
 </script>

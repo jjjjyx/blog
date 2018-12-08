@@ -6,10 +6,10 @@
     <div class="j-sidebar__body">
         <!--posts-->
         <%
-        var post, categoryName, postDate, title, url,commentNum,readNum = 0, likeNum = 0;
-        for (var i=0; i< posts.length;i++){
+        var post, categoryName, postDate, title, url, commentNum, readNum = 0, likeNum = 0;
+        for (var i = 0; i < posts.length;i++){
             post = posts[i]
-            let {category, postTag} = post.getCategoryOrTags()
+            let { category, postTag } = post.getCategoryOrTags()
             categoryName = category.name
             postDate = formatDate(post.post_date, 'YYYY/M/D hh:mm')
             commentNum = post.comment_count || 0
@@ -20,28 +20,31 @@
             url = '/article/' + post.guid
             // var {category = [{name: ''}], post_tag: postTag = []} = _.groupBy(post.terms, 'taxonomy')
         %>
-        <div class="j-article--sidebar" >
+        <div class="j-article--sidebar">
             <div class="j-article__metas">
-                <a href="javascript:void(0);" class="category"><%=categoryName%></a>
-                <time datetime="<%=postDate%>" class="time"><%=postDate%></time>
+                <a href="javascript:void(0);" class="category"><%= categoryName %></a>
+                <time datetime="<%= postDate %>" class="time"><%= postDate %></time>
             </div>
             <!-- 标题长度最大支持21-->
             <h3 class="j-article__title">
-                <a href="<%=url%>" target="_blank">
-                    <%=title%>
+                <a href="<%= url %>" target="_blank">
+                    <%= title %>
                 </a>
             </h3>
             <div class="j-article__metas">
-                <a class="j-article__a read mr-2" href="<%=url%>" target="_blank">
-                    <Icon type="ios-eye-outline" size="16"></Icon><span class="num"><%=readNum%></span>
+                <a class="j-article__a read mr-2" href="<%= url %>" target="_blank">
+                    <Icon type="ios-eye-outline" size="16"></Icon>
+                    <span class="num"><%= readNum %></span>
                 </a>
-                <% if (post.comment_status) {%>
-                <a class="j-article__a comment mr-2" href="<%=url%>#comment" target="_blank">
-                    <Icon type="ios-chatbubble-outline" size="16"></Icon><span class="num"><%=commentNum%></span>
+                <% if (post.comment_status) { %>
+                <a class="j-article__a comment mr-2" href="<%= url %>#comment" target="_blank">
+                    <Icon type="ios-chatbubble-outline" size="16"></Icon>
+                    <span class="num"><%= commentNum %></span>
                 </a>
                 <% } %>
                 <a class="j-article__a like mr-2">
-                    <Icon type="ios-heart-outline" size="16"></Icon><span class="num"><%=likeNum%></span>
+                    <Icon type="ios-heart-outline" size="16"></Icon>
+                    <span class="num"><%= likeNum %></span>
                 </a>
             </div>
         </div>

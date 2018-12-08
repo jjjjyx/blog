@@ -1,8 +1,8 @@
 const model = require('./models')
 // {force: true}
 model.sequelize.sync().then(async () => {
-    console.log('init db ok.');
-    process.exit(0);
+    console.log('init db ok.')
+    process.exit(0)
     // console.log(model.postsDao)
     // console.log(model.postsDao.tasks)
     // console.log(model.postsDao.getTasks)
@@ -26,18 +26,18 @@ model.sequelize.sync().then(async () => {
 
 })
 
-    // let result = model.usersDao.findOne({
-    //     where: {
-    //         id: 1
-    //     },
-    //     include: [
-    //         {
-    //             model: model.postsDao
-    //         }
-    //     ]
-    // }).then((result)=>{
-    //     console.log('result', result.toJSON())
-    // })
+// let result = model.usersDao.findOne({
+//     where: {
+//         id: 1
+//     },
+//     include: [
+//         {
+//             model: model.postsDao
+//         }
+//     ]
+// }).then((result)=>{
+//     console.log('result', result.toJSON())
+// })
 
 
 

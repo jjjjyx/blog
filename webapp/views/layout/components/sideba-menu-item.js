@@ -1,5 +1,3 @@
-
-
 export default {
     functional: true,
     name: 'sidebar-item',
@@ -20,9 +18,9 @@ export default {
     },
     // eslint-disable-next-line
     render (h, ctx) {
-        let {item} = ctx.props
+        let { item } = ctx.props
         let self = ctx.parent
-        let {child, name, hide, icon, textIcon, expand = true} = item
+        let { child, name, hide, icon, textIcon, expand = true } = item
         if (hide) return
 
         let i18nName = self.$t('router.' + name)
@@ -43,13 +41,13 @@ export default {
                     {[$icon, $name]}
                 </template>
                 {
-                    child.map((i) => <sidebar-item item={i} />)
+                    child.map((i) => <sidebar-item item={i}/>)
                 }
             </submenu>
             // } else if (!hide) {
         } else {
             return <menu-item name={name}>
-                {[$icon,$name]}
+                {[$icon, $name]}
             </menu-item>
         }
     }

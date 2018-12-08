@@ -1,5 +1,5 @@
 /* jshint indent: 2 */
-const Enum =require('../common/enumerate')
+const Enum = require('../common/enumerate')
 
 // 创建文章 ${value}
 // 修改${k}${k2}=>(${old}=>${new})
@@ -34,26 +34,26 @@ module.exports = function (sequelize, DataTypes) {
         },
         operation: { // 操作行为
             type: DataTypes.ENUM,
-            values: Object.values(Enum.manageOperationEnum),
+            values: Object.values(Enum.manageOperationEnum)
         },
         related_type: {
             type: DataTypes.ENUM,
-            values: Object.values(Enum.relatedTypeEnum),
+            values: Object.values(Enum.relatedTypeEnum)
         },
         value: { //
-            type: DataTypes.TEXT,
+            type: DataTypes.TEXT
         }
 
     }, {
         tableName: 'j_logs',
         timestamps: true,
         // 不使用 updatedAt
-        updatedAt: false,
-    });
+        updatedAt: false
+    })
 
-    const {user: userModel} = sequelize.models
-    // 用户
-    userModel.hasMany(userMetaModel, {as: 'logs', foreignKey: 'user_id', sourceKey: 'id'})
+    // const {user: userModel} = sequelize.models
+    // // 用户
+    // userModel.hasMany(userMetaModel, {as: 'logs', foreignKey: 'user_id', sourceKey: 'id'})
     return userMetaModel
-};
+}
 // node ./src/init-db.js

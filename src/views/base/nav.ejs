@@ -35,67 +35,68 @@ let activeName = name;
                 <img src="<%= SITE.logo %>" alt=""/>
             </a>
             <!--<i-button type="ghost" icon="navicon-round" class="nav-toggle"></i-button> -->
-            <button type="button" class="nav-toggle ivu-btn ivu-btn-ghost ivu-btn-icon-only"><i class="ivu-icon ivu-icon-navicon-round"></i></button>
+            <button type="button" class="nav-toggle ivu-btn ivu-btn-ghost ivu-btn-icon-only">
+                <i class="ivu-icon ivu-icon-navicon-round"></i></button>
         </div>
         <!--ivu-menu-item-active-->
         <!--<i-Menu mode="horizontal" active-name="<%= activeName %>" class="wrapper-header-nav">-->
-            <ul class="wrapper-header-nav ivu-menu" >
-                <!--<div class="layout-nav">-->
-                <% nav.forEach(function(item, index){ %>
-                <li name="<%= item.name %>" class="ivu-menu-item <%= activeName === item.name ?'ivu-menu-item-active': '' %>">
+        <ul class="wrapper-header-nav ivu-menu">
+            <!--<div class="layout-nav">-->
+            <% nav.forEach(function(item, index){ %>
+                <li name="<%= item.name %>" class="ivu-menu-item <%= activeName === item.name ? 'ivu-menu-item-active' : '' %>">
                     <a href="<%= item.url %>"><%= item.label %></a>
                 </li>
-                <% }); %>
-                <!--</div>-->
-            </ul>
+            <% }); %>
+            <!--</div>-->
+        </ul>
 
         <!--</i-Menu>-->
     </div>
 </header>
 <!--<div style="margin-top: 64px;"></div>-->
 <% /*
-'use strict';
+ 'use strict';
 
-        var d = window.pageYOffset // 页面初始，距离顶部的高度
-        window.onload = function (c) {
-            var b = document.querySelector('.wrapper-header')
-            c = function (a) {
-               console.log('0 === a', 0 === a, a)
-                console.log('0 < a', 0 < a )
-                console.log('25 < a', 25 < a)
-                console.log('25 < a', 25 < a)
-                console.log('a > d', a > d, a, d)
-                a = window.pageYOffset
-                // 滚动到顶部
-                0 === a && b.classList.add('top')
+ var d = window.pageYOffset // 页面初始，距离顶部的高度
+ window.onload = function (c) {
+ var b = document.querySelector('.wrapper-header')
+ c = function (a) {
+ console.log('0 === a', 0 === a, a)
+ console.log('0 < a', 0 < a )
+ console.log('25 < a', 25 < a)
+ console.log('25 < a', 25 < a)
+ console.log('a > d', a > d, a, d)
+ a = window.pageYOffset
+ // 滚动到顶部
+ 0 === a && b.classList.add('top')
 
-                0 < a && b.classList.remove('top') // 有滚动
+ 0 < a && b.classList.remove('top') // 有滚动
 
-                25 < a && (
-                    b.classList.add('gizle'),  // // 有滚动 距离页面高度以及超过了25 隐藏导航
-                    a > d ? b.classList.remove('sabit') : b.classList.add('sabit'), d = a)
-                    //sabit 在半中间显示
-            }
-            c()
-            window.onscroll = c
-        }
+ 25 < a && (
+ b.classList.add('gizle'),  // // 有滚动 距离页面高度以及超过了25 隐藏导航
+ a > d ? b.classList.remove('sabit') : b.classList.add('sabit'), d = a)
+ //sabit 在半中间显示
+ }
+ c()
+ window.onscroll = c
+ }
 
-*/ %>
+ */ %>
 <script>
-    +function () {
-        var d = window.pageYOffset
-        window.onload = function (c) {
-            var b = document.querySelector('.wrapper-header')
-            c = function (a) {
-                a = window.pageYOffset
++function () {
+    var d = window.pageYOffset
+    window.onload = function (c) {
+        var b = document.querySelector('.wrapper-header')
+        c = function (a) {
+            a = window.pageYOffset
 
-                0 === a && b.classList.add('wrapper-header__top')
-                0 < a && b.classList.remove('wrapper-header__top')
-                25 < a && (b.classList.add('gizle'), a > d ? b.classList.remove('sabit') : b.classList.add('sabit'), d = a)
-            }
-            c()
-            window.onscroll = c
+            0 === a && b.classList.add('wrapper-header__top')
+            0 < a && b.classList.remove('wrapper-header__top')
+            25 < a && (b.classList.add('gizle'), a > d ? b.classList.remove('sabit') : b.classList.add('sabit'), d = a)
         }
-    }()
+        c()
+        window.onscroll = c
+    }
+}()
 </script>
 

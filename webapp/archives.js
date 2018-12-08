@@ -15,4 +15,5 @@ function appInit () {
     })
     window.fulfilLoading && window.fulfilLoading()
 }
+
 appInit()
