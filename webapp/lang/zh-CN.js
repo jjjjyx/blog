@@ -120,6 +120,7 @@ export default {
         search_label: '搜索',
         search_placeholder: '搜索...',
         total: '已全部加载，共 {0} 条',
+        total_rate: '已加载 {0}，共 {1} 条',
         header_text: '全部 {name}',
         header_select_text: '已选中 {num} 条数据',
         page: '当前显示第 {0} 到第 {1} 条记录，共 {2} 条',

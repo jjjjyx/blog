@@ -20,13 +20,46 @@ const Op = sequelize.Op
 // const COOKIE_MAX_AGE = 365 * 5 * 60000 * 60 * 24 // 5年
 // const COOKIE_HTTP_ONLY = true
 // const VISITOR_KEY = 'jv'
+const $$imageUrlStyle = {
+    left: '?imageView2/2/w/200/format/jpg',
+    right: '?imageView2/2/h/120/format/jpg',
+    top: '?imageView2/2/w/780/format/jpg'
+}
+const $$imageExtraClass = {
+    left: '',
+    right: '',
+    top: 'j-vertical-center'
+}
+const $$imgDomFn = (img, position) => `<div class="j-img-warp ${$$imageExtraClass[position]}"><img src="${img}${$$imageUrlStyle[position]}" alt="${position}"></div>`
+
+function renderCover (images, position = 'left') {
+    let html
+    if (images instanceof Array) {
+        let carouselItems = images.map((img) => `<carousel-item>${$$imgDomFn(img, position)}</carousel-item>`).join('')
+        html = `<carousel autoplay arrow="never" ref="carousel">${carouselItems}</carousel>`
+    } else {
+        html = $$imgDomFn(images, position)
+    }
+    return {
+        [position]: html
+    }
+}
+
 /**
  * 渲染文章为html
  * @param post 文章实例， 需包含meta user term 属性
  * @returns {string}
  */
 function generatePostHtml (post) {
-    let { sticky, displayContent, heart = { meta_value: 0 }, comment = { meta_value: 0 }, read = { meta_value: 0 } } = post.metas
+    let {
+        sticky,
+        displayContent,
+        coverImage,
+        coverPosition = { meta_value: 'left' },
+        heart = { meta_value: 0 },
+        comment = { meta_value: 0 },
+        read = { meta_value: 0 }
+    } = post.metas
     let stickyHtml = ''
     // if (sticky) {
     //     console.log('post.id = ', post.id, '  sticky.meta_value', sticky.meta_value, ' ====', sticky.meta_value === '1')
@@ -67,10 +100,23 @@ function generatePostHtml (post) {
     } else {
         postContent = marked(post.post_content, { renderer: utils.renderer })
     }
+    let cover = {}
+    let coverClass = ''
+    if (coverImage) {
+        let position = coverPosition.meta_value
+        coverClass = `j-${position}-img`
+        try {
+            let images = JSON.parse(coverImage.meta_value)
+            cover = renderCover(images, position)
+        } catch (e) {
+            log.trace('获取文章封面失败，将不展示该文章 %d 的封面, e', post.id)
+        }
+    }
+
     // 获取图片位置进行截取
     // 没有图 显示200 个长度
     postContent = postContent.substr(0, 200)
-    return `<article class="j-article-item j-block">
+    return `<article class="j-article-item j-block ${coverClass}" data-uid="${post.guid}">${cover.top ? cover.top : ''}${cover.left ? cover.left : ''}
     <div class="j-article-item-content">
         <h3 class="j-article__title">
             <a href="${url}" target="_blank"> ${stickyHtml} ${xss(title)} </a>
@@ -88,6 +134,7 @@ function generatePostHtml (post) {
             <a title="酱酱酱酱油鲜" class="username">${userName}</a>
             <time class="time" datetime="${postDate}">${postDate}</time>
         </div>
+        ${cover.right ? cover.right : ''}
         <p class="j-article__intro">
             ${xss(postContent)}...
         </p>
@@ -106,13 +153,13 @@ const postInclude = [
     { model: userDao, attributes: { exclude: ['user_pass'] } },
     { model: termDao, attributes: ['icon', 'description', 'name', 'slug', 'taxonomy', 'id'] }
 ]
-
-async function loadPost ({ page = 1, pageSize = 10 }, term, excludeIds = []) {
+async function $$loadPostWhere (term, excludeIds = []) {
+    log.trace('loadPost excludeIds = [%s]', excludeIds)
     let where
     if (!term) {
         where = {
             post_status: Enumerate.PostStatusEnum.PUBLISH,
-            id: {
+            guid: {
                 [Op.notIn]: excludeIds
             }
         }
@@ -126,25 +173,47 @@ async function loadPost ({ page = 1, pageSize = 10 }, term, excludeIds = []) {
         where = {
             post_status: Enumerate.PostStatusEnum.PUBLISH,
             id: {
-                [Op.in]: postIds,
+                [Op.in]: postIds
+            },
+            guid: {
                 [Op.notIn]: excludeIds
             }
         }
     }
+    log.trace('Query article list where = %s', JSON.stringify(where))
+    return where
+}
 
+async function loadPost ({ pageSize = 10 }, term, excludeIds = []) {
+    let where = await $$loadPostWhere(term, excludeIds)
+    log.trace('loadPost pageSize = %s', pageSize)
     let posts = await postDao.findAll({
         where,
         include: postInclude,
-        offset: (page - 1) * pageSize,
+        offset: 0,
         limit: pageSize,
         order: [
             ['post_date', 'DESC']
         ]
     })
     log.trace('获取文章，共计 %d 篇, %s', posts.length, posts.map(post => '#' + post.id))
-    //
     return posts
 }
+// async function loadPostInfo ({ pageSize = 10 }, term, excludeIds = []) {
+//     let where = await $$loadPostWhere(term, excludeIds)
+//     log.trace('loadPostInfo pageSize = %s', pageSize)
+//     let posts = await postDao.findAll({
+//         where,
+//         include: postInclude,
+//         offset: 0,
+//         limit: pageSize,
+//         order: [
+//             ['post_date', 'DESC']
+//         ]
+//     })
+//     log.trace('获取文章，共计 %d 篇, %s', posts.length, posts.map(post => '#' + post.id))
+//     // let total = postDao.
+// }
 
 async function loadPostHtml (...a) {
     return (await exports.loadPost.call(this, ...a)).map(exports.generatePostHtml).join('')

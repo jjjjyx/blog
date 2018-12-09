@@ -77,18 +77,17 @@
                 <FormItem>
                     <Button @click="handleSubmit('formItem')" type="primary" class="mr-2">搜索</Button>
                     <!--<Tooltip content="原生空间管理">-->
-                    <!--<Button type="text" icon="soup-can"></Button>-->
-                    <!--</Tooltip> :loading="detectLoading"-->
-                    <Button @click="clearInvalidImg" class="mr-2" >探测失效图片</Button>
-                    <Button @click="sync" class="mr-2" :loading="syncLoading">同步本地图片</Button>
-                    <Button @click="handleUpload" type="primary">上传新图片</Button>
+                    <i-button @click="handleUpload" type="primary" class="mr-2">上传新图片</i-button>
+                    <slot name="form-buttons" v-bind:selectedNum="selectedNum" v-bind:selectedList="selectedList"></slot>
                 </FormItem>
                 <FormItem class="float-right">
-
                 </FormItem>
             </Form>
-            <!--</div>-->
-            <img-grid :data="data" v-context-menu="{menus: contentItems, targetEl: '.img__item'}"></img-grid>
+            <div class="curd-header">
+                <span style="float: right">{{$t('curd.total_rate', [data.length, total])}}</span>
+                <span>图片列表 {{selectedList.length ? '-'+ $t('curd.header_select_text', {num: selectedList.length}): ''}}</span>
+            </div>
+            <img-grid :data="data" :form-item="formItem" @on-selection-change="handleSelectionChange" :multiple="selectedMode"></img-grid>
         </div>
         <!--<div class="cm-container&#45;&#45;flex__modal medium__right">-->
         <!--<h2 class="ivu-card-head" >-->
@@ -105,20 +104,17 @@
                    name="html5uploader"
                    style="position:absolute;opacity:0;top:0;left:0;width:100%;height:100%;cursor:pointer;">
         </form>
-        <invalid-image :visible.sync="invalidImageModalVisible" :data.sync="invalidImageData"/>
+        <slot v-bind:dataSize="data.length" v-bind:total="total"></slot>
         <input style="position: absolute;left: -999px;opacity: 0" ref="copyrelay"/>
     </div>
 </template>
 
 <script>
-import difference from 'lodash/difference'
-import { mapGetters } from 'vuex'
+// import { mapGetters } from 'vuex'
+import store from '@/store'
 import * as media from '@/api/media'
-// import { getMetaKeyCode } from '@/utils/common'
-// import { on, off } from '@/utils/dom'
 
 import ImgGrid from './components/img-grid'
-import InvalidImage from './components/invalid-image'
 
 const sizeLabels = {
     '9': '特大尺寸',
@@ -126,26 +122,10 @@ const sizeLabels = {
     '7': '中尺寸',
     '6': '小尺寸'
 }
-// const galleryOptions = {
-//     shareEl: false,
-//     history: false
-// }
-
 export default {
     // mixins: [crud],
-    name: 'media-management',
+    name: 'media-curd',
     data () {
-        let moveTarget = []
-        let imgSpaces = ['public', 'cover', 'post', 'avatar']
-        for (let k of imgSpaces) {
-            moveTarget.push({
-                label: this.$store.getters.imgSpaces[k],
-                callback: (e, target) => {
-                    this.moveImg(target, k)
-                    // this.$emit('move-img', target, k)
-                }
-            })
-        }
         return {
             formItem: { space: 'all', hash: '', size: '', color: null },
             ruleInline: {},
@@ -173,73 +153,25 @@ export default {
             activeColor: null,
 
             colorPanelVisible: false,
-            // isBusy: false,
             isNext: true,
             data: [],
             currPage: 1,
-            scrollHeight: 300,
-            syncLoading: false,
-            detectStatus: '',
-            invalidImageModalVisible: false,
-            invalidImageData: [],
-            contentItems: [
-                {
-                    label: '查看',
-                    callback: (e, target) => {
-                        if (target) {
-                            let index = target.getAttribute('data-index')
-                            this.openGallery(index)
-                        } else {
-                            this.$Message.info('请选择图片查看')
-                        }
-                    }
-                },
-                {
-                    label: '复制链接',
-                    callback: (e, target) => {
-                        if (target) {
-                            let url = target.getAttribute('data-originUrl')
-                            this.copy(url)
-                        } else {
-                            this.$Message.info('请选择图片')
-                        }
-                    }
-                },
-                {
-                    label: '复制 markdown 链接',
-                    callback: (e, target) => {
-                        if (target) {
-                            let url = target.getAttribute('data-originUrl')
-                            this.copy(`![image](${url})`)
-                        } else {
-                            this.$Message.info('请选择图片')
-                        }
-                    }
-                },
-                {
-                    label: '移动到其他目录',
-                    child: moveTarget
-                },
-                {
-                    divided: true,
-                    label: '删除',
-                    callback: (e, target) => {
-                        this.delImg(target)
-                    }
-                }
-            ]
+            total: 0
         }
     },
     components: {
-        InvalidImage,
         ImgGrid
-        // Waterfall,
-        // WaterfallSlot
+    },
+    props: {
+        selectedMode: {
+            type: Boolean,
+            default: true
+        }
     },
     computed: {
-        ...mapGetters({
-            imgSpaces: 'imgSpaces'
-        }),
+        imgSpaces: function () {
+            return store.getters.imgSpaces
+        },
         sizeText () {
             if (this.formItem.size) {
                 return sizeLabels[this.formItem.size] ? sizeLabels[this.formItem.size] : this.formItem.size
@@ -256,12 +188,19 @@ export default {
     },
     methods: {
         async fetchMedia () {
-            if (!this.isNext) return false
+            if (!this.isNext) {
+                this.$Message.info('没有更多了呢')
+                return false
+            }
+            if (this.fetchStatus) {
+                return false
+            }
             try {
-                let result = await media.fetchAll({
+                this.fetchStatus = true
+                let { result, total, next } = await media.fetchAll(this.currPage, {
                     ...this.formItem,
                     color: this.activeColor && this.activeColor.color
-                }, this.currPage)
+                })
                 result.forEach(i => {
                     i._checked = false
                     // // 图片查看查询所需要的属性
@@ -269,15 +208,14 @@ export default {
                     // i.w = i.width
                     // i.h = i.height
                 })
-                if (result.length === 0) {
-                    this.isNext = false
-                    this.$Message.info('没有更多了呢')
-                } else {
-                    this.currPage++
-                    this.data.push(...result)
-                }
+                this.isNext = next
+                this.currPage = next
+                this.total = total
+                this.data.push(...result)
             } catch (e) {
                 this.$Message.error('获取资源数据失败')
+            } finally {
+                this.fetchStatus = false
             }
         },
         // 提交搜索表单
@@ -291,81 +229,6 @@ export default {
             this.currPage = 1
             this.data = []
             this.fetchMedia()
-        },
-        $$startDetect () {
-            this.detectStatus = 'detecting'
-            this.taskId = setTimeout(this.$$detect, 3000)
-        },
-        $$detectStop () {
-            clearTimeout(this.taskId)
-            this.detectStatus = 'end'
-            this.$Notice.close('detect_notice')
-        },
-        async $$detect () {
-            if (this.detetProgress === 100) {
-                return this.$$detectStop()
-            }
-            try {
-                let data = await media.getDetectData()
-                this.detetProgress = data.rate
-                this.invalidImageData.push(...data.data)
-                this.taskId = setTimeout(this.$$detect, 3000)
-            } catch (e) {
-                this.$Message.error('探测出现异常:' + e.message)
-                return this.$$detectStop()
-            }
-        },
-        // 清除失效图片，包括缓存
-        async clearInvalidImg () {
-            // 开始或者结束
-            console.log(this.detectStatus === 'detecting' || this.detectStatus === 'end', this.detectStatus)
-            if (this.detectStatus === 'detecting' || this.detectStatus === 'end') {
-                this.invalidImageModalVisible = true
-                return
-            }
-            this.detectStatus = 'start'
-            this.$Notice.info({
-                title: '提示',
-                name: 'detect_notice',
-                desc: '正在探测图片状态，请稍后！'
-            })
-            try {
-                this.$$startDetect()
-                await media.detect()
-                // console.log(data)
-                // this.invalidImageModalVisible = true
-                // this.invalidImageData = data
-            } catch (e) {
-                if (e.code === 3) {
-                    this.$Message.info(e.message)
-                } else {
-                    this.$Message.error('探测出现异常:' + e.message)
-                    clearTimeout(this.taskId)
-                    this.detectStatus = ''
-                }
-                // this.$Notice.close('detect_notice')
-            }
-        },
-        async sync () {
-            this.syncLoading = true
-            try {
-                this.$Notice.info({
-                    title: '提示',
-                    name: 'sync_notice',
-                    desc: '正在同步，过程需要一些时间，请稍后！'
-                })
-                await media.sync()
-                this.$Message.success('同步完成')
-                this.data = []
-                this.isNext = true
-                this.currPage = 1
-                this.fetchMedia() // 刷新当前空间
-            } catch (e) {
-                this.$Message.error('同步出现异常:' + e.message)
-            } finally {
-                this.syncLoading = false
-                this.$Notice.close('sync_notice')
-            }
         },
         handleUpload: function () { // name = 'file'
             // upload.openSelectFile(name)
@@ -405,72 +268,12 @@ export default {
             this.$refs.h5Input0.value = null
             // console.log(files)
         },
-        _getSelectImages (target) {
-            let key
-            let items = []
-            if (this.selectedList.length) {
-                items = this.selectedList
-            } else if (target) {
-                key = target.getAttribute('data-key')
-                // if (this.formItem.space !== 'all') {
-                let item = this.data.find(item => item.hash === key)
-                item && items.push(item)
-            }
-            return items
-        },
-        async delImg (target) {
-            let items = this._getSelectImages(target)
-            let keys = items.map(item => item.hash)
-            try {
-                await media.deleteImg(keys)
-                // if (this.formItem.space !== 'all') {
-                this.data = difference(this.data, items)
-                // }
-            } catch (e) {
-                this.$Message.info('删除失败')
-            }
-        },
-        async moveImg (target, space) {
-            let items = this._getSelectImages(target)
-            let keys = items.map(item => item.hash)
-            try {
-                await media.move(keys, space)
-                if (this.formItem.space !== 'all') {
-                    this.data = difference(this.data, items.filter(item => item.space !== space))
-                }
-                this.$Message.success('完成移动')
-            } catch (e) {
-                this.$Message.info('移动失败')
-            }
-
-            // console.log('space', target , space)
-        },
-        openGallery (index) {
-            let data = this.data.map(item => ({
-                src: item.url,
-                w: item.width,
-                h: item.height
-            }))
-
-            this.$photoswipe.open(parseInt(index, 10), data)
-        },
-        copy (text) {
-            this.$refs.copyrelay.value = text
-            this.$refs.copyrelay.focus()
-            this.$refs.copyrelay.select()
-            try {
-                if (document.execCommand('copy', false, null)) {
-                    this.$Message.success('复制成功')
-                } else {
-                    this.$Message.success('复制失败')
-                }
-            } catch (err) {
-                this.$Message.success('复制失败')
-            }
+        handleSelectionChange (selected) {
+            this.$emit('on-selection-change', selected)
         }
     },
     async created () {
-        await this.fetchMedia()
+        // await this.fetchMedia()
     },
     destroyed () {
     }

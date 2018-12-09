@@ -13,8 +13,11 @@
     height: 100%;
     width: 100%;
     border-top: 1px solid $border-color;
-    overflow-y: hidden;
+    overflow-y: scroll;
     user-select: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
     .img__item img {
         //width: 100%;
@@ -136,5 +139,78 @@
     }
     .curd-body {
         margin: 15px -15px 0;
+    }
+}
+
+
+.image-modal-warp {
+
+    .ivu-modal-body {
+        //display: flex;
+        //flex-direction: column;
+    }
+
+    .medium__img {
+        max-height: 60vh;
+    }
+    .curd-container--flex__modal {
+        min-width: 400px;
+    }
+    .curd-header {
+        display: none;
+    }
+    .curd-container--flex__modal {
+
+    }
+
+
+}
+.image-modal__select-info {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    .title {
+        overflow: hidden;
+        word-wrap: normal; /* for IE */
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .preview {
+        margin-top: 1rem;
+        position: relative;
+        height: 200px;
+        margin-bottom: 48px;
+    }
+
+    //.preview .item:first-child {
+    //
+    //}
+    .preview .item {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        box-shadow: 3px 2px 3px 0 rgba(0, 0, 0, 0.35);
+    }
+    .preview .item--width {
+        width: 200px;
+        height: auto;
+        max-height: 200px;
+    }
+    .preview .item--height {
+        height: 200px;
+        width: auto;
+        max-width: 200px;
+    }
+    $maxImage: 10;
+    $spacer: 4px;
+    @for $i from 1 through $maxImage {
+        .preview .item:nth-child(#{$i}) {
+            bottom: $i * $spacer * -1;
+            left: $i * $spacer;
+        }
+    }
+    .image-modal__footer {
+        margin-top: auto;
+
     }
 }

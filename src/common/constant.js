@@ -7,7 +7,7 @@ const VISITOR_KEY = 'jv'
 
 const VISITOR_NAME_PREFIX = '游客_'
 // 首页加载文章个数
-const LOAD_POST_PAGE_SIZE = 10
+const LOAD_POST_PAGE_SIZE = 13
 const POST_MAX_TAGS_LENGTH = 16
 // 评论加载个数
 const LOAD_COMMENT_PAGE_SIZE = 15

@@ -16,7 +16,7 @@ export function token () {
  * @param page 页码
  * @returns {Promise<*>}
  */
-export function fetchAll ({ hash, space, color }, page) {
+export function fetchAll (page, { hash, space, color }) {
     return api.nget('/api/img/list', { page, hash, space, color })
 }
 

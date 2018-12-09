@@ -79,6 +79,10 @@ const checkExcerpt = body('post_excerpt')
     .isLength({ min: 0 })
     .withMessage('请提交文章摘录')
 
+const checkCoverPosition = body('cover_position').isIn(['left', 'right', 'top']).withMessage('请提交正确封面位置')
+// const sanitizeCoverPosition = sanitizeBody('cover_position').customSanitizer(() => {})
+// todo cover_image 图片验证
+// const checkCoverImage = b
 // 发布的文章状态
 const sanitizeReleasePostStatus = sanitizeBody('post_status')
     .customSanitizer((value) => {
@@ -366,17 +370,18 @@ const save = [
 
                     req.sanitizeBody('new_tag').toArray()
                     req.sanitizeBody('tags_id').toArray()
-                    let { category_id: categoryid } = req.body
+                    let { category_id: categoryId } = req.body
 
-                    let category = await termDao.findByPk(categoryid)
+                    let category = await termDao.findByPk(categoryId)
                     if (category === null) {
                         // Submitted an undefined category id = ${category_id}， Automatically corrected to default category
-                        log.trace(`save Error article category id = ${categoryid}, Fix to default category ${SITE.defaultCategoryId}`)
+                        log.trace(`save Error article category id = ${categoryId}, Fix to default category ${SITE.defaultCategoryId}`)
                         category = SITE.defaultTerm
                     }
                     log.trace('保存文章#%d-AutoSave#%d 标签，分类信息到meta ', id, autoSavePost.id)
                     let newTag = await $createTerms(req.body, req)
-
+                    // coverPosition
+                    // coverImage
                     await Promise.all([
                         common.updateOrCreatePostMeta(autoSavePost.id, 'tags', JSON.stringify(newTag.map(item => item.name))),
                         common.updateOrCreatePostMeta(autoSavePost.id, 'category', JSON.stringify(category.id))
@@ -714,7 +719,7 @@ const $getPostInfo = async function (req, res) {
             ]
         })
         if (result === null) {
-            log.info('获取文章详细失败, 错误的id = ', id)
+            log.trace('获取文章详细失败, 错误的id = ', id)
             return res.status(200).json(Result.info('错误的id'))
         }
 
@@ -791,6 +796,7 @@ const release = [
     checkPostPass,
     // checkPostName,
     // checkCategoryId,
+    checkCoverPosition,
     checkAuthor,
     // checkTagsId,
     common.validationResult,
@@ -807,6 +813,8 @@ const release = [
             post_status: postStatus,
             post_password: postPassword,
             comment_status: commentStatus,
+            cover_position: coverPosition,
+            cover_image: coverImage,
             // post_author,
             sticky,
             postAuthor
@@ -856,13 +864,18 @@ const release = [
             // post.post_author = // 最初的创建者不能修改的 提交的文章作者只会存在版本记录中
             // sticky
             let mdContent = marked(postContent, { renderer: utils.renderer })
-            Promise.all([
-                common.updateOrCreatePostMeta(id, 'sticky', sticky),
-                common.updateOrCreatePostMeta(id, 'render', renderValue),
-                common.updateOrCreatePostMeta(id, 'displayContent', mdContent.substr(0, 400))
-            ]).then(() => {
-                log.trace('成功保存文章 #%d的meta 信息', post.id)
-            }).catch(e => log.error('保存文章#%d meta 失败:', post.id, e))
+            try {
+                await Promise.all([
+                    common.updateOrCreatePostMeta(id, 'sticky', sticky),
+                    common.updateOrCreatePostMeta(id, 'coverImage', JSON.stringify(coverImage)),
+                    common.updateOrCreatePostMeta(id, 'coverPosition', coverPosition),
+                    common.updateOrCreatePostMeta(id, 'render', renderValue),
+                    common.updateOrCreatePostMeta(id, 'displayContent', mdContent.substr(0, 400))
+                ])
+                log.trace('成功保存文章 #%d 的meta 信息', post.id)
+            } catch (e) {
+                log.error('保存文章#%d meta 失败:', post.id, e)
+            }
 
             await post.save()
             // 点击发布，不论是更新还是发布，都会判断内容记录版本

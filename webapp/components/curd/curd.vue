@@ -38,8 +38,7 @@
             <Page :total="total" :page-size="pageSize" size="small" class="float-right"
                   show-total
                   @on-change="_handleOnPageChange">
-                {{$t('curd.page', [(currPage - 1) * pageSize + 1 , currPage * pageSize > total ? total : currPage *
-                pageSize, total])}}
+                {{$t('curd.page', [(currPage - 1) * pageSize + 1 , currPage * pageSize > total ? total : currPage * pageSize, total])}}
             </Page>
         </div>
         <slot></slot>

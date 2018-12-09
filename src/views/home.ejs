@@ -7,7 +7,7 @@
 </head>
 <body>
 <%- include('loading', data); %>
-<div id="app">
+<div id="app" v-infinite-scroll="loadMore" :infinite-scroll-disabled="isNext" infinite-scroll-distance="300">
     <!--<div class="wrapper">-->
     <%- include('base/nav', data); %>
     <div class="jumbotron bounceInDown animated">

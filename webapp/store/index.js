@@ -51,6 +51,12 @@ const state = {
             'archives': '归档',
             'search': '搜索'
         },
+        position: {
+            top: '顶部',
+            left: '左侧',
+            right: '右侧',
+            bottom: '底部'
+        },
         role: {
             0: '游客',
             1: '普通用户',
@@ -65,6 +71,7 @@ const state = {
 }
 const getters = {
     postStatusDict: state => state.dict.postStatus,
+    positionDict: state => state.dict.position,
     imgSpaces: state => state.dict.img,
     defaultCategoryValue: state => toNumber(state.siteMap['defaultCategoryId'].value)
 }

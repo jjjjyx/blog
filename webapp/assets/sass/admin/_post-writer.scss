@@ -114,6 +114,8 @@
     cursor: default;
 }
 
+
+
 .postbox .ivu-card-extra {
     top: 10px;
 }
@@ -122,6 +124,15 @@
     border-top: 1px solid $gray-300;
     font-size: 12px;
     padding: 10px 0 0;
+}
+
+.post-sidebar-cover {
+    .image-thumbnail {
+        width: 100%;
+        //border: 1px solid $border-color;
+        //padding: .25rem;
+        user-select: none;
+    }
 }
 
 .j-collapse {

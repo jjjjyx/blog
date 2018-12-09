@@ -2,18 +2,16 @@
 
 const express = require('express')
 // const debug = require('debug')('app:routers:home')
-const log = require('log4js').getLogger('routers:home')
+// const log = require('log4js').getLogger('routers:home')
 // const opLog = require('log4js').getLogger('op.routers:home')
 const isFunction = require('lodash/isFunction')
-const { sanitizeQuery } = require('express-validator/filter')
-const { query } = require('express-validator/check')
 
 const Result = require('../common/result')
 const utils = require('../utils')
 const common = require('../common')
-const ManageLog = require('../common/manageLog')('routers:home')
+const log = require('../common/manageLog')('routers:home')
 
-const { termDao, userDao, postDao, postMetaDao, sequelize, Sequelize } = require('../models')
+const { postDao, termDao, sequelize } = require('../models')
 
 const router = express.Router()
 const loadPostPageSize = common.CONSTANT.LOAD_POST_PAGE_SIZE
@@ -24,11 +22,11 @@ log.trace('动态页面内容缓存过期时间 cacheTimeOut = %d 秒', cacheTim
 
 const queryStickyPost = `
 SELECT id FROM j_posts WHERE id IN (SELECT object_id FROM \`j_postmeta\` AS \`postMeta\` 
-	LEFT JOIN \`j_term_relationships\` AS jtr ON jtr.\`object_id\` = postMeta.\`post_id\`
-	LEFT JOIN \`j_terms\` AS jt ON jt.\`id\` = jtr.\`term_id\`
-	WHERE \`postMeta\`.\`meta_key\` = 'sticky' AND \`postMeta\`.\`meta_value\` = '1')
-	ORDER BY post_date DESC
-	LIMIT 0, ?;`
+LEFT JOIN \`j_term_relationships\` AS jtr ON jtr.\`object_id\` = postMeta.\`post_id\` 
+LEFT JOIN \`j_terms\` AS jt ON jt.\`id\` = jtr.\`term_id\` 
+WHERE \`postMeta\`.\`meta_key\` = 'sticky' AND \`postMeta\`.\`meta_value\` = '1') 
+ORDER BY post_date DESC 
+LIMIT 0, ?;`
 
 const index = [
     utils.cache.route('index', config.cacheTimeOut),
@@ -48,10 +46,11 @@ const index = [
                 include: common.postInclude
             })
 
-            log.isDebugEnabled() && log.debug('获取置顶文章，共计 %d 篇, %s', result.length, result.map(post => '#' + post.id))
+            log.trace('获取置顶文章，共计 %d 篇, %s', stickyPost.length, stickyPost.map(post => '#' + post.id))
 
             let articleList = stickyPost.map(common.generatePostHtml).join('')
-            articleList += await common.loadPostHtml({ page: 1, pageSize: 10 }, null, stickyPostIds)
+            let stickyPostGuid = stickyPost.map((item) => item.guid)
+            articleList += await common.loadPostHtml({ pageSize: loadPostPageSize }, null, stickyPostGuid)
 
             let sidebarModule = ['about', 'hot', 'chosen', 'category', 'tags', 'newest', 'archives', 'search']
             let sidebar = ''
@@ -62,7 +61,7 @@ const index = [
                 sidebar = '侧边栏加载失败'
                 log.error('侧边栏加载失败 by :', e)
             }
-            ManageLog.info('访问首页')
+            log.info('访问首页')
             res.render('home', { articleList, sidebar })
         } catch (e) {
             next(e)
@@ -72,15 +71,34 @@ const index = [
 ]
 
 const more = [
-    sanitizeQuery('page').toInt(),
-    query('page').isInt(),
-    common.validationResult,
+    // sanitizeQuery('ids').toInt(),
+    // query('page').isInt(),
+    // common.validationResult,
     async function (req, res, next) {
-        let { page } = req.query
+        // let { page } = req.query
+        req.sanitizeQuery('ids').toArray()
+        let { ids, slug } = req.query
 
         try {
-            let result = await common.loadPostHtml({ page, pageSize: 10 })
-            res.send(result)
+            let term = null
+            if (slug) {
+                term = await termDao.findOne({
+                    where: {
+                        slug,
+                        taxonomy: common.ENUMERATE.TaxonomyEnum.CATEGORY
+                    }
+                })
+            }
+            // return (await exports.loadPost.call(this, ...a)).map(exports.generatePostHtml).join('')
+            let result = await common.loadPost({ pageSize: loadPostPageSize }, term, ids)
+
+            let data = {
+                result: result.map(common.generatePostHtml),
+                next: result.length === loadPostPageSize
+            }
+            // let result = await common.loadPostHtml({ page, pageSize: 10 })
+            return res.status(200).json(Result.success(data))
+            // res.send(result)
         } catch (e) {
             log.error('loadPost  error by:', e)
             return res.status(200).json(Result.error())

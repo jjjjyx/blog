@@ -29,6 +29,8 @@ const state = {
     'guid': '',
     'render_value': '',
     'post_password': '',
+    cover_position: 'left',
+    cover_image: [],
 
     updatedAt: '',
     createdAt: '',
@@ -48,7 +50,7 @@ const state = {
 // 可以merge的key
 const mergeKeys = ['comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'render_value', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'post_password', 'sticky', 'updatedAt', 'createdAt']
 
-const postKey = ['id', 'comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'render_value', 'post_password', 'sticky', 'new_tag', 'category_id']
+const postKey = ['id', 'comment_status', 'menu_order', 'post_type', 'comment_count', 'seq_in_nb', 'post_author', 'post_date', 'post_content', 'post_title', 'post_excerpt', 'post_status', 'post_name', 'guid', 'render_value', 'post_password', 'sticky', 'new_tag', 'category_id', 'cover_position', 'cover_image']
 const copyPost = cloneDeep(state)
 let currCopy = cloneDeep(state)
 
@@ -179,6 +181,12 @@ const mutations = {
     updateSticky (state, value) {
         state.sticky = value
     },
+    updatePostCoverPosition (state, value) {
+        state.cover_position = value
+    },
+    updatePostCoverImage (state, value) {
+        state.cover_image = value
+    },
     shiftPostTag (state) {
         state.new_tag.shift()
     },
@@ -260,9 +268,19 @@ const mutations = {
                     state[key] = value[key]
                 }
             }
-            let { sticky } = value.metas
+            let { sticky, coverPosition, coverImage } = value.metas
             if (sticky) {
                 state.sticky = toNumber(sticky.meta_value) ? 'sticky' : ''
+            }
+            if (coverPosition) {
+                state.cover_position = coverPosition.meta_value
+            }
+            if (coverImage) {
+                let coverimg = JSON.parse(coverImage.meta_value)
+                if (typeof coverimg === 'string') {
+                    coverimg = [coverimg]
+                }
+                state.cover_image = coverimg
             }
             let { category, post_tag: postTag } = groupBy(value.terms, 'taxonomy')
             if (postTag) state.new_tag = postTag.map((i) => i.name)

@@ -139,13 +139,14 @@ const list = [
             }
 
             let total = await resourceDao.count({ where })
+            let maxPage = Math.ceil(total / mediaPageSize)
             let data = {
                 result,
                 total,
                 page,
-                maxPage: Math.ceil(total / mediaPageSize),
+                maxPage,
                 // 判断是否最后一页
-                next: offset + mediaPageSize >= total ? false : page + 1
+                next: page >= maxPage ? false : page + 1
             }
             return res.status(200).json(Result.success(data))
         } catch (e) {
