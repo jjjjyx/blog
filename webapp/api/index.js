@@ -82,8 +82,8 @@ function do_fetch (url, method, data, header = {}) {
     }
     let fetchParams = {
         method: method,
-        mode: 'cors',
-        credentials: 'include',
+        mode: 'same-origin',
+        credentials: 'same-origin',
         headers
     }
 

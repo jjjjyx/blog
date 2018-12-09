@@ -31,7 +31,6 @@ export function move (keys, space) {
     return api.npost('/api/img/move', { keys, space })
 }
 
-
 export function deleteImg (keys) {
     return api.npost('/api/img/del', { keys })
 }
@@ -43,8 +42,16 @@ export function deleteImg (keys) {
  * 访问失败的图片
  */
 export function detect () {
-    return api.nget('/api/img/detect')
+    return api.npost('/api/img/detect')
 }
+
+export const getDetectData = (function getDetectData () {
+    let count = 0
+    return function () {
+        count++
+        return api.nget('/api/img/detect', { count })
+    }
+})()
 
 /**
  * 同步本地与七牛服务器的图片

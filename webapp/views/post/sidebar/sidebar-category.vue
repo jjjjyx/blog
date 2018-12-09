@@ -1,6 +1,6 @@
 <template>
     <div class="demo-tabs-style2">
-        <Tabs size="small" type="card" class="cm-tabs-style" value="">
+        <Tabs size="small" type="card" class="cm-tabs-style" value="" style="height: 347px">
             <TabPane label="常用" style="max-height: 300px; overflow-y: auto;">
                 <RadioGroup v-model="categoryValue" vertical class="sidebar-category-list">
                     <Radio v-for="(item, index) in commonCategoryList" :label="item.id" :key="index">

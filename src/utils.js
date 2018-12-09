@@ -244,7 +244,7 @@ function getURLJSONData (href) {
                     data = JSON.parse(data)
                     resolve(data)
                 } catch (e) {
-                    log.error('get url = %s data error by', href, e)
+                    // log.error('get url = %s data error by', href, e)
                     reject(e)
                 }
                 // console.log(JSON.parse(data).explanation);

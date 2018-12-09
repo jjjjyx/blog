@@ -1,19 +1,21 @@
 <template>
     <!--:on-reach-bottom="fetchMedia"-->
     <!--@mousedown.native="handleImagesWarpMouseDown"-->
-    <Scroll :on-reach-bottom="handleReachBottom"
-            class="medium__img" ref="imgs"
-            :height="scrollHeight">
+    <!--<Scroll :on-reach-bottom="handleReachBottom"-->
+            <!--class="medium__img" ref="imgs"-->
+            <!--:height="scrollHeight">-->
+    <div class="medium__img" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
         <img-item :item="item" :index="index" v-for="(item, index) in data" :key="index"
                   @click.native="handleClickRow(item, index)"></img-item>
+    </div>
         <!--<div class="medium__img&#45;&#45;not-more" v-if="!isNext">-->
         <!--没有更多了-->
         <!--</div>-->
-    </Scroll>
+    <!--</Scroll>-->
 </template>
 
 <script>
-import debounce from 'lodash/debounce'
+// import debounce from 'lodash/debounce'
 import { on, off } from '@/utils/dom'
 import { getMetaKeyCode } from '@/utils/common'
 import ImgItem from './img-item'
@@ -22,7 +24,6 @@ import ImgItem from './img-item'
 export default {
     name: 'img-grid',
     data () {
-
         return {
             scrollHeight: 1500,
             keydownCode: null
@@ -129,12 +130,11 @@ export default {
         off(document.body, 'keyup', this.handleKeyUp)
     },
     mounted () {
-        let onResize = debounce(() => {
-            this.scrollHeight = this.$refs['imgs'].$el.clientHeight
-        }, 1000)
-        onResize()
-        on(window, 'resize', onResize)
+        // let onResize = debounce(() => {
+        //     this.scrollHeight = this.$refs['imgs'].$el.clientHeight
+        // }, 1000)
+        // onResize()
+        // on(window, 'resize', onResize)
     }
 }
 </script>
-

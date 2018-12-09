@@ -8,21 +8,14 @@
                     <label class="ivu-form-item-label">目录：</label>
                 </div>
                 <form-item prop="space" class="mr-4">
-                    <Select v-model="formItem.space" style="width:100px" placeholder="选择图片空间"
-                            @on-change="handleChangeImgSpace">
+                    <Select v-model="formItem.space" style="width:100px" placeholder="选择图片空间" @on-change="handleChangeImgSpace">
                         <Option v-for="(v, k) in imgSpaces" :value="k" :key="k">{{ v }}</Option>
                     </Select>
                 </form-item>
 
-                <!--<div class="ivu-form-item">-->
-                <!--<label class="ivu-form-item-label">hash：</label>-->
-                <!--</div>-->
                 <form-item prop="hash" class="mr-4">
-                    <Input v-model="formItem.hash" placeholder="关键字"/>
+                    <i-input v-model="formItem.hash" placeholder="关键字"></i-input>
                 </form-item>
-                <!--<div class="ivu-form-item">-->
-                <!--<label class="ivu-form-item-label">尺寸:</label>-->
-                <!--</div>-->
                 <form-item prop="size" class="mr-4">
                     <!--<Select v-model="formItem.space" style="width:150px" placeholder="选择尺寸">-->
                     <!--<Option :value="lg"></Option>-->
@@ -49,9 +42,7 @@
                         </DropdownMenu>
                     </Dropdown>
                 </form-item>
-                <!--<div class="ivu-form-item">-->
-                <!--<label class="ivu-form-item-label">色调：</label>-->
-                <!--</div>-->
+
                 <form-item prop="color" class="mr-4">
                     <Poptip v-model="colorPanelVisible" placement="bottom">
                         <a href="javascript:void(0)">
@@ -77,19 +68,18 @@
                                     <div class="ivu-color-picker-picker-colors-wrapper-color"
                                          :style="{'background': item.color}"></div>
                                     <div class="ivu-color-picker-picker-colors-wrapper-circle"
-                                         :class="{'ivu-color-picker-hide':item.color }"></div>
+                                         :class="{'ivu-color-picker-hide': item.color }"></div>
                                 </div>
                             </div>
                         </div>
-
                     </Poptip>
                 </form-item>
                 <FormItem>
                     <Button @click="handleSubmit('formItem')" type="primary" class="mr-2">搜索</Button>
                     <!--<Tooltip content="原生空间管理">-->
                     <!--<Button type="text" icon="soup-can"></Button>-->
-                    <!--</Tooltip>-->
-                    <Button @click="clearInvalidImg" class="mr-2" :loading="detectLoading">探测失效图片</Button>
+                    <!--</Tooltip> :loading="detectLoading"-->
+                    <Button @click="clearInvalidImg" class="mr-2" >探测失效图片</Button>
                     <Button @click="sync" class="mr-2" :loading="syncLoading">同步本地图片</Button>
                     <Button @click="handleUpload" type="primary">上传新图片</Button>
                 </FormItem>
@@ -115,7 +105,7 @@
                    name="html5uploader"
                    style="position:absolute;opacity:0;top:0;left:0;width:100%;height:100%;cursor:pointer;">
         </form>
-        <invalid-image :visible="invalidImageModalVisible" :data.sync="invalidImageData"/>
+        <invalid-image :visible.sync="invalidImageModalVisible" :data.sync="invalidImageData"/>
         <input style="position: absolute;left: -999px;opacity: 0" ref="copyrelay"/>
     </div>
 </template>
@@ -124,8 +114,8 @@
 import difference from 'lodash/difference'
 import { mapGetters } from 'vuex'
 import * as media from '@/api/media'
-import { getMetaKeyCode } from '@/utils/common'
-import { on, off } from '@/utils/dom'
+// import { getMetaKeyCode } from '@/utils/common'
+// import { on, off } from '@/utils/dom'
 
 import ImgGrid from './components/img-grid'
 import InvalidImage from './components/invalid-image'
@@ -136,10 +126,10 @@ const sizeLabels = {
     '7': '中尺寸',
     '6': '小尺寸'
 }
-const galleryOptions = {
-    shareEl: false,
-    history: false
-}
+// const galleryOptions = {
+//     shareEl: false,
+//     history: false
+// }
 
 export default {
     // mixins: [crud],
@@ -189,7 +179,7 @@ export default {
             currPage: 1,
             scrollHeight: 300,
             syncLoading: false,
-            detectLoading: false,
+            detectStatus: '',
             invalidImageModalVisible: false,
             invalidImageData: [],
             contentItems: [
@@ -302,24 +292,58 @@ export default {
             this.data = []
             this.fetchMedia()
         },
+        $$startDetect () {
+            this.detectStatus = 'detecting'
+            this.taskId = setTimeout(this.$$detect, 3000)
+        },
+        $$detectStop () {
+            clearTimeout(this.taskId)
+            this.detectStatus = 'end'
+            this.$Notice.close('detect_notice')
+        },
+        async $$detect () {
+            if (this.detetProgress === 100) {
+                return this.$$detectStop()
+            }
+            try {
+                let data = await media.getDetectData()
+                this.detetProgress = data.rate
+                this.invalidImageData.push(...data.data)
+                this.taskId = setTimeout(this.$$detect, 3000)
+            } catch (e) {
+                this.$Message.error('探测出现异常:' + e.message)
+                return this.$$detectStop()
+            }
+        },
         // 清除失效图片，包括缓存
         async clearInvalidImg () {
-            this.detectLoading = true
+            // 开始或者结束
+            console.log(this.detectStatus === 'detecting' || this.detectStatus === 'end', this.detectStatus)
+            if (this.detectStatus === 'detecting' || this.detectStatus === 'end') {
+                this.invalidImageModalVisible = true
+                return
+            }
+            this.detectStatus = 'start'
             this.$Notice.info({
                 title: '提示',
                 name: 'detect_notice',
                 desc: '正在探测图片状态，请稍后！'
             })
             try {
-                let data = await media.detect()
+                this.$$startDetect()
+                await media.detect()
                 // console.log(data)
-                this.invalidImageModalVisible = true
-                this.invalidImageData = data
+                // this.invalidImageModalVisible = true
+                // this.invalidImageData = data
             } catch (e) {
-                this.$Message.error('探测出现异常:' + e.message)
-            } finally {
-                this.detectLoading = false
-                this.$Notice.close('detect_notice')
+                if (e.code === 3) {
+                    this.$Message.info(e.message)
+                } else {
+                    this.$Message.error('探测出现异常:' + e.message)
+                    clearTimeout(this.taskId)
+                    this.detectStatus = ''
+                }
+                // this.$Notice.close('detect_notice')
             }
         },
         async sync () {
@@ -342,7 +366,6 @@ export default {
                 this.syncLoading = false
                 this.$Notice.close('sync_notice')
             }
-
         },
         handleUpload: function () { // name = 'file'
             // upload.openSelectFile(name)

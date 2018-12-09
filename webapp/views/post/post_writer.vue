@@ -65,17 +65,15 @@
                     v-text="editorTime"></span>
             </div>
         </div>
-        <div class="postbox-container" ref="postBox">
-            <!--{{currentPost}}-->
-            <draggable :list="sidebarsOrder" class="dragArea">
-                <transition-group type="transition" :name="'flip-list'">
-                    <sidebar-panel v-for="sidebar in sidebarsOrder" :key="sidebar" class="postbox">
-                        <template slot="title">{{$options.components[sidebar].title}}</template>
-                        <components :is="sidebar" :current-post="currentPost"></components>
-                    </sidebar-panel>
-                </transition-group>
-            </draggable>
-        </div>
+            <!--{{currentPost}} :options="{draggable:'.ivu-card-head'}"-->
+        <draggable class="dragArea postbox-container" :options="{draggable: '.ivu-card',handle: '.item' }" ref="postBox">
+        <transition-group type="transition" :name="'flip-list'">
+            <sidebar-panel v-for="sidebar in sidebarsOrder" :key="sidebar" class="postbox">
+                <template slot="title">{{$options.components[sidebar].title}}</template>
+                <components :is="sidebar" :current-post="currentPost"></components>
+            </sidebar-panel>
+        </transition-group>
+        </draggable>
         <Modal v-model="saveTipModel" width="360">
             <p slot="header" style="color:#f60;text-align:center">
                 <Icon type="information-circled"></Icon>
@@ -98,7 +96,6 @@
 
 <script>
 
-import debounce from 'lodash/debounce'
 import isNumber from 'lodash/isNumber'
 import toNumber from 'lodash/toNumber'
 
@@ -513,13 +510,15 @@ export default {
         next()
     },
     mounted () {
-        let onResize = debounce(() => {
-            // 这里地方 不知道什么缘故需要设置一下容易的宽度，好像flex 布局有什么坑
-            let width = this.$el.clientWidth - this.$refs['postBox'].clientWidth
-            this.$refs['postBody'].style.width = `${width}px`
-        }, 1000)
-        onResize()
-        on(window, 'resize', onResize)
+        // 修复了 flex 的宽度超出问题，@see post_writer#11
+        // let onResize = debounce(() => {
+        //     // // 这里地方 不知道什么缘故需要设置一下容易的宽度，好像flex 布局有什么坑
+        //     // let width = this.$el.clientWidth - this.$refs['postBox'].$el.clientWidth
+        //     // this.$refs['postBody'].style.width = `${width}px`
+        // }, 1000)
+        // onResize()
+        // on(window, 'resize', onResize)
+        // console.log(sortable)
     }
 }
 </script>

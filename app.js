@@ -37,7 +37,7 @@ app.use(require('./src/express-middleware/logger'))
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
+    // res.setHeader('Access-Control-Allow-Origin', config.allowOrigin)
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST')
     res.setHeader('Access-Control-Max-Age', 1000)
     res.setHeader('Access-Control-Allow-Headers', config.tokenHeaderKey) // ×

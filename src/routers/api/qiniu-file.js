@@ -109,7 +109,7 @@ const list = [
     async function (req, res) {
         let { page, space, hash, color } = req.query
         log.trace('Query to get a list of pictures query = ', JSON.stringify(req.query))
-        page = page || 1
+        page = parseInt(page || 1)
         let where = {}
         if (space !== common.ENUMERATE.ImgEnum.ALL) {
             where.space = space
@@ -121,11 +121,12 @@ const list = [
             where[Op.or].push({ name: { [Op.like]: `%${hash}%` } })
         }
         log.trace('Query to get a list of pictures where =', JSON.stringify(where))
+        let offset = (page - 1) * mediaPageSize
         try {
             let result = await resourceDao.findAll({
                 where,
                 limit: mediaPageSize,
-                offset: (page - 1) * mediaPageSize,
+                offset: offset,
                 order: ['hash']
             })
             // 筛选颜色
@@ -136,7 +137,17 @@ const list = [
             } catch (e) {
                 log.trace('Conversion color = %s failed ', color)
             }
-            return res.status(200).json(Result.success(result))
+
+            let total = await resourceDao.count({ where })
+            let data = {
+                result,
+                total,
+                page,
+                maxPage: Math.ceil(total / mediaPageSize),
+                // 判断是否最后一页
+                next: offset + mediaPageSize >= total ? false : page + 1
+            }
+            return res.status(200).json(Result.success(data))
         } catch (e) {
             log.error('getMediaAll error by :', e)
             return res.status(200).json(Result.error())
@@ -191,6 +202,8 @@ const del = [
                 where: { hash: successKey }
             })
             log.delete(req, successKey, common.ENUMERATE.relatedTypeEnum.image)
+            // 清除探测缓存
+            $$resetFlag()
             return res.status(200).json(Result.success({ fail: failKey }))
         } catch (e) {
             log.error(`删除空间文件 key = %s 失败,原因`, keys, e)
@@ -247,24 +260,75 @@ const callback = async function (req, res) {
 // function detectImageUrl (url) {
 //
 // }
+let detectFlag = false
+let detectData = []
+let detectTotal = 0
+let detectRate = 0
+let detectIndex = 0
+function $$resetFlag () {
+    detectRate = detectTotal = detectIndex = 0
+    detectData = []
+    log.trace('成功重置探测标识，等待下次探测')
+}
+
+async function $$fetchImagesContent () {
+    let result = await resourceDao.findAll()
+    detectFlag = true
+    detectTotal = result.length
+    for (let i = 0; i < detectTotal; i++) {
+        let image = result[i]
+        detectRate++
+        try {
+            await utils.getURLJSONData(image.url)
+            let j = image.toJSON()
+            j.type = '404'
+            detectData.push(j)
+        } catch (e) { // 转换json 失败 说明文件正常
+            log.trace('图片 %s 访问正常', image.url)
+        }
+    }
+    detectFlag = false
+}
+const getDetectData = function (req, res) {
+    let count = parseInt(req.query.count)
+    log.trace('用户第 %s 次轮询获取', count)
+    if (count === 1) {
+        log.trace('用户第 1 次轮询获取, 重置数据标识位 detectIndex = 0')
+        detectIndex = 0
+    }
+    // 标志结束，并且数据也取完了
+    if (!detectFlag && detectIndex === detectTotal) {
+        return res.status(200).json(Result.info(detectData, '探测已经结束'))
+    }
+
+    let failNotFound = detectData.slice(detectIndex)
+    detectIndex = failNotFound.length > 0 ? detectIndex + failNotFound.length : detectIndex
+    return res.status(200).json(Result.success({
+        data: failNotFound,
+        total: detectTotal,
+        rate: detectRate / detectTotal * 100
+    }))
+}
 
 const detect = async function (req, res, next) {
     try {
-        let result = await resourceDao.findAll()
-        let failNotFound = []
-        for (let i = 0; i < result.length; i++) {
-            let image = result[i]
-            try {
-                await utils.getURLJSONData(image.url)
-                let j = image.toJSON()
-                j.type = '404'
-                failNotFound.push(j)
-            } catch (e) { // 转换json 失败 说明文件正常
-                log.trace('图片 %s 访问正常', image.url)
+        if (detectFlag) {
+            // let failNotFound = detectData.splice(-1)
+            log.trace('探测正在进行中')
+            return res.status(200).json(Result.info('探测已经进行'))
+        } else {
+            /* */
+            // 对结果缓存
+            if (detectRate === detectTotal && detectTotal !== 0) {
+                log.trace('探测已经结束，在未对结果进行操作前，将一直返回缓存')
+                return res.status(200).json(Result.success(detectData))
             }
+            log.trace('开始探测，清空探测缓存，重置标识位')
+            $$resetFlag()
+            $$fetchImagesContent().then(() => {})
+            return res.status(200).json(Result.success())
         }
         // 引用计数统计
-        return res.status(200).json(Result.success(failNotFound))
     } catch (e) {
         log.error('detect error by :', e)
         return res.status(200).json(Result.error())
@@ -325,7 +389,8 @@ router.route('/list')
     .get(list)
 
 router.route('/detect')
-    .get(detect)
+    .post(detect)
+    .get(getDetectData)
 
 router.route('/sync')
     .get(syncQiniu)

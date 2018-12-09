@@ -16,11 +16,13 @@ const state = {
 
     categoryList: [],
     tagList: [],
+    images: [],
     statistics: {
         publishPostNum: 0,
         tagNum: 0,
         mediaNum: 0
-    }
+    },
+    imagesPage: 1
 }
 
 const getters = {
@@ -45,6 +47,14 @@ function checkItems (items) {
 
 // actions
 const actions = {
+    // 图片的获取需要页码， 页码为 -1 则清除列表
+    async fetchImages ({ commit }, page = 1) {
+        //
+        if (page === -1) {
+            commit('CLEAR_IMAGES_DATA')
+            page = 1
+        }
+    },
     async fetchStatistics ({ commit, state }) {
         try {
             let result = await globalSettingApi.fetchAll()
@@ -211,7 +221,6 @@ const mutations = {
             posts.terms.splice(index, 1, category) // 这种方式才会监视到改动
             // posts.terms[index] = category
         }
-
     }
 }
 

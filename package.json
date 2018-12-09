@@ -69,6 +69,7 @@
     "vue": "^2.5.16",
     "vue-grid-layout": "^2.1.13",
     "vue-i18n": "^8.3.0",
+    "vue-infinite-scroll": "^2.0.2",
     "vue-router": "^3.0.1",
     "vue-waterfall": "^1.0.6",
     "vuedraggable": "^2.16.0",
