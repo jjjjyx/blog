@@ -4,7 +4,7 @@
     <!--<Scroll :on-reach-bottom="handleReachBottom"-->
             <!--class="medium__img" ref="imgs"-->
             <!--:height="scrollHeight">-->
-    <div class="medium__img" v-infinite-scroll="loadMore" :infinite-scroll-disabled="busy" infinite-scroll-distance="300"
+    <div class="medium__img" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="300"
          v-context-menu="{menus: contentItems, targetEl: '.img__item'}">
         <img-item :item="item" :index="index" v-for="(item, index) in data" :key="index"
                   @click.native="handleClickRow(item, index)"></img-item>
@@ -269,6 +269,7 @@ export default {
         }
     },
     created () {
+        // todo 全局使用的情况会莫名其妙的触发, 需要判断当前的为弹出模式，决定绑定方式
         on(document.body, 'keydown', this.handleKeyDown)
         on(document.body, 'keyup', this.handleKeyUp)
     },

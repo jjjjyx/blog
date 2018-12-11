@@ -73,7 +73,11 @@ const actions = {
         try {
             let result = await postApi.fetchAll()
             // , i.post_date = new Date(i.post_date), i.updatedAt = new Date(i.updatedAt), i.createdAt = new Date(i.createdAt), i.deleteAt = new Date(i.deleteAt)
-            result.forEach(i => (i._checked = false, i._editCategory = false, i._editTag = false))
+            result.forEach((i) => {
+                i._checked = false
+                i._editCategory = false
+                i._editTag = false
+            })
             commit('SET_POST', result)
         } catch (e) {
             this._vm.$Message.error('获取文章数据失败')

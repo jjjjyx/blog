@@ -8,7 +8,8 @@
                     <label class="ivu-form-item-label">目录：</label>
                 </div>
                 <form-item prop="space" class="mr-4">
-                    <Select v-model="formItem.space" style="width:100px" placeholder="选择图片空间" @on-change="handleChangeImgSpace">
+                    <Select v-model="formItem.space" style="width:100px" placeholder="选择图片空间"
+                            @on-change="handleChangeImgSpace">
                         <Option v-for="(v, k) in imgSpaces" :value="k" :key="k">{{ v }}</Option>
                     </Select>
                 </form-item>
@@ -78,7 +79,8 @@
                     <Button @click="handleSubmit('formItem')" type="primary" class="mr-2">搜索</Button>
                     <!--<Tooltip content="原生空间管理">-->
                     <i-button @click="handleUpload" type="primary" class="mr-2">上传新图片</i-button>
-                    <slot name="form-buttons" v-bind:selectedNum="selectedNum" v-bind:selectedList="selectedList"></slot>
+                    <slot name="form-buttons" v-bind:selectedNum="selectedNum"
+                          v-bind:selectedList="selectedList"></slot>
                 </FormItem>
                 <FormItem class="float-right">
                 </FormItem>
@@ -87,7 +89,8 @@
                 <span style="float: right">{{$t('curd.total_rate', [data.length, total])}}</span>
                 <span>图片列表 {{selectedList.length ? '-'+ $t('curd.header_select_text', {num: selectedList.length}): ''}}</span>
             </div>
-            <img-grid :data="data" :form-item="formItem" @on-selection-change="handleSelectionChange" :multiple="selectedMode"></img-grid>
+            <img-grid :data="data" :form-item="formItem" @on-selection-change="handleSelectionChange"
+                      :multiple="selectedMode"></img-grid>
         </div>
         <!--<div class="cm-container&#45;&#45;flex__modal medium__right">-->
         <!--<h2 class="ivu-card-head" >-->

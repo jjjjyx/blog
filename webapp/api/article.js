@@ -1,6 +1,5 @@
 import api from './index'
 
-
 /**
  * 点击喜欢文章
  * @param guid

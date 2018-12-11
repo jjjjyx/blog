@@ -9,7 +9,7 @@ import Icon from './components/icon'
 import BlogComment from './components/comment/comment.vue'
 import PhotoSwipe from './components/photo-swipe'
 
-import { on, once, addClass, removeClass } from './utils/dom'
+import { on, once, removeClass } from './utils/dom'
 import * as articleApi from '@/api/article'
 /* eslint-disable no-unused-vars,no-undef  */
 Vue.use(Icon)
@@ -37,7 +37,6 @@ function getClientHeight () {
     return clientHeight
 }
 
-
 function appInit () {
     /* eslint-disable no-unused-vars  */
     const app = new Vue({
@@ -60,7 +59,6 @@ function appInit () {
         },
         methods: {
             async heart (event, guid, n) {
-
                 try {
                     await articleApi.heart(guid)
                     // 爱心图标添加动画
@@ -144,8 +142,6 @@ function appInit () {
             }
         }
     })
-
-
     window.fulfilLoading && window.fulfilLoading()
 }
 

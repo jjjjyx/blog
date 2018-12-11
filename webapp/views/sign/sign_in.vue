@@ -12,7 +12,6 @@
             </i-input>
         </FormItem>
 
-
         <div class="ivu-form-inline">
             <FormItem>
                 <Checkbox v-model="formItem.checkbox">{{$t('login.remember_me')}}</Checkbox>

@@ -86,7 +86,6 @@ const renderFileName = function (h, param) {
     let imgSrc = row.raw.miniurl
     let $image = <img slot="content" src={imgSrc} class="table-file-poptip-img"/>
 
-
     let $icon = <span class={['table-file-icon', iconClass]}/>
     let $name = <a class="table-file-name" title={name} onClick={(e) => this.$emit('on-click-' + fileType, row, e)}>{name}</a>
 
@@ -105,7 +104,7 @@ const renderAction = function (h, params) {
     let dom
     switch (status) {
     case FileStatus.READY: {
-        let $play = <i-button type="text" size="small" icon="md-play" class="mr-2" title="开始上传" onClick={() => this.$handleFileStartUpload(params)}/> //()=>this.$emit('file-start-upload', params)
+        let $play = <i-button type="text" size="small" icon="md-play" class="mr-2" title="开始上传" onClick={() => this.$handleFileStartUpload(params)}/> // ()=>this.$emit('file-start-upload', params)
         dom = [$play, $remove]
         break
     }
@@ -117,7 +116,7 @@ const renderAction = function (h, params) {
         // percentage
         // let $cancel =
         dom = [<i-button type="text" size="small" icon="md-pause" class="mr-2" title="终止上传"
-                         onClick={() => this.$handleCancelUpload(params)}/>] //() => this.$emit('file-uploading-cancel', params)
+                         onClick={() => this.$handleCancelUpload(params)}/>] // () => this.$emit('file-uploading-cancel', params)
         break
     }
     case FileStatus.FAIL: { // 上传失败 显示 重试与删除
@@ -150,10 +149,9 @@ const renderSpace = function (h, { row }) {
             {Object.keys(store.getters.imgSpaces).map((k) => <i-option value={k}>{store.getters.imgSpaces[k]}</i-option>)}
         </i-select>]
     } else {
-        let editSpaceBtn = <font-icon type="ios-create-outline" size="20" onClick={() => row._editSpace = true}/>
+        let editSpaceBtn = <font-icon type="ios-create-outline" size="20" onClick={ () => (row._editSpace = true) }/>
         return [<span class="table-file-space">{store.getters.imgSpaces[space]}</span>, editSpaceBtn]
     }
-
 }
 
 const renderFileSize = function (h, { row }) {
@@ -381,7 +379,6 @@ export default {
         uploadFiles: function (files, opts = {}) {
             let { space } = opts
             // 队列的最大值不限制， 但是限制同上上传的格式
-
 
             if (!isArray(files)) {
                 files = [files]
@@ -617,7 +614,6 @@ export default {
         $handleCancelUpload ({ row, index }) {
             console.log('方法未实现')
             this.$emit('file-item-cancel-upload', row, index)
-
         },
         $handleFailRefresh ({ row, index }) {
             console.log('方法未实现')

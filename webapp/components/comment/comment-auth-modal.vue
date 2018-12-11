@@ -159,7 +159,6 @@ export default {
         }
 
         this.inputQQ = _.debounce(inputQQ.bind(this), 500)
-
     }
 }
 </script>

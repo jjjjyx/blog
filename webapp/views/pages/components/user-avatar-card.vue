@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
     name: 'user-avatar-card',
@@ -91,4 +91,3 @@ export default {
     }
 }
 </script>
-

@@ -1,6 +1,5 @@
 'use strict'
 
-
 import merge from 'lodash/merge'
 import cloneDeep from 'lodash/cloneDeep'
 // import store from '../index'

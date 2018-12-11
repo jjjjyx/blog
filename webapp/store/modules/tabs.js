@@ -37,7 +37,6 @@ const actions = {
     delOthersViews ({ dispatch }, view) {
         dispatch('delOthersVisitedViews', view)
         dispatch('delOthersCachedViews', view)
-
     },
     delOthersVisitedViews ({ commit }, view) {
         commit('DEL_OTHERS_VISITED_VIEWS', view)
@@ -52,7 +51,6 @@ const actions = {
     },
     delAllVisitedViews ({ commit }) {
         commit('DEL_ALL_VISITED_VIEWS')
-
     },
     delAllCachedViews ({ commit }) {
         commit('DEL_ALL_CACHED_VIEWS')
@@ -100,14 +98,14 @@ const mutations = {
     }
 
     // UPDATE_VISITED_VIEW: (state) => {
-    // let v = find(state.visitedViews, ['name', view.name])
-    // v = Object.assign(v, view)
-    // for (let v of state.visitedViews) {
-    // 	if (v.path === view.path) {
-    // 		v = Object.assign(v, view)
-    // 		break
-    // 	}
-    // }
+    //     let v = find(state.visitedViews, ['name', view.name])
+    //     v = Object.assign(v, view)
+    //     for (let v of state.visitedViews) {
+    //         if (v.path === view.path) {
+    //             v = Object.assign(v, view)
+    //             break
+    //         }
+    //     }
     // }
 }
 

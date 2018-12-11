@@ -21,7 +21,6 @@ function deepQuery (tree, name) {
     }
 }
 
-
 export default {
     name: 'main-header',
     data () {
@@ -34,26 +33,21 @@ export default {
             errorModalVisible: false,
             errorColumns: [
                 {
-                    type: 'expand', width: 50, render: (h, { row }) => {
-                        return h('pre', row.err.stack)
-                    }
+                    type: 'expand', width: 50, render: (h, { row }) => h('pre', row.err.stack)
                 },
                 {
-                    title: 'type', key: 'name', width: 100, render: (h) => {/* <tag color="error">Error</tag>*/
-                        return h('tag', { props: { color: 'error' } }, 'Error')
-                    }
+                    title: 'type',
+                    key: 'name',
+                    width: 100,
+                    render: (h) => h('tag', { props: { color: 'error' } }, 'Error')
                 },
                 {
-                    title: 'msg', key: 'msg', maxWidth: 260, render: (h, { row }) => {
-                        return [row.err.message]
-                    }
+                    title: 'msg', key: 'msg', maxWidth: 260, render: (h, { row }) => ([row.err.message])
                 },
                 { title: 'info', key: 'info' },
                 { title: 'url', key: 'url' },
                 {
-                    title: 'time', key: 'time', render: (h, { row }) => {
-                        return [dateFormat(row.time)]
-                    }
+                    title: 'time', key: 'time', render: (h, { row }) => ([dateFormat(row.time)])
                 }
             ]
         }
@@ -68,10 +62,6 @@ export default {
             'logs': state => state.errorLog.logs,
             'showDebug': state => state.errorLog.showDebug
         })
-
-        // last: function () {
-        // 	return last(this.breadCrumbList)
-        // }
     },
     methods: {
         ...mapActions(['toggleSidebarMini', 'setLanguage']),
@@ -120,10 +110,6 @@ export default {
                 api.token = null
                 location.reload()
             })
-            // api.nget('/api/user/signout').then(() => {
-            // 	api.token = null
-            // 	location.reload()
-            // })
         }
     },
     watch: {

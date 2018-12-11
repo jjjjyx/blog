@@ -15,8 +15,6 @@
                     <Button icon="md-close" @click="handleCancel"></Button>
                 </ButtonGroup>
             </template>
-
-
         </div>
     </div>
 </template>

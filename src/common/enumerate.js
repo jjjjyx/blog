@@ -99,7 +99,6 @@ const fieldLabelEnum = {
     user_url: '主页',
     display_name: '显示名称',
     role: '角色'
-
 }
 // 操作者
 const whoTypeEnum = {

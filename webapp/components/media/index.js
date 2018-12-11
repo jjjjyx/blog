@@ -20,6 +20,7 @@ function init (options = {}) {
     document.body.appendChild(instance.$el)
     return instance
 }
+
 export default function install (Vue, opts = {}) {
     Vue.component('media-curd', MediaCurd)
     init(opts)

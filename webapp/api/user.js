@@ -8,7 +8,10 @@ import { passwordHash } from '../utils/common'
  */
 export async function login (username, password) {
     password = await passwordHash(password)
-    return api.npost('/api/user/login', { username, password }).then((data) => (api.token = data, data))
+    return api.npost('/api/user/login', { username, password }).then((data) => {
+        api.token = data
+        return data
+    })
 }
 
 /**
@@ -25,13 +28,16 @@ export function auth () {
  * @param cpass
  */
 export async function changePass ({ oldPass, newPass, confirmPass }) {
-    let [old_pass, new_pass, cpass] = await Promise.all([
+    let [oldPasshHash, newPassHahs, cpass] = await Promise.all([
         passwordHash(oldPass),
         passwordHash(newPass),
         passwordHash(confirmPass)
     ])
 
-    return api.npost('/api/user/update/pass', { old_pass, new_pass, cpass }).then((data) => (api.token = null, data))
+    return api.npost('/api/user/update/pass', { old_pass: oldPasshHash, new_pass: newPassHahs, cpass }).then((data) => {
+        api.token = null
+        return data
+    })
 }
 
 /**
@@ -40,8 +46,8 @@ export async function changePass ({ oldPass, newPass, confirmPass }) {
  * @param newPass
  * @param cpass
  */
-export function update ({ user_nickname, display_name, user_email, user_url }) {
-    return api.npost('/api/user/update/info', { user_nickname, display_name, user_email, user_url })
+export function update ({ user_nickname: userNickname, display_name: displayName, user_email: userEmail, user_url: userUrl }) {
+    return api.npost('/api/user/update/info', { userNickname, displayName, userEmail, userUrl })
 }
 
 /**

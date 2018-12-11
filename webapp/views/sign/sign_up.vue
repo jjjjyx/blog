@@ -2,32 +2,32 @@
     <Form ref="formItem" :model="formItem" :rules="ruleInline">
         <h1 class="login__title">{{$t('login.register_title')}}</h1>
         <FormItem prop="username">
-            <Input type="text" v-model="formItem.username" placeholder="账号">
+            <i-input type="text" v-model="formItem.username" placeholder="账号">
                 <Tooltip content="账号" slot="prepend">
                     <Icon type="ios-mail-outline"></Icon>
                 </Tooltip>
-            </Input>
+            </i-input>
         </FormItem>
         <FormItem prop="nickname">
-            <Input type="text" v-model="formItem.nickname" placeholder="昵称">
+            <i-input type="text" v-model="formItem.nickname" placeholder="昵称">
                 <Tooltip content="昵称" slot="prepend">
                     <Icon type="ios-person-outline"></Icon>
                 </Tooltip>
-            </Input>
+            </i-input>
         </FormItem>
         <FormItem prop="password">
-            <Input type="password" v-model="formItem.password" placeholder="密码">
+            <i-input type="password" v-model="formItem.password" placeholder="密码">
                 <Tooltip content="密码" slot="prepend">
                     <Icon type="ios-lock-outline"></Icon>
                 </Tooltip>
-            </Input>
+            </i-input>
         </FormItem>
         <FormItem prop="cp">
-            <Input type="password" v-model="formItem.cp" placeholder="确认密码">
+            <i-input type="password" v-model="formItem.cp" placeholder="确认密码">
                 <Tooltip content="确认密码" slot="prepend">
                     <Icon type="ios-lock-outline"></Icon>
                 </Tooltip>
-            </Input>
+            </i-input>
         </FormItem>
 
         <div class="ivu-form-inline">
@@ -52,7 +52,6 @@ export default {
     mixins: [signMixins],
     name: 'view-register',
     data () {
-
         return {
             formItem: {
                 nickname: '',
@@ -66,7 +65,6 @@ export default {
     },
     computed: {
         ruleInline () {
-
             return {
                 username: [
                     { required: true, message: this.$t('messages.form.username_empty'), trigger: 'blur' },

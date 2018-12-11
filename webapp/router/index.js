@@ -38,7 +38,9 @@ function menuToRouter (menu, parent) {
     let meta = getMeta(menu)
     // let path = _path
     let result = {
-        path, meta, name,
+        path,
+        meta,
+        name,
         component: () => import('@/views' + componentPath)
     }
     if (menu.child) {
@@ -47,7 +49,6 @@ function menuToRouter (menu, parent) {
     }
     return result
 }
-
 
 let menusRouters = menus.map(function t (menu) {
     // 处理路径，定义的路径都是不带 / 的

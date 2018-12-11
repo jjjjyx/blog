@@ -80,6 +80,6 @@ export function trashRevert (ids) {
     return api.npost(`/api/post/trash/revert`, { ids })
 }
 
-export function changePostCategory (id, category_id) {
-    return api.npost(`/api/post/update-category`, { id, category_id })
+export function changePostCategory (id, categoryId) {
+    return api.npost(`/api/post/update-category`, { id, category_id: categoryId })
 }

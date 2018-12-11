@@ -39,7 +39,7 @@ const mac = new qiniu.auth.digest.Mac(config.qiUpload.ACCESS_KEY, config.qiUploa
 const putPolicy = new qiniu.rs.PutPolicy(qiniuOption)
 
 let qiniuConfig = new qiniu.conf.Config()
-//config.useHttpsDomain = true;
+// config.useHttpsDomain = true;
 qiniuConfig.zone = qiniu.zone.Zone_z2
 
 const bucketManager = new qiniu.rs.BucketManager(mac, qiniuConfig)
@@ -69,7 +69,6 @@ const syncDelete = function (keys) {
         })
     })
 }
-
 
 function getAllBybucket (bucket, marker = '') {
     return new Promise((resolve, reject) => {
@@ -152,7 +151,7 @@ function sisyphusFetch (url, name, copyright) {
     copyright = copyright || `From the network: ${url}`
     return new Promise((resolve, reject) => {
         bucketManager.fetch(url, BUCKET_NAME, name, function (err, respBody, respInfo) {
-            if (err) { //478
+            if (err) { // 478
                 debug('抓取网络图片失败图片失败 url = %s, name', url, name)
                 reject(err)
             } else {

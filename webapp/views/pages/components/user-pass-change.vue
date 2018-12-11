@@ -92,7 +92,6 @@ export default {
             } catch (e) {
                 this.$Message.error(this.$t('messages.curd.update_fail', e))
             }
-
         }
     }
 }

@@ -31,7 +31,9 @@ const menus = [
 
     homeRouter,
     {
-        name: 'sign', hide: true, layout: '/sign/sign',
+        name: 'sign',
+        hide: true,
+        layout: '/sign/sign',
         redirect: '/sign/in',
         child: [
             {
@@ -71,7 +73,8 @@ const menus = [
     { name: 'media', icon: 'md-image' },
 
     {
-        name: 'pages', icon: 'ios-aperture',
+        name: 'pages',
+        icon: 'ios-aperture',
         redirect: '/pages/blank',
         child: [
             {
@@ -83,7 +86,8 @@ const menus = [
         ]
     },
     {
-        name: 'system', icon: 'md-globe',
+        name: 'system',
+        icon: 'md-globe',
         redirect: '/system/website',
         child: [
             {
@@ -94,15 +98,6 @@ const menus = [
     // {name: 'domain', icon: 'md-globe'}
     // {name: 'location'},
 ]
-
-// for (let i = 4; i < 40; i++) {
-// 	menus[2].child[1].child.push({
-// 		title: 'menus-2-' + i,
-// 		path: 'menus2-'+i,
-// 		name: 'menus - 2 - '+ i,
-// 		component: '/menus/menus2/menus2-1'
-// 	})
-// }
 
 export default menus
 export { homeRouter }

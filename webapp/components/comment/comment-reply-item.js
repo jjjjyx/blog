@@ -17,7 +17,6 @@ export default {
             </div>
             <div class="reply-content">
                 <comment-username class="reply-content__body" user={item.user}>
-                    {/*<span class="text" domPropsInnerHTML={content}/>*/}
                     <comment-content item={item}/>
                 </comment-username>
                 <div class="reply-content__footer">
@@ -26,10 +25,11 @@ export default {
                     <span>0</span>
                     <i-button type="text" size="small" onClick={() => ctx.parent.reply(item)}>回复</i-button>
                     <i-button type="text" size="small">举报</i-button>
-                    {/*<span class="float-right j-report j-logo--a">举报</span>*/}
+
                 </div>
             </div>
 
         </li>
     }
 }
+// {/*<span class="float-right j-report j-logo--a">举报</span>*/}

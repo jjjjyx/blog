@@ -4,7 +4,6 @@ import isBoolean from 'lodash/isBoolean'
 
 import menus from '@/router/menus'
 
-
 const state = {
     // user: null
     collapsed: false,

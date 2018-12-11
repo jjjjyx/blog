@@ -1,6 +1,5 @@
 import api from './index'
 
-
 /**
  * 获取全部标签,分类
  * @returns {Promise<*>}
@@ -62,5 +61,3 @@ export function deleteTag (ids) {
 export function deleteCategory (ids) {
     return api.npost(`/api/term/category/del`, { ids })
 }
-
-

@@ -56,7 +56,6 @@ export default {
             'categoryList': state => state.data.categoryList
         }),
         commonCategoryList: function () {
-
             return orderBy(this.categoryList, ['count'], ['desc']).slice(0, 5)
         },
         categoryValue: {

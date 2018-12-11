@@ -55,7 +55,6 @@ export default {
     },
     methods: {
         setScale () {
-
             // set children width again to make slot centered
             let [avatarWidth, childrenWidth] = getTextWidth(this.$el)
             this.childrenWidth = childrenWidth // this.$refs.children.offsetWidth
@@ -68,7 +67,6 @@ export default {
             } else {
                 this.scale = 1
             }
-
         }
     },
     mounted () {

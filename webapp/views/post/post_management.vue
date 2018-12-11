@@ -21,7 +21,8 @@
         </form-item>
         <template slot="form-buttons" slot-scope="scope">
             <i-button icon="md-document" class="mr-2" @click="newPost">新建文章</i-button>
-            <i-button icon="md-trash" :disabled="scope.selectedNum === 0" @click="trash(scope.selectedList)">移至回收站</i-button>
+            <i-button icon="md-trash" :disabled="scope.selectedNum === 0" @click="trash(scope.selectedList)">移至回收站
+            </i-button>
         </template>
     </curd>
 </template>
@@ -34,7 +35,7 @@ import { mapState, mapActions } from 'vuex'
 import { dateFormat } from '@/utils/common'
 import curd from '../../components/curd/curd.vue'
 import PostTitle from './col/post-title'
-import * as post from '@/api/posts'
+// import * as post from '@/api/posts'
 
 Vue.component('post-title', PostTitle)
 const renderTitle = function (h, { row }) {
@@ -52,13 +53,15 @@ const renderAuthor = function (h, { row }) {
 const renderCategory = function (h, { row }) {
     let category = find(row.terms, ['taxonomy', 'category'])
     if (row._editCategory) {
-        return [<i-select style="width:60px" placeholder="选择图片空间" value={category.id} size="small" onInput={(v) => this.$handleChangePostCategory(row, v)}>
+        return [<i-select style="width:60px" placeholder="选择图片空间" value={category.id} size="small"
+                          onInput={(v) => this.$handleChangePostCategory(row, v)}>
             {this.categoryList.map(item => <i-option value={item.id}>{item.name}</i-option>)}
         </i-select>,
-            <font-icon type="md-close" class="ml-1" size="20" color="red" onClick={() => row._editCategory = false}/>
+            <font-icon type="md-close" class="ml-1" size="20" color="red" onClick={ () => (row._editCategory = false) }/>
         ]
     } else {
-        let editIcon = <font-icon type="ios-create-outline" class="ml-1 curd-table-options" size="20" onClick={() => row._editCategory = true}/>
+        let editIcon = <font-icon type="ios-create-outline" class="ml-1 curd-table-options" size="20"
+                                  onClick={ () => (row._editCategory = true) }/>
         return [<tooltip content={category.description}>{category.name}</tooltip>, editIcon]
     }
 }
@@ -80,7 +83,6 @@ const renderDate = function (h, { row }) {
     dates.push(dateFormat(row.updatedAt))
     return dates
 }
-
 
 export default {
     name: 'post-management',
@@ -142,7 +144,6 @@ export default {
             // 'trash': 'trashPosts'
         }),
         sortMethod (column, key, order) {
-
             return []
             // if (key) {
             //
@@ -161,9 +162,7 @@ export default {
             } catch (e) {
                 this.$Message.error(this.$t('messages.curd.update_fail', e))
                 // } finally {
-
             }
-
         }
         // handleSelectChange (value) {
         //     this.selectedList = value

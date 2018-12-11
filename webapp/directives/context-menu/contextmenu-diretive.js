@@ -12,12 +12,12 @@ export default {
         let value = binding.value
         let { menus, targetEl } = value
         menus = cloneDeep(menus)
-        // menus.forEach(function __ (item) {
-        // 	item._disabled = typeof item.disabled === 'function' ? item.disabled() : item.disabled
-        // 	if (item.child) {
-        // 		item.child.forEach(__)
-        // 	}
-        // })
+        menus.forEach(function __ (item) {
+            item._disabled = typeof item.disabled === 'function' ? item.disabled() : item.disabled
+            if (item.child) {
+                item.child.forEach(__)
+            }
+        })
         let $contextMenu = new ContextMenuConstructor({
             data: { menus },
             i18n
